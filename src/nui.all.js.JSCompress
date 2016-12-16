@@ -1,0 +1,12 @@
+﻿<jscompress public="http://www.jscompress.cn/" command="import-combineset">
+<combinefile path="nui.all.js">
+    <auto value="1" />
+    <sourcefile path=".\nui.js" />
+    <sourcefile path=".\nui.util.js" />
+    <sourcefile path=".\nui.tpl.js" />
+    <sourcefile path=".\nui.tpl.ext.js" />
+    <sourcefile path=".\nui.layer.ext.js" />
+    <sourcefile path=".\nui.layer.js" />
+    <sourcefile path=".\nui.placeholder.js" />
+</combinefile>
+</jscompress>
