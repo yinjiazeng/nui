@@ -661,7 +661,7 @@
 
 ;!(function($, Nui, undefined){
     Nui.use('tpl', function(tpl){
-        var util = Nui.use('Util');
+        var util = Nui.use('util');
         //格式化日期
         tpl.method('format', function(timestamp, format){
             return util.formatDate(timestamp, format)
