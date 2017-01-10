@@ -17,9 +17,6 @@
     <input type="text" placeholder="请输入用户名" placeholder-options="{equal:true}" />
     <script type="text/javascript" src="../../assets/script/jquery.js"></script>
     <script type="text/javascript" src="../../src/nui.js"></script>
-    <script type="text/javascript" src="../../src/nui.util.js"></script>
-    <script type="text/javascript" src="../../src/nui.tpl.js"></script>
-    <script type="text/javascript" src="../../src/nui.placeholder.js"></script>
     
     <script type="text/html" id="list">
     {{each list val key}}
@@ -51,11 +48,11 @@
     /*Nui.use('placeholder', function(p){
         new p({target:':text'}).init()
     })*/
-
-    $(':text').placeholder('options', {
-        color:'#f60',
-        animate:false
+    
+    nui.loader('./demo', function(demo){
+        demo.init()
     })
+    
     </script>
 </body>
 </html>
