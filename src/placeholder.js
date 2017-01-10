@@ -6,7 +6,7 @@
  * @description 输入框占位符
  */
 
-Nui.define('placeholder', ['../../src/util'], function(util){
+Nui.define('placeholder', ['util'], function(util){
     return ({
         static:{
             support:function(){
@@ -88,9 +88,6 @@ Nui.define('placeholder', ['../../src/util'], function(util){
                 that._setStyle()
             }
             return that
-        },
-        _tpl2html:function(tpl, data){
-            return Nui.import('../../src/tpl', 'render')(tpl, data)
         },
         _setStyle:function(){
             var that = this, opts = that.options;

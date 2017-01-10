@@ -8,7 +8,7 @@
 
 ;!(function($, Nui, undefined){
     
-    Nui.use('layer', function(Layer){
+    Nui.include('layer', function(Layer){
         $.layer.alert = function(){
             return new Layer({
                 

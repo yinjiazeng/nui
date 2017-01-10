@@ -16,7 +16,7 @@
     <input type="text" placeholder="请输入用户名" placeholder-options="{equal:true}" />
     <input type="text" placeholder="请输入用户名" placeholder-options="{equal:true}" />
     <script type="text/javascript" src="../../assets/script/jquery.js"></script>
-    <script type="text/javascript" src="../../src/nui.js"></script>
+    <script type="text/javascript" src="../../src/nui.all.js"></script>
     
     <script type="text/html" id="list">
     {{each list val key}}
@@ -24,34 +24,13 @@
     {{/each}}
     </script>
     <script type="text/javascript">
-    /*var data = {
-        list:[]
-    }
 
-    for(var i=0; i<=1000; i++){
-        data.list.push({name:i})
-    }
     
-    Nui.use('tpl', function(tpl){
-        $('#data1').html(tpl('list', data))
-    })
-    
-    var str = '{{each list val key}}<p>{{val.name}}</p>{{/each}}';
-    $('#data2').html(Nui.use('tpl', 'render')(str, data))*/
-    
-    //$(':text').placeholder({color:'#f60'})
-    
-    /*$.placeholder({
-        target:':text',
-        color:'#f60'
-    })*/
-    /*Nui.use('placeholder', function(p){
-        new p({target:':text'}).init()
-    })*/
-    
-    nui.loader('./demo', function(demo){
+    /*nui.loader('./demo', function(demo){
+        alert()
         demo.init()
-    })
+    })*/
+    alert(nui)
     
     </script>
 </body>

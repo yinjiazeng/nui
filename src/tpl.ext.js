@@ -7,8 +7,8 @@
  */
 
 ;!(function($, Nui, undefined){
-    Nui.use('tpl', function(tpl){
-        var util = Nui.use('util');
+    Nui.include('tpl', function(tpl){
+        var util = Nui.include('util');
         //格式化日期
         tpl.method('format', function(timestamp, format){
             return util.formatDate(timestamp, format)
