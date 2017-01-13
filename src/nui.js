@@ -7,16 +7,15 @@
  */
 
 ;!(function(window, document, $, undefined){
-        
+
     //存储组件类
     var Modules = {}
-    
+
     var createClass = function(name, object){
-        var Base = Modules.Base||Object;
+        var Component = Modules.Component||Object;
         var Class = function(options){
             var that = this;
-            that.static = Class;
-            if(name !== 'Base'){
+            if(name !== 'Component'){
                 $.extend(that, object.attr, {
                     index:Class.index++,
                     eventArray:[],
@@ -28,21 +27,20 @@
                 that._init()
             }
         }
-        $.extend(true, Class, object.static, Base);
-        $.extend(true, Class.prototype, Base.prototype, object.proto)
-        Class.prototype.constructor = Class
+        $.extend(true, Class, Component, object.static);
+        $.extend(true, Class.prototype, Component.prototype, object.proto);
+        Class.prototype.constructor = Class.prototype._self = Class;
         return Class
     }
-    
+
     var Nui = Nui || ({
         version:'@version',
-        window:$(window),
-        document:$(document),
-        bsie6:!!window.ActiveXObject && !window.XMLHttpRequest,
+        win:$(window),
+        doc:$(document),
         define:function(name, modules, object){
             var args = arguments;
             var len = args.length;
-            
+
             if(!len || (len === 1 && typeof args[0] === 'string')){
                 return
             }
@@ -51,24 +49,23 @@
                 modules == null;
                 object = args[0]
             }
-            
+
             if($.isArray(args[0])){
                 modules = args[0];
                 name = null;
             }
-            
+
             if(typeof args[1] === 'function' || $.isPlainObject(args[1])){
                 object = args[1];
                 modules = null;
             }
-            
+
             if(name && !Modules[name]){
-                
                 if(typeof object === 'function'){
                     if($.isArray(modules) && modules.length){
                         $.each(modules, function(i, n){
                             var m = Modules[n];
-                            if(n !== 'Base' && m){
+                            if(n !== 'Component' && m){
                                 modules[i] = m
                             }
                         })
@@ -96,7 +93,7 @@
                         }
                     })
                     var module = Modules[name] = createClass(name, obj);
-                    if(name !== 'Base'){
+                    if(name !== 'Component'){
                         $.each(['$', '$fn', '$run'], function(k, v){
                             if(typeof module[v] === 'function'){
                                 module[v](name, module)
@@ -107,25 +104,59 @@
                 else{
                     Modules[name] = object
                 }
-            } 
+            }
+        },
+        //jQuery1.9之后移除了$.browser
+        browser:(function(){
+            var ua = navigator.userAgent.toLowerCase();
+            var match = /(edge)[ \/]([\w.]+)/.exec(ua) ||
+                        /(chrome)[ \/]([\w.]+)/.exec(ua) ||
+                        /(webkit)[ \/]([\w.]+)/.exec(ua) ||
+                        /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+                        /(msie) ([\w.]+)/.exec(ua) ||
+                        ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || [];
+            var browser = match[1] || '';
+            var version = match[2] || '0';
+            var ret = {}
+            //IE11会伪装成firefox
+            if(/trident/.test(ua)){
+                browser = 'msie';
+                version = '11.0'
+            }
+            if(browser){
+                ret[browser] = true;
+                ret.version = version
+            }
+            if(ret.chrome || ret.edge){
+                ret.webkit = true
+            }
+            else if(ret.webkit){
+                ret.safari = true
+            }
+            return ret
+        })(),
+        error:function(msg){
+            if(window.console){
+                console.error(msg)
+            }
         }
     })
-    
+
     var REGEXP = {
         MODULE:/[\w\/\.-]+/g,
         DEFINEMODULE:/define\((\'|\")([\w\/\.-])+\1/g,
         DEFINE:/(define\()/g,
-        MODULES:/(nui.include\(['"]([\w\/\.-]+))|(define\(((\'|\")([\w\/\.-])+\5\s*,\s*)?\[[\'\"\w\/\.,\s-]+\])/ig,
+        MODULES:/(Nui.include\(['"]([\w\/\.-]+))|(define\(((\'|\")([\w\/\.-])+\5\s*,\s*)?\[[\'\"\w\/\.,\s-]+\])/g,
         BRACKET:/(\[[\'\"\w\/\.,\s-]+\])/g,
         SCRIPT:/\.js$/
     }
-    
+
     var loadModule = function(module, callback){
         if(typeof callback === 'function' && !callback.enterModule){
             callback(module)
         }
     }
-    
+
     Nui.loader = function(name, callback){
         if(!name || typeof name !== 'string'){
             return
@@ -154,7 +185,7 @@
                     }
                     loadModule(module, callback)
                 }
-                
+
                 var enter = callback;
                 //第一个loader为模块入口
                 if(typeof enter !== 'function' || !enter.enterModule){
@@ -167,7 +198,7 @@
                 else{
                     cb()
                 }
-               
+
                 var mods = res.match(REGEXP.MODULES);
                 if(mods){
                     var arr = [];
@@ -182,7 +213,7 @@
                             })
                         }
                         else{
-                            val = val.replace(/^nui.include\(['"]/ig, '').replace(REGEXP.SCRIPT, '')
+                            val = val.replace(/^Nui.include\(['"]/g, '').replace(REGEXP.SCRIPT, '')
                             if($.inArray(val, arr) === -1){
                                 arr.push(val)
                             }
@@ -205,7 +236,7 @@
                     callback()
                 }
             }
-            
+
             $.ajax({
                 url:src,
                 dataType:'script',
@@ -219,10 +250,10 @@
             })
         }
         else{
-            loadModule(module, callback)
+            callback()
         }
     }
-    
+
     Nui.include = function(name, callback){
         if(!name || typeof name !== 'string'){
             return
@@ -245,6 +276,6 @@
             return module
         }
     }
-    
-    window.nui = window.Nui = Nui
+
+    window.Nui = Nui
 })(this, document, jQuery)

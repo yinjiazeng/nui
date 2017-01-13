@@ -54,8 +54,7 @@ Nui.define('placeholder', ['util'], function(util){
             if(opts.animate){
                 that.target.removeAttr('placeholder')
             }
-            
-            if(opts.animate || (!opts.animate && !that.static.support())){
+            if(opts.animate || (!opts.animate && !that._self.support())){
                 that.target.wrap(that._tpl2html(that.tpl.wrap, {
                         theme:opts.theme,
                         style:{
@@ -81,7 +80,7 @@ Nui.define('placeholder', ['util'], function(util){
                             })
                         })()
                     })).insertAfter(that.target)
-                
+
                 that._event()
             }
             else{
@@ -93,7 +92,7 @@ Nui.define('placeholder', ['util'], function(util){
             var that = this, opts = that.options;
             that.className = 'nui-placeholder-'+that.index;
             that.target.addClass(that.className);
-            if(!that.static.style){
+            if(!that._self.style){
                 that._createStyle()
             }
             that._createRules()
@@ -102,11 +101,11 @@ Nui.define('placeholder', ['util'], function(util){
             var that = this;
             var style = document.createElement('style');
             document.head.appendChild(style);
-            that.static.style = style.sheet
+            that._self.style = style.sheet
         },
         _createRules:function(){
             var that = this;
-            var sheet = that.static.style;
+            var sheet = that._self.style;
             var index = that.index;
             try{
                 sheet.deleteRule(index)
@@ -118,10 +117,10 @@ Nui.define('placeholder', ['util'], function(util){
                 try{
                     if('addRule' in sheet){
                         sheet.addRule(selector, rules, index)
-                    } 
+                    }
                     else if('insertRule' in sheet){
                         sheet.insertRule(selector + '{' + rules + '}', index)
-                    } 
+                    }
                 }
                 catch(e){}
             })
@@ -132,11 +131,11 @@ Nui.define('placeholder', ['util'], function(util){
             that._on('click', that.elem, function(){
                 that.target.focus()
             })
-            
+
             that._on('focus', that.target, function(){
                 opts.animate && that.elem.stop(true, false).animate({left:pleft+10, opacity:'0.5'});
             })
-            
+
             that._on('blur change', that.target, function(){
                 var val = $.trim(that.target.val());
                 if((!opts.equal && val == that.text) || !val){
@@ -148,11 +147,11 @@ Nui.define('placeholder', ['util'], function(util){
                     that.elem.hide()
                 }
             })
-            
+
             that._on('keyup keydown', that.target, function(){
                 $.trim(that.target.val()) ? that.elem.hide() : that.elem.show()
             })
-            
+
             that.target.blur()
         },
         _reset:function(){
