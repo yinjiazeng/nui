@@ -16,6 +16,74 @@
 <body class="g-body">
 	<img src="assets/images/logo.png" class="f-pa" style="top:50%; left:50%; margin:-75px 0 0 -140px;" />
 	<script src="assets/script/jquery.js"></script>
-	<script src="src/nui.js"></script>
+	<script>
+
+	;(function(window){
+		var getUri = function(){
+			var url = (location.protocol+'//'+location.host+location.pathname).replace(/\\/g, '/');
+			var index =  url.lastIndexOf('/');
+			return url.substr(0, index+1);
+		}
+
+		var getModuleid = function(){
+			return '_module_'+mid++
+		}
+
+		var mid = 0;
+
+		var cacheModules = {};
+
+		var Module = function(name, deps){
+			this.deps = deps;
+			this.name = name;
+		}
+
+		Module.prototype.load = function(){
+
+		}
+
+		Module.uri = getUri()
+
+		Module.getModule = function(url, deps){
+			return cacheModules[url] || (cacheModules[url] = new Module(url, deps))
+		}
+
+		Module.load = function(name, callback, url){
+			if(name){
+				var mod = Module.getModule(url, [name])
+				mod.callback = function(){
+					var mods = mod.getModules()
+					var modules = [];
+					$.each(mods, function(key, mod){
+						if(!mod.module){
+							cacheModules[mod.name].exec()
+						}
+						modules.push(mod.module)
+					})
+					if($.isFunction(callback)){
+						callback.apply(Nui, modules)
+					}
+				}
+			}
+		}
+
+		Module.define = function(name, deps, factory){
+
+		}
+
+		window.Nui = {}
+
+		Nui.load = function(name, callback){
+			Module.load(name, callback, Module.uri+getModuleid())
+			return Nui
+		}
+
+		Nui.define = function(id, deps, factory){
+
+		}
+	})(this)
+
+
+	</script>
 </body>
 </html>

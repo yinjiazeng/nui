@@ -5,7 +5,7 @@
  * @version 1.0.1
  * @description 工具类
  */
- 
+
 Nui.define('util', {
     /**
      * @func 常用正则表达式
@@ -93,20 +93,20 @@ Nui.define('util', {
      * @param style <String> 样式属性
      */
     supportCss3:function(style){
-        var prefix = ['webkit', 'Moz', 'ms', 'o'], 
-            i, humpString = [], 
-            htmlStyle = document.documentElement.style, 
-            _toHumb = function (string) { 
-                return string.replace(/-(\w)/g, function ($0, $1) { 
-                    return $1.toUpperCase(); 
-                }); 
-            }; 
-        for (i in prefix) 
-            humpString.push(_toHumb(prefix[i] + '-' + style)); 
-        humpString.push(_toHumb(style)); 
-        for (i in humpString) 
-            if (humpString[i] in htmlStyle) return true; 
-        return false; 
+        var prefix = ['webkit', 'Moz', 'ms', 'o'],
+            i, humpString = [],
+            htmlStyle = document.documentElement.style,
+            _toHumb = function (string) {
+                return string.replace(/-(\w)/g, function ($0, $1) {
+                    return $1.toUpperCase();
+                });
+            };
+        for (i in prefix)
+            humpString.push(_toHumb(prefix[i] + '-' + style));
+        humpString.push(_toHumb(style));
+        for (i in humpString)
+            if (humpString[i] in htmlStyle) return true;
+        return false;
     },
     /**
      * @func 检测浏览器是否支持Html5属性
@@ -115,7 +115,7 @@ Nui.define('util', {
      * @param element <String> DOM元素标签
      */
     supportHtml5:function(attr, element){
-        return attr in document.createElement(element);  
+        return attr in document.createElement(element);
     },
     /**
      * @func 模拟location.href跳转，前者IE下有问题
@@ -154,7 +154,7 @@ Nui.define('util', {
                     if(all.length > 1){
                        value = '0' + value;
                        value = value.substr(value.length-2);
-                   } 
+                   }
                    return value;
                 }
                 else if(single === 'y'){
@@ -207,8 +207,8 @@ Nui.define('util', {
      */
     getData:function(form){
         var data = {
-            result:{}, 
-            total:0, 
+            result:{},
+            total:0,
             voidTotal:0
         }, arr = form.serializeArray(), len = arr.length, i = 0;
         for(i; i<len; i++){

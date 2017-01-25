@@ -11,25 +11,44 @@
 </head>
 
 <body class="g-body">
-    <div id="data1"></div>
-    <div id="data2"></div>
-    <input type="text" placeholder="请输入用户名" placeholder-options="{equal:true}" />
-    <input type="text" placeholder="请输入用户名" placeholder-options="{equal:true}" />
+
+    <div class="header f-tac">
+        <a href="javascript:void(0)">我是头部</a>
+        <input type="text" placeholder="请输入用户名" />
+    </div>
+
+    <div class="content">
+        <input type="text" placeholder="请输入用户名" />
+    </div>
+
+    <div class="footer f-tac">
+        <a href="javascript:void(0)">我是底部</a>
+    </div>
+
     <script type="text/javascript" src="../../assets/script/jquery.js"></script>
-    <script type="text/javascript" src="../../src/nui.all.js"></script>
-
-    <script type="text/html" id="list">
-    {{each list val key}}
-    {{val.name}}
-    {{/each}}
-    </script>
+    <script type="text/javascript" src="../../dest/nui.min.js"></script>
     <script type="text/javascript">
-
-
-    Nui.loader('./demo', function(demo){
-        demo.init()
+    Nui.config({
+        path:'http://192.168.1.109/nui/',
+        alias:{
+            dir:{
+                common:'demo/'
+            },
+            module:{
+                common:'{common}/common',
+                header:'{common}/header',
+                footer:'{common}/footer'
+            }
+        }
     })
 
+    Nui.load('common', function(common){
+        common.init()
+    })
+
+    Nui.load('./page?v=1111', function(page){
+        page.init()
+    })
     </script>
 </body>
 </html>

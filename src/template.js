@@ -1,12 +1,12 @@
 /**
- * @filename tpl.js
+ * @filename template.js
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
  * @version 1.0.1
  * @description 模版引擎
  */
 
-Nui.define('tpl', function(){
+Nui.define('template', function(){
     var template = function(tplid, source){
         var ele = document.getElementById(tplid);
         if(ele && ele.nodeName==='SCRIPT'){
@@ -15,13 +15,13 @@ Nui.define('tpl', function(){
         }
         return ''
     }
-    
+
     var methods = {}
-    
+
     var trim = function(str){
         return str.replace(/(^\s*)|(\s*$)/g, '')
     }
-    
+
     template.config = {
         startTag:'{{',
         endTag:'}}'
@@ -33,17 +33,17 @@ Nui.define('tpl', function(){
         }
         methods[method] = fn
     }
-    
+
     template.method('each', function(data, fn){
         for(i in data){
             fn.call(data, data[i], i)
         }
     })
-    
+
     template.method('trim', function(str){
         return trim(str)
     })
-    
+
     var render = function(tpl, source){
         var start = template.config.startTag, end = template.config.endTag, code = '';
         methods.each(trim(tpl).split(start), function(val, key){
@@ -62,7 +62,7 @@ Nui.define('tpl', function(){
         Result.prototype = methods;
         return new Result(source).echo()
     }
-    
+
     var compile = function(code, logic){
         var modle, echo;
         if(logic){
@@ -102,15 +102,15 @@ Nui.define('tpl', function(){
         }
         return echo
     }
-    
+
     var match = function(string, filter){
         if(string.indexOf(filter) === 0 || (filter === '|' && string.indexOf(filter) > 0)){
             return trim(string.replace(filter, ''))
         }
         return false
     }
-    
+
     template.render = render;
-    
+
     return template
 })

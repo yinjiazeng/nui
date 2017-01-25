@@ -6,14 +6,11 @@
  * @description layer扩展
  */
 
-;!(function($, Nui, undefined){
-    
-    Nui.include('layer', function(Layer){
-        $.layer.alert = function(){
-            return new Layer({
-                
-            })
-        }
-    })
-    
-})(jQuery, Nui)
+Nui.define('layer.ext', ['layer'], function(Layer){
+    $.layer.alert = function(){
+        return new Layer({
+
+        })
+    }
+    return $.layer
+})
