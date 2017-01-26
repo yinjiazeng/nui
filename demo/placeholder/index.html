@@ -29,16 +29,14 @@
     <script type="text/javascript" src="../../dest/nui.min.js"></script>
     <script type="text/javascript">
     Nui.config({
-        path:'http://192.168.1.109/nui/',
+        base:'http://192.168.1.109/nui/',
+        paths:{
+            common:'demo/'
+        },
         alias:{
-            dir:{
-                common:'demo/'
-            },
-            module:{
-                common:'{common}/common',
-                header:'{common}/header',
-                footer:'{common}/footer'
-            }
+            common:'{common}/common',
+            header:'{common}/header',
+            footer:'{common}/footer'
         }
     })
 

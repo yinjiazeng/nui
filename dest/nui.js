@@ -13,25 +13,15 @@
 
     var Nui = window.Nui = {
         version:'1.0.1',
-        doc:$(document),
-        win:$(window),
-        type:function(obj, type, and){
+        // Nui.type('nui', 'String') => true
+        // Nui.type(['nui'], ['Object', 'Array']) => true
+        type:function(obj, type){
             if(isType('Array')(type)){
-                var ret = true;
+                var ret = false;
                 Nui.each(type, function(k, v){
-                    if(and){
-                        if(!isType(v)(obj)){
-                            return ret = false
-                        }
-                    }
-                    else{
-                        if(isType(v)(obj)){
-                            ret = true;
-                            return false
-                        }
-                        else{
-                            ret = false
-                        }
+                    if(isType(v)(obj)){
+                        ret = true;
+                        return false
                     }
                 })
                 return ret
@@ -59,6 +49,7 @@
         trim:function(str){
             return (str || '').replace(/^\s+|\s+$/g, '')
         },
+        // Nui.unique(['1', '2', '1']) => ['1', '2']
         unique:function(arr){
             var newarr = [];
             var temp = {};
@@ -71,38 +62,50 @@
             return newarr
         },
         extend:function(){
-            var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options;
-            if(target.constructor == Boolean){
-                deep = target;
-                target = arguments[1] || {};
-                i = 2;
-            }
-            if(Nui.type(target, 'Object') && Nui.type(target, 'Function'))
-                target = {};
-            if(length == i ){
-                target = this;
-                --i;
-            }
-            for( ; i < length; i++){
-                if((options = arguments[ i ]) != null ){
-                    for(var name in options ) {
-                        var src = target[name], copy = options[name];
-                        if( target === copy ){
-                            continue;
-                        }
-                        if(deep && copy && Nui.type(copy, 'Object') && !copy.nodeType){
-                            target[ name ] = Nui.extend( deep,
-                                src || ( copy.length != null ? [ ] : { } )
-                            , copy);
-                        }
+            var src, copyIsArray, copy, name, options, clone,
+        		target = arguments[0] || {},
+        		i = 1,
+        		length = arguments.length,
+        		deep = false;
+        	if(Nui.type(target, 'Boolean')){
+        		deep = target;
+        		target = arguments[1] || {};
+        		i = 2;
+        	}
+        	if(!Nui.type(target, 'Object') && !Nui.type(target, 'Function')){
+        		target = {};
+        	}
+        	if(length === i ){
+        		target = this;
+        		--i;
+        	}
+        	for( ; i < length; i++){
+        		if((options = arguments[i]) != null){
+        			for(name in options){
+        				src = target[name];
+        				copy = options[name];
+        				if(target === copy){
+        					continue;
+        				}
+        				if(deep && copy && (Nui.type(copy, 'Object') || (copyIsArray = Nui.type(copy, 'Array')))){
+        					if(copyIsArray){
+        						copyIsArray = false;
+        						clone = src && Nui.type(src, 'Array') ? src : [];
+        					}
+                            else{
+        						clone = src && Nui.type(src, 'Object') ? src : {};
+        					}
+        					target[name] = Nui.extend(deep, clone, copy);
+        				}
                         else if(copy !== undefined){
-                            target[name] = copy;
-                        }
-                    }
-                }
-            }
-            return target;
+        					target[name] = copy;
+        				}
+        			}
+        		}
+        	}
+        	return target;
         },
+        //jquery1.9之后就移除了该方法，以插件形式存在
         browser:(function(){
             var ua = navigator.userAgent.toLowerCase();
             var match = /(edge)[ \/]([\w.]+)/.exec(ua) ||
@@ -142,6 +145,7 @@
 
     var noop = function(){}
 
+    //防止不支持该对象的浏览器报错
     if(typeof console === 'undefined'){
         window.console = {
             log:noop,
@@ -151,6 +155,12 @@
         }
     }
 
+    //修复 IE7-hover以及fixed时背景图片闪烁
+    if(Nui.browser.msie && Nui.browser.version <= 7){
+        document.execCommand('BackgroundImageCache', false, true);
+    }
+
+    //获取当前页面的uri
     var getPath = function(){
         var url = (location.protocol+'//'+location.host+location.pathname).replace(/\\/g, '/');
         var index =  url.lastIndexOf('/');
@@ -176,26 +186,29 @@
     var roots = [];
 
     var config = {
-        path:'',
-        alias:{
-            dir:{},
-            module:{}
-        }
+        base:'',
+        paths:{},
+        alias:{}
     }
 
+    //paths的完整路径是base+path
+    //将别名值中的{name}替换为paths中对应的值
     var compileAlias = function(){
-        var modules = config.alias.module;
-        Nui.each(modules, function(key, val){
-            if(config.path && !/^(http|https|file):\/\//.test(val)){
-                val = config.path + val
-            }
-            Nui.each(config.alias.dir, function(k, v){
-                modules[key] = val.replace(new RegExp('{'+ k +'}', 'g'), v)
+        Nui.each(config.alias, function(key, val){
+            Nui.each(config.paths, function(k, path){
+                if(config.base && !/^(http|https|file):\/\//.test(path)){
+                    path = config.base + path
+                }
+                config.alias[key] = val.replace(new RegExp('{'+ k +'}', 'g'), path)
             })
         })
     }
 
-    //IE6-9中
+    //讲道理说，文件在被加载完毕后会立即执行define方法，在onload(onreadystatechange IE9-)事件中得到moduleData，这个过程是同步的
+    //但是在IE9-中，高概率出现不同步情况，就是在onreadystatechange事件中得到moduleData值不是当前文件数据，原因在于执行onload时，其它模块刚好被加载，被重新赋值了
+    //IE9-中文件被加载会有5个状态 uninitialized > loading > loaded > interactive > complete
+    //脚本被执行时可以通过dom节点获取到node.readyState值为interactive，而该节点一定是当前加载的脚本节点
+    //小概率出现节点被添加到dom后会立即执行define，可能是由于IE的缓存原因，利用它可以降低性能的消耗
     var currentlyAddingScript;
     if(Nui.browser.msie && Nui.browser.version <= 9){
         var interactiveScript;
@@ -219,11 +232,17 @@
 
     var Module = function(name, id, deps){
         var mod = this;
+        //define实参中依赖个数
         mod.deps = deps||[];
+        //所有依赖个数
         mod.alldeps = mod.deps;
+        //所有依赖模块对象
         mod.depmodules = [];
+        //模块名
         mod.name = name;
+        //模块唯一id
         mod.id = id;
+        //模块url参数
         mod.parameter = '';
         moduleData = null
     }
@@ -319,6 +338,7 @@
         return mod
     }
 
+    //判断所有依赖是否加载完毕
     Module.prototype.alload = function(){
         var mod = this;
         var modules = [];
@@ -440,7 +460,7 @@
     Module.setId = function(id, retname){
         // xxx.js?v=1.1.1 => xxx
         var name = id.replace(/(\.js)?(\?[\s\S]*)?$/g, '')
-        id = config.alias.module[name] || name;
+        id = config.alias[name] || name;
         if(!/^(http|https|file):\/\//.test(id)){
             id = dirname + id
         }
@@ -1047,6 +1067,9 @@ Nui.define('template.ext', ['util', 'template'], function(util, tpl){
  */
 
 Nui.define('component', ['template'], function(tpl){
+    Nui.win = $(window);
+    Nui.doc = $(document);
+    
     return ({
         static:{
             index:0,
