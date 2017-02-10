@@ -1,8 +1,8 @@
-Nui.define(['placeholder'], function(){
+Nui.define(['placeholder', './deps/b'], function(require){
     return ({
         init:function(){
             $('.content :text').placeholder({
-                color:'#056' 
+                color:'#f00'
             })
         }
     })

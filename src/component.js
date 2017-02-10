@@ -6,10 +6,10 @@
  * @description 组件基类
  */
 
-Nui.define('component', ['template'], function(tpl){
+Nui.define('component', ['template'], function(require, tpl){
     Nui.win = $(window);
     Nui.doc = $(document);
-    
+
     return ({
         static:{
             index:0,
@@ -28,12 +28,14 @@ Nui.define('component', ['template'], function(tpl){
                     var param = args.length > 1 ? Array.prototype.slice.call(args, 1) : [];
                     var options = args[0]||{}
                     return this.each(function(){
+
                         var that = this;
                         if(!that.nui){
                             that.nui = {}
                         }
                         var me = $(that);
                         var obj = that.nui[name];
+
                         if(!obj){
                             var opts = options;
                             if(typeof options === 'object'){
@@ -46,6 +48,7 @@ Nui.define('component', ['template'], function(tpl){
                             }
                             obj = that.nui[name] = new module(opts)
                         }
+
                         if(typeof options === 'string'){
                             if(options.indexOf('_') !== 0){
                                 if(options === 'options'){

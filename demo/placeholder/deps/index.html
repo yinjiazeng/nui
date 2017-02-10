@@ -7,7 +7,7 @@
     <meta name="description" content="" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title></title>
-    <link rel="stylesheet" type="text/css" href="../../assets/style/base.css" />
+    <link rel="stylesheet" type="text/css" href="../../../assets/style/base.css" />
 </head>
 
 <body class="g-body">
@@ -25,24 +25,10 @@
         <a href="javascript:void(0)">我是底部</a>
     </div>
 
-    <script type="text/javascript" src="../../assets/script/jquery.js"></script>
-    <script type="text/javascript" src="../../dest/nui.min.js"></script>
+    <script type="text/javascript" src="../../../assets/script/jquery.js"></script>
+    <script type="text/javascript" src="../../../dest/nui.min.js"></script>
     <script type="text/javascript">
-    Nui.config({
-        base:'http://192.168.1.109/nui/',
-        paths:{
-            common:'demo/'
-        },
-        alias:{
-            common:'{common}/common'
-        }
-    })
-
-    Nui.load('common?v=cdc3cdc', function(common){
-        common.init()
-    })
-
-    Nui.load("./page?v=f7eb3b2", function(page){
+    Nui.load("./a?v=f7eb3b2", function(page){
         page.init()
     })
     </script>

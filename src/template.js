@@ -6,7 +6,7 @@
  * @description 模版引擎
  */
 
-Nui.define('template', function(){
+Nui.define('template', function(require){
     var template = function(tplid, source){
         var ele = document.getElementById(tplid);
         if(ele && ele.nodeName==='SCRIPT'){

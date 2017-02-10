@@ -6,7 +6,7 @@
  * @description 模版引擎扩展
  */
 
-Nui.define('template.ext', ['util', 'template'], function(util, tpl){
+Nui.define('template.ext', ['util', 'template'], function(require, util, tpl){
     //格式化日期
     tpl.method('format', function(timestamp, format){
         return util.formatDate(timestamp, format)

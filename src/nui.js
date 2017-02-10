@@ -16,6 +16,9 @@
         // Nui.type('nui', 'String') => true
         // Nui.type(['nui'], ['Object', 'Array']) => true
         type:function(obj, type){
+            if(type === 'PlainObject'){
+                return isPlainObject(obj)
+            }
             if(isType('Array')(type)){
                 var ret = false;
                 Nui.each(type, function(k, v){
@@ -75,7 +78,7 @@
         	if(!Nui.type(target, 'Object') && !Nui.type(target, 'Function')){
         		target = {};
         	}
-        	if(length === i ){
+        	if(length === i){
         		target = this;
         		--i;
         	}
@@ -87,13 +90,13 @@
         				if(target === copy){
         					continue;
         				}
-        				if(deep && copy && (Nui.type(copy, 'Object') || (copyIsArray = Nui.type(copy, 'Array')))){
+        				if(deep && copy && (Nui.type(copy, 'PlainObject') || (copyIsArray = Nui.type(copy, 'Array')))){
         					if(copyIsArray){
         						copyIsArray = false;
         						clone = src && Nui.type(src, 'Array') ? src : [];
         					}
                             else{
-        						clone = src && Nui.type(src, 'Object') ? src : {};
+        						clone = src && Nui.type(src, 'PlainObject') ? src : {};
         					}
         					target[name] = Nui.extend(deep, clone, copy);
         				}
@@ -142,6 +145,33 @@
             return {}.toString.call(obj) == '[object ' + type + ']'
         }
     }
+
+    var core_hasOwn = Object.prototype.hasOwnProperty;
+
+    var isPlainObject = function(obj){
+        if(!obj || !Nui.type(obj, 'Object') || obj.nodeType || obj == obj.window){
+			return false;
+		}
+		try{
+			if(obj.constructor && !core_hasOwn.call(obj, 'constructor') && !core_hasOwn.call(obj.constructor.prototype, 'isPrototypeOf')){
+				return false;
+			}
+		}
+        catch(e){
+			return false;
+		}
+		var key;
+		for(key in obj){}
+		return key === undefined || core_hasOwn.call(obj, key);
+    }
+
+    var isEmptyObject = function(obj){
+		var name;
+		for(name in obj){
+			return false;
+		}
+		return true;
+	}
 
     var noop = function(){}
 
@@ -232,18 +262,20 @@
 
     var Module = function(name, id, deps){
         var mod = this;
-        //define实参中依赖个数
+        //define实参中依赖模块名
         mod.deps = deps||[];
-        //所有依赖个数
+        //所有依赖模块名
         mod.alldeps = mod.deps;
-        //所有依赖模块对象
-        mod.depmodules = [];
+        //所有依赖模块
+        mod.depmodules = {};
         //模块名
         mod.name = name;
         //模块唯一id
         mod.id = id;
         //模块url参数
         mod.parameter = '';
+        //所在目录
+        mod.uri = mod.id.substr(0, mod.id.lastIndexOf('/')+1);
         moduleData = null
     }
 
@@ -276,11 +308,11 @@
 
     Module.prototype.resolve = function(){
         var mod = this;
-        if(!mod.depmodules.length){
+        if(isEmptyObject(mod.depmodules)){
             Nui.each(mod.alldeps, function(key, val){
-                var module = Module.getModule(val);
+                var module = Module.getModule(val, [], mod.uri);
                 module.parameter = mod.parameter;
-                mod.depmodules.push(module.loaded ? module : module.load())
+                mod.depmodules[val] = module.loaded ? module : module.load()
             })
         }
         return mod
@@ -358,10 +390,13 @@
     Module.prototype.exec = function(){
         var mod = this;
         if(!mod.module && Nui.type(mod.factory, 'Function')){
-            var modules = [];
+            var require = function(id, factory){
+                return Module.require(mod.depmodules[id], factory)
+            }
+            var modules = [require];
             Nui.each(mod.deps, function(key, val){
                 if(val !== 'component'){
-                    modules.push(Module.require(val))
+                    modules.push(require(val))
                 }
             })
             var exports = mod.factory.apply(Nui, modules)
@@ -431,7 +466,6 @@
     Module.createClass = function(mod, object){
         var module;
         if(mod.name !== 'component'){
-
             module = Module.getModule('component').module;
         }
         else{
@@ -447,6 +481,7 @@
                 that.options = Nui.extend(true, {}, that.options, Class.options, options||{})
                 that.optionsCache = Nui.extend({}, that.options);
                 Class.box[that.index] = that;
+
                 that._init()
             }
         }
@@ -457,51 +492,51 @@
         return Class
     }
 
-    Module.setId = function(id, retname){
+    Module.require = function(mod, factory){
+        if(mod){
+            var module = mod.module;
+            if(!factory){
+                return module
+            }
+            if(Nui.type(factory, 'Function')){
+                return factory(module)
+            }
+            else if(Nui.type(factory, 'Object')){
+                return new module(factory)
+            }
+            else if(Nui.type(factory, 'String')){
+                if(factory === 'options'){
+                    return Nui.extend(true, module.options, options||{})
+                }
+                return module[factory]
+            }
+            return module
+        }
+    }
+
+    Module.setId = function(id, retname, uri){
         // xxx.js?v=1.1.1 => xxx
-        var name = id.replace(/(\.js)?(\?[\s\S]*)?$/g, '')
+        var name = id.replace(/(\.js)?(\?[\s\S]*)?$/g, '');
+        var urid;
         id = config.alias[name] || name;
         if(!/^(http|https|file):\/\//.test(id)){
-            id = dirname + id
+            urid = Module.replacePath(dirname + id);
+            id = (uri||dirname) + id;
         }
         id = Module.replacePath(id);
         if(retname){
-            return [id, name]
+            return [id, name, urid]
         }
         return id
     }
 
-    Module.require = function(id, factory){
-        if(id && Nui.type(id, 'String')){
-            var mod = Module.getModule(id);
-            if(mod){
-                var module = mod.module;
-                if(!factory){
-                    return module
-                }
-                if(Nui.type(factory, 'Function')){
-                    return factory(module)
-                }
-                else if(Nui.type(factory, 'Object')){
-                    return new module(factory)
-                }
-                else if(Nui.type(factory, 'String')){
-                    if(factory === 'options'){
-                        return Nui.extend(true, module.options, options||{})
-                    }
-                    return module[factory]
-                }
-                return module
-            }
-        }
-    }
-
-    Module.getModule = function(name, deps){
-        var arr = Module.setId(name, true);
+    Module.getModule = function(name, deps, uri){
+        var arr = Module.setId(name, true, uri);
         var id = arr[0];
         var name = arr[1];
+        var urid = arr[2];
         arr = null;
-        return cacheModules[name] || cacheModules[id] || (cacheModules[id] = new Module(name, id, deps))
+        return cacheModules[name] || cacheModules[id] || cacheModules[urid] || (cacheModules[id] = new Module(name, id, deps))
     }
 
     Module.load = function(id, callback, _module_){
@@ -518,7 +553,7 @@
                 var module;
                 Nui.each(modules, function(key, val){
                     var _mod = cacheModules[val].exec();
-                    if(id === _mod.name || mod.depmodules[0].id === _mod.id){
+                    if(id === _mod.name || (mod.depmodules[id] && mod.depmodules[id].id === _mod.id)){
                         module = _mod.module
                     }
                 })
@@ -533,21 +568,14 @@
 
     Module.getdeps = function(str){
         var deps = [];
-        var match = str.match(/Nui.require\(('|")[\w\.-]+\1\)/g);
+        var match = str.match(/require\(('|")[^'"]+\1\)/g);
         if(match){
             Nui.each(match, function(key, val){
-                deps.push(val.replace(/(Nui.require)|[\(\)'"]/g, ''))
+                deps.push(val.replace(/(require)|[\(\)'"]/g, ''))
             })
         }
         return deps
     }
-
-    Nui.load = function(id, callback){
-        Module.load(id, callback, getModuleid())
-        return Nui
-    }
-
-    Nui.require = Module.require;
 
     Module.define = function(id, deps, factory){
         //Nui.define(function(){})
@@ -570,7 +598,6 @@
         }
 
         var alldeps = deps.concat(Module.getdeps(factory.toString()))
-
         moduleData = {
             name:id,
             deps:deps,
@@ -595,6 +622,11 @@
                 }
             }
         }
+    }
+
+    Nui.load = function(id, callback){
+        Module.load(id, callback, getModuleid())
+        return Nui
     }
 
     Nui.define = function(){

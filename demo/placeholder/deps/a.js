@@ -1,7 +1,7 @@
-Nui.define(function(){
+Nui.define(['../page'], function(require, page){
     return ({
         init:function(){
-            alert()
+            page.init()
         }
     })
 })
