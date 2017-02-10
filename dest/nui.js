@@ -553,7 +553,7 @@
                 var module;
                 Nui.each(modules, function(key, val){
                     var _mod = cacheModules[val].exec();
-                    if(id === _mod.name || (mod.depmodules[id] && mod.depmodules[id].id === _mod.id)){
+                    if(!!_mod.module && (mod.id === _mod.id || (mod.depmodules[id] && mod.depmodules[id].id === _mod.id))){
                         module = _mod.module
                     }
                 })
