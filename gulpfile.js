@@ -5,7 +5,7 @@ var rename = require('gulp-rename');
 var nuirev = require('gulp-nui-rev');
 var path = require('path');
 var nuiconcat = require('gulp-nui-concat');
-gulp.task('concat', function(){
+/*gulp.task('concat', function(){
 	gulp.src(['./src/nui.js',
               './src/util.js',
               './src/template.js',
@@ -31,7 +31,7 @@ gulp.task('watch', function(){
 	gulp.watch(['./src/*.js'], ['concat']);
 });
 
-gulp.task('default', ['concat', 'watch']);
+gulp.task('default', ['concat', 'watch']);*/
 
 // gulp.task('nuirev', function(){
 // 	gulp.src(['./demo/**/*.html'])
@@ -45,13 +45,13 @@ gulp.task('default', ['concat', 'watch']);
 //
 // gulp.task('default', ['nuirev']);
 
-// gulp.task('nuiconcat', function(){
-//     gulp.src(['./demo/**/*.html'])
-// 		.pipe(nuiconcat({
-// 			alias:{
-// 				'common':__dirname+'/demo/common.js'
-// 			}
-// 		}))
-// });
-//
-// gulp.task('default', ['nuiconcat']);
+gulp.task('nuiconcat', function(){
+    gulp.src(['./demo/**/*.html'])
+		.pipe(nuiconcat({
+			alias:{
+				'common':__dirname+'/demo/common.js'
+			}
+		}))
+});
+
+gulp.task('default', ['nuiconcat']);
