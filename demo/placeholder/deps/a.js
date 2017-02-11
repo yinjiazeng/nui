@@ -1,4 +1,4 @@
-Nui.define(['../page'], function(require, page){
+Nui.define(['common'], function(require, page){
     return ({
         init:function(){
             page.init()

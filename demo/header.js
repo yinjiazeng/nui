@@ -5,7 +5,7 @@ Nui.define(['placeholder'], function(){
                 alert($(this).text())
             })
             $('.header :text').placeholder({
-                color:'#f60'
+                color:'#f60000'
             })
         }
     })

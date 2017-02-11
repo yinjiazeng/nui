@@ -229,7 +229,7 @@
                 if(config.base && !/^(http|https|file):\/\//.test(path)){
                     path = config.base + path
                 }
-                config.alias[key] = val.replace(new RegExp('{'+ k +'}', 'g'), path)
+                config.alias[key] = val.replace(new RegExp('{'+ k +'}', 'g'), path).replace(/(\.js)?(\?[\s\S]*)?$/g, '')
             })
         })
     }
@@ -260,7 +260,7 @@
         }
     }
 
-    var Module = function(name, id, deps){
+    var Module = function(name, id, suffix, deps){
         var mod = this;
         //define实参中依赖模块名
         mod.deps = deps||[];
@@ -274,6 +274,8 @@
         mod.id = id;
         //模块url参数
         mod.parameter = '';
+        //文件后缀 -debug和-min
+        mod.suffix = suffix;
         //所在目录
         mod.uri = mod.id.substr(0, mod.id.lastIndexOf('/')+1);
         moduleData = null
@@ -283,7 +285,7 @@
         var mod = this;
         if(!mod.loaded && !/_module_\d+$/.test(mod.id)){
             var node = document.createElement('script');
-            mod.url = mod.id+'.js'+mod.parameter;
+            mod.url = mod.id+mod.suffix+'.js'+mod.parameter;
             node.src = mod.url;
             node.id = mod.id;
             currentlyAddingScript = node;
@@ -329,7 +331,7 @@
                 modules = val.getModules(modules)
             })
         }
-        return Nui.unique(modules)
+        return modules
     }
 
     Module.prototype.onload = function(node, cb){
@@ -375,7 +377,7 @@
         var mod = this;
         var modules = [];
         Nui.each(roots, function(k, root){
-            modules = modules.concat(root.getModules())
+            modules = modules.concat(Nui.unique(root.getModules()))
         })
         modules = Nui.unique(modules)
         var module;
@@ -421,7 +423,7 @@
                     var name = mod.name;
                     var index = name.lastIndexOf('/');
                     name = name.substr(index+1);
-                    $.each(['$', '$fn', '$ready'], function(k, v){
+                    Nui.each(['$', '$fn', '$ready'], function(k, v){
                         if(Nui.type(module[v], 'Function')){
                             module[v](name, module)
                         }
@@ -431,6 +433,7 @@
             else{
                 mod.module = exports
             }
+            mod.module.exports = exports
         }
         return mod
     }
@@ -485,7 +488,6 @@
                 that._init()
             }
         }
-
         Nui.extend(true, Class, module, object.static);
         Nui.extend(true, Class.prototype, module.prototype, object.proto);
         Class.prototype.constructor = Class.prototype._self = Class;
@@ -517,6 +519,12 @@
     Module.setId = function(id, retname, uri){
         // xxx.js?v=1.1.1 => xxx
         var name = id.replace(/(\.js)?(\?[\s\S]*)?$/g, '');
+        var match = name.match(/(-debug|-min)$/g);
+        var suffix = '';
+        if(match){
+            name = name.replace(/(-debug|-min)$/g, '');
+            suffix = match[0]
+        }
         var urid;
         id = config.alias[name] || name;
         if(!/^(http|https|file):\/\//.test(id)){
@@ -525,7 +533,7 @@
         }
         id = Module.replacePath(id);
         if(retname){
-            return [id, name, urid]
+            return [id, name, urid, suffix]
         }
         return id
     }
@@ -535,8 +543,9 @@
         var id = arr[0];
         var name = arr[1];
         var urid = arr[2];
+        var suffix = arr[3];
         arr = null;
-        return cacheModules[name] || cacheModules[id] || cacheModules[urid] || (cacheModules[id] = new Module(name, id, deps))
+        return cacheModules[name] || cacheModules[id] || cacheModules[urid] || (cacheModules[id] = new Module(name, id, suffix, deps))
     }
 
     Module.load = function(id, callback, _module_){
@@ -549,7 +558,7 @@
             }
             roots.push(mod);
             mod.callback = function(){
-                var modules = mod.getModules();
+                var modules = Nui.unique(mod.getModules());
                 var module;
                 Nui.each(modules, function(key, val){
                     var _mod = cacheModules[val].exec();
@@ -598,12 +607,7 @@
         }
 
         var alldeps = deps.concat(Module.getdeps(factory.toString()))
-        moduleData = {
-            name:id,
-            deps:deps,
-            alldeps:alldeps,
-            factory:factory
-        }
+
         if(id && !cacheModules[id] && !cacheModules[Module.setId(id)]){
             var mod = Module.getModule(id, alldeps);
             mod.deps = deps;
@@ -611,7 +615,15 @@
             mod.loaded = true;
             mod.load()
         }
-        else if(typeof getCurrentScript !== 'undefined'){
+
+        moduleData = {
+            name:id,
+            deps:deps,
+            alldeps:alldeps,
+            factory:factory
+        }
+
+        if(typeof getCurrentScript !== 'undefined'){
             var script = getCurrentScript();
             if(script){
                 var mod = Module.getModule(script.id);
@@ -622,6 +634,10 @@
                 }
             }
         }
+    }
+
+    Nui.copy = function(module){
+        return Nui.extend({}, module.exports)
     }
 
     Nui.load = function(id, callback){

@@ -31,18 +31,16 @@
     Nui.config({
         base:'http://192.168.1.109/nui/',
         paths:{
-            common:'demo/'
+            common:'demo'
         },
         alias:{
-            common:'{common}/common'
+            'common':'{common}/common'
         }
     })
 
-    Nui.load('common?v=cdc3cdc', function(common){
-        common.init()
-    })
 
-    Nui.load("./page?v=f7eb3b2", function(page){
+    //开发环境
+    Nui.load("./page-debug.js?v=d41d8cd", function(page){
         page.init()
     })
 
