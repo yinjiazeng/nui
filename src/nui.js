@@ -16,6 +16,9 @@
         // Nui.type('nui', 'String') => true
         // Nui.type(['nui'], ['Object', 'Array']) => true
         type:function(obj, type){
+            if(obj === null || obj === undefined){
+                return false
+            }
             if(type === 'PlainObject'){
                 return isPlainObject(obj)
             }
@@ -142,7 +145,7 @@
 
     var isType = function(type){
         return function(obj){
-            return {}.toString.call(obj) == '[object ' + type + ']'
+            return {}.toString.call(obj) === '[object ' + type + ']'
         }
     }
 
@@ -401,7 +404,7 @@
                     modules.push(require(val))
                 }
             })
-            var exports = mod.factory.apply(Nui, modules)
+            var exports = mod.factory.apply(Nui, modules);
             if(Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
                 var obj = {
                     attr:{},
@@ -419,6 +422,7 @@
                     }
                 })
                 var module = mod.module = Module.createClass(mod, obj);
+                module._exports_ = exports;
                 if(mod.name !== 'component'){
                     var name = mod.name;
                     var index = name.lastIndexOf('/');
@@ -433,7 +437,6 @@
             else{
                 mod.module = exports
             }
-            mod.module.exports = exports
         }
         return mod
     }
@@ -497,9 +500,6 @@
     Module.require = function(mod, factory){
         if(mod){
             var module = mod.module;
-            if(!factory){
-                return module
-            }
             if(Nui.type(factory, 'Function')){
                 return factory(module)
             }
@@ -507,10 +507,17 @@
                 return new module(factory)
             }
             else if(Nui.type(factory, 'String')){
-                if(factory === 'options'){
+                /*if(factory === 'options'){
                     return Nui.extend(true, module.options, options||{})
-                }
+                }*/
                 return module[factory]
+            }
+            //因为对象和数组是引用的，使用时需拷贝
+            if(Nui.type(module, 'Object')){
+                return Nui.extend({}, module)
+            }
+            else if(Nui.type(module, 'Array')){
+                return Nui.extend([], module)
             }
             return module
         }
@@ -637,7 +644,10 @@
     }
 
     Nui.copy = function(module){
-        return Nui.extend({}, module.exports)
+        if(Nui.type(module, 'Function') && module._exports_){
+            return Nui.extend({}, module._exports_)
+        }
+        return module
     }
 
     Nui.load = function(id, callback){
@@ -651,14 +661,10 @@
         var params = [];
 
         //Nui.define()
-        //Nui.define('id')
-        if(!len || (len === 1 && Nui.type(args[0], 'String'))){
-            return
-        }
-
+        //Nui.define('')
         //Nui.define([])
         //Nui.define({})
-        if(len === 1 && !Nui.type(args[0], 'Function')){
+        if(!len || (len === 1 && !Nui.type(args[0], 'Function'))){
             params.push(function(){
                 return args[0]
             })

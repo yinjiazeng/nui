@@ -1,4 +1,7 @@
-Nui.define(['placeholder'], function(require, ph){
-    var placeholder = Nui.copy(ph)
-    return placeholder
+Nui.define(function(require){
+    return ({
+        init:function(){
+            alert('b')
+        }
+    })
 })

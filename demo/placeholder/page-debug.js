@@ -1,15 +1,17 @@
-Nui.define('./deps/b',['placeholder'], function(require, ph){
-    var placeholder = Nui.copy(ph)
-    return placeholder
-})
-
-Nui.define('./page',['./deps/b'], function(require){
+Nui.define('./deps/b',function(require){
     return ({
         init:function(){
+            alert('b')
+        }
+    })
+})
 
-            $('.content :text').b({
-                color:'#f00'
-            })
+Nui.define('./deps/a',[1,2,3])
+
+Nui.define('page',['./deps/a', './deps/b'], function(require, a, b){
+    return ({
+        init:function(){
+            alert(a[2]) 
         }
     })
 })

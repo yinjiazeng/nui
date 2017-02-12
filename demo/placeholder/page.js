@@ -1,10 +1,7 @@
-Nui.define(['./deps/b'], function(require){
+Nui.define(['./deps/a', './deps/b'], function(require, a, b){
     return ({
         init:function(){
-
-            $('.content :text').b({
-                color:'#f00'
-            })
+            alert(a[2]) 
         }
     })
 })

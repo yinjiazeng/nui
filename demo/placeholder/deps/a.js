@@ -1,7 +1,1 @@
-Nui.define(['common'], function(require, page){
-    return ({
-        init:function(){
-            page.init()
-        }
-    })
-})
+Nui.define([1,2,3])
