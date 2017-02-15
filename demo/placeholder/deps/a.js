@@ -1,1 +1,8 @@
-Nui.define([1,2,3])
+Nui.define({
+    init:function(){
+        alert(1)
+    },
+    extend:function(){
+        
+    }
+})

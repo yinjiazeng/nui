@@ -6,7 +6,7 @@
  * @description 输入框占位符
  */
 
-Nui.define('placeholder', ['component', 'util'], function(require, util){
+Nui.define('placeholder', ['component', 'util'], function(util){
     return ({
         static:{
             support:function(){

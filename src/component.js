@@ -6,7 +6,7 @@
  * @description 组件基类
  */
 
-Nui.define('component', ['template'], function(require, tpl){
+Nui.define('component', ['template'], function(tpl){
     Nui.win = $(window);
     Nui.doc = $(document);
 

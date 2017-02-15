@@ -73,12 +73,12 @@
         		i = 1,
         		length = arguments.length,
         		deep = false;
-        	if(Nui.type(target, 'Boolean')){
+        	if(typeof target === 'boolean'){
         		deep = target;
         		target = arguments[1] || {};
         		i = 2;
         	}
-        	if(!Nui.type(target, 'Object') && !Nui.type(target, 'Function')){
+        	if(typeof target !== 'object' && !Nui.type(target, 'Function')){
         		target = {};
         	}
         	if(length === i){
@@ -219,22 +219,8 @@
     var roots = [];
 
     var config = {
-        base:'',
         paths:{},
         alias:{}
-    }
-
-    //paths的完整路径是base+path
-    //将别名值中的{name}替换为paths中对应的值
-    var compileAlias = function(){
-        Nui.each(config.alias, function(key, val){
-            Nui.each(config.paths, function(k, path){
-                if(config.base && !/^(http|https|file):\/\//.test(path)){
-                    path = config.base + path
-                }
-                config.alias[key] = val.replace(new RegExp('{'+ k +'}', 'g'), path).replace(/(\.js)?(\?[\s\S]*)?$/g, '')
-            })
-        })
     }
 
     //讲道理说，文件在被加载完毕后会立即执行define方法，在onload(onreadystatechange IE9-)事件中得到moduleData，这个过程是同步的
@@ -395,16 +381,16 @@
     Module.prototype.exec = function(){
         var mod = this;
         if(!mod.module && Nui.type(mod.factory, 'Function')){
-            var require = function(id, factory){
+            mod.factory.require = function(id, factory){
                 return Module.require(mod.depmodules[id], factory)
             }
-            var modules = [require];
+            var modules = [];
             Nui.each(mod.deps, function(key, val){
                 if(val !== 'component'){
-                    modules.push(require(val))
+                    modules.push(mod.factory.require(val))
                 }
             })
-            var exports = mod.factory.apply(Nui, modules);
+            var exports = mod.factory.apply(mod.factory, modules);
             if(Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
                 var obj = {
                     attr:{},
@@ -422,11 +408,10 @@
                     }
                 })
                 var module = mod.module = Module.createClass(mod, obj);
-                module._exports_ = exports;
                 if(mod.name !== 'component'){
                     var name = mod.name;
                     var index = name.lastIndexOf('/');
-                    name = name.substr(index+1);
+                    name = name.substr(index+1).replace(/\{[^\{\}]+\}/g, '');
                     Nui.each(['$', '$fn', '$ready'], function(k, v){
                         if(Nui.type(module[v], 'Function')){
                             module[v](name, module)
@@ -435,7 +420,23 @@
                 }
             }
             else{
-                mod.module = exports
+                mod.module = exports;
+            }
+            return mod.extend(exports)
+        }
+        return mod
+    }
+
+    Module.prototype.extend = function(exports){
+        var mod = this;
+        if(mod.module !== null && mod.module !== undefined){
+            mod.module.extend = function(factory){
+                if(Nui.type(exports, 'Array')){
+                    return Nui.extend(true, [], exports, factory)
+                }
+                else{
+                    return Nui.extend(true, {}, exports, factory||{})
+                }
             }
         }
         return mod
@@ -487,7 +488,7 @@
                 that.options = Nui.extend(true, {}, that.options, Class.options, options||{})
                 that.optionsCache = Nui.extend({}, that.options);
                 Class.box[that.index] = that;
-
+                delete that.static;
                 that._init()
             }
         }
@@ -514,13 +515,24 @@
             }
             //因为对象和数组是引用的，使用时需拷贝
             if(Nui.type(module, 'Object')){
-                return Nui.extend({}, module)
+                return Nui.extend(true, {}, module)
             }
             else if(Nui.type(module, 'Array')){
-                return Nui.extend([], module)
+                return Nui.extend(true, [], module)
             }
             return module
         }
+    }
+
+    Module.setPath = function(id){
+        var pathMatch = /\{([^\{\}]+)\}/.exec(id);
+        if(pathMatch){
+            var path = config.paths[pathMatch[1]];
+            if(path){
+                id = id.replace(pathMatch[0], path).replace(/(\.js)?(\?[\s\S]*)?$/g, '');
+            }
+        }
+        return id
     }
 
     Module.setId = function(id, retname, uri){
@@ -533,7 +545,7 @@
             suffix = match[0]
         }
         var urid;
-        id = config.alias[name] || name;
+        id = Module.setPath(config.alias[name] || name);
         if(!/^(http|https|file):\/\//.test(id)){
             urid = Module.replacePath(dirname + id);
             id = (uri||dirname) + id;
@@ -643,13 +655,6 @@
         }
     }
 
-    Nui.copy = function(module){
-        if(Nui.type(module, 'Function') && module._exports_){
-            return Nui.extend({}, module._exports_)
-        }
-        return module
-    }
-
     Nui.load = function(id, callback){
         Module.load(id, callback, getModuleid())
         return Nui
@@ -704,9 +709,15 @@
             Nui.extend(true, config, key)
         }
         else if(Nui.type(key, 'String') && value){
-            config[key] = value
+            Nui.extend(true, config[key], value)
         }
-        compileAlias()
+        if(config.paths.base){
+            Nui.each(config.paths, function(k, v){
+                if(k !== 'base' && !/^(http|https|file):\/\//.test(v)){
+                    config.paths[k] = config.paths.base+'/' + v
+                }
+            })
+        }
     }
 
 })(this, document)

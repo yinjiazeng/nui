@@ -1,7 +1,5 @@
-Nui.define(function(require){
-    return ({
-        init:function(){
-            alert('b')
-        }
+Nui.define(['placeholder'], function(p){
+    return p.extend({
+        
     })
 })

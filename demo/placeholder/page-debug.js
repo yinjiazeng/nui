@@ -1,17 +1,12 @@
-Nui.define('./deps/b',function(require){
-    return ({
-        init:function(){
-            alert('b')
-        }
+Nui.define('./deps/b',['placeholder'], function(p){
+    return p.extend({
+        
     })
 })
 
-Nui.define('./deps/a',[1,2,3])
+Nui.define('{base}demo/placeholder/page',['placeholder', './deps/b'], function(a, b){
+    console.log(a)
+    return a.extend({
 
-Nui.define('page',['./deps/a', './deps/b'], function(require, a, b){
-    return ({
-        init:function(){
-            alert(a[2]) 
-        }
     })
 })

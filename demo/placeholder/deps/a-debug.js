@@ -1,1 +1,8 @@
-Nui.define('./a',[1,2,3])
+Nui.define('./a',{
+    init:function(){
+        alert(1)
+    },
+    extend:function(){
+        
+    }
+})

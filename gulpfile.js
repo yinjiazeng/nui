@@ -30,8 +30,12 @@ gulp.task('concat', function(){
 gulp.task('nuiconcat', function(){
     gulp.src(['./demo/**/*.html'])
 		.pipe(nuiconcat({
+			paths:{
+				base:__dirname+'/',
+				common:'demo/'
+			},
 			alias:{
-				'common':__dirname+'/demo/common.js'
+				'common':'{common}common.js'
 			},
             ignore:[
                 'placeholder'

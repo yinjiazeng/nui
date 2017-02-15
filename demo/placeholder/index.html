@@ -14,11 +14,11 @@
 
     <div class="header f-tac">
         <a href="javascript:void(0)">我是头部</a>
-        <input type="text" placeholder="请输入用户名" />
+        <input type="text" placeholder="请输入用户名" id="p1" />
     </div>
 
     <div class="content">
-        <input type="text" placeholder="请输入用户名" />
+        <input type="text" placeholder="请输入用户名" id="p2" />
     </div>
 
     <div class="footer f-tac">
@@ -29,19 +29,26 @@
     <script type="text/javascript" src="../../dest/nui.js"></script>
     <script type="text/javascript">
     Nui.config({
-        base:'http://192.168.1.109/nui/',
         paths:{
-            common:'demo'
+            base:'http://192.168.1.109/nui/',
+            common:'demo/'
         },
         alias:{
             'common':'{common}/common'
         }
     })
 
+    Nui.load("common?v=7535ef8", function(page){
+        console.log(page.extend())
+    })
+
 
     //开发环境
-    Nui.load("page.js?v=d41d8c1d", function(page){
-        page.init()
+    Nui.load("{base}demo/placeholder/page-debug?v=d41d8c1d", function(page){
+        new page({
+            target:':text',
+            color:'#f00'
+        })
     })
 
     </script>

@@ -6,7 +6,7 @@
  * @description layer扩展
  */
 
-Nui.define('layer.ext', ['layer'], function(require, Layer){
+Nui.define('layer.ext', ['layer'], function(Layer){
     $.layer.alert = function(){
         return new Layer({
 

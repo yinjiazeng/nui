@@ -24,7 +24,7 @@ Nui.define('./header',['placeholder'], function(){
 Nui.define('common',['./header', './footer'], function(require, header, footer){
     return ({
         init:function(){
-            header.init(1)
+            header.init(11)
             footer.init(1111)
         }
     })
