@@ -15,6 +15,14 @@ Nui.define('component', ['template'], function(tpl){
             index:0,
             box:{},
             options:{},
+            config:function(key, value){
+                if(Nui.type(key, 'Object')){
+                    Nui.extend(true, this.options, key)
+                }
+                else if(Nui.type(key, 'String')){
+                    this.options[key] = value
+                }
+            },
             $:function(name, module){
                 $[name] = function(options){
                     if(options && options.target){

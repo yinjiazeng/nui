@@ -328,7 +328,7 @@
         if(node){
             return (function(){
                 node.onload = node.onerror = node.onreadystatechange = null;
-                head.removeChild(node);
+                //head.removeChild(node);
                 node = null;
                 mod.loaded = true;
                 if(cb){
@@ -434,8 +434,11 @@
                 if(Nui.type(exports, 'Array')){
                     return Nui.extend(true, [], exports, factory)
                 }
+                else if(Nui.type(exports, 'Function')){
+                    return Nui.extend(true, noop, exports, factory)
+                }
                 else{
-                    return Nui.extend(true, {}, exports, factory||{})
+                    return Nui.extend(true, {}, exports, factory)
                 }
             }
         }
@@ -501,24 +504,18 @@
     Module.require = function(mod, factory){
         if(mod){
             var module = mod.module;
-            if(Nui.type(factory, 'Function')){
-                return factory(module)
-            }
-            else if(Nui.type(factory, 'Object')){
+            if(Nui.type(factory, 'Object')){
                 return new module(factory)
             }
             else if(Nui.type(factory, 'String')){
-                /*if(factory === 'options'){
-                    return Nui.extend(true, module.options, options||{})
-                }*/
                 return module[factory]
             }
             //因为对象和数组是引用的，使用时需拷贝
             if(Nui.type(module, 'Object')){
-                return Nui.extend(true, {}, module)
+                return Nui.extend({}, module)
             }
             else if(Nui.type(module, 'Array')){
-                return Nui.extend(true, [], module)
+                return Nui.extend([], module)
             }
             return module
         }
@@ -646,7 +643,7 @@
             var script = getCurrentScript();
             if(script){
                 var mod = Module.getModule(script.id);
-                if(mod){
+                if(mod && !mod.loaded){
                     mod.onload(script, function(){
                         return moduleData
                     })()
@@ -1140,6 +1137,14 @@ Nui.define('component', ['template'], function(tpl){
             index:0,
             box:{},
             options:{},
+            config:function(key, value){
+                if(Nui.type(key, 'Object')){
+                    Nui.extend(true, this.options, key)
+                }
+                else if(Nui.type(key, 'String')){
+                    this.options[key] = value
+                }
+            },
             $:function(name, module){
                 $[name] = function(options){
                     if(options && options.target){

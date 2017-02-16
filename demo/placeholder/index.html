@@ -30,7 +30,7 @@
     <script type="text/javascript">
     Nui.config({
         paths:{
-            base:'http://192.168.1.109/nui/',
+            base:'http://127.0.0.1/nui/',
             common:'demo/'
         },
         alias:{
@@ -39,15 +39,17 @@
     })
 
     Nui.load("common?v=7535ef8", function(page){
-        console.log(page.extend())
+
     })
 
 
     //开发环境
     Nui.load("{base}demo/placeholder/page-debug?v=d41d8c1d", function(page){
-        new page({
-            target:':text',
+        page.config({
             color:'#f00'
+        })
+        new page({
+            target:':text'
         })
     })
 
