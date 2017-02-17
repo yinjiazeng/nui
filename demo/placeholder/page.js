@@ -1,5 +1,7 @@
-Nui.define(['placeholder', './deps/b'], function(a, b){
-    return a.extend({
+Nui.define(['placeholder'], function(p){
+    var require = this.require;
+    var b = require('./b');
+    return this.exports('./b', {
 
     })
 })

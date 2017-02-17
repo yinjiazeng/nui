@@ -6,7 +6,7 @@
  * @description 模版引擎
  */
 
-Nui.define('template', function(){
+Nui.define('template', ['util'], function(util){
     var template = function(tplid, source){
         var ele = document.getElementById(tplid);
         if(ele && ele.nodeName==='SCRIPT'){
@@ -16,10 +16,17 @@ Nui.define('template', function(){
         return ''
     }
 
-    var methods = {}
+    var methods = {
+        'each':Nui.each,
+        'trim':Nui.trim,
+        'format':util.formatDate,
+        'seturl':util.setParam
+    }
 
-    var trim = function(str){
-        return str.replace(/(^\s*)|(\s*$)/g, '')
+    template.method = function(method, callback){
+        if(!methods[method]){
+            methods[method] = callback
+        }
     }
 
     template.config = {
@@ -27,29 +34,12 @@ Nui.define('template', function(){
         endTag:'}}'
     }
 
-    template.method = function(method, fn){
-        if(methods[method] && method === 'each'){
-            return
-        }
-        methods[method] = fn
-    }
-
-    template.method('each', function(data, fn){
-        for(i in data){
-            fn.call(data, data[i], i)
-        }
-    })
-
-    template.method('trim', function(str){
-        return trim(str)
-    })
-
     var render = function(tpl, source){
         var start = template.config.startTag, end = template.config.endTag, code = '';
-        methods.each(trim(tpl).split(start), function(val, key){
-            val = trim(val).split(end);
+        Nui.each(Nui.trim(tpl).split(start), function(val, key){
+            val = Nui.trim(val).split(end);
             if(key >= 1){
-                code += compile(trim(val[0]), true)
+                code += compile(Nui.trim(val[0]), true)
             }
             else{
                 val[1] = val[0];
@@ -105,7 +95,7 @@ Nui.define('template', function(){
 
     var match = function(string, filter){
         if(string.indexOf(filter) === 0 || (filter === '|' && string.indexOf(filter) > 0)){
-            return trim(string.replace(filter, ''))
+            return Nui.trim(string.replace(filter, ''))
         }
         return false
     }

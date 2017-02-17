@@ -24,7 +24,7 @@
             }
             if(isType('Array')(type)){
                 var ret = false;
-                Nui.each(type, function(k, v){
+                Nui.each(type, function(v){
                     if(isType(v)(obj)){
                         ret = true;
                         return false
@@ -39,14 +39,14 @@
             if(Nui.type(obj, 'Array')){
                 var len = obj.length;
                 for(i=0; i<len; i++){
-                    if(callback(i, obj[i]) === false){
+                    if(callback(obj[i], i) === false){
                         break;
                     }
                 }
             }
             else{
                 for(i in obj){
-                    if(callback(i, obj[i]) === false){
+                    if(callback(obj[i], i) === false){
                         break;
                     }
                 }
@@ -59,7 +59,7 @@
         unique:function(arr){
             var newarr = [];
             var temp = {};
-            Nui.each(arr, function(key, val){
+            Nui.each(arr, function(val){
                 if(!temp[val]){
                     temp[val] = true
                     newarr.push(val)
@@ -141,6 +141,11 @@
             }
             return ret
         })()
+    }
+
+    if(typeof jQuery !== 'undefined'){
+        Nui.win = jQuery(window);
+        Nui.doc = jQuery(document);
     }
 
     var isType = function(type){
@@ -238,8 +243,7 @@
             if(interactiveScript && interactiveScript.readyState === 'interactive'){
                 return interactiveScript
             }
-            interactiveScript = undefined;
-            Nui.each(head.getElementsByTagName('script'), function(key, script){
+            Nui.each(head.getElementsByTagName('script'), function(script){
                 if(script.readyState === 'interactive'){
                     interactiveScript = script
                     return false
@@ -267,7 +271,6 @@
         mod.suffix = suffix;
         //所在目录
         mod.uri = mod.id.substr(0, mod.id.lastIndexOf('/')+1);
-        moduleData = null
     }
 
     Module.prototype.load = function(){
@@ -300,7 +303,7 @@
     Module.prototype.resolve = function(){
         var mod = this;
         if(isEmptyObject(mod.depmodules)){
-            Nui.each(mod.alldeps, function(key, val){
+            Nui.each(mod.alldeps, function(val){
                 var module = Module.getModule(val, [], mod.uri);
                 module.parameter = mod.parameter;
                 mod.depmodules[val] = module.loaded ? module : module.load()
@@ -316,26 +319,24 @@
         }
         modules.unshift(mod.id);
         if(mod.alldeps.length){
-            Nui.each(mod.depmodules, function(key, val){
+            Nui.each(mod.depmodules, function(val){
                 modules = val.getModules(modules)
             })
         }
         return modules
     }
 
-    Module.prototype.onload = function(node, cb){
+    Module.prototype.onload = function(node){
         var mod = this;
         if(node){
             return (function(){
+                moduleData = node.moduleData || moduleData;
                 node.onload = node.onerror = node.onreadystatechange = null;
-                //head.removeChild(node);
+                head.removeChild(node);
                 node = null;
                 mod.loaded = true;
-                if(cb){
-                    moduleData = cb();
-                }
                 if(moduleData){
-                    Nui.each(moduleData, function(key, val){
+                    Nui.each(moduleData, function(val, key){
                         val && (mod[key] = val)
                     })
                     moduleData = null;
@@ -352,7 +353,7 @@
     Module.prototype.call = function(){
         var mod = this;
         if(mod.alload()){
-            Nui.each(roots, function(k, root){
+            Nui.each(roots, function(root){
                 if(root.callback){
                     root.callback()
                 }
@@ -365,7 +366,7 @@
     Module.prototype.alload = function(){
         var mod = this;
         var modules = [];
-        Nui.each(roots, function(k, root){
+        Nui.each(roots, function(root){
             modules = modules.concat(Nui.unique(root.getModules()))
         })
         modules = Nui.unique(modules)
@@ -378,25 +379,64 @@
         return true
     }
 
+    Module.prototype.setFactory = function(){
+        var mod = this;
+        var factory = mod.factory;
+
+        factory.require = function(id, options){
+            return Module.require(mod.depmodules[id], options)
+        }
+
+        factory.exports = function(module, options){
+            if(!module){
+                return
+            }
+
+            if(typeof module === 'string'){
+                var _mod = factory.require(module);
+                if(_mod === undefined){
+                    return module
+                }
+                module = _mod
+            }
+
+            if(Nui.type(module, 'Array')){
+                return Nui.extend(true, [], module, options)
+            }
+            else if(Nui.type(module, 'Function')){
+                if(module.exports){
+                    return Nui.extend(true, {}, module.exports, options)
+                }
+                return Nui.extend(true, noop, module, options)
+            }
+            else if(Nui.type(module, 'Object')){
+                return Nui.extend(true, {}, module, options)
+            }
+            else{
+                return module
+            }
+        }
+
+        return factory
+    }
+
     Module.prototype.exec = function(){
         var mod = this;
         if(!mod.module && Nui.type(mod.factory, 'Function')){
-            mod.factory.require = function(id, factory){
-                return Module.require(mod.depmodules[id], factory)
-            }
+            var factory = mod.setFactory();
             var modules = [];
-            Nui.each(mod.deps, function(key, val){
+            Nui.each(mod.deps, function(val){
                 if(val !== 'component'){
-                    modules.push(mod.factory.require(val))
+                    modules.push(factory.require(val))
                 }
             })
-            var exports = mod.factory.apply(mod.factory, modules);
+            var exports = factory.apply(factory, modules);
             if(Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
                 var obj = {
                     attr:{},
                     proto:{}
                 }
-                Nui.each(exports, function(key, val){
+                Nui.each(exports, function(val, key){
                     if(key === 'static'){
                         obj[key] = val
                     }
@@ -408,11 +448,12 @@
                     }
                 })
                 var module = mod.module = Module.createClass(mod, obj);
+                mod.module.exports = exports;
                 if(mod.name !== 'component'){
                     var name = mod.name;
                     var index = name.lastIndexOf('/');
                     name = name.substr(index+1).replace(/\{[^\{\}]+\}/g, '');
-                    Nui.each(['$', '$fn', '$ready'], function(k, v){
+                    Nui.each(['$', '$fn', '$ready'], function(v){
                         if(Nui.type(module[v], 'Function')){
                             module[v](name, module)
                         }
@@ -421,25 +462,6 @@
             }
             else{
                 mod.module = exports;
-            }
-            return mod.extend(exports)
-        }
-        return mod
-    }
-
-    Module.prototype.extend = function(exports){
-        var mod = this;
-        if(mod.module !== null && mod.module !== undefined){
-            mod.module.extend = function(factory){
-                if(Nui.type(exports, 'Array')){
-                    return Nui.extend(true, [], exports, factory)
-                }
-                else if(Nui.type(exports, 'Function')){
-                    return Nui.extend(true, noop, exports, factory)
-                }
-                else{
-                    return Nui.extend(true, {}, exports, factory)
-                }
             }
         }
         return mod
@@ -574,12 +596,14 @@
             }
             roots.push(mod);
             mod.callback = function(){
+                console.log(cacheModules)
                 var modules = Nui.unique(mod.getModules());
                 var module;
-                Nui.each(modules, function(key, val){
+                Nui.each(modules, function(val){
                     var _mod = cacheModules[val].exec();
                     if(!!_mod.module && (mod.id === _mod.id || (mod.depmodules[id] && mod.depmodules[id].id === _mod.id))){
                         module = _mod.module
+
                     }
                 })
                 if(Nui.type(callback, 'Function')){
@@ -593,10 +617,10 @@
 
     Module.getdeps = function(str){
         var deps = [];
-        var match = str.match(/require\(('|")[^'"]+\1\)/g);
+        var match = str.match(/(require|exports)\(('|")[^'"]+\2/g);
         if(match){
-            Nui.each(match, function(key, val){
-                deps.push(val.replace(/(require)|[\(\)'"]/g, ''))
+            Nui.each(match, function(val){
+                deps.push(val.replace(/^(require|exports)|[\('"]/g, ''))
             })
         }
         return deps
@@ -622,7 +646,7 @@
             }
         }
 
-        var alldeps = deps.concat(Module.getdeps(factory.toString()))
+        var alldeps = Nui.unique(deps.concat(Module.getdeps(factory.toString())))
 
         if(id && !cacheModules[id] && !cacheModules[Module.setId(id)]){
             var mod = Module.getModule(id, alldeps);
@@ -642,12 +666,7 @@
         if(typeof getCurrentScript !== 'undefined'){
             var script = getCurrentScript();
             if(script){
-                var mod = Module.getModule(script.id);
-                if(mod && !mod.loaded){
-                    mod.onload(script, function(){
-                        return moduleData
-                    })()
-                }
+                script.moduleData = moduleData
             }
         }
     }
@@ -709,7 +728,7 @@
             Nui.extend(true, config[key], value)
         }
         if(config.paths.base){
-            Nui.each(config.paths, function(k, v){
+            Nui.each(config.paths, function(v, k){
                 if(k !== 'base' && !/^(http|https|file):\/\//.test(v)){
                     config.paths[k] = config.paths.base+'/' + v
                 }

@@ -7,9 +7,7 @@
  */
 
 Nui.define('component', ['template'], function(tpl){
-    Nui.win = $(window);
-    Nui.doc = $(document);
-
+    
     return ({
         static:{
             index:0,

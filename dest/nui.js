@@ -24,7 +24,7 @@
             }
             if(isType('Array')(type)){
                 var ret = false;
-                Nui.each(type, function(k, v){
+                Nui.each(type, function(v){
                     if(isType(v)(obj)){
                         ret = true;
                         return false
@@ -39,14 +39,14 @@
             if(Nui.type(obj, 'Array')){
                 var len = obj.length;
                 for(i=0; i<len; i++){
-                    if(callback(i, obj[i]) === false){
+                    if(callback(obj[i], i) === false){
                         break;
                     }
                 }
             }
             else{
                 for(i in obj){
-                    if(callback(i, obj[i]) === false){
+                    if(callback(obj[i], i) === false){
                         break;
                     }
                 }
@@ -59,7 +59,7 @@
         unique:function(arr){
             var newarr = [];
             var temp = {};
-            Nui.each(arr, function(key, val){
+            Nui.each(arr, function(val){
                 if(!temp[val]){
                     temp[val] = true
                     newarr.push(val)
@@ -141,6 +141,11 @@
             }
             return ret
         })()
+    }
+
+    if(typeof jQuery !== 'undefined'){
+        Nui.win = jQuery(window);
+        Nui.doc = jQuery(document);
     }
 
     var isType = function(type){
@@ -238,8 +243,7 @@
             if(interactiveScript && interactiveScript.readyState === 'interactive'){
                 return interactiveScript
             }
-            interactiveScript = undefined;
-            Nui.each(head.getElementsByTagName('script'), function(key, script){
+            Nui.each(head.getElementsByTagName('script'), function(script){
                 if(script.readyState === 'interactive'){
                     interactiveScript = script
                     return false
@@ -267,7 +271,6 @@
         mod.suffix = suffix;
         //所在目录
         mod.uri = mod.id.substr(0, mod.id.lastIndexOf('/')+1);
-        moduleData = null
     }
 
     Module.prototype.load = function(){
@@ -300,7 +303,7 @@
     Module.prototype.resolve = function(){
         var mod = this;
         if(isEmptyObject(mod.depmodules)){
-            Nui.each(mod.alldeps, function(key, val){
+            Nui.each(mod.alldeps, function(val){
                 var module = Module.getModule(val, [], mod.uri);
                 module.parameter = mod.parameter;
                 mod.depmodules[val] = module.loaded ? module : module.load()
@@ -316,26 +319,24 @@
         }
         modules.unshift(mod.id);
         if(mod.alldeps.length){
-            Nui.each(mod.depmodules, function(key, val){
+            Nui.each(mod.depmodules, function(val){
                 modules = val.getModules(modules)
             })
         }
         return modules
     }
 
-    Module.prototype.onload = function(node, cb){
+    Module.prototype.onload = function(node){
         var mod = this;
         if(node){
             return (function(){
+                moduleData = node.moduleData || moduleData;
                 node.onload = node.onerror = node.onreadystatechange = null;
-                //head.removeChild(node);
+                head.removeChild(node);
                 node = null;
                 mod.loaded = true;
-                if(cb){
-                    moduleData = cb();
-                }
                 if(moduleData){
-                    Nui.each(moduleData, function(key, val){
+                    Nui.each(moduleData, function(val, key){
                         val && (mod[key] = val)
                     })
                     moduleData = null;
@@ -352,7 +353,7 @@
     Module.prototype.call = function(){
         var mod = this;
         if(mod.alload()){
-            Nui.each(roots, function(k, root){
+            Nui.each(roots, function(root){
                 if(root.callback){
                     root.callback()
                 }
@@ -365,7 +366,7 @@
     Module.prototype.alload = function(){
         var mod = this;
         var modules = [];
-        Nui.each(roots, function(k, root){
+        Nui.each(roots, function(root){
             modules = modules.concat(Nui.unique(root.getModules()))
         })
         modules = Nui.unique(modules)
@@ -378,25 +379,64 @@
         return true
     }
 
+    Module.prototype.setFactory = function(){
+        var mod = this;
+        var factory = mod.factory;
+
+        factory.require = function(id, options){
+            return Module.require(mod.depmodules[id], options)
+        }
+
+        factory.exports = function(module, options){
+            if(!module){
+                return
+            }
+
+            if(typeof module === 'string'){
+                var _mod = factory.require(module);
+                if(_mod === undefined){
+                    return module
+                }
+                module = _mod
+            }
+
+            if(Nui.type(module, 'Array')){
+                return Nui.extend(true, [], module, options)
+            }
+            else if(Nui.type(module, 'Function')){
+                if(module.exports){
+                    return Nui.extend(true, {}, module.exports, options)
+                }
+                return Nui.extend(true, noop, module, options)
+            }
+            else if(Nui.type(module, 'Object')){
+                return Nui.extend(true, {}, module, options)
+            }
+            else{
+                return module
+            }
+        }
+
+        return factory
+    }
+
     Module.prototype.exec = function(){
         var mod = this;
         if(!mod.module && Nui.type(mod.factory, 'Function')){
-            mod.factory.require = function(id, factory){
-                return Module.require(mod.depmodules[id], factory)
-            }
+            var factory = mod.setFactory();
             var modules = [];
-            Nui.each(mod.deps, function(key, val){
+            Nui.each(mod.deps, function(val){
                 if(val !== 'component'){
-                    modules.push(mod.factory.require(val))
+                    modules.push(factory.require(val))
                 }
             })
-            var exports = mod.factory.apply(mod.factory, modules);
+            var exports = factory.apply(factory, modules);
             if(Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
                 var obj = {
                     attr:{},
                     proto:{}
                 }
-                Nui.each(exports, function(key, val){
+                Nui.each(exports, function(val, key){
                     if(key === 'static'){
                         obj[key] = val
                     }
@@ -408,11 +448,12 @@
                     }
                 })
                 var module = mod.module = Module.createClass(mod, obj);
+                mod.module.exports = exports;
                 if(mod.name !== 'component'){
                     var name = mod.name;
                     var index = name.lastIndexOf('/');
                     name = name.substr(index+1).replace(/\{[^\{\}]+\}/g, '');
-                    Nui.each(['$', '$fn', '$ready'], function(k, v){
+                    Nui.each(['$', '$fn', '$ready'], function(v){
                         if(Nui.type(module[v], 'Function')){
                             module[v](name, module)
                         }
@@ -421,25 +462,6 @@
             }
             else{
                 mod.module = exports;
-            }
-            return mod.extend(exports)
-        }
-        return mod
-    }
-
-    Module.prototype.extend = function(exports){
-        var mod = this;
-        if(mod.module !== null && mod.module !== undefined){
-            mod.module.extend = function(factory){
-                if(Nui.type(exports, 'Array')){
-                    return Nui.extend(true, [], exports, factory)
-                }
-                else if(Nui.type(exports, 'Function')){
-                    return Nui.extend(true, noop, exports, factory)
-                }
-                else{
-                    return Nui.extend(true, {}, exports, factory)
-                }
             }
         }
         return mod
@@ -574,12 +596,14 @@
             }
             roots.push(mod);
             mod.callback = function(){
+                console.log(cacheModules)
                 var modules = Nui.unique(mod.getModules());
                 var module;
-                Nui.each(modules, function(key, val){
+                Nui.each(modules, function(val){
                     var _mod = cacheModules[val].exec();
                     if(!!_mod.module && (mod.id === _mod.id || (mod.depmodules[id] && mod.depmodules[id].id === _mod.id))){
                         module = _mod.module
+
                     }
                 })
                 if(Nui.type(callback, 'Function')){
@@ -593,10 +617,10 @@
 
     Module.getdeps = function(str){
         var deps = [];
-        var match = str.match(/require\(('|")[^'"]+\1\)/g);
+        var match = str.match(/(require|exports)\(('|")[^'"]+\2/g);
         if(match){
-            Nui.each(match, function(key, val){
-                deps.push(val.replace(/(require)|[\(\)'"]/g, ''))
+            Nui.each(match, function(val){
+                deps.push(val.replace(/^(require|exports)|[\('"]/g, ''))
             })
         }
         return deps
@@ -622,7 +646,7 @@
             }
         }
 
-        var alldeps = deps.concat(Module.getdeps(factory.toString()))
+        var alldeps = Nui.unique(deps.concat(Module.getdeps(factory.toString())))
 
         if(id && !cacheModules[id] && !cacheModules[Module.setId(id)]){
             var mod = Module.getModule(id, alldeps);
@@ -642,12 +666,7 @@
         if(typeof getCurrentScript !== 'undefined'){
             var script = getCurrentScript();
             if(script){
-                var mod = Module.getModule(script.id);
-                if(mod && !mod.loaded){
-                    mod.onload(script, function(){
-                        return moduleData
-                    })()
-                }
+                script.moduleData = moduleData
             }
         }
     }
@@ -709,7 +728,7 @@
             Nui.extend(true, config[key], value)
         }
         if(config.paths.base){
-            Nui.each(config.paths, function(k, v){
+            Nui.each(config.paths, function(v, k){
                 if(k !== 'base' && !/^(http|https|file):\/\//.test(v)){
                     config.paths[k] = config.paths.base+'/' + v
                 }
@@ -991,7 +1010,7 @@ Nui.define('util', {
  * @description 模版引擎
  */
 
-Nui.define('template', function(){
+Nui.define('template', ['util'], function(util){
     var template = function(tplid, source){
         var ele = document.getElementById(tplid);
         if(ele && ele.nodeName==='SCRIPT'){
@@ -1001,10 +1020,17 @@ Nui.define('template', function(){
         return ''
     }
 
-    var methods = {}
+    var methods = {
+        'each':Nui.each,
+        'trim':Nui.trim,
+        'format':util.formatDate,
+        'seturl':util.setParam
+    }
 
-    var trim = function(str){
-        return str.replace(/(^\s*)|(\s*$)/g, '')
+    template.method = function(method, callback){
+        if(!methods[method]){
+            methods[method] = callback
+        }
     }
 
     template.config = {
@@ -1012,29 +1038,12 @@ Nui.define('template', function(){
         endTag:'}}'
     }
 
-    template.method = function(method, fn){
-        if(methods[method] && method === 'each'){
-            return
-        }
-        methods[method] = fn
-    }
-
-    template.method('each', function(data, fn){
-        for(i in data){
-            fn.call(data, data[i], i)
-        }
-    })
-
-    template.method('trim', function(str){
-        return trim(str)
-    })
-
     var render = function(tpl, source){
         var start = template.config.startTag, end = template.config.endTag, code = '';
-        methods.each(trim(tpl).split(start), function(val, key){
-            val = trim(val).split(end);
+        Nui.each(Nui.trim(tpl).split(start), function(val, key){
+            val = Nui.trim(val).split(end);
             if(key >= 1){
-                code += compile(trim(val[0]), true)
+                code += compile(Nui.trim(val[0]), true)
             }
             else{
                 val[1] = val[0];
@@ -1090,7 +1099,7 @@ Nui.define('template', function(){
 
     var match = function(string, filter){
         if(string.indexOf(filter) === 0 || (filter === '|' && string.indexOf(filter) > 0)){
-            return trim(string.replace(filter, ''))
+            return Nui.trim(string.replace(filter, ''))
         }
         return false
     }
@@ -1098,26 +1107,6 @@ Nui.define('template', function(){
     template.render = render;
 
     return template
-})
-
-/**
- * @filename tpl.ext.js
- * @author Aniu[2016-11-11 16:54]
- * @update Aniu[2016-11-11 16:54]
- * @version 1.0.1
- * @description 模版引擎扩展
- */
-
-Nui.define('template.ext', ['util', 'template'], function(util, tpl){
-    //格式化日期
-    tpl.method('format', function(timestamp, format){
-        return util.formatDate(timestamp, format)
-    })
-    //设置url参数
-    tpl.method('seturl', function(name, value, url){
-        return util.setParam(name, value, url)
-    })
-    return tpl
 })
 
 /**
@@ -1129,9 +1118,7 @@ Nui.define('template.ext', ['util', 'template'], function(util, tpl){
  */
 
 Nui.define('component', ['template'], function(tpl){
-    Nui.win = $(window);
-    Nui.doc = $(document);
-
+    
     return ({
         static:{
             index:0,
@@ -1286,389 +1273,4 @@ Nui.define('component', ['template'], function(tpl){
             that._delete();
         }
     })
-})
-
-/**
- * @filename placeholder.js
- * @author Aniu[2016-11-10 22:39]
- * @update Aniu[2016-11-10 22:39]
- * @version 1.0.1
- * @description 输入框占位符
- */
-
-Nui.define('placeholder', ['component', 'util'], function(util){
-    return ({
-        static:{
-            support:function(){
-                return util.supportHtml5('placeholder', 'input')
-            }
-        },
-        options:{
-            /**
-             * @func 是否启用动画显示展示
-             * @type <Boolean>
-             */
-            animate:false,
-            /**
-             * @func 输入框值是否可以和占位符相同
-             * @type <Boolean>
-             */
-            equal:false,
-            /**
-             * @func 占位符文本颜色
-             * @type <String>
-             */
-            color:'#ccc'
-        },
-        tpl:{
-            wrap:'<strong \
-                    class="nui-placeholder{{if theme}} t-placeholder-{{theme}}{{/if}}" style="\
-                    {{each style val key}}\
-                        {{key}}:{{val}};\
-                    {{/each}}\
-                    " />',
-            elem:'<b style="\
-                    {{each style val key}}\
-                        {{key}}:{{val}};\
-                    {{/each}}\
-                    ">{{text}}</b>'
-        },
-        _init:function(){
-            var that = this;
-            that.target = that._getTarget();
-            that.text = $.trim(that.target.attr('placeholder'));
-            return that._create()
-        },
-        _create:function(){
-            var that = this, opts = that.options;
-            if(opts.animate){
-                that.target.removeAttr('placeholder')
-            }
-            if(opts.animate || (!opts.animate && !that._self.support())){
-                that.target.wrap(that._tpl2html(that.tpl.wrap, {
-                        theme:opts.theme,
-                        style:{
-                            'position':'relative',
-                            'display':'inline-block',
-                            'width':that.target.outerWidth()+'px',
-                            'overflow':'hidden',
-                            'cursor':'text'
-                        }
-                    }))
-                that.elem = $(that._tpl2html(that.tpl.elem, {
-                        text:that.text,
-                        style:(function(){
-                            var height = that.target.outerHeight();
-                            var isText = that.target.is('textarea');
-                            return ({
-                                'position':'absolute',
-                                'left':util.getSize(that.target, 'l', 'padding')+util.getSize(that.target, 'l')+'px',
-                                'top':util.getSize(that.target, 't', 'padding')+util.getSize(that.target, 't')+'px',
-                                'height':isText ? 'auto' : height+'px',
-                                'line-height':isText ? 'normal' : height+'px',
-                                'color':opts.color
-                            })
-                        })()
-                    })).insertAfter(that.target)
-
-                that._event()
-            }
-            else{
-                that._setStyle()
-            }
-            return that
-        },
-        _setStyle:function(){
-            var that = this, opts = that.options;
-            that.className = 'nui-placeholder-'+that.index;
-            that.target.addClass(that.className);
-            if(!that._self.style){
-                that._createStyle()
-            }
-            that._createRules()
-        },
-        _createStyle:function(){
-            var that = this;
-            var style = document.createElement('style');
-            document.head.appendChild(style);
-            that._self.style = style.sheet
-        },
-        _createRules:function(){
-            var that = this;
-            var sheet = that._self.style;
-            var index = that.index;
-            try{
-                sheet.deleteRule(index)
-            }
-            catch(e){}
-            $.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(k, v){
-                var selector = '.'+that.className+v;
-                var rules = 'opacity:1; color:'+(that.options.color||'');
-                try{
-                    if('addRule' in sheet){
-                        sheet.addRule(selector, rules, index)
-                    }
-                    else if('insertRule' in sheet){
-                        sheet.insertRule(selector + '{' + rules + '}', index)
-                    }
-                }
-                catch(e){}
-            })
-        },
-        _event:function(){
-            var that = this, opts = that.options;
-            var pleft = util.getSize(that.target, 'l', 'padding') + util.getSize(that.target, 'l');
-            that._on('click', that.elem, function(){
-                that.target.focus()
-            })
-
-            that._on('focus', that.target, function(){
-                opts.animate && that.elem.stop(true, false).animate({left:pleft+10, opacity:'0.5'});
-            })
-
-            that._on('blur change', that.target, function(){
-                var val = $.trim(that.target.val());
-                if((!opts.equal && val == that.text) || !val){
-                    that.target.val('');
-                    that.elem.show();
-                    opts.animate && that.elem.stop(true, false).animate({left:pleft, opacity:'1'})
-                }
-                else{
-                    that.elem.hide()
-                }
-            })
-
-            that._on('keyup keydown', that.target, function(){
-                $.trim(that.target.val()) ? that.elem.hide() : that.elem.show()
-            })
-
-            that.target.blur()
-        },
-        _reset:function(){
-            var that = this;
-            if(that.elem){
-                that.elem.remove();
-                that.target.unwrap();
-                that.target.attr('placeholder', that.text)
-            }
-        }
-    })
-})
-
-/**
- * @filename layer.js
- * @author Aniu[2016-11-10 22:39]
- * @update Aniu[2016-11-10 22:39]
- * @version 1.0.1
- * @description layer弹出层
- */
-
- Nui.define('layer', {
-     static:{
-         zIndex:10000,
-         mask:null
-     },
-     options:{
-         //宽度, 整数
-         width:0,
-         //高度，整数或者auto
-         height:'auto',
-         //最大高度，height设置为auto时可以使用
-         maxHeight:0,
-         //内容，字符串或者jQuery对象
-         content:'',
-         //1.自定义皮肤主题；2.layer标识，隐藏特定的layer：layerHide(theme);
-         theme:'',
-         //最大尺寸距离窗口边界边距
-         padding:50,
-         //弹出层容器，默认为body
-         container:'body',
-         //定时关闭时间，单位/毫秒
-         timer:0,
-         //是否淡入方式显示
-         isFadein:true,
-         //是否开启弹出层动画
-         isAnimate:true,
-         //是否可以移动
-         isMove:true,
-         //是否有遮罩层
-         isMask:true,
-         //点击遮罩层是否关闭弹出层
-         isClickMask:false,
-         //是否有移动遮罩层
-         isMoveMask:false,
-         //是否能被laierHide()方法关闭，不传参数
-         isClose:true,
-         //是否居中
-         isCenter:false,
-         //是否自适应最大尺寸显示
-         isMaxSize:false,
-         //是否是ui提示层
-         isTips:false,
-         //点击layer是否置顶
-         isSticky:false,
-         //是否固定弹出层
-         isFixed:false,
-         //是否显示滚动条
-         scrollbar:true,
-         //标题
-         title:{
-             enable:true,
-             text:''
-         },
-         //载入浮动框架
-         iframe:{
-             enable:false,
-             cache:false,
-             //跨域无法自适应高度
-             src:''
-         },
-         //显示位置
-         offset:{
-             //是否基于前一个层进行偏移
-             isBasedPrev:false,
-             top:null,
-             left:null
-         },
-         //小箭头，方向：top right bottom left
-         arrow:{
-             enable:false,
-             dir:'top'
-         },
-         close:{
-             enable:true,
-             text:'×',
-             /**
-              * @func 弹出层关闭前执行函数，
-              * @param main:$('.ui-layer-main')
-              * @param index:弹出层索引
-              * @param event 事件对象
-              */
-             callback:null
-         },
-         //确认按钮，回调函数return true才会关闭弹层
-         confirm:{
-             enable:false,
-             text:'确定',
-             /**
-              * @func 回调函数
-              * @param main:$('.ui-layer-main')
-              * @param index:弹出层索引
-              * @param button:当前触发按钮
-              * @param event:事件对象
-              */
-             callback:null
-         },
-         //取消按钮
-         cancel:{
-             enable:false,
-             text:'取消',
-             /**
-              * @func 回调函数
-              * @param main:$('.ui-layer-main')
-              * @param index:弹出层索引
-              * @param event 事件对象
-              */
-             callback:null
-         },
-         //按钮配置，会覆盖confirm和cancel
-         button:null,
-         /**
-          * @func 弹出层显示时执行
-          * @param main:$('.ui-layer-main')
-          * @param index:弹出层索引
-          */
-         onShow:null,
-         /**
-          * @func 弹出层关闭时执行
-          * @param main:$('.ui-layer-main')
-          * @param index:弹出层索引
-          */
-         onHide:null,
-         /**
-          * @func 弹出层大小、位置改变后执行函数
-          * @param main:$('.ui-layer-main')
-          * @param index:弹出层索引
-          */
-         onResize:null,
-         /**
-          * @func window窗口改变大小时执行函数
-          * @param layer:$('.ui-layer')
-          * @param width:窗口宽度
-          * @param height:窗口高度
-          * @param event 事件对象
-          */
-         onWinRisize:null,
-         /**
-          * @func window窗口滚动时执行函数
-          * @param layer:$('.ui-layer')
-          * @param scrollTop:窗口滚动高度
-          * @param event 事件对象
-          */
-         onWinScroll:null,
-         /**
-          * @func 遮罩层点击回调函数
-          * @param layer:$('.ui-layer')
-          * @param mask 遮罩层选择器
-          * @param event 事件对象
-          */
-         onMaskClick:null
-     },
-     size:{
-         width:0,
-         height:0
-     },
-     offset:{
-         top:0,
-         left:0
-     },
-     width:410,
-     height:220,
-     title:'温馨提示',
-     _init:function(){
-         var that = this, options = that.options;
-         that.wrap = Nui.window;
-         if(typeof options.container === 'string'){
-             options.container = $(options.container||'body')
-         }
-         if(options.container.get(0) === undefined){
-             options.container = $('body')
-         }
-         if(options.container.get(0).tagName !== 'BODY'){
-             options.isFixed = false;
-             that.wrap = options.container.css({position:'relative'})
-         }
-         that.createHtml().show().bindClick();
-         if(options.isMove === true && options.title.enable === true){
-             that._move()
-         }
-         if(typeof options.onWinRisize === 'function'){
-             that.on(Nui.window, 'resize', function(e){
-                 options.onWinRisize(that.layer, that.wrap.width(), that.wrap.height(), e)
-             })
-         }
-         if(typeof options.onWinScroll === 'function'){
-             that.on(Nui.window, 'scroll', function(){
-                 options.onWinScroll(that.layer, Nui.window.scrollTop(), e)
-             })
-         }
-         return that
-     }
- })
-
-/**
- * @filename layer.ext.js
- * @author Aniu[2016-11-10 22:39]
- * @update Aniu[2016-11-10 22:39]
- * @version 1.0.1
- * @description layer扩展
- */
-
-Nui.define('layer.ext', ['layer'], function(Layer){
-    $.layer.alert = function(){
-        return new Layer({
-
-        })
-    }
-    return $.layer
 })

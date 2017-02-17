@@ -26,31 +26,33 @@
     </div>
 
     <script type="text/javascript" src="../../assets/script/jquery.js"></script>
-    <script type="text/javascript" src="../../dest/nui.js"></script>
+    <script type="text/javascript" src="../../dest/nui-min.js"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{
-            base:'http://127.0.0.1/nui/',
-            common:'demo/'
+            base:'http://192.168.1.109/nui/',
+            cpns:'/src/components'
         },
         alias:{
-            'common':'{common}/common'
+            'placeholder':'{cpns}/placeholder',
+            'layer':'{cpns}/layer',
+            'layer.ext':'{cpns}/layer.ext'
         }
     })
 
-    Nui.load("common?v=7535ef8", function(page){
-
-    })
-
-
     //开发环境
-    Nui.load("{base}demo/placeholder/page-debug?v=d41d8c1d", function(page){
-        page.config({
+    Nui.load('{base}demo/placeholder/page?v=3e0c74f', function(page){
+console.log(page)
+        /*new page({
+            target:':text',
             color:'#f00'
-        })
-        new page({
-            target:':text'
-        })
+        })*/
+
+        /*$(':text').page({
+            target:':text',
+            color:'#f00'
+        })*/
+        //console.log(page)
     })
 
     </script>
