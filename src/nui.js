@@ -69,47 +69,47 @@
         },
         extend:function(){
             var src, copyIsArray, copy, name, options, clone,
-        		target = arguments[0] || {},
-        		i = 1,
-        		length = arguments.length,
-        		deep = false;
-        	if(typeof target === 'boolean'){
-        		deep = target;
-        		target = arguments[1] || {};
-        		i = 2;
-        	}
-        	if(typeof target !== 'object' && !Nui.type(target, 'Function')){
-        		target = {};
-        	}
-        	if(length === i){
-        		target = this;
-        		--i;
-        	}
-        	for( ; i < length; i++){
-        		if((options = arguments[i]) != null){
-        			for(name in options){
-        				src = target[name];
-        				copy = options[name];
-        				if(target === copy){
-        					continue;
-        				}
-        				if(deep && copy && (Nui.type(copy, 'PlainObject') || (copyIsArray = Nui.type(copy, 'Array')))){
-        					if(copyIsArray){
-        						copyIsArray = false;
-        						clone = src && Nui.type(src, 'Array') ? src : [];
-        					}
+                target = arguments[0] || {},
+                i = 1,
+                length = arguments.length,
+                deep = false;
+            if(typeof target === 'boolean'){
+                deep = target;
+                target = arguments[1] || {};
+                i = 2;
+            }
+            if(typeof target !== 'object' && !Nui.type(target, 'Function')){
+                target = {};
+            }
+            if(length === i){
+                target = this;
+                --i;
+            }
+            for( ; i < length; i++){
+                if((options = arguments[i]) != null){
+                    for(name in options){
+                        src = target[name];
+                        copy = options[name];
+                        if(target === copy){
+                            continue;
+                        }
+                        if(deep && copy && (Nui.type(copy, 'PlainObject') || (copyIsArray = Nui.type(copy, 'Array')))){
+                            if(copyIsArray){
+                                copyIsArray = false;
+                                clone = src && Nui.type(src, 'Array') ? src : [];
+                            }
                             else{
-        						clone = src && Nui.type(src, 'PlainObject') ? src : {};
-        					}
-        					target[name] = Nui.extend(deep, clone, copy);
-        				}
+                                clone = src && Nui.type(src, 'PlainObject') ? src : {};
+                            }
+                            target[name] = Nui.extend(deep, clone, copy);
+                        }
                         else if(copy !== undefined){
-        					target[name] = copy;
-        				}
-        			}
-        		}
-        	}
-        	return target;
+                            target[name] = copy;
+                        }
+                    }
+                }
+            }
+            return target;
         },
         //jquery1.9之后就移除了该方法，以插件形式存在
         browser:(function(){
@@ -158,28 +158,28 @@
 
     var isPlainObject = function(obj){
         if(!obj || !Nui.type(obj, 'Object') || obj.nodeType || obj == obj.window){
-			return false;
-		}
-		try{
-			if(obj.constructor && !core_hasOwn.call(obj, 'constructor') && !core_hasOwn.call(obj.constructor.prototype, 'isPrototypeOf')){
-				return false;
-			}
-		}
+            return false;
+        }
+        try{
+            if(obj.constructor && !core_hasOwn.call(obj, 'constructor') && !core_hasOwn.call(obj.constructor.prototype, 'isPrototypeOf')){
+                return false;
+            }
+        }
         catch(e){
-			return false;
-		}
-		var key;
-		for(key in obj){}
-		return key === undefined || core_hasOwn.call(obj, key);
+            return false;
+        }
+        var key;
+        for(key in obj){}
+        return key === undefined || core_hasOwn.call(obj, key);
     }
 
     var isEmptyObject = function(obj){
-		var name;
-		for(name in obj){
-			return false;
-		}
-		return true;
-	}
+        var name;
+        for(name in obj){
+            return false;
+        }
+        return true;
+    }
 
     var noop = function(){}
 
