@@ -221,6 +221,8 @@
 
     var cacheModules = {};
 
+    var cacheStyles = {};
+
     var roots = [];
 
     var config = {
@@ -312,18 +314,24 @@
         return mod
     }
 
-    Module.prototype.getModules = function(modules){
+    Module.prototype.getModules = function(data){
         var mod = this;
-        if(!modules){
-            modules = [];
+        if(!data){
+            data = {
+                cache:{},
+                modules:[]
+            }
         }
-        modules.unshift(mod.id);
+        if(!data.cache[mod.id]){
+            data.cache[mod.id] = true;
+            data.modules.unshift(mod.id);
+        }
         if(mod.alldeps.length){
             Nui.each(mod.depmodules, function(val){
-                modules = val.getModules(modules)
+                data = val.getModules(data)
             })
         }
-        return modules
+        return data
     }
 
     Module.prototype.onload = function(node){
@@ -367,7 +375,7 @@
         var mod = this;
         var modules = [];
         Nui.each(roots, function(root){
-            modules = modules.concat(Nui.unique(root.getModules()))
+            modules = modules.concat(root.getModules().modules)
         })
         modules = Nui.unique(modules)
         var module;
@@ -387,7 +395,9 @@
             return Module.require(mod.depmodules[id], options)
         }
 
-        factory.exports = function(module, options){
+        factory.exports = function(module, members, adds){
+            var exports;
+
             if(!module){
                 return
             }
@@ -401,21 +411,58 @@
             }
 
             if(Nui.type(module, 'Array')){
-                return Nui.extend(true, [], module, options)
+                exports = Nui.extend(true, [], module)
+                if(adds === true){
+                    if(!Nui.type(members, 'Array')){
+                        exports.push(members)
+                    }
+                    else{
+                        exports = exports.concat(members)
+                    }
+                }
             }
             else if(Nui.type(module, 'Function')){
                 if(module.exports){
-                    return Nui.extend(true, {}, module.exports, options)
+                    exports = Nui.extend(true, {}, module.exports, members)
                 }
-                return Nui.extend(true, noop, module, options)
+                else{
+                    exports = Nui.extend(true, noop, module, members)
+                }
             }
             else if(Nui.type(module, 'Object')){
-                return Nui.extend(true, {}, module, options)
+                exports = Nui.extend(true, {}, module, members)
             }
             else{
-                return module
+                exports = module
             }
+
+            if(Nui.type(adds, 'Array') && Nui.type(exports, ['Object', 'Function'])){
+                Nui.each(adds, function(val){
+                    if(val.method && val.content){
+                        var arr = val.method.split('->');
+                        var lastkey = arr[arr.length-1];
+                        var object, key;
+                        while(key = arr.shift()){
+                            object = object || exports;
+                            if(key === lastkey){
+                                break;
+                            }
+                            object = object[key]
+                        }
+                        var func = object[lastkey];
+                        if(Nui.type(func, 'Function')){
+                            var code = func.toString().replace(/(\})$/, ';'+val.content+'$1');
+                            func = new Function('return '+code);
+                            object[lastkey] = func();
+                        }
+                    }
+                })
+            }
+
+            return exports
         }
+
+        factory.importcss = noop;
 
         return factory
     }
@@ -465,6 +512,24 @@
             }
         }
         return mod
+    }
+
+    Module.prototype.loadcss = function(){
+        var mod = this;
+        if(mod.styles && mod.styles.length){
+            Nui.each(mod.styles, function(val){
+                var path = Module.setId(val, false, mod.uri);
+                if(!cacheStyles[path]){
+                    cacheStyles[path] = true;
+                    path = path+'.css'+mod.parameter;
+                    var node = document.createElement('link');
+                    node.rel = 'stylesheet';
+                    node.href = path;
+                    head.appendChild(node);
+                }
+            })
+        }
+        return mod;
     }
 
     Module.replacePath = function(path){
@@ -523,13 +588,13 @@
         return Class
     }
 
-    Module.require = function(mod, factory){
+    Module.require = function(mod, options){
         if(mod){
             var module = mod.module;
-            if(Nui.type(factory, 'Object')){
+            if(Nui.type(options, 'Object')){
                 return new module(factory)
             }
-            else if(Nui.type(factory, 'String')){
+            else if(Nui.type(options, 'String')){
                 return module[factory]
             }
             //因为对象和数组是引用的，使用时需拷贝
@@ -548,7 +613,7 @@
         if(pathMatch){
             var path = config.paths[pathMatch[1]];
             if(path){
-                id = id.replace(pathMatch[0], path).replace(/(\.js)?(\?[\s\S]*)?$/g, '');
+                id = id.replace(pathMatch[0], path).replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '');
             }
         }
         return id
@@ -556,7 +621,8 @@
 
     Module.setId = function(id, retname, uri){
         // xxx.js?v=1.1.1 => xxx
-        var name = id.replace(/(\.js)?(\?[\s\S]*)?$/g, '');
+        // xxx.css?v=1.1.1 => xxx
+        var name = id.replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '');
         var match = name.match(/(-debug|-min)$/g);
         var suffix = '';
         if(match){
@@ -596,18 +662,23 @@
             }
             roots.push(mod);
             mod.callback = function(){
-                console.log(cacheModules)
-                var modules = Nui.unique(mod.getModules());
-                var module;
+                var modules = mod.getModules().modules;
+                var _module = mod;
+                var suffix = mod.suffix;
+                if(mod.name === _module_){
+                    Nui.each(mod.depmodules, function(val){
+                        _module = val;
+                        suffix = val.suffix;
+                    })
+                }
                 Nui.each(modules, function(val){
                     var _mod = cacheModules[val].exec();
-                    if(!!_mod.module && (mod.id === _mod.id || (mod.depmodules[id] && mod.depmodules[id].id === _mod.id))){
-                        module = _mod.module
-
+                    if(!suffix){
+                        _mod.loadcss()
                     }
                 })
                 if(Nui.type(callback, 'Function')){
-                    callback.call(Nui, module)
+                    callback.call(Nui, _module.module)
                 }
                 delete mod.callback
             }
@@ -617,13 +688,20 @@
 
     Module.getdeps = function(str){
         var deps = [];
-        var match = str.match(/(require|exports)\(('|")[^'"]+\2/g);
+        var styles = [];
+        var match = str.match(/(require|exports|importcss)\(('|")[^'"]+\2/g);
         if(match){
             Nui.each(match, function(val){
-                deps.push(val.replace(/^(require|exports)|[\('"]/g, ''))
+                if(/^(require|exports)/.test(val)){
+                    deps.push(val.replace(/^(require|exports)|[\('"]/g, ''))
+                }
+                else{
+                    styles.push(val.replace(/^importcss|[\('"]/g, ''))
+                }
+
             })
         }
-        return deps
+        return [Nui.unique(deps), Nui.unique(styles)]
     }
 
     Module.define = function(id, deps, factory){
@@ -646,11 +724,14 @@
             }
         }
 
-        var alldeps = Nui.unique(deps.concat(Module.getdeps(factory.toString())))
+        var arrs = Module.getdeps(factory.toString());
+        var alldeps = deps.concat(arrs[0]);
+        var styles = arrs[1];
 
         if(id && !cacheModules[id] && !cacheModules[Module.setId(id)]){
             var mod = Module.getModule(id, alldeps);
             mod.deps = deps;
+            mod.styles = styles;
             mod.factory = factory;
             mod.loaded = true;
             mod.load()
@@ -659,6 +740,7 @@
         moduleData = {
             name:id,
             deps:deps,
+            styles:styles,
             alldeps:alldeps,
             factory:factory
         }
