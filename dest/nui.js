@@ -255,7 +255,7 @@
         }
     }
 
-    var Module = function(name, id, suffix, deps){
+    var Module = function(attrs, deps){
         var mod = this;
         //define实参中依赖模块名
         mod.deps = deps||[];
@@ -263,14 +263,14 @@
         mod.alldeps = mod.deps;
         //所有依赖模块
         mod.depmodules = {};
-        //模块名
-        mod.name = name;
         //模块唯一id
-        mod.id = id;
+        mod.id = attrs[0];
+        //模块名
+        mod.name = attrs[1];
         //模块url参数
         mod.parameter = '';
         //文件后缀 -debug和-min
-        mod.suffix = suffix;
+        mod.suffix = attrs[2];
         //所在目录
         mod.uri = mod.id.substr(0, mod.id.lastIndexOf('/')+1);
     }
@@ -518,7 +518,7 @@
         var mod = this;
         if(mod.styles && mod.styles.length){
             Nui.each(mod.styles, function(val){
-                var path = Module.setId(val, false, mod.uri);
+                var path = Module.getAttrs(val, mod.uri)[0];
                 if(!cacheStyles[path]){
                     cacheStyles[path] = true;
                     path = path+'.css'+mod.parameter;
@@ -619,44 +619,37 @@
         return id
     }
 
-    Module.setId = function(id, retname, uri){
+    Module.getAttrs = function(id, uri){
         // xxx.js?v=1.1.1 => xxx
         // xxx.css?v=1.1.1 => xxx
         var name = id.replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '');
         var match = name.match(/(-debug|-min)$/g);
         var suffix = '';
+        var dirid;
         if(match){
             name = name.replace(/(-debug|-min)$/g, '');
             suffix = match[0]
         }
-        var urid;
         id = Module.setPath(config.alias[name] || name);
         if(!/^(http|https|file):\/\//.test(id)){
-            urid = Module.replacePath(dirname + id);
-            id = (uri||dirname) + id;
+            dirid = Module.replacePath(dirname + id);
+            id = (uri || dirname) + id;
         }
         id = Module.replacePath(id);
-        if(retname){
-            return [id, name, urid, suffix]
-        }
-        return id
+        return [id, name, suffix, dirid]
     }
 
     Module.getModule = function(name, deps, uri){
-        var arr = Module.setId(name, true, uri);
-        var id = arr[0];
-        var name = arr[1];
-        var urid = arr[2];
-        var suffix = arr[3];
-        arr = null;
-        return cacheModules[name] || cacheModules[id] || cacheModules[urid] || (cacheModules[id] = new Module(name, id, suffix, deps))
+        var attrs = Module.getAttrs(name, uri);
+        var id = attrs[0];
+        return cacheModules[attrs[1]] || cacheModules[id] || cacheModules[attrs[3]] || (cacheModules[id] = new Module(attrs, deps))
     }
 
     Module.load = function(id, callback, _module_){
         if(Nui.type(id, 'String') && Nui.trim(id)){
             //截取入口文件参数，依赖的文件加载时都会带上该参数
             var match = id.match(/(\?[\s\S]+)$/);
-            var mod = cacheModules[Module.setId(id)] || Module.getModule(_module_, [id]);
+            var mod = cacheModules[Module.getAttrs(id)[0]] || Module.getModule(_module_, [id]);
             if(match){
                 mod.parameter = match[0]
             }
@@ -728,7 +721,7 @@
         var alldeps = deps.concat(arrs[0]);
         var styles = arrs[1];
 
-        if(id && !cacheModules[id] && !cacheModules[Module.setId(id)]){
+        if(id && !cacheModules[id] && !cacheModules[Module.getAttrs(id)[0]]){
             var mod = Module.getModule(id, alldeps);
             mod.deps = deps;
             mod.styles = styles;

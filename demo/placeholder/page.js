@@ -1,9 +1,9 @@
 Nui.define(function(){
 
-    this.importcss('{base}/demo/placeholder/a');
+    this.importcss('./a');
 
     var b = this.require('./b.js')
-
+var a = this.require('./a.js')
     return this.exports(b, {
         show1:function(){
             alert(2)
