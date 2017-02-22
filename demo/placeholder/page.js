@@ -1,7 +1,7 @@
 Nui.define(function(){
 
     this.importcss('./a');
-
+this.importcss('./a1');
     var b = this.require('./b.js')
 var a = this.require('./a.js')
     return this.exports(b, {

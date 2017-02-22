@@ -304,7 +304,7 @@
 
     Module.prototype.resolve = function(){
         var mod = this;
-        if(isEmptyObject(mod.depmodules)){
+        if(mod.alldeps.length && isEmptyObject(mod.depmodules)){
             Nui.each(mod.alldeps, function(val){
                 var module = Module.getModule(val, [], mod.uri);
                 module.parameter = mod.parameter;
@@ -312,26 +312,6 @@
             })
         }
         return mod
-    }
-
-    Module.prototype.getModules = function(data){
-        var mod = this;
-        if(!data){
-            data = {
-                cache:{},
-                modules:[]
-            }
-        }
-        if(!data.cache[mod.id]){
-            data.cache[mod.id] = true;
-            data.modules.unshift(mod.id);
-        }
-        if(mod.alldeps.length){
-            Nui.each(mod.depmodules, function(val){
-                data = val.getModules(data)
-            })
-        }
-        return data
     }
 
     Module.prototype.onload = function(node){
@@ -348,43 +328,62 @@
                         val && (mod[key] = val)
                     })
                     moduleData = null;
-                    return mod.resolve().call()
+                    return mod.resolve().runcallback()
                 }
             })
         }
         else{
             mod.loaded = true;
-            return mod.resolve().call()
+            return mod.resolve().runcallback()
         }
     }
 
-    Module.prototype.call = function(){
+    Module.prototype.runcallback = function(){
         var mod = this;
-        if(mod.alload()){
-            Nui.each(roots, function(root){
-                if(root.callback){
-                    root.callback()
+        var loadedModule = mod.getloaded();
+        if(loadedModule){
+            Nui.each(loadedModule, function(val){
+                if(val.root.callback){
+                    val.root.callback(val.modules)
                 }
             })
         }
         return mod
     }
 
-    //判断所有依赖是否加载完毕
-    Module.prototype.alload = function(){
+    Module.prototype.getModules = function(modules){
         var mod = this;
-        var modules = [];
+        if(!modules){
+            modules = [];
+        }
+        modules.unshift(mod.id);
+        if(mod.alldeps.length){
+            Nui.each(mod.depmodules, function(val){
+                modules = val.getModules(modules)
+            })
+        }
+        return modules
+    }
+
+    Module.prototype.getloaded = function(){
+        var loadedModule = [];
+        var allmodules = [];
         Nui.each(roots, function(root){
-            modules = modules.concat(root.getModules().modules)
+            var modules = Nui.unique(root.getModules());
+            allmodules = allmodules.concat(modules);
+            loadedModule.push({
+                root:root,
+                modules:modules
+            })
         })
-        modules = Nui.unique(modules)
+        allmodules = Nui.unique(allmodules);
         var module;
-        while(module = modules.shift()){
+        while(module = allmodules.shift()){
             if(!cacheModules[module].loaded){
                 return false
             }
         }
-        return true
+        return loadedModule
     }
 
     Module.prototype.setFactory = function(){
@@ -654,8 +653,7 @@
                 mod.parameter = match[0]
             }
             roots.push(mod);
-            mod.callback = function(){
-                var modules = mod.getModules().modules;
+            mod.callback = function(modules){
                 var _module = mod;
                 var suffix = mod.suffix;
                 if(mod.name === _module_){

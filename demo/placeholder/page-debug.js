@@ -1,8 +1,3 @@
-Nui.define('./a',['./b'], function(b){
-    return function(){
-        
-    }
-})
 Nui.define('./b',function(){
     this.importcss('./a00');
     return ({
@@ -11,10 +6,15 @@ Nui.define('./b',function(){
         }
     })
 })
-Nui.define('{base}/demo/placeholder/page',function(){
+Nui.define('./a',['./b'], function(b){
+    return function(){
+        
+    }
+})
+Nui.define('./page',function(){
 
     this.importcss('./a');
-
+this.importcss('./a1');
     var b = this.require('./b.js')
 var a = this.require('./a.js')
     return this.exports(b, {
