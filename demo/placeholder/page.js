@@ -4,4 +4,5 @@ Nui.define(function(){
         color:'#f60',
         target:':text'
     })
+
 })

@@ -7,7 +7,7 @@
  */
 
 Nui.define(['util'], function(util){
-    return this.extends('component', {
+    return this.extands('component', {
         static:{
             support:function(){
                 return util.supportHtml5('placeholder', 'input')

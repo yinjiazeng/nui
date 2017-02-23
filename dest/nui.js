@@ -380,7 +380,7 @@
             return Module.require(mod.depmodules[id], options)
         }
 
-        factory.extends = function(module, members, inserts){
+        factory.extands = function(module, members, inserts){
             var exports;
 
             if(!module){
@@ -397,7 +397,7 @@
 
             if(Nui.type(module, 'Array')){
                 exports = extend(true, [], module)
-                if(adds === true){
+                if(inserts === true){
                     if(!Nui.type(members, 'Array')){
                         exports.push(members)
                     }
@@ -458,12 +458,10 @@
             var factory = mod.setFactory();
             var modules = [];
             Nui.each(mod.deps, function(val){
-                if(val !== 'component'){
-                    modules.push(factory.require(val))
-                }
+                modules.push(factory.require(val))
             })
             var exports = factory.apply(factory, modules);
-            if(Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
+            if(mod.name !== 'component' && Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
                 var obj = {
                     attr:{},
                     proto:{}
@@ -481,16 +479,14 @@
                 })
                 var module = mod.module = Module.createClass(mod, obj);
                 mod.module.exports = exports;
-                if(mod.name !== 'component'){
-                    var name = mod.name;
-                    var index = name.lastIndexOf('/');
-                    name = name.substr(index+1).replace(/\{[^\{\}]+\}/g, '');
-                    Nui.each(['$', '$fn', '$ready'], function(v){
-                        if(Nui.type(module[v], 'Function')){
-                            module[v](name, module)
-                        }
-                    })
-                }
+                var name = mod.name;
+                var index = name.lastIndexOf('/');
+                name = name.substr(index+1).replace(/\{[^\{\}]+\}/g, '');
+                Nui.each(['$', '$fn', '$ready'], function(v){
+                    if(Nui.type(module[v], 'Function')){
+                        module[v](name, module)
+                    }
+                })
             }
             else{
                 mod.module = exports;
@@ -546,29 +542,20 @@
     }
 
     Module.createClass = function(mod, object){
-        var module;
-        if(mod.name !== 'component'){
-            module = Module.getModule('component').module;
-        }
-        else{
-            module = Object
-        }
         var Class = function(options){
             var that = this;
-            if(mod.name !== 'component'){
-                extend(that, object.attr, {
-                    index:Class.index++,
-                    eventArray:[]
-                });
-                that.options = extend(true, {}, that.options, Class.options, options||{})
-                that.optionsCache = extend({}, that.options);
-                Class.box[that.index] = that;
-                delete that.static;
-                that._init()
-            }
+            extend(that, object.attr, {
+                index:Class.index++,
+                eventArray:[]
+            });
+            that.options = extend(true, {}, that.options, Class.options, options||{})
+            that.optionsCache = extend(that.options);
+            Class.box[that.index] = that;
+            delete that.static;
+            that._init()
         }
-        extend(true, Class, module, object.static);
-        extend(true, Class.prototype, module.prototype, object.proto);
+        extend(true, Class, object.static);
+        extend(true, Class.prototype, object.proto);
         Class.prototype.constructor = Class.prototype._self = Class;
         return Class
     }
@@ -584,7 +571,7 @@
             }
             //因为对象和数组是引用的，使用时需拷贝
             if(Nui.type(module, 'Object')){
-                return extend({}, module)
+                return extend(module)
             }
             else if(Nui.type(module, 'Array')){
                 return extend([], module)
@@ -666,15 +653,16 @@
     Module.getdeps = function(str){
         var deps = [];
         var styles = [];
-        var match = str.match(/(require|extends|imports)\(('|")[^'"]+\2/g);
+        var match = str.match(/(require|extands|imports)\(('|")[^'"]+\2/g);
         if(match){
             Nui.each(match, function(val){
-                if(/^(require|extends)/.test(val)){
-                    deps.push(val.replace(/^(require|extends)|[\('"]/g, ''))
+                if(/^(require|extands)/.test(val)){
+                    deps.push(val.replace(/^(require|extands)|[\('"]/g, ''))
                 }
                 else{
                     styles.push(val.replace(/^imports|[\('"]/g, ''))
                 }
+
             })
         }
         return [Nui.unique(deps), Nui.unique(styles)]
