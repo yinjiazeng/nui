@@ -6,8 +6,8 @@
  * @description 输入框占位符
  */
 
-Nui.define('placeholder', ['component', 'util'], function(util){
-    return ({
+Nui.define(['util'], function(util){
+    return this.extends('component', {
         static:{
             support:function(){
                 return util.supportHtml5('placeholder', 'input')

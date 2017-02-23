@@ -7,7 +7,7 @@
  */
 
 Nui.define('component', ['template'], function(tpl){
-    
+
     return ({
         static:{
             index:0,
@@ -15,7 +15,7 @@ Nui.define('component', ['template'], function(tpl){
             options:{},
             config:function(key, value){
                 if(Nui.type(key, 'Object')){
-                    Nui.extend(true, this.options, key)
+                    $.extend(true, this.options, key)
                 }
                 else if(Nui.type(key, 'String')){
                     this.options[key] = value

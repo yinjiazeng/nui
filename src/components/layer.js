@@ -6,7 +6,7 @@
  * @description layer弹出层
  */
 
- Nui.define('layer', {
+ Nui.define({
      static:{
          zIndex:10000,
          mask:null

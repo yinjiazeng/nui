@@ -19,9 +19,6 @@
             if(obj === null || obj === undefined){
                 return false
             }
-            if(type === 'PlainObject'){
-                return isPlainObject(obj)
-            }
             if(isType('Array')(type)){
                 var ret = false;
                 Nui.each(type, function(v){
@@ -67,50 +64,6 @@
             })
             return newarr
         },
-        extend:function(){
-            var src, copyIsArray, copy, name, options, clone,
-                target = arguments[0] || {},
-                i = 1,
-                length = arguments.length,
-                deep = false;
-            if(typeof target === 'boolean'){
-                deep = target;
-                target = arguments[1] || {};
-                i = 2;
-            }
-            if(typeof target !== 'object' && !Nui.type(target, 'Function')){
-                target = {};
-            }
-            if(length === i){
-                target = this;
-                --i;
-            }
-            for( ; i < length; i++){
-                if((options = arguments[i]) != null){
-                    for(name in options){
-                        src = target[name];
-                        copy = options[name];
-                        if(target === copy){
-                            continue;
-                        }
-                        if(deep && copy && (Nui.type(copy, 'PlainObject') || (copyIsArray = Nui.type(copy, 'Array')))){
-                            if(copyIsArray){
-                                copyIsArray = false;
-                                clone = src && Nui.type(src, 'Array') ? src : [];
-                            }
-                            else{
-                                clone = src && Nui.type(src, 'PlainObject') ? src : {};
-                            }
-                            target[name] = Nui.extend(deep, clone, copy);
-                        }
-                        else if(copy !== undefined){
-                            target[name] = copy;
-                        }
-                    }
-                }
-            }
-            return target;
-        },
         //jquery1.9之后就移除了该方法，以插件形式存在
         browser:(function(){
             var ua = navigator.userAgent.toLowerCase();
@@ -154,23 +107,56 @@
         }
     }
 
-    var core_hasOwn = Object.prototype.hasOwnProperty;
-
-    var isPlainObject = function(obj){
-        if(!obj || !Nui.type(obj, 'Object') || obj.nodeType || obj == obj.window){
-            return false;
+    var extend = function(){
+        var src, copyIsArray, copy, name, options, clone,
+            target = arguments[0] || {},
+            i = 1,
+            length = arguments.length,
+            deep = false;
+        if(typeof target === 'boolean'){
+            deep = target;
+            target = arguments[1] || {};
+            i = 2;
         }
-        try{
-            if(obj.constructor && !core_hasOwn.call(obj, 'constructor') && !core_hasOwn.call(obj.constructor.prototype, 'isPrototypeOf')){
-                return false;
+        if(typeof target !== 'object' && !Nui.type(target, 'Function')){
+            target = {};
+        }
+        if(length === i){
+            target = {};
+            --i;
+        }
+        for( ; i < length; i++){
+            if((options = arguments[i]) != null){
+                for(name in options){
+                    src = target[name];
+                    copy = options[name];
+                    if(target === copy){
+                        continue;
+                    }
+                    if(deep && copy && (isObject(copy) || (copyIsArray = Nui.type(copy, 'Array')))){
+                        if(copyIsArray){
+                            copyIsArray = false;
+                            clone = src && Nui.type(src, 'Array') ? src : [];
+                        }
+                        else{
+                            clone = src && isObject(src) ? src : {};
+                        }
+                        target[name] = extend(deep, clone, copy);
+                    }
+                    else if(copy !== undefined){
+                        target[name] = copy;
+                    }
+                }
             }
         }
-        catch(e){
+        return target;
+    }
+
+    var isObject = function(obj){
+        if(!obj || !Nui.type(obj, 'Object') || obj.nodeType){
             return false;
         }
-        var key;
-        for(key in obj){}
-        return key === undefined || core_hasOwn.call(obj, key);
+        return true
     }
 
     var isEmptyObject = function(obj){
@@ -234,7 +220,7 @@
     //但是在IE9-中，高概率出现不同步情况，就是在onreadystatechange事件中得到moduleData值不是当前文件数据，原因在于执行onload时，其它模块刚好被加载，被重新赋值了
     //IE9-中文件被加载会有5个状态 uninitialized > loading > loaded > interactive > complete
     //脚本被执行时可以通过dom节点获取到node.readyState值为interactive，而该节点一定是当前加载的脚本节点
-    //小概率出现节点被添加到dom后会立即执行define，可能是由于IE的缓存原因，利用它可以降低性能的消耗
+    //小概率出现节点被添加到dom后会立即执行define，可能是由于IE的缓存原因
     var currentlyAddingScript;
     if(Nui.browser.msie && Nui.browser.version <= 9){
         var interactiveScript;
@@ -394,7 +380,7 @@
             return Module.require(mod.depmodules[id], options)
         }
 
-        factory.exports = function(module, members, adds){
+        factory.extends = function(module, members, inserts){
             var exports;
 
             if(!module){
@@ -410,7 +396,7 @@
             }
 
             if(Nui.type(module, 'Array')){
-                exports = Nui.extend(true, [], module)
+                exports = extend(true, [], module)
                 if(adds === true){
                     if(!Nui.type(members, 'Array')){
                         exports.push(members)
@@ -422,14 +408,14 @@
             }
             else if(Nui.type(module, 'Function')){
                 if(module.exports){
-                    exports = Nui.extend(true, {}, module.exports, members)
+                    exports = extend(true, {}, module.exports, members)
                 }
                 else{
-                    exports = Nui.extend(true, noop, module, members)
+                    exports = extend(true, noop, module, members)
                 }
             }
             else if(Nui.type(module, 'Object')){
-                exports = Nui.extend(true, {}, module, members)
+                exports = extend(true, {}, module, members)
             }
             else{
                 exports = module
@@ -461,7 +447,7 @@
             return exports
         }
 
-        factory.importcss = noop;
+        factory.imports = noop;
 
         return factory
     }
@@ -570,19 +556,19 @@
         var Class = function(options){
             var that = this;
             if(mod.name !== 'component'){
-                Nui.extend(that, object.attr, {
+                extend(that, object.attr, {
                     index:Class.index++,
                     eventArray:[]
                 });
-                that.options = Nui.extend(true, {}, that.options, Class.options, options||{})
-                that.optionsCache = Nui.extend({}, that.options);
+                that.options = extend(true, {}, that.options, Class.options, options||{})
+                that.optionsCache = extend({}, that.options);
                 Class.box[that.index] = that;
                 delete that.static;
                 that._init()
             }
         }
-        Nui.extend(true, Class, module, object.static);
-        Nui.extend(true, Class.prototype, module.prototype, object.proto);
+        extend(true, Class, module, object.static);
+        extend(true, Class.prototype, module.prototype, object.proto);
         Class.prototype.constructor = Class.prototype._self = Class;
         return Class
     }
@@ -598,10 +584,10 @@
             }
             //因为对象和数组是引用的，使用时需拷贝
             if(Nui.type(module, 'Object')){
-                return Nui.extend({}, module)
+                return extend({}, module)
             }
             else if(Nui.type(module, 'Array')){
-                return Nui.extend([], module)
+                return extend([], module)
             }
             return module
         }
@@ -680,14 +666,14 @@
     Module.getdeps = function(str){
         var deps = [];
         var styles = [];
-        var match = str.match(/(require|exports|importcss)\(('|")[^'"]+\2/g);
+        var match = str.match(/(require|extends|imports)\(('|")[^'"]+\2/g);
         if(match){
             Nui.each(match, function(val){
-                if(/^(require|exports)/.test(val)){
-                    deps.push(val.replace(/^(require|exports)|[\('"]/g, ''))
+                if(/^(require|extends)/.test(val)){
+                    deps.push(val.replace(/^(require|extends)|[\('"]/g, ''))
                 }
                 else{
-                    styles.push(val.replace(/^importcss|[\('"]/g, ''))
+                    styles.push(val.replace(/^imports|[\('"]/g, ''))
                 }
 
             })
@@ -795,10 +781,10 @@
 
     Nui.config = function(key, value){
         if(Nui.type(key, 'Object')){
-            Nui.extend(true, config, key)
+            extend(true, config, key)
         }
         else if(Nui.type(key, 'String') && value){
-            Nui.extend(true, config[key], value)
+            extend(true, config[key], value)
         }
         if(config.paths.base){
             Nui.each(config.paths, function(v, k){
