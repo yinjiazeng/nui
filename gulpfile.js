@@ -2,8 +2,7 @@ var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
-var nuirev = require('nui-rev');
-var nuiconcat = require('nui-concat');
+var nui = require('gulp-nui');
 
 gulp.task('concat', function(){
 	gulp.src(['./src/nui.js',
@@ -35,20 +34,15 @@ var config = {
 	}
 }
 
-gulp.task('nuiconcat', function(){
+gulp.task('nui', function(){
     gulp.src(['./demo/**/*.html'])
-		.pipe(nuiconcat(config))
-});
-
-gulp.task('nuirev', ['nuiconcat'], function(){
-    gulp.src(['./demo/**/*.html'])
-		.pipe(nuirev(config))
+		.pipe(nui(config))
 		.pipe(gulp.dest('./demo/'))
 });
 
 gulp.task('watch', function(){
 	gulp.watch(['./src/**/*.js'], ['concat']);
-    gulp.watch(['./demo/**/*.js'], ['nuirev']);
+    gulp.watch(['./demo/**/*.js'], ['nui']);
 });
 
-gulp.task('default', ['concat', 'nuirev', 'watch']);
+gulp.task('default', ['concat', 'nui', 'watch']);

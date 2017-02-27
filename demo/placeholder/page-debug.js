@@ -166,8 +166,9 @@ Nui.define('placeholder',['util'], function(util){
 })
 Nui.define('./page',function(){
     var p = this.require('placeholder');
+    this.imports('./a');
     new p({
-        color:'#f60',
+        color:'#f60111111111',
         target:':text'
     })
 
