@@ -179,7 +179,7 @@
         }
     }
 
-    //修复 IE7-hover以及fixed时背景图片闪烁
+    //防止IE6-IE7鼠标hover以及position:fixed时背景图片闪烁
     if(Nui.browser.msie && Nui.browser.version <= 7){
         document.execCommand('BackgroundImageCache', false, true);
     }

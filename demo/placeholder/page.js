@@ -1,9 +1,10 @@
-Nui.define(function(){
-    var p = this.require('placeholder');
-    this.imports('./a');
-    new p({
-        color:'#f60111111111',
-        target:':text'
+Nui.define(['placeholder'], function(p){
+    return ({
+        init:function(){
+            new p({
+                target:':text',
+                color:'#f60'
+            })
+        }
     })
-
 })

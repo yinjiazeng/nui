@@ -1,5 +1,4 @@
 /**
- * @filename util.js
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
  * @version 1.0.1
