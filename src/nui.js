@@ -183,9 +183,10 @@
         document.execCommand('BackgroundImageCache', false, true);
     }
 
+    var domain = location.protocol+'//'+location.host;
     //获取当前页面的uri
     var getPath = function(){
-        var url = (location.protocol+'//'+location.host+location.pathname).replace(/\\/g, '/');
+        var url = (domain+location.pathname).replace(/\\/g, '/');
         var index =  url.lastIndexOf('/');
         return url.substr(0, index+1);
     }
@@ -772,10 +773,14 @@
         else if(Nui.type(key, 'String') && value){
             extend(true, config[key], value)
         }
-        if(config.paths.base){
+        var base = config.paths.base;
+        if(base){
+            if(/^\/|\\/.test(base)){
+                base = config.paths.base = domain+base
+            }
             Nui.each(config.paths, function(v, k){
                 if(k !== 'base' && !/^(http|https|file):\/\//.test(v)){
-                    config.paths[k] = config.paths.base+'/' + v
+                    config.paths[k] = base+'/' + v
                 }
             })
         }

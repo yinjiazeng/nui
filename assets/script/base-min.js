@@ -1,0 +1,1 @@
+Nui.define("{script}/base",function(){return this.imports("../style/base"),{init:function(){}}});

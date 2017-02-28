@@ -27,31 +27,37 @@ gulp.task('concat', function(){
 var config = {
 	paths:{
 		base:__dirname+'/',
+		script:'/assets/script',
+		style:'/assets/style',
 		cpns:'/src/components'
 	},
 	alias:{
-		'placeholder':'{cpns}/placeholder',
-        'layer':'{cpns}/layer',
-        'layer.ext':'{cpns}/layer.ext'
+		'placeholder':'{cpns}/placeholder'
 	}
 }
 
-gulp.task('nui', ['nunjucks'], function(){
-    gulp.src(['./pages/**/*.html'])
-		.pipe(nui(config))
-		.pipe(gulp.dest('./pages'))
-	gulp.src(['./index.html'])
+gulp.task('nui', ['assetrev'], function(){
+    // gulp.src(['./pages/**/*.html'])
+	// 	.pipe(nui(config))
+	// 	.pipe(gulp.dest('./pages'))
+});
+
+gulp.task('index', ['assetrevIndex'], function(){
+	return gulp.src(['./index.html'])
 		.pipe(nui(config))
 		.pipe(gulp.dest('./'))
 });
 
-gulp.task('assetrev', ['nunjucks'], function(){
-    gulp.src(['./pages/**/*.html'])
-		.pipe(assetrev())
-		.pipe(gulp.dest('./pages'))
-	gulp.src(['./index.html'])
-		.pipe(assetrev())
-		.pipe(gulp.dest('./'))
+gulp.task('assetrev', function(){
+    // return gulp.src(['./pages/**/*.html'])
+	// 	.pipe(assetrev())
+	// 	.pipe(gulp.dest('./pages'))
+});
+
+gulp.task('assetrevIndex', function(){
+	// return gulp.src(['./index.html'])
+	// 	.pipe(assetrev())
+	// 	.pipe(gulp.dest('./'))
 });
 
 gulp.task('nunjucks', function(){
@@ -64,9 +70,8 @@ gulp.task('nunjucks', function(){
 
 gulp.task('watch', function(){
 	gulp.watch(['./src/*.js'], ['concat']);
-	gulp.watch(['./src/components/*.js', './pages/**/*.+(js|css)'], ['nui']);
-	gulp.watch(['./dest/*.js', './assets/**/*.+(js|css|jpg|png|gif)'], ['assetrev']);
-	gulp.watch(['./html/**/*.html', './tpl/*.tpl'], ['nunjucks', 'assetrev', 'nui']);
+	gulp.watch(['./src/components/*.js', './pages/**/*.*', './assets/**/*.*'], ['index', 'nui']);
+	gulp.watch(['./html/**/*.html', './tpl/*.tpl'], ['nunjucks', 'index', 'nui']);
 });
 
-gulp.task('default', ['concat', 'nunjucks', 'assetrev', 'nui', 'watch']);
+gulp.task('default', ['concat', 'nunjucks', 'nui', 'index', 'watch']);
