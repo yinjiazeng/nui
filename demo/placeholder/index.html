@@ -15,11 +15,11 @@
 
     <div class="header f-tac">
         <a href="javascript:void(0)">我是头部</a>
-        <input type="text" placeholder="请输入用户名" id="p1"  />
+        <input type="text" placeholder="请输入用户名" id="p1" />
     </div>
 
     <div class="content">
-        <input type="text" placeholder="请输入用户名" id="p2" />
+        <input type="text" id="p2" />
     </div>
 
     <div class="footer f-tac">
@@ -41,8 +41,12 @@
         }
     })
 
+    Nui.load('./b-min?v=3d3d4e0', function(page){
+        page.init()
+    })
+
     //开发环境
-    Nui.load('./page-min?v=3342d5e', function(page){
+    Nui.load('./page-min?v=5c2e26d', function(page){
         page.init()
     })
 

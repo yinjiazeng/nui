@@ -1,8 +1,10 @@
-Nui.define(function(){
-    this.importcss('./a00');
+Nui.define(['placeholder'], function(p){
     return ({
         init:function(){
-            alert(1)
+            p.config({
+                text:'111111',
+                color:'blue'
+            })
         }
     })
 })

@@ -1,5 +1,4 @@
 /**
- * @filename nui.js
  * @author Aniu[2016-11-10 22:39]
  * @update Aniu[2016-11-10 22:39]
  * @version 1.0.1
@@ -550,7 +549,7 @@
             });
             that.options = extend(true, {}, that.options, Class.options, options||{})
             that.optionsCache = extend(that.options);
-            Class.box[that.index] = that;
+            Class.instances[that.index] = that;
             delete that.static;
             that._init()
         }
@@ -785,7 +784,6 @@
 })(this, document)
 
 /**
- * @filename util.js
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
  * @version 1.0.1
@@ -1006,50 +1004,10 @@ Nui.define('util', {
             data.result[arr[i].name] = val;
         }
         return data;
-    },
-    getSize:function(selector, dir, attr){
-        var size = 0;
-        attr = attr || 'border';
-        dir = dir || 'tb';
-        if(attr === 'all'){
-            return this.getSize(selector, dir) + this.getSize(selector, dir, 'padding')
-        }
-        var group = {
-            l:['Left'],
-            r:['Right'],
-            lr:['Left', 'Right'],
-            t:['Top'],
-            b:['Bottom'],
-            tb:['Top', 'Bottom']
-        }
-        var arr = [{
-            border:{
-                l:['LeftWidth'],
-                r:['RightWidth'],
-                lr:['LeftWidth', 'RightWidth'],
-                t:['TopWidth'],
-                b:['BottomWidth'],
-                tb:['TopWidth', 'BottomWidth']
-            }
-        }, {
-            padding:group
-        }, {
-            margin:group
-        }];
-        $.each(arr, function(key, val){
-            if(val[attr]){
-                $.each(val[attr][dir], function(k, v){
-                    var value = parseInt(selector.css(attr+v));
-                    size += isNaN(value) ? 0 : value
-                });
-            }
-        });
-        return size
     }
 })
 
 /**
- * @filename template.js
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
  * @version 1.0.1
@@ -1156,7 +1114,6 @@ Nui.define('template', ['util'], function(util){
 })
 
 /**
- * @filename component.js
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
  * @version 1.0.1
@@ -1164,12 +1121,12 @@ Nui.define('template', ['util'], function(util){
  */
 
 Nui.define('component', ['template'], function(tpl){
-
     return ({
         static:{
             index:0,
-            box:{},
+            instances:{},
             options:{},
+            bsie6:Nui.browser.msie && Nui.browser.version <= 6,
             config:function(key, value){
                 if(Nui.type(key, 'Object')){
                     $.extend(true, this.options, key)
@@ -1180,7 +1137,7 @@ Nui.define('component', ['template'], function(tpl){
             },
             $:function(name, module){
                 $[name] = function(options){
-                    if(options && options.target){
+                    if(options){
                         return new module(options)
                     }
                 }
@@ -1232,7 +1189,7 @@ Nui.define('component', ['template'], function(tpl){
                 }
             },
             $ready:function(name, module){
-                var attr = name+'-options';
+                var attr = 'options-'+name;
                 var _$fn = $.fn[name];
                 var _$ = $[name];
                 $('['+ attr +']').each(function(index, item){
@@ -1246,7 +1203,49 @@ Nui.define('component', ['template'], function(tpl){
                     else if(_$){
                         $[name](options)
                     }
+                    else{
+                        new module(options)
+                    }
                 })
+            },
+            getSize:function(selector, dir, attr){
+                var size = 0;
+                attr = attr || 'border';
+                dir = dir || 'tb';
+                if(attr === 'all'){
+                    return this.getSize(selector, dir) + this.getSize(selector, dir, 'padding')
+                }
+                var group = {
+                    l:['Left'],
+                    r:['Right'],
+                    lr:['Left', 'Right'],
+                    t:['Top'],
+                    b:['Bottom'],
+                    tb:['Top', 'Bottom']
+                }
+                var arr = [{
+                    border:{
+                        l:['LeftWidth'],
+                        r:['RightWidth'],
+                        lr:['LeftWidth', 'RightWidth'],
+                        t:['TopWidth'],
+                        b:['BottomWidth'],
+                        tb:['TopWidth', 'BottomWidth']
+                    }
+                }, {
+                    padding:group
+                }, {
+                    margin:group
+                }];
+                $.each(arr, function(key, val){
+                    if(val[attr]){
+                        $.each(val[attr][dir], function(k, v){
+                            var value = parseInt(selector.css(attr+v));
+                            size += isNaN(value) ? 0 : value
+                        });
+                    }
+                });
+                return size
             }
         },
         options:{
@@ -1254,8 +1253,9 @@ Nui.define('component', ['template'], function(tpl){
             theme:''
         },
         _init:$.noop,
+        _exec:$.noop,
         _getTarget:function(){
-            return $(this.options.target)
+            return this.options.target ? $(this.options.target) : null
         },
         _on:function(eventType, target, callback, EventInit){
             var that = this;
@@ -1275,11 +1275,15 @@ Nui.define('component', ['template'], function(tpl){
             that.eventArray = []
         },
         _delete:function(){
+            var that = this;
             var nuis = that.target[0].nui;
+            var self = that._self;
             if(nuis){
+                nuis[that.moduleName] = null;
                 delete nuis[that.moduleName]
             }
-            delete that._self.box[that.index]
+            self.instances[that.index] = null;
+            delete self.instances[that.index]
         },
         _reset:function(){
             var that = this;
@@ -1296,25 +1300,29 @@ Nui.define('component', ['template'], function(tpl){
             that._reset();
             if(name || value){
                 if($.isPlainObject(name)){
-                    that.options = $.extend(that.options, name)
+                    that.options = $.extend(true, that.options, name)
                 }
                 else{
                     that.options[name] = value
                 }
-                that._init()
+                that._exec()
+            }
+            return that
+        },
+        get:function(key){
+            var that = this;
+            if(!key){
+                return that.options
+            }
+            else{
+                return that.options[key]
             }
         },
-        get:function(){
-            var that = this;
-        },
         reset:function(){
-            var that = this;
-            that.options = $.extend(that.options, that.optionsCache);
-            return that
+            return this.set(that.optionsCache)
         },
         destroy:function(){
             var that = this;
-            that._off();
             that._reset();
             that._delete();
         }

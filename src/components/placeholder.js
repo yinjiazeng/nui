@@ -14,6 +14,11 @@ Nui.define(['util'], function(util){
         },
         options:{
             /**
+             * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
+             * @type <String>
+             */
+            text:'',
+            /**
              * @func 是否启用动画显示展示
              * @type <Boolean>
              */
@@ -45,8 +50,20 @@ Nui.define(['util'], function(util){
         _init:function(){
             var that = this;
             that.target = that._getTarget();
-            that.text = $.trim(that.target.attr('placeholder'));
-            return that._create()
+            if(that.target){
+                that._exec();
+            }
+        },
+        _exec:function(){
+            var that = this;
+            var text = that.deftext = that.target.attr('placeholder');
+            if(!that.deftext && that.options.text){
+                that.target.attr('placeholder', text = that.options.text)
+            }
+            that.text = $.trim(text);
+            if(that.text){
+                that._create()
+            }
         },
         _create:function(){
             var that = this, opts = that.options;
@@ -71,8 +88,8 @@ Nui.define(['util'], function(util){
                             var isText = that.target.is('textarea');
                             return ({
                                 'position':'absolute',
-                                'left':util.getSize(that.target, 'l', 'padding')+util.getSize(that.target, 'l')+'px',
-                                'top':util.getSize(that.target, 't', 'padding')+util.getSize(that.target, 't')+'px',
+                                'left':that._self.getSize(that.target, 'l', 'padding')+that._self.getSize(that.target, 'l')+'px',
+                                'top':that._self.getSize(that.target, 't', 'padding')+that._self.getSize(that.target, 't')+'px',
                                 'height':isText ? 'auto' : height+'px',
                                 'line-height':isText ? 'normal' : height+'px',
                                 'color':opts.color
@@ -85,7 +102,6 @@ Nui.define(['util'], function(util){
             else{
                 that._setStyle()
             }
-            return that
         },
         _setStyle:function(){
             var that = this, opts = that.options;
@@ -126,7 +142,7 @@ Nui.define(['util'], function(util){
         },
         _event:function(){
             var that = this, opts = that.options;
-            var pleft = util.getSize(that.target, 'l', 'padding') + util.getSize(that.target, 'l');
+            var pleft = that._self.getSize(that.target, 'l', 'padding') + that._self.getSize(that.target, 'l');
             that._on('click', that.elem, function(){
                 that.target.focus()
             })
@@ -155,10 +171,17 @@ Nui.define(['util'], function(util){
         },
         _reset:function(){
             var that = this;
+            that._off();
             if(that.elem){
                 that.elem.remove();
                 that.target.unwrap();
-                that.target.attr('placeholder', that.text)
+            }
+            that.target.removeClass(that.className);
+            if(that.deftext){
+                that.target.attr('placeholder', that.deftext)
+            }
+            else{
+                that.target.removeAttr('placeholder')
             }
         }
     })

@@ -219,44 +219,5 @@ Nui.define('util', {
             data.result[arr[i].name] = val;
         }
         return data;
-    },
-    getSize:function(selector, dir, attr){
-        var size = 0;
-        attr = attr || 'border';
-        dir = dir || 'tb';
-        if(attr === 'all'){
-            return this.getSize(selector, dir) + this.getSize(selector, dir, 'padding')
-        }
-        var group = {
-            l:['Left'],
-            r:['Right'],
-            lr:['Left', 'Right'],
-            t:['Top'],
-            b:['Bottom'],
-            tb:['Top', 'Bottom']
-        }
-        var arr = [{
-            border:{
-                l:['LeftWidth'],
-                r:['RightWidth'],
-                lr:['LeftWidth', 'RightWidth'],
-                t:['TopWidth'],
-                b:['BottomWidth'],
-                tb:['TopWidth', 'BottomWidth']
-            }
-        }, {
-            padding:group
-        }, {
-            margin:group
-        }];
-        $.each(arr, function(key, val){
-            if(val[attr]){
-                $.each(val[attr][dir], function(k, v){
-                    var value = parseInt(selector.css(attr+v));
-                    size += isNaN(value) ? 0 : value
-                });
-            }
-        });
-        return size
     }
 })

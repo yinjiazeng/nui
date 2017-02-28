@@ -549,7 +549,7 @@
             });
             that.options = extend(true, {}, that.options, Class.options, options||{})
             that.optionsCache = extend(that.options);
-            Class.box[that.index] = that;
+            Class.instances[that.index] = that;
             delete that.static;
             that._init()
         }
