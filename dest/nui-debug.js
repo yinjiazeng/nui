@@ -785,3 +785,549 @@
     }
 
 })(this, document)
+
+/**
+ * @author Aniu[2016-11-11 16:54]
+ * @update Aniu[2016-11-11 16:54]
+ * @version 1.0.1
+ * @description 工具类
+ */
+
+Nui.define('util', {
+    /**
+     * @func 常用正则表达式
+     */
+    regex:{
+        //手机
+        mobile:/^0?(13|14|15|17|18)[0-9]{9}$/,
+        //电话
+        tel:/^[0-9-()（）]{7,18}$/,
+        //邮箱
+        email:/^\w+((-w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,
+        //身份证
+        idcard:/^\d{17}[\d|x]|\d{15}$/,
+        //中文
+        cn:/^[\u4e00-\u9fa5]+$/,
+        //税号
+        taxnum:/^[a-zA-Z0-9]{15,20}$/
+    },
+    /**
+     * @func 获取url参数值
+     * @return <String, Object>
+     * @param name <String, Undefined> 参数名，不传则以对象形式返回全部参数
+     * @param urls <String, Undefined> url地址，默认为当前访问地址
+     */
+    getParam:function(name, urls){
+        var url = decodeURI(urls||location.href), value = {};
+        startIndex = url.indexOf('?');
+        if(startIndex++ > 0){
+            var param = url.substr(startIndex).split('&'), temp;
+            $.each(param, function(key, val){
+                temp = val.split('=');
+                value[temp[0]] = temp[1];
+            });
+        }
+        if(typeof name === 'string' && name){
+            value = (temp = value[name]) !== undefined ? temp : '';
+        }
+        return value;
+    },
+    /**
+     * @func 设置url参数值
+     * @return <String> 设置后的url
+     * @param name <String, Object> 参数名或者{key:value, ...}参数集合
+     * @param value <String> 参数值或者url
+     * @param urls <String, Undefined> url，没有则获取浏览器url
+     */
+    setParam:function(name, value, urls){
+        var url;
+        if($.isPlainObject(name)){
+            url = value||location.href;
+            $.each(name, function(key, val){
+                if(val){
+                    if($.isPlainObject(val)){
+                        val = tools.getJSON(val);
+                    }
+                    url = tools.setParam(key, val, url);
+                }
+            });
+        }
+        else{
+            url = urls||location.href;
+            if(url.indexOf('?') === -1){
+                url += '?';
+            }
+            if($.isPlainObject(value)){
+                value = tools.getJSON(value);
+            }
+            if(url.indexOf(name+'=') !== -1){
+                var reg = new RegExp('('+name+'=)[^&]*');
+                url = url.replace(reg, '$1'+value);
+            }
+            else{
+                var and = '';
+                if(url.indexOf('=') !== -1){
+                    and = '&';
+                }
+                url += and+name+'='+value;
+            }
+        }
+        return url;
+    },
+    /**
+     * @func 检测浏览器是否支持CSS3属性
+     * @return <Boolean>
+     * @param style <String> 样式属性
+     */
+    supportCss3:function(style){
+        var prefix = ['webkit', 'Moz', 'ms', 'o'],
+            i, humpString = [],
+            htmlStyle = document.documentElement.style,
+            _toHumb = function (string) {
+                return string.replace(/-(\w)/g, function ($0, $1) {
+                    return $1.toUpperCase();
+                });
+            };
+        for (i in prefix)
+            humpString.push(_toHumb(prefix[i] + '-' + style));
+        humpString.push(_toHumb(style));
+        for (i in humpString)
+            if (humpString[i] in htmlStyle) return true;
+        return false;
+    },
+    /**
+     * @func 检测浏览器是否支持Html5属性
+     * @return <Boolean>
+     * @param attr <String> 属性
+     * @param element <String> DOM元素标签
+     */
+    supportHtml5:function(attr, element){
+        return attr in document.createElement(element);
+    },
+    /**
+     * @func 模拟location.href跳转，前者IE下有问题
+     * @return <Undefined>
+     * @param url <String> 跳转的url
+     * @param target <String> 跳转类型，默认为_self
+     */
+    jumpUrl:function(url, target){
+        if(url){
+            $('<a href="'+ url +'"'+ (target ? 'target="'+ (target||'_self') +'"' : '' ) +'><span></span></a>')
+                .appendTo('body').children().click().end().remove();
+        }
+    },
+    /**
+     * @func 格式化日期
+     * @return <String>
+     * @param timestamp <String, Number> 时间戳，为空返回横杠“-”
+     * @param format <String, Undefined> 输出格式，为空则返回时间戳
+     */
+    formatDate:function(timestamp, format){
+        if(timestamp = parseInt(timestamp)){
+            if(!format){
+                return timestamp;
+            }
+            var date = new Date(timestamp);
+            var map = {
+                'M':date.getMonth()+1,
+                'd':date.getDate(),
+                'h':date.getHours(),
+                'm':date.getMinutes(),
+                's':date.getSeconds()
+            }
+            format = format.replace(/([yMdhms])+/g, function(all, single){
+                var value = map[single];
+                if(value !== undefined){
+                    if(all.length > 1){
+                       value = '0' + value;
+                       value = value.substr(value.length-2);
+                   }
+                   return value;
+                }
+                else if(single === 'y'){
+                    return (date.getFullYear() + '').substr(4-all.length);
+                }
+                return all;
+            });
+            return format;
+        }
+        return '-';
+    },
+    /**
+     * @func 格式化json
+     * @return <JSON String>
+     * @param data <Array, Object> 数组或者对象
+     */
+    getJSON:function(data){
+        if(typeof JSON !== 'undefined'){
+            var jsonstr = JSON.stringify(data);
+            if($.browser.msie && $.browser.version == '8.0'){
+                return jsonstr.replace(/\\u([0-9a-fA-F]{2,4})/g,function(str, matched){
+                    return String.fromCharCode(parseInt(matched,16))
+                })
+            }
+            return jsonstr;
+        }
+        else{
+            if($.isArray(data)){
+                var arr = [];
+                $.each(data, function(key, val){
+                    arr.push(tools.getJSON(val));
+                });
+                return '[' + arr.join(',') + ']';
+            }
+            else if($.isPlainObject(data)){
+                var temp = [];
+                $.each(data, function(key, val){
+                    temp.push('"'+ key +'":'+ tools.getJSON(val));
+                });
+                return '{' + temp.join(',') + '}';
+            }
+            else{
+                return '"'+data+'"';
+            }
+        }
+    },
+    /**
+     * @func 返回form数据对象
+     * @param form <Object> form 元素
+     */
+    getData:function(form){
+        var data = {
+            result:{},
+            total:0,
+            voidTotal:0
+        }, arr = form.serializeArray(), len = arr.length, i = 0;
+        for(i; i<len; i++){
+            var val = $.trim(arr[i].value)
+            data.all++;
+            if(!val){
+                data.voidTotal++
+            }
+            data.result[arr[i].name] = val;
+        }
+        return data;
+    }
+})
+
+/**
+ * @author Aniu[2016-11-11 16:54]
+ * @update Aniu[2016-11-11 16:54]
+ * @version 1.0.1
+ * @description 模版引擎
+ */
+
+Nui.define('template', ['util'], function(util){
+    var template = function(tplid, source){
+        var ele = document.getElementById(tplid);
+        if(ele && ele.nodeName==='SCRIPT'){
+            source = source||{};
+            return render(ele.innerHTML, source)
+        }
+        return ''
+    }
+
+    var methods = {
+        'each':Nui.each,
+        'trim':Nui.trim,
+        'format':util.formatDate,
+        'seturl':util.setParam
+    }
+
+    template.method = function(method, callback){
+        if(!methods[method]){
+            methods[method] = callback
+        }
+    }
+
+    template.config = {
+        startTag:'{{',
+        endTag:'}}'
+    }
+
+    var render = function(tpl, source){
+        var start = template.config.startTag, end = template.config.endTag, code = '';
+        Nui.each(Nui.trim(tpl).split(start), function(val, key){
+            val = Nui.trim(val).split(end);
+            if(key >= 1){
+                code += compile(Nui.trim(val[0]), true)
+            }
+            else{
+                val[1] = val[0];
+            }
+            code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/[\n\r]+/g, ''))
+        });
+        code = 'var that=this, code=""; with(data){'+code;
+        code += '};that.echo=function(){return code;}';
+        var Result = new Function('data', code);
+        Result.prototype = methods;
+        return new Result(source).echo()
+    }
+
+    var compile = function(code, logic){
+        var modle, echo;
+        if(logic){
+            if((modle = match(code, 'if')) !== false){
+                echo = 'if('+modle+'){'
+            }
+            else if((modle = match(code, 'elseif')) !== false){
+                echo = '}else if('+modle+'){'
+            }
+            else if((modle = match(code, 'else')) !== false){
+                echo = '}else{'
+            }
+            else if(match(code, '/if') !== false){
+                echo = '}'
+            }
+            else if((modle = match(code, 'each')) !== false){
+                modle = modle.split(/\s+/);
+                echo = 'that.each('+ modle[0] +', function('+modle[1];
+                if(modle[2]){
+                    echo += ', '+modle[2]
+                }
+                echo += '){'
+            }
+            else if(match(code, '/each') !== false){
+                echo = '});'
+            }
+            else if((modle = match(code, '|')) !== false){
+                modle = modle.split(/\s+/);
+                echo = 'code+=that.'+modle[0]+'('+ modle.slice(1).toString() +');'
+            }
+            else{
+                echo = 'code+='+code+';'
+            }
+        }
+        else{
+            echo = 'code+=\''+code+'\';'
+        }
+        return echo
+    }
+
+    var match = function(string, filter){
+        if(string.indexOf(filter) === 0 || (filter === '|' && string.indexOf(filter) > 0)){
+            return Nui.trim(string.replace(filter, ''))
+        }
+        return false
+    }
+
+    template.render = render;
+
+    return template
+})
+
+/**
+ * @author Aniu[2016-11-11 16:54]
+ * @update Aniu[2016-11-11 16:54]
+ * @version 1.0.1
+ * @description 组件基类
+ */
+
+Nui.define('component', ['template'], function(tpl){
+    return ({
+        static:{
+            index:0,
+            instances:{},
+            options:{},
+            bsie6:Nui.browser.msie && Nui.browser.version <= 6,
+            config:function(key, value){
+                if(Nui.type(key, 'Object')){
+                    $.extend(true, this.options, key)
+                }
+                else if(Nui.type(key, 'String')){
+                    this.options[key] = value
+                }
+            },
+            $:function(name, module){
+                $[name] = function(options){
+                    if(options){
+                        return new module(options)
+                    }
+                }
+            },
+            $fn:function(name, module){
+                $.fn[name] = function(){
+                    var args = arguments;
+                    var param = args.length > 1 ? Array.prototype.slice.call(args, 1) : [];
+                    var options = args[0]||{}
+                    return this.each(function(){
+
+                        var that = this;
+                        if(!that.nui){
+                            that.nui = {}
+                        }
+                        var me = $(that);
+                        var obj = that.nui[name];
+
+                        if(!obj){
+                            var opts = options;
+                            if(typeof options === 'object'){
+                                options.target = that
+                            }
+                            else{
+                                opts = {
+                                    target:that
+                                }
+                            }
+                            obj = that.nui[name] = new module(opts)
+                        }
+
+                        if(typeof options === 'string'){
+                            if(options.indexOf('_') !== 0){
+                                if(options === 'options'){
+                                    if(typeof args[1] === 'object'){
+                                        obj.set(args[1])
+                                    }
+                                    else if(typeof args[1] === 'string'){
+                                        obj.set(args[1], args[2])
+                                    }
+                                }
+                                else{
+                                    obj[options].apply(obj, param)
+                                }
+                            }
+
+                        }
+                    })
+                }
+            },
+            $ready:function(name, module){
+                var attr = 'options-'+name;
+                var _$fn = $.fn[name];
+                var _$ = $[name];
+                $('['+ attr +']').each(function(index, item){
+                    var ele = $(item);
+                    var options = ele.attr(attr)
+                    options = options ? eval('('+ ele.attr(attr) +')') : {};
+                    options.target = item;
+                    if(_$fn){
+                        ele[name](options)
+                    }
+                    else if(_$){
+                        $[name](options)
+                    }
+                    else{
+                        new module(options)
+                    }
+                })
+            },
+            getSize:function(selector, dir, attr){
+                var size = 0;
+                attr = attr || 'border';
+                dir = dir || 'tb';
+                if(attr === 'all'){
+                    return this.getSize(selector, dir) + this.getSize(selector, dir, 'padding')
+                }
+                var group = {
+                    l:['Left'],
+                    r:['Right'],
+                    lr:['Left', 'Right'],
+                    t:['Top'],
+                    b:['Bottom'],
+                    tb:['Top', 'Bottom']
+                }
+                var arr = [{
+                    border:{
+                        l:['LeftWidth'],
+                        r:['RightWidth'],
+                        lr:['LeftWidth', 'RightWidth'],
+                        t:['TopWidth'],
+                        b:['BottomWidth'],
+                        tb:['TopWidth', 'BottomWidth']
+                    }
+                }, {
+                    padding:group
+                }, {
+                    margin:group
+                }];
+                $.each(arr, function(key, val){
+                    if(val[attr]){
+                        $.each(val[attr][dir], function(k, v){
+                            var value = parseInt(selector.css(attr+v));
+                            size += isNaN(value) ? 0 : value
+                        });
+                    }
+                });
+                return size
+            }
+        },
+        options:{
+            target:null,
+            theme:''
+        },
+        _init:$.noop,
+        _exec:$.noop,
+        _getTarget:function(){
+            return this.options.target ? $(this.options.target) : null
+        },
+        _on:function(eventType, target, callback, EventInit){
+            var that = this;
+            target.on(eventType, callback);
+            EventInit === true && target[eventType]();
+            that.eventArray.push({
+                target:target,
+                eventType:eventType,
+                callback:callback
+            })
+        },
+        _off:function(){
+            var that = this;
+            $.each(that.eventArray, function(key, val){
+                val && val.target.off(val.eventType, val.callback)
+            });
+            that.eventArray = []
+        },
+        _delete:function(){
+            var that = this;
+            var nuis = that.target[0].nui;
+            var self = that._self;
+            if(nuis){
+                nuis[that.moduleName] = null;
+                delete nuis[that.moduleName]
+            }
+            self.instances[that.index] = null;
+            delete self.instances[that.index]
+        },
+        _reset:function(){
+            var that = this;
+            that._off();
+            if(that.elem){
+                that.elem.remove();
+            }
+        },
+        _tpl2html:function(html, data){
+            return tpl.render(html, data)
+        },
+        set:function(name, value){
+            var that = this;
+            that._reset();
+            if(name || value){
+                if($.isPlainObject(name)){
+                    that.options = $.extend(true, that.options, name)
+                }
+                else{
+                    that.options[name] = value
+                }
+                that._exec()
+            }
+            return that
+        },
+        get:function(key){
+            var that = this;
+            if(!key){
+                return that.options
+            }
+            else{
+                return that.options[key]
+            }
+        },
+        reset:function(){
+            return this.set(that.optionsCache)
+        },
+        destroy:function(){
+            var that = this;
+            that._reset();
+            that._delete();
+        }
+    })
+})

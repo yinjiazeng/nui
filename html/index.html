@@ -1,50 +1,73 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8" />
-	<meta name="renderer" content="webkit" />
-	<meta name="keywords" content="" />
-	<meta name="description" content="" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-	<title></title>
-	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css" />
-    <link rel="stylesheet" type="text/css" href="/nui/assets/style/index-min.css" />
-</head>
+{% extends "layout.tpl" %}
 
-<body class="g-body">
-	<!-- header -->
-	<div class="g-header"></div>
-	<!-- /header -->
+{% block title %}{% endblock %}
 
-	<!-- content -->
-	<div class="g-content">
+{% block style %}
+	<link rel="stylesheet" type="text/css" href="/nui/assets/style/index-min.css" />
+{% endblock %}
 
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('index')}}
+{% endblock %}
+
+{% block content %}
+<div class="g-wrap f-tac e-pt20">
+	<div class="m-title e-mt20 e-pt20">
+		<img src="/nui/assets/images/logo.png" class="logo" alt="Nui.js" />
+		<span class="f-tal desc f-dib">
+			<em>模块化</em>
+			<span class="f-dib e-mt10">
+				<strong>JavaScript 框架</strong>
+			</span>
+			<span class="f-dib e-mt20">
+				<a class="ui-btn e-mr10" href="/nui/pages/loader/">起步</a>
+				<a class="ui-btn ui-btn-line" href="https://github.com/axnfex/nui" target="_blank">Github</a>
+			</span>
+		</span>
 	</div>
-	<!-- /content -->
+	<div class="m-desc f-clearfix">
+		<dl class="f-fl">
+			<dt class="f-fs20 f-cred">特丰富</dt>
+			<dd class="f-lh24 e-mt20">
+				<p>API文档详细</p>
+				<p>提供了20+个组件供不同业务场景使用</p>
+			</dd>
+		</dl>
+		<dl class="f-fl">
+			<dt class="f-fs20 f-cgreen">最精简</dt>
+			<dd class="f-lh24 e-mt20">
+				<p>压缩后加载器9kb，组件扩充版15kb</p>
+				<p>代码虽少但功能齐全</p>
+			</dd>
+		</dl>
+		<dl class="f-fl">
+			<dt class="f-fs20 f-cblue">自动化</dt>
+			<dd class="f-lh24 e-mt20">
+				<p>集成模块合并、压缩、修改版本号</p>
+				<p>完美解决http请求过多以及缓存问题</p>
+			</dd>
+		</dl>
+	</div>
+</div>
+<div class="m-used f-tac">
+	<div class="g-wrap">
+		<h3 class="f-fs20">哪些项目在用？</h3>
+		<p>
+			<a href="https://www.jss.com.cn/" target="_blank"><img src="/nui/assets/images/pros/jss.jpg" alt="诺诺服务" /></a>
+			<a href="https://www.axnsc.com/" target="_blank"><img src="/nui/assets/images/pros/axnsc.jpg" alt="诺诺商城" /></a>
+			<a href="https://www.axnjf.com/" target="_blank"><img src="/nui/assets/images/pros/axnjf.jpg" alt="诺诺金服" /></a>
+			<a href="https://cloud.jss.com.cn/" target="_blank"><img src="/nui/assets/images/pros/cloud.jpg" alt="诺诺云记账" /></a>
+			<a href="http://oa.jss.com.cn/" target="_blank"><img src="/nui/assets/images/pros/oa.jpg" alt="诺诺OA" /></a>
+		</p>
+	</div>
+</div>
+{% endblock %}
 
-	<!-- footer -->
-	<div class="g-footer">1</div>
-	<!-- /footer -->
-	<script type="text/javascript" src="/nui/assets/script/jquery.js"></script>
-	<script type="text/javascript" src="/nui/dest/nui-min.js"></script>
-    <script type="text/javascript">
-    Nui.config({
-        paths:{
-            base:'/nui',
-            script:'/assets/script',
-            style:'/assets/style',
-            cpns:'/src/components'
-        },
-        alias:{
-            placeholder:'{cpns}/placeholder'
-        }
-    })
+{% block footer %}
+{% include 'footer.tpl' %}
+{% endblock %}
 
-    Nui.load('{script}/base-min', function(page){
-        page.init(1111)
-    })
-
+{% block script %}
 	Nui.load('{script}/index-min')
-    </script>
-</body>
-</html>
+{% endblock %}
