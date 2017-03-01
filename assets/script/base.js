@@ -1,8 +1,4 @@
 Nui.define(function(){
     this.imports('../style/base')
-    return ({
-        init:function(){
-
-        }
-    })
+    $('#nowyear').text('-'+new Date().getFullYear())
 })

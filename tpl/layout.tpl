@@ -49,9 +49,7 @@
         }
     })
 
-    Nui.load('{script}/base-min', function(page){
-        page.init()
-    })
+    Nui.load('{script}/base-min')
 
     {% block script %}{% endblock %}
     </script>

@@ -5,5 +5,5 @@
 		<a href="https://www.jss.com.cn/" target="_blank">诺诺服务</a>
 		<a href="https://www.axnsc.com/" target="_blank">诺诺商城</a>
 	</p>
-	<p class="e-mt10">Copyright © 2017 Aisino FEX</p>
+	<p class="e-mt10">Copyright © 2016<span id="nowyear"></span> Aisino FEX</p>
 </div>

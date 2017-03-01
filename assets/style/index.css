@@ -5,5 +5,6 @@
 .m-title .desc strong { font-size: 34px;}
 .m-desc, .m-used { margin-top: 90px;}
 .m-desc dl { width: 33%;}
-.m-used { padding:35px 0; background-color: #F6F6F6;}
+.m-used { padding:35px 0; border-top:2px solid #F6F6F6;}
 .m-used a { display: inline-block; margin: 20px 10px 0;}
+.m-used a:hover { -webkit-filter:grayscale(0); -ms-filter:grayscale(0); filter:grayscale(0); filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=0);}

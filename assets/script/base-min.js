@@ -1,1 +1,1 @@
-Nui.define("{script}/base",function(){return this.imports("../style/base"),{init:function(){}}});
+Nui.define("{script}/base",function(){this.imports("../style/base"),$("#nowyear").text("-"+(new Date).getFullYear())});
