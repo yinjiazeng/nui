@@ -89,12 +89,14 @@ Nui.define(function(){
                        //.replace(/(\/code>\s*)([^='"]+)(=?)(['"][^'"]*['"])?(\s*<code)/g, '$1<code class="attr">$2</code><code class="plain">$3</code><code class="string">$4</code>$5')
                        console.log(code)*/
             var str = '';
+            code = code.replace(/&lt;(\s*!)([^!&]+)&gt;/g, '<$1$2>');
+            console.log(code)
             $.each(code.split('&lt;'), function(key, val){
                 val = val.split('&gt;');
                 $.each(val, function(k, v){
 
                     if($.trim(v)){
-                        
+
                     }
 
                     /*if($.trim(v)){
