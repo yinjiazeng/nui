@@ -1186,7 +1186,6 @@ Nui.define('component', ['template'], function(tpl){
                                     obj[options].apply(obj, param)
                                 }
                             }
-
                         }
                     })
                 }
@@ -1295,8 +1294,8 @@ Nui.define('component', ['template'], function(tpl){
                 that.elem.remove();
             }
         },
-        _tpl2html:function(html, data){
-            return tpl.render(html, data)
+        _tpl2html:function(tpls, data){
+            return tpl.render(tpls, data)
         },
         set:function(name, value){
             var that = this;

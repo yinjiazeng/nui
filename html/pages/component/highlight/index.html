@@ -1,0 +1,35 @@
+{% extends "layout.tpl" %}
+
+{% block title %}{% endblock %}
+
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('component')}}
+{% endblock %}
+
+{% block content %}
+<script type="text/highlight" options-highlight="{type:'html'}">
+     < div
+         href aaa  b="  "
+         <!-
+             -id-->
+             class="aa"
+         a="<div class='fdg'>
+
+             dfgdfg
+         </div>">
+         fghfghg
+         </ di
+         v
+         >
+         <div>dfg
+
+         dfgdfg
+
+         </div>
+</script>
+{% endblock %}
+
+{% block script %}
+	Nui.load('./script/page-min')
+{% endblock %}
