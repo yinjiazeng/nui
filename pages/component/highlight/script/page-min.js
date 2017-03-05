@@ -1,1 +1,1 @@
-Nui.define("./script/page",["highlight"],function(i){});
+Nui.define("./script/page",["highlight"],function(i){console.log(1)});

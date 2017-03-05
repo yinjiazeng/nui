@@ -8,25 +8,29 @@
 Nui.define(function(){
     return this.extands('component', {
         static:{
-            types:['html', 'css', 'js']
+            types:['html', 'css', 'js'],
+            bsie7:Nui.browser.msie && Nui.browser.version <= 7
         },
         options:{
             //html css js
             type:'',
             //点击代码那一行高亮
-            islight:true
+            light:true,
+            //是否显示行号
+            line:true
         },
         _init:function(){
             var that = this;
             that.target = that._getTarget();
-            if(that.target.get(0).tagName === 'SCRIPT' && that.target.attr('type') == 'text/highlight'){
+            var dom = that.target.get(0);
+            if(dom.tagName === 'SCRIPT' && dom.type == 'text/highlight'){
                 that._exec();
             }
         },
         _exec:function(){
             var that = this;
             that.code = that.target.html()
-                            .replace(/^[\n\r]+|[\n\r]+$/g, '')
+                            .replace(/^[\r\n]+|[\r\n]+$/g, '')
                             .replace(/</g, '&lt;')
                             .replace(/>/g, '&gt;');
             if(that.elem){
@@ -42,7 +46,7 @@ Nui.define(function(){
                         <table>\
                             {{each list val key}}\
                                 <tr>\
-                                    <td class="line">{{key+1}}</td>\
+                                    {{if line === true}}<td class="line" number="{{key+1}}">{{if bsie7}}{{key+1}}{{/if}}</td>{{/if}}\
                                     <td class="code">{{val}}</td>\
                                 </tr>\
                             {{/each}}\
@@ -51,9 +55,12 @@ Nui.define(function(){
         },
         _create:function(){
             var that = this;
+            var opts = that.options;
             var data = {
-                theme:that.options.theme,
-                type:that.options.type||'',
+                theme:opts.theme,
+                type:opts.type||'',
+                line:opts.line,
+                bsie7:that._self.bsie7,
                 list:that._list()
             }
             var html = that._tpl2html(that._tpl(), data);
@@ -77,54 +84,55 @@ Nui.define(function(){
         },
         _html:function(code){
             var that = this;
-                       //匹配内容
-            //code = code.replace(/(&gt;)([^&\s]+)(&lt;)/g, '$1<code class="plain">$2</code>$3')
-                       //匹配标签
-                       /*.replace(/(&lt;\s*\/?)([^!\s&]+)/g, '<code class="plain">$1</code><code class="tag">$2</code>')
-                       //匹配闭合标签
-                       .replace(/([^-&]+\s*)(&gt;)/g, '$1<code class="plain">$2</code>')
-                       //匹配注释
-                       .replace(/(&lt;\s*\!-\s*[^!\s]*\s*-\s*&gt;)/g, '<code class="comment">$1</code>')
-                       //匹配属性
-                       //.replace(/(\/code>\s*)([^='"]+)(=?)(['"][^'"]*['"])?(\s*<code)/g, '$1<code class="attr">$2</code><code class="plain">$3</code><code class="string">$4</code>$5')
-                       console.log(code)*/
             var str = '';
-            code = code.replace(/&lt;(\s*!)([^!&]+)&gt;/g, '<$1$2>');
-            console.log(code)
-            $.each(code.split('&lt;'), function(key, val){
-                val = val.split('&gt;');
-                $.each(val, function(k, v){
-
-                    if($.trim(v)){
-
-                    }
-
-                    /*if($.trim(v)){
-                        if(k == 0){
-                            if(/^\s*!/.test(v)){
-                                v = v.replace(/([\r\n]+)([^\s]+)/g, '$1'+that._getcode('comment', '$2'))
-
+            code = code.replace(/&lt;\s*![^!]+-\s*&gt;/g, function(res){
+                return res.replace(/&lt;/g, '<<').replace(/&gt;/g, '>>')
+            });
+            $.each(code.split('&lt;'), function(k1, v1){
+                v1 = v1.split('&gt;');
+                var length = v1.length;
+                $.each(v1, function(k2, v2){
+                    if($.trim(v2)){
+                        if(k2 == 0){
+                            var istag = false;
+                            if(/^\s*\//.test(v2)){
+                                v2 = v2.replace(/([^\r\n\/]+)/g, that._getcode('tag', '$1'))
+                                       .replace(/^(\s*\/+)/, that._getcode('plain', '$1'))
                             }
                             else{
-                                if(/^\s*\//.test(v)){
-                                    v = v.replace(/(\/)+/g, that._getcode('plain', '$1')).replace(/([^\s\/\<\>]+)/g, that._getcode('tag', '$1'))
+                                var preBlank = v2.match(/^\s+/)||'';
+                                if(/\=\s*['"]$/.test(v2)){
+                                    istag = true
                                 }
-                                else{
-                                    v = v.replace(/^(\s*[^\s\/]+)/, that._getcode('tag', '$1'))
-                                }
-                                v = that._getcode('plain', '&lt;') + v + that._getcode('plain', '&gt;')
+                                v2 = v2.replace(/^\s+/, '')
+                                       .replace(/(\s+)([^'"\/\s\=\<\>\-\!]+)((\s*=\s*)(['"]?[^'"]*['"]?))?/g, '$1'+that._getcode('attr', '$2')+that._getcode('plain', '$4')+that._getcode('string', '$5'))
+                                       .replace(/^([^\s]+)/, that._getcode('tag', '$1'))
+                                       .replace(/(\/+\s*)$/, that._getcode('plain', '$1'))
+                                v2 = preBlank + v2;
+                            }
+                            v2 = that._getcode('plain', '&lt;') + v2;
+                            if(!istag){
+                                v2 += that._getcode('plain', '&gt;');
                             }
                         }
                         else{
-
+                            if(length === 3 && k2 === 1 && /\s*['"]\s*/.test(v2)){
+                                v2 = v2.replace(/(\s*['"]\s*)/, that._getcode('plain', '$1')) + that._getcode('plain', '&gt;');
+                            }
+                            else{
+                                v2 = v2.replace(/([^\r\n]+)/g, that._getcode('text', '$1'))
+                            }
                         }
+                        //注释
+                        v2 = v2.replace(/<<\s*![^!]+-\s*>>/g, function(res){
+                            return res.replace(/([^\r\n]+)/g, that._getcode('comment', '$1')).replace(/<</g, '&lt;').replace(/>>/g, '&gt;')
+                        })
                     }
-                    str += v;*/
+                    str += v2
                 })
-console.log(val)
             })
 
-            return code
+            return str
         },
         _css:function(code){
             return code

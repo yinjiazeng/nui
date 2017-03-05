@@ -150,6 +150,7 @@ Nui.define('component', ['template'], function(tpl){
                 eventType:eventType,
                 callback:callback
             })
+            return that
         },
         _off:function(){
             var that = this;
@@ -157,6 +158,7 @@ Nui.define('component', ['template'], function(tpl){
                 val && val.target.off(val.eventType, val.callback)
             });
             that.eventArray = []
+            return that
         },
         _delete:function(){
             var that = this;
@@ -175,6 +177,7 @@ Nui.define('component', ['template'], function(tpl){
             if(that.elem){
                 that.elem.remove();
             }
+            return that
         },
         _tpl2html:function(tpls, data){
             return tpl.render(tpls, data)
