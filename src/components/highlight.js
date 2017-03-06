@@ -40,15 +40,17 @@ Nui.define(function(){
                     code = code.replace(/(\/\/.*)$/g, this._getcode('comment', '$1'))
                 }
                 return code
-            },
+            }
         },
         options:{
             //html css js
             type:'',
+            //是否显示title
+            isTitle:false,
             //点击代码那一行高亮
-            light:true,
+            isLight:true,
             //是否显示行号
-            line:true
+            isLine:true
         },
         _init:function(){
             var that = this;
@@ -68,35 +70,36 @@ Nui.define(function(){
                 that.elem.remove();
             }
             that._create();
-            if(that.options.light){
+            if(that.options.isLight){
                 that._event();
             }
         },
         _tpl:function(){
             return '<div class="ui-highlight{{if type}} ui-highlight-{{type}}{{/if}}{{if theme}} t-highlight-{{theme}}{{/if}}">\
+                        {{if isTitle}}\
                         <div class="title">\
                             <em class="type">{{type}}</em>\
                         </div>\
-                        <table>\
-                            {{each list val key}}\
-                                <tr>\
-                                    {{if line === true}}<td class="line" number="{{key+1}}">{{if bsie7}}{{key+1}}{{/if}}</td>{{/if}}\
-                                    <td class="code">{{val}}</td>\
-                                </tr>\
-                            {{/each}}\
-                        </table>\
+                        {{/if}}\
+                        <div class="inner">\
+                            <table>\
+                                {{each list val key}}\
+                                    <tr>\
+                                        {{if isLine === true}}<td class="line" number="{{key+1}}">{{if bsie7}}{{key+1}}{{/if}}</td>{{/if}}\
+                                        <td class="code">{{val}}</td>\
+                                    </tr>\
+                                {{/each}}\
+                            </table>\
+                        <div>\
                     </div>'
         },
         _create:function(){
             var that = this;
             var opts = that.options;
-            var data = {
-                theme:opts.theme,
-                type:opts.type||'',
-                line:opts.line,
+            var data = $.extend({
                 bsie7:that._self.bsie7,
                 list:that._list()
-            }
+            }, that.options||{})
             var html = that._tpl2html(that._tpl(), data);
             that.elem = $(html).insertAfter(that.target);
         },
@@ -196,7 +199,7 @@ Nui.define(function(){
                     }
                     else{
                         //匹配属性
-                        if(/^\}\s*$/.test(v)){
+                        if(/\}\s*$/.test(v)){
                             v = v.replace(/(\s*)([^:;\{\}\/\*]+)(:)([^:;\{\}\/\*]+)/g, '$1'+that._self._getcode('attr', '$2')+'$3'+that._self._getcode('string', '$4'))
                                 .replace(/([\:\;\{\}])/g, that._self._getcode('symbol', '$1'));
                         }
@@ -238,9 +241,10 @@ Nui.define(function(){
                         //关键字、符号、单词
                         else{
                             v = v.replace(new RegExp('('+ symbol +')', 'g'), that._self._getcode('symbol', '$1'))
-                                .replace(new RegExp('('+ kws +')(\\s+)', 'g'), that._self._getcode('keyword', '$1')+'$2')
+                                .replace(new RegExp('('+ kws +')(\\s+|\\\<code)', 'g'), that._self._getcode('keyword', '$1')+'$2')
                                 .replace(/(\/code>\s*)(\d+)/g, '$1'+that._self._getcode('number', '$2'))
-                                .replace(/(\/code>\s*)([^<>\s]+)(\s*<code)/g, '$1'+that._self._getcode('word', '$2')+'$3')
+                                .replace(/(\/code>\s*)?([^<>\s]+)(\s*<code)/g, '$1'+that._self._getcode('word', '$2')+'$3')
+
                         }
                         v = that._self._comment(v);
                     }
