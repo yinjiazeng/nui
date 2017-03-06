@@ -30,13 +30,13 @@ Nui.define(function(){
                 }
                 return array
             },
-            _comment:function(code, unsingle){
+            _comment:function(code){
                 //多行注释
                 if(/\/\*/.test(code)){
                     code = code.replace(/(\/\*(.|\s)*?\*\/)/g, this._getcode('comment', '$1'))
                 }
                 //单行注释
-                else if(!unsingle && /\/\//.test(v)){
+                else if(/\/\//.test(code)){
                     code = code.replace(/(\/\/.*)$/g, this._getcode('comment', '$1'))
                 }
                 return code
@@ -68,7 +68,7 @@ Nui.define(function(){
                 that.elem.remove();
             }
             that._create();
-            if(that.options.islight){
+            if(that.options.light){
                 that._event();
             }
         },
@@ -106,8 +106,14 @@ Nui.define(function(){
         },
         _event:function(){
             var that = this;
-            that._on('click', that.elem.find('.cell'), function(){
-
+            that._on('click', that.elem.find('tr'), function(e){
+                $(this).addClass('s-crt').siblings().removeClass('s-crt');
+            })
+            that._on('click', that.elem, function(e){
+                e.stopPropagation()
+            })
+            that._on('click', Nui.doc, function(e){
+                that.elem.find('tr.s-crt').removeClass('s-crt')
             })
         },
         _html:function(code){
@@ -145,11 +151,22 @@ Nui.define(function(){
                             }
                         }
                         else{
+                            //闭合标签
                             if(length === 3 && k2 === 1 && /\s*['"]\s*/.test(v2)){
                                 v2 = v2.replace(/(\s*['"]\s*)/, that._self._getcode('symbol', '$1')) + that._self._getcode('symbol', '&gt;');
                             }
+                            //内容
                             else{
-                                v2 = v2.replace(/(.+)/g, that._self._getcode('text', '$1'))
+                                var tagname = $.trim(v1[0]).toLowerCase();
+                                if(tagname == 'style'){
+                                    v2 = that._css(v2)
+                                }
+                                else if(tagname == 'script'){
+                                    v2 = that._js(v2)
+                                }
+                                else{
+                                    v2 = v2.replace(/(.+)/g, that._self._getcode('text', '$1'))
+                                }
                             }
                         }
                         //注释
