@@ -74,6 +74,9 @@ Nui.define(function(){
         },
         _tpl:function(){
             return '<div class="ui-highlight{{if type}} ui-highlight-{{type}}{{/if}}{{if theme}} t-highlight-{{theme}}{{/if}}">\
+                        <div class="title">\
+                            <em class="type">{{type}}</em>\
+                        </div>\
                         <table>\
                             {{each list val key}}\
                                 <tr>\
