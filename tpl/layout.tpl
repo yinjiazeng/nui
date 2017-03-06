@@ -51,6 +51,7 @@
         }
     })
 
+	Nui.load('{script}/base-min')
 
     {% block script %}{% endblock %}
     </script>
