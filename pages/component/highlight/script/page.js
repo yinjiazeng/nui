@@ -1,3 +1,3 @@
-Nui.define(['highlight'], function(highlight){
-    console.log(1)
+Nui.define(['{light}/xml'], function(){
+
 })

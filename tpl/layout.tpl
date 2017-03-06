@@ -42,15 +42,15 @@
             base:'/nui',
             script:'/assets/script',
             style:'/assets/style',
-            cpns:'/src/components'
+            cpns:'/src/components',
+			light:'/src/components/highlight'
         },
         alias:{
             placeholder:'{cpns}/placeholder',
-			highlight:'{cpns}/highlight'
+			highlight:'{light}/highlight'
         }
     })
 
-    Nui.load('{script}/base-min')
 
     {% block script %}{% endblock %}
     </script>

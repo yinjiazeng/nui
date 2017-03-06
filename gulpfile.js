@@ -40,10 +40,12 @@ var config = {
 		base:__dirname+'/',
 		script:'/assets/script',
 		style:'/assets/style',
-		cpns:'/src/components'
+		cpns:'/src/components',
+		light:'/src/components/highlight'
 	},
 	alias:{
-		'placeholder':'{cpns}/placeholder'
+		placeholder:'{cpns}/placeholder',
+		highlight:'{light}/highlight'
 	}
 }
 

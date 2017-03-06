@@ -48,7 +48,7 @@
 	<!-- content -->
 	<div class="g-content">
     
-<script type="text/highlight" options-highlight="{type:'html'}">
+<script type="text/highlight" options-xml>
 <div class="" data-a="">
 	<div class="11">1111</div>
 	<!-- <div></div>-->
@@ -67,7 +67,7 @@ var a = 1;
 var b = 2;
 &lt;/script&gt;
 </script>
-<script type="text/highlight" options-highlight="{type:'js'}">
+<script type="text/highlight" options-javascript>
 /*我是jquery*/
 $(function(){
 	console.log(1)
@@ -79,7 +79,7 @@ function a(){
 a();
 
 </script>
-<script type="text/highlight" options-highlight="{type:'css'}">
+<script type="text/highlight" options-style>
 a { color:#f60; b:aa;}
 b {
 	a {
@@ -124,18 +124,20 @@ a:child {a:1}
             base:'/nui',
             script:'/assets/script',
             style:'/assets/style',
-            cpns:'/src/components'
+            cpns:'/src/components',
+			light:'/src/components/highlight'
         },
         alias:{
             placeholder:'{cpns}/placeholder',
-			highlight:'{cpns}/highlight'
+			highlight:'{light}/highlight'
         }
     })
 
-    Nui.load('{script}/base-min?v=abb49ed')
 
     
-	Nui.load('./script/page-min?v=ef466ec')
+	Nui.load('./script/page-min?v=d903906', function(c){
+		console.log(c)
+	})
 
     </script>
 </body>

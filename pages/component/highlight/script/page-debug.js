@@ -5,10 +5,9 @@
  * @description 语法高亮组件
  */
 
-Nui.define(function(){
+Nui.define('highlight',function(){
     return this.extands('component', {
         static:{
-            types:['html', 'css', 'js'],
             bsie7:Nui.browser.msie && Nui.browser.version <= 7,
             _getcode:function(type, text){
                 return '<code class="'+ type +'">'+ text +'</code>'
@@ -43,8 +42,6 @@ Nui.define(function(){
             }
         },
         options:{
-            //html css js
-            type:'',
             //是否显示title
             isTitle:false,
             //点击代码那一行高亮
@@ -52,6 +49,7 @@ Nui.define(function(){
             //是否显示行号
             isLine:true
         },
+        _type:'',
         _init:function(){
             var that = this;
             that.target = that._getTarget();
@@ -98,15 +96,16 @@ Nui.define(function(){
             var opts = that.options;
             var data = $.extend({
                 bsie7:that._self.bsie7,
-                list:that._list()
+                list:that._list(),
+                type:that._type
             }, that.options||{})
             var html = that._tpl2html(that._tpl(), data);
             that.elem = $(html).insertAfter(that.target);
         },
         _list:function(){
             var that = this;
-            if($.inArray(that.options.type, that._self.types) !== -1){
-                return that['_'+that.options.type](that.code).split('\n')
+            if(that._type){
+                return that['_'+that._type](that.code).split('\n')
             }
             return that.code.split('\n')
         },
@@ -121,99 +120,19 @@ Nui.define(function(){
             that._on('click', Nui.doc, function(e){
                 that.elem.find('tr.s-crt').removeClass('s-crt')
             })
-        },
-        _html:function(code){
-            var that = this;
-            var str = '';
-            code = code.replace(/&lt;\s*![^!]+-\s*&gt;/g, function(res){
-                return res.replace(/&lt;/g, '<<').replace(/&gt;/g, '>>')
-            });
-            $.each(code.split('&lt;'), function(k1, v1){
-                v1 = v1.split('&gt;');
-                var length = v1.length;
-                $.each(v1, function(k2, v2){
-                    if($.trim(v2)){
-                        if(k2 == 0){
-                            var istag = false;
-                            if(/^\s*\//.test(v2)){
-                                v2 = v2.replace(/([^\r\n\/]+)/g, that._self._getcode('tag', '$1'))
-                                       .replace(/^(\s*\/+)/, that._self._getcode('symbol', '$1'))
-                            }
-                            else{
-                                var preBlank = v2.match(/^\s+/)||'';
-                                if(/\=\s*['"]$/.test(v2)){
-                                    istag = true
-                                }
-                                v2 = v2.replace(/^\s+/, '')
-                                       .replace(/(\s+)([^'"\/\s\=]+)((\s*=\s*)(['"]?[^'"]*['"]?))?/g, '$1'+that._self._getcode('attr', '$2')+that._self._getcode('symbol', '$4')+that._self._getcode('string', '$5'))
-                                       .replace(/<code class="\w+">(\s*((<<\s*![-\s]+)|([-\s]+>>))?)<\/code>/g, '$1')
-                                       .replace(/^([^\s]+)/, that._self._getcode('tag', '$1'))
-                                       .replace(/(\/+\s*)$/, that._self._getcode('symbol', '$1'))
-                                v2 = preBlank + v2;
-                            }
-                            v2 = that._self._getcode('symbol', '&lt;') + v2;
-                            if(!istag){
-                                v2 += that._self._getcode('symbol', '&gt;');
-                            }
-                        }
-                        else{
-                            //闭合标签
-                            if(length === 3 && k2 === 1 && /\s*['"]\s*/.test(v2)){
-                                v2 = v2.replace(/(\s*['"]\s*)/, that._self._getcode('symbol', '$1')) + that._self._getcode('symbol', '&gt;');
-                            }
-                            //内容
-                            else{
-                                var tagname = $.trim(v1[0]).toLowerCase();
-                                if(tagname == 'style'){
-                                    v2 = that._css(v2)
-                                }
-                                else if(tagname == 'script'){
-                                    v2 = that._js(v2)
-                                }
-                                else{
-                                    v2 = v2.replace(/(.+)/g, that._self._getcode('text', '$1'))
-                                }
-                            }
-                        }
-                        //注释
-                        v2 = v2.replace(/<<\s*![^!]+-\s*>>/g, function(res){
-                            return res.replace(/([^\r\n]+)/g, that._self._getcode('comment', '$1')).replace(/<</g, '&lt;').replace(/>>/g, '&gt;')
-                        })
-                    }
-                    str += v2
-                })
-            })
+        }
+    })
+})
+/**
+ * @author Aniu[2017-03-02 08:44]
+ * @update Aniu[2017-03-02 08:44]
+ * @version 1.0.1
+ * @description javascript语法高亮组件
+ */
 
-            return str
-        },
-        _css:function(code){
-            var that = this;
-            var str = '';
-            var match = code.match(/(\/\*(.|\s)*?\*\/)|(\{[^\{\}\/]*\})/g);
-            var array = that._self._getarr(match, code);
-            $.each(array, function(k, v){
-                if($.trim(v)){
-                    //多行注释
-                    if(/^\s*\/\*/.test(v)){
-                        v = v.replace(/(.+)/g, that._self._getcode('comment', '$1'))
-                    }
-                    else{
-                        //匹配属性
-                        if(/\}\s*$/.test(v)){
-                            v = v.replace(/(\s*)([^:;\{\}\/\*]+)(:)([^:;\{\}\/\*]+)/g, '$1'+that._self._getcode('attr', '$2')+'$3'+that._self._getcode('string', '$4'))
-                                .replace(/([\:\;\{\}])/g, that._self._getcode('symbol', '$1'));
-                        }
-                        //选择器
-                        else{
-                            v = v.replace(/([^\:\{\}\@\#\s\.]+)/g, that._self._getcode('selector', '$1'))
-                                .replace(/([\:\{\}\@\#\.])/g, that._self._getcode('symbol', '$1'));
-                        }
-                    }
-                }
-                str += v;
-            })
-            return str
-        },
+Nui.define('{light}/javascript',function(){
+    return this.extands('highlight', {
+        _type:'js',
         _js:function(code){
             var that = this;
             var str = '';
@@ -254,4 +173,7 @@ Nui.define(function(){
             return str
         }
     })
+})
+Nui.define('./script/page',['{light}/javascript'], function(){
+
 })
