@@ -97,7 +97,7 @@ Nui.define(function(){
                             var istag = false;
                             if(/^\s*\//.test(v2)){
                                 v2 = v2.replace(/([^\r\n\/]+)/g, that._getcode('tag', '$1'))
-                                       .replace(/^(\s*\/+)/, that._getcode('plain', '$1'))
+                                       .replace(/^(\s*\/+)/, that._getcode('symbol', '$1'))
                             }
                             else{
                                 var preBlank = v2.match(/^\s+/)||'';
@@ -105,19 +105,20 @@ Nui.define(function(){
                                     istag = true
                                 }
                                 v2 = v2.replace(/^\s+/, '')
-                                       .replace(/(\s+)([^'"\/\s\=\<\>\-\!]+)((\s*=\s*)(['"]?[^'"]*['"]?))?/g, '$1'+that._getcode('attr', '$2')+that._getcode('plain', '$4')+that._getcode('string', '$5'))
+                                       .replace(/(\s+)([^'"\/\s\=]+)((\s*=\s*)(['"]?[^'"]*['"]?))?/g, '$1'+that._getcode('attr', '$2')+that._getcode('symbol', '$4')+that._getcode('string', '$5'))
+                                       .replace(/<code class="\w+">(\s*((<<\s*![-\s]+)|([-\s]+>>))?)<\/code>/g, '$1')
                                        .replace(/^([^\s]+)/, that._getcode('tag', '$1'))
-                                       .replace(/(\/+\s*)$/, that._getcode('plain', '$1'))
+                                       .replace(/(\/+\s*)$/, that._getcode('symbol', '$1'))
                                 v2 = preBlank + v2;
                             }
-                            v2 = that._getcode('plain', '&lt;') + v2;
+                            v2 = that._getcode('symbol', '&lt;') + v2;
                             if(!istag){
-                                v2 += that._getcode('plain', '&gt;');
+                                v2 += that._getcode('symbol', '&gt;');
                             }
                         }
                         else{
                             if(length === 3 && k2 === 1 && /\s*['"]\s*/.test(v2)){
-                                v2 = v2.replace(/(\s*['"]\s*)/, that._getcode('plain', '$1')) + that._getcode('plain', '&gt;');
+                                v2 = v2.replace(/(\s*['"]\s*)/, that._getcode('symbol', '$1')) + that._getcode('symbol', '&gt;');
                             }
                             else{
                                 v2 = v2.replace(/([^\r\n]+)/g, that._getcode('text', '$1'))
