@@ -6,12 +6,8 @@
  */
 
 Nui.define(['util'], function(util){
+    var support = util.supportHtml5('placeholder', 'input');
     return this.extands('component', {
-        static:{
-            support:function(){
-                return util.supportHtml5('placeholder', 'input')
-            }
-        },
         options:{
             /**
              * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
@@ -34,7 +30,7 @@ Nui.define(['util'], function(util){
              */
             color:'#ccc'
         },
-        tpl:{
+        _tpl:{
             wrap:'<strong \
                     class="nui-placeholder{{if theme}} t-placeholder-{{theme}}{{/if}}" style="\
                     {{each style val key}}\
@@ -70,8 +66,8 @@ Nui.define(['util'], function(util){
             if(opts.animate){
                 that.target.removeAttr('placeholder')
             }
-            if(opts.animate || (!opts.animate && !self.support())){
-                that.target.wrap(that._tpl2html(that.tpl.wrap, {
+            if(opts.animate || (!opts.animate && !support)){
+                that.target.wrap(that._tpl2html(that._tpl.wrap, {
                         theme:opts.theme,
                         style:{
                             'position':'relative',
@@ -81,7 +77,7 @@ Nui.define(['util'], function(util){
                             'cursor':'text'
                         }
                     }))
-                that.elem = $(that._tpl2html(that.tpl.elem, {
+                that.elem = $(that._tpl2html(that._tpl.elem, {
                         text:that.text,
                         style:(function(){
                             var height = that.target.outerHeight();

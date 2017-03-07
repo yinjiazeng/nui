@@ -95,6 +95,8 @@
         })()
     }
 
+    Nui.bsie6 = Nui.browser.msie && Nui.browser.version <= 6;
+
     if(typeof jQuery !== 'undefined'){
         Nui.win = jQuery(window);
         Nui.doc = jQuery(document);
@@ -482,9 +484,7 @@
                 mod.module.exports = exports;
                 mod.module._COMPONENTNAME_ = name;
                 Nui.each(['$', '$fn', '$ready'], function(v){
-                    if(Nui.type(module[v], 'Function')){
-                        module[v](name, module)
-                    }
+                    module(v, name, module)
                 })
             }
             else{
@@ -543,28 +543,41 @@
     Module.createClass = function(mod, object){
         var Class = function(options){
             var that = this;
-            extend(that, object.attr, {
-                index:Class.index++,
-                eventArray:[]
+            extend(true, that, object.attr, {
+                index:Class._index++,
+                _eventArray:[]
             });
-            that.options = extend(true, {}, that.options, Class.options, options||{})
+            that.options = extend(true, {}, that.options, Class._options, options||{})
             that.optionsCache = extend(that.options);
-            Class.instances[that.index] = that;
+            Class._instances[that.index] = that;
             that.static = null;
-            delete that.static;
             that._init()
         }
         extend(true, Class, object.static);
         extend(true, Class.prototype, object.proto);
-        //Class.prototype._self = Class;
-        return Class
+        return (function(){
+            var args = arguments;
+            var options = args[0];
+            if(typeof options === 'string'){
+                if(options.indexOf('_') !== 0){
+                    var attr = Class[options];
+                    if(typeof attr === 'function'){
+                        return attr.apply(Class, Array.prototype.slice.call(args, 1))
+                    }
+                    return attr
+                }
+            }
+            else{
+                return new Class(options)
+            }
+        })
     }
 
     Module.require = function(mod, options){
         if(mod){
             var module = mod.module;
             if(Nui.type(options, 'Object')){
-                return new module(factory)
+                return module(factory)
             }
             else if(Nui.type(options, 'String')){
                 return module[factory]
@@ -1126,95 +1139,15 @@ Nui.define('template', ['util'], function(util){
 Nui.define('component', ['template'], function(tpl){
     return ({
         static:{
-            index:0,
-            instances:{},
-            options:{},
-            bsie6:Nui.browser.msie && Nui.browser.version <= 6,
-            config:function(key, value){
-                if(Nui.type(key, 'Object')){
-                    $.extend(true, this.options, key)
-                }
-                else if(Nui.type(key, 'String')){
-                    this.options[key] = value
-                }
-            },
-            $:function(name, module){
-                $[name] = function(options){
-                    if(options){
-                        return new module(options)
-                    }
-                }
-            },
-            $fn:function(name, module){
-                $.fn[name] = function(){
-                    var args = arguments;
-                    var param = args.length > 1 ? Array.prototype.slice.call(args, 1) : [];
-                    var options = args[0]||{}
-                    return this.each(function(){
-
-                        var that = this;
-                        if(!that.nui){
-                            that.nui = {}
-                        }
-                        var me = $(that);
-                        var obj = that.nui[name];
-                        if(!obj){
-                            var opts = options;
-                            if(typeof options === 'object'){
-                                options.target = that
-                            }
-                            else{
-                                opts = {
-                                    target:that
-                                }
-                            }
-                            obj = that.nui[name] = new module(opts)
-                        }
-
-                        if(typeof options === 'string'){
-                            if(options.indexOf('_') !== 0){
-                                if(options === 'options'){
-                                    if(typeof args[1] === 'object'){
-                                        obj.set(args[1])
-                                    }
-                                    else if(typeof args[1] === 'string'){
-                                        obj.set(args[1], args[2])
-                                    }
-                                }
-                                else{
-                                    obj[options].apply(obj, param)
-                                }
-                            }
-                        }
-                    })
-                }
-            },
-            $ready:function(name, module){
-                var attr = 'options-'+name;
-                var _$fn = $.fn[name];
-                var _$ = $[name];
-                $('['+ attr +']').each(function(index, item){
-                    var ele = $(item);
-                    var options = ele.attr(attr)
-                    options = options ? eval('('+ ele.attr(attr) +')') : {};
-                    options.target = item;
-                    if(_$fn){
-                        ele[name](options)
-                    }
-                    else if(_$){
-                        $[name](options)
-                    }
-                    else{
-                        new module(options)
-                    }
-                })
-            },
-            getSize:function(selector, dir, attr){
+            _index:0,
+            _instances:{},
+            _options:{},
+            _getSize:function(selector, dir, attr){
                 var size = 0;
                 attr = attr || 'border';
                 dir = dir || 'tb';
                 if(attr === 'all'){
-                    return this.getSize(selector, dir) + this.getSize(selector, dir, 'padding')
+                    return this._getSize(selector, dir) + this._getSize(selector, dir, 'padding')
                 }
                 var group = {
                     l:['Left'],
@@ -1247,6 +1180,86 @@ Nui.define('component', ['template'], function(tpl){
                     }
                 });
                 return size
+            },
+            $:function(name, module){
+                $[name] = function(options){
+                    if(options){
+                        return module(options)
+                    }
+                }
+            },
+            $fn:function(name, module){
+                $.fn[name] = function(){
+                    var args = arguments;
+                    var options = args[0];
+                    return this.each(function(){
+                        var that = this;
+                        if(!that.nui){
+                            that.nui = {}
+                        }
+                        var me = $(that);
+                        var obj = that.nui[name];
+                        if(!obj){
+                            var opts = options;
+                            if(Nui.type(opts, 'Object')){
+                                options.target = that
+                            }
+                            else{
+                                opts = {
+                                    target:that
+                                }
+                            }
+                            obj = that.nui[name] = module(opts)
+                        }
+
+                        if(typeof options === 'string'){
+                            if(options.indexOf('_') !== 0){
+                                if(options === 'options'){
+                                    if(typeof args[1] === 'object'){
+                                        obj.set(args[1])
+                                    }
+                                    else if(typeof args[1] === 'string'){
+                                        obj.set(args[1], args[2])
+                                    }
+                                }
+                                else{
+                                    var attr = obj[options];
+                                    if(typeof attr === 'function'){
+                                        attr.apply(obj, Array.prototype.slice.call(args, 1))
+                                    }
+                                }
+                            }
+                        }
+                    })
+                }
+            },
+            $ready:function(name, module){
+                var attr = 'options-'+name;
+                var _$fn = $.fn[name];
+                var _$ = $[name];
+                $('['+ attr +']').each(function(index, item){
+                    var ele = $(item);
+                    var options = ele.attr(attr)
+                    options = options ? eval('('+ ele.attr(attr) +')') : {};
+                    options.target = item;
+                    if(_$fn){
+                        ele[name](options)
+                    }
+                    else if(_$){
+                        $[name](options)
+                    }
+                    else{
+                        module(options)
+                    }
+                })
+            },
+            options:function(key, value){
+                if(Nui.type(key, 'Object')){
+                    $.extend(true, this._options, key)
+                }
+                else if(Nui.type(key, 'String')){
+                    this._options[key] = value
+                }
             }
         },
         options:{
@@ -1258,23 +1271,23 @@ Nui.define('component', ['template'], function(tpl){
         _getTarget:function(){
             return this.options.target ? $(this.options.target) : null
         },
-        _on:function(eventType, target, callback, EventInit){
+        _on:function(type, target, callback, trigger){
             var that = this;
-            target.on(eventType, callback);
-            EventInit === true && target[eventType]();
-            that.eventArray.push({
+            target.on(type, callback);
+            trigger === true && target[type]();
+            that._eventArray.push({
                 target:target,
-                eventType:eventType,
+                type:type,
                 callback:callback
-            })
+            });
             return that
         },
         _off:function(){
             var that = this;
-            $.each(that.eventArray, function(key, val){
-                val && val.target.off(val.eventType, val.callback)
+            $.each(that._eventArray, function(key, val){
+                val && val.target.off(val.type, val.callback)
             });
-            that.eventArray = []
+            that._eventArray = [];
             return that
         },
         _delete:function(){

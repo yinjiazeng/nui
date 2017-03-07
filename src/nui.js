@@ -95,6 +95,8 @@
         })()
     }
 
+    Nui.bsie6 = Nui.browser.msie && Nui.browser.version <= 6;
+
     if(typeof jQuery !== 'undefined'){
         Nui.win = jQuery(window);
         Nui.doc = jQuery(document);
@@ -482,9 +484,7 @@
                 mod.module.exports = exports;
                 mod.module._COMPONENTNAME_ = name;
                 Nui.each(['$', '$fn', '$ready'], function(v){
-                    if(Nui.type(module[v], 'Function')){
-                        module[v](name, module)
-                    }
+                    module(v, name, module)
                 })
             }
             else{
@@ -543,28 +543,41 @@
     Module.createClass = function(mod, object){
         var Class = function(options){
             var that = this;
-            extend(that, object.attr, {
-                index:Class.index++,
-                eventArray:[]
+            extend(true, that, object.attr, {
+                index:Class._index++,
+                _eventArray:[]
             });
-            that.options = extend(true, {}, that.options, Class.options, options||{})
+            that.options = extend(true, {}, that.options, Class._options, options||{})
             that.optionsCache = extend(that.options);
-            Class.instances[that.index] = that;
+            Class._instances[that.index] = that;
             that.static = null;
-            delete that.static;
             that._init()
         }
         extend(true, Class, object.static);
         extend(true, Class.prototype, object.proto);
-        //Class.prototype._self = Class;
-        return Class
+        return (function(){
+            var args = arguments;
+            var options = args[0];
+            if(typeof options === 'string'){
+                if(options.indexOf('_') !== 0){
+                    var attr = Class[options];
+                    if(typeof attr === 'function'){
+                        return attr.apply(Class, Array.prototype.slice.call(args, 1))
+                    }
+                    return attr
+                }
+            }
+            else{
+                return new Class(options)
+            }
+        })
     }
 
     Module.require = function(mod, options){
         if(mod){
             var module = mod.module;
             if(Nui.type(options, 'Object')){
-                return new module(factory)
+                return module(factory)
             }
             else if(Nui.type(options, 'String')){
                 return module[factory]
