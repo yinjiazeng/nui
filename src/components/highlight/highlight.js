@@ -6,7 +6,6 @@
  */
 
 Nui.define(function(){
-    var bsie7 = Nui.browser.msie && Nui.browser.version <= 7;
     return this.extands('component', {
         static:{
             _getcode:function(type, text){
@@ -95,7 +94,7 @@ Nui.define(function(){
             var that = this;
             var opts = that.options;
             var data = $.extend({
-                bsie7:bsie7,
+                bsie7:Nui.bsie7,
                 list:that._list(),
                 type:that._type
             }, that.options||{})

@@ -96,6 +96,12 @@
     }
 
     Nui.bsie6 = Nui.browser.msie && Nui.browser.version <= 6;
+    Nui.bsie7 = Nui.browser.msie && Nui.browser.version <= 7;
+
+    //防止IE6-IE7鼠标hover以及position:fixed时背景图片闪烁
+    if(Nui.bsie7){
+        document.execCommand('BackgroundImageCache', false, true);
+    }
 
     if(typeof jQuery !== 'undefined'){
         Nui.win = jQuery(window);
@@ -178,11 +184,6 @@
             error:noop,
             info:noop
         }
-    }
-
-    //防止IE6-IE7鼠标hover以及position:fixed时背景图片闪烁
-    if(Nui.browser.msie && Nui.browser.version <= 7){
-        document.execCommand('BackgroundImageCache', false, true);
     }
 
     var domain = location.protocol+'//'+location.host;
