@@ -84,8 +84,8 @@ Nui.define(['util'], function(util){
                             var isText = that.target.is('textarea');
                             return ({
                                 'position':'absolute',
-                                'left':self.getSize(that.target, 'l', 'padding')+self.getSize(that.target, 'l')+'px',
-                                'top':self.getSize(that.target, 't', 'padding')+self.getSize(that.target, 't')+'px',
+                                'left':self._getSize(that.target, 'l', 'padding')+self._getSize(that.target, 'l')+'px',
+                                'top':self._getSize(that.target, 't', 'padding')+self._getSize(that.target, 't')+'px',
                                 'height':isText ? 'auto' : height+'px',
                                 'line-height':isText ? 'normal' : height+'px',
                                 'color':opts.color
@@ -138,7 +138,7 @@ Nui.define(['util'], function(util){
         },
         _event:function(){
             var that = this, opts = that.options, self = that.constructor;
-            var pleft = self.getSize(that.target, 'l', 'padding') + self.getSize(that.target, 'l');
+            var pleft = self._getSize(that.target, 'l', 'padding') + self._getSize(that.target, 'l');
             that._on('click', that.elem, function(){
                 that.target.focus()
             })
