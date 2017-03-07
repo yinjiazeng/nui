@@ -66,11 +66,11 @@ Nui.define(['util'], function(util){
             }
         },
         _create:function(){
-            var that = this, opts = that.options;
+            var that = this, opts = that.options, self = that.constructor;
             if(opts.animate){
                 that.target.removeAttr('placeholder')
             }
-            if(opts.animate || (!opts.animate && !that._self.support())){
+            if(opts.animate || (!opts.animate && !self.support())){
                 that.target.wrap(that._tpl2html(that.tpl.wrap, {
                         theme:opts.theme,
                         style:{
@@ -88,8 +88,8 @@ Nui.define(['util'], function(util){
                             var isText = that.target.is('textarea');
                             return ({
                                 'position':'absolute',
-                                'left':that._self.getSize(that.target, 'l', 'padding')+that._self.getSize(that.target, 'l')+'px',
-                                'top':that._self.getSize(that.target, 't', 'padding')+that._self.getSize(that.target, 't')+'px',
+                                'left':self.getSize(that.target, 'l', 'padding')+self.getSize(that.target, 'l')+'px',
+                                'top':self.getSize(that.target, 't', 'padding')+self.getSize(that.target, 't')+'px',
                                 'height':isText ? 'auto' : height+'px',
                                 'line-height':isText ? 'normal' : height+'px',
                                 'color':opts.color
@@ -107,7 +107,7 @@ Nui.define(['util'], function(util){
             var that = this, opts = that.options;
             that.className = 'nui-placeholder-'+that.index;
             that.target.addClass(that.className);
-            if(!that._self.style){
+            if(!that.constructor.style){
                 that._createStyle()
             }
             that._createRules()
@@ -116,11 +116,11 @@ Nui.define(['util'], function(util){
             var that = this;
             var style = document.createElement('style');
             document.head.appendChild(style);
-            that._self.style = style.sheet
+            that.constructor.style = style.sheet
         },
         _createRules:function(){
             var that = this;
-            var sheet = that._self.style;
+            var sheet = that.constructor.style;
             var index = that.index;
             try{
                 sheet.deleteRule(index)
@@ -141,8 +141,8 @@ Nui.define(['util'], function(util){
             })
         },
         _event:function(){
-            var that = this, opts = that.options;
-            var pleft = that._self.getSize(that.target, 'l', 'padding') + that._self.getSize(that.target, 'l');
+            var that = this, opts = that.options, self = that.constructor;
+            var pleft = self.getSize(that.target, 'l', 'padding') + self.getSize(that.target, 'l');
             that._on('click', that.elem, function(){
                 that.target.focus()
             })

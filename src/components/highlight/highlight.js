@@ -95,7 +95,7 @@ Nui.define(function(){
             var that = this;
             var opts = that.options;
             var data = $.extend({
-                bsie7:that._self.bsie7,
+                bsie7:that.constructor.bsie7,
                 list:that._list(),
                 type:that._type
             }, that.options||{})

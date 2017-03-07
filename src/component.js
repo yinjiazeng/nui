@@ -40,7 +40,6 @@ Nui.define('component', ['template'], function(tpl){
                         }
                         var me = $(that);
                         var obj = that.nui[name];
-
                         if(!obj){
                             var opts = options;
                             if(typeof options === 'object'){
@@ -162,11 +161,11 @@ Nui.define('component', ['template'], function(tpl){
         },
         _delete:function(){
             var that = this;
-            var nuis = that.target[0].nui;
-            var self = that._self;
-            if(nuis){
-                nuis[that.moduleName] = null;
-                delete nuis[that.moduleName]
+            var self = that.constructor;
+            var dom = that.target[0];
+            if(dom && dom.nui){
+                dom.nui[that.constructor._COMPONENTNAME_] = null;
+                delete dom.nui[that.constructor._COMPONENTNAME_];
             }
             self.instances[that.index] = null;
             delete self.instances[that.index]

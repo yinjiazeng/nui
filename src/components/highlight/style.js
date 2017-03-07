@@ -10,25 +10,26 @@ Nui.define(function(){
         _type:'css',
         _css:function(code){
             var that = this;
+            var self = that.constructor;
             var str = '';
             var match = code.match(/(\/\*(.|\s)*?\*\/)|(\{[^\{\}\/]*\})/g);
-            var array = that._self._getarr(match, code);
+            var array = self._getarr(match, code);
             $.each(array, function(k, v){
                 if($.trim(v)){
                     //多行注释
                     if(/^\s*\/\*/.test(v)){
-                        v = v.replace(/(.+)/g, that._self._getcode('comment', '$1'))
+                        v = v.replace(/(.+)/g, self._getcode('comment', '$1'))
                     }
                     else{
                         //匹配属性
                         if(/\}\s*$/.test(v)){
-                            v = v.replace(/(\s*)([^:;\{\}\/\*]+)(:)([^:;\{\}\/\*]+)/g, '$1'+that._self._getcode('attr', '$2')+'$3'+that._self._getcode('string', '$4'))
-                                .replace(/([\:\;\{\}])/g, that._self._getcode('symbol', '$1'));
+                            v = v.replace(/(\s*)([^:;\{\}\/\*]+)(:)([^:;\{\}\/\*]+)/g, '$1'+self._getcode('attr', '$2')+'$3'+self._getcode('string', '$4'))
+                                .replace(/([\:\;\{\}])/g, self._getcode('symbol', '$1'));
                         }
                         //选择器
                         else{
-                            v = v.replace(/([^\:\{\}\@\#\s\.]+)/g, that._self._getcode('selector', '$1'))
-                                .replace(/([\:\{\}\@\#\.])/g, that._self._getcode('symbol', '$1'));
+                            v = v.replace(/([^\:\{\}\@\#\s\.]+)/g, self._getcode('selector', '$1'))
+                                .replace(/([\:\{\}\@\#\.])/g, self._getcode('symbol', '$1'));
                         }
                     }
                 }

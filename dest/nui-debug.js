@@ -478,10 +478,9 @@
                     }
                 })
                 var module = mod.module = Module.createClass(mod, obj);
+                var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\{[^\{\}]+\}/g, '');
                 mod.module.exports = exports;
-                var name = mod.name;
-                var index = name.lastIndexOf('/');
-                name = name.substr(index+1).replace(/\{[^\{\}]+\}/g, '');
+                mod.module._COMPONENTNAME_ = name;
                 Nui.each(['$', '$fn', '$ready'], function(v){
                     if(Nui.type(module[v], 'Function')){
                         module[v](name, module)
@@ -551,12 +550,13 @@
             that.options = extend(true, {}, that.options, Class.options, options||{})
             that.optionsCache = extend(that.options);
             Class.instances[that.index] = that;
+            that.static = null;
             delete that.static;
             that._init()
         }
         extend(true, Class, object.static);
         extend(true, Class.prototype, object.proto);
-        Class.prototype.constructor = Class.prototype._self = Class;
+        //Class.prototype._self = Class;
         return Class
     }
 
@@ -1158,7 +1158,6 @@ Nui.define('component', ['template'], function(tpl){
                         }
                         var me = $(that);
                         var obj = that.nui[name];
-
                         if(!obj){
                             var opts = options;
                             if(typeof options === 'object'){
@@ -1280,11 +1279,11 @@ Nui.define('component', ['template'], function(tpl){
         },
         _delete:function(){
             var that = this;
-            var nuis = that.target[0].nui;
-            var self = that._self;
-            if(nuis){
-                nuis[that.moduleName] = null;
-                delete nuis[that.moduleName]
+            var self = that.constructor;
+            var dom = that.target[0];
+            if(dom && dom.nui){
+                dom.nui[that.constructor._COMPONENTNAME_] = null;
+                delete dom.nui[that.constructor._COMPONENTNAME_];
             }
             self.instances[that.index] = null;
             delete self.instances[that.index]
