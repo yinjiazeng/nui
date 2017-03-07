@@ -465,6 +465,7 @@
             var exports = factory.apply(factory, modules);
             if(mod.name !== 'component' && Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
                 var obj = {
+                    static:{},
                     attr:{},
                     proto:{}
                 }
@@ -472,17 +473,17 @@
                     if(key === 'static'){
                         obj[key] = val
                     }
-                    if(Nui.type(val, 'Function')){
+                    else if(Nui.type(val, 'Function')){
                         obj.proto[key] = val
                     }
                     else{
                         obj.attr[key] = val
                     }
                 })
-                var module = mod.module = Module.createClass(mod, obj);
                 var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\{[^\{\}]+\}/g, '');
-                mod.module.exports = exports;
-                mod.module._COMPONENTNAME_ = name;
+                obj.static._componentname_ = name;
+                var module = mod.module = Module.createClass(mod, obj);
+                module.exports = exports;
                 Nui.each(['$', '$fn', '$ready'], function(v){
                     module(v, name, module)
                 })

@@ -119,7 +119,7 @@ a:child {a:1}
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js"></script>
-    <script type="text/javascript" src="/nui/dest/nui-min.js"></script>
+    <script type="text/javascript" src="/nui/dest/nui-debug.js"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{
@@ -135,10 +135,10 @@ a:child {a:1}
         }
     })
 
-	Nui.load('{script}/base-min')
+	Nui.load('{script}/base-min?v=f3e5596')
 
     
-	Nui.load('./script/page-min', function(c){
+	Nui.load('./script/page-min?v=819d15e', function(c){
 		console.log(c)
 	})
 

@@ -164,11 +164,11 @@ Nui.define('component', ['template'], function(tpl){
             var self = that.constructor;
             var dom = that.target[0];
             if(dom && dom.nui){
-                dom.nui[that.constructor._COMPONENTNAME_] = null;
-                delete dom.nui[that.constructor._COMPONENTNAME_];
+                dom.nui[that.constructor._componentname_] = null;
+                delete dom.nui[that.constructor._componentname_];
             }
-            self.instances[that.index] = null;
-            delete self.instances[that.index]
+            self._instances[that.index] = null;
+            delete self._instances[that.index]
         },
         _reset:function(){
             var that = this;

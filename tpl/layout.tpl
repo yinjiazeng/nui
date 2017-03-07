@@ -32,7 +32,7 @@
 	{% block footer %}{% endblock %}
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js"></script>
-    <script type="text/javascript" src="/nui/dest/nui-min.js"></script>
+    <script type="text/javascript" src="/nui/dest/nui-debug.js"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{
