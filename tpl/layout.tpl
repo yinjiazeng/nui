@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html{% block subpage %}{% endblock %}>
 <head>
 	<meta charset="utf-8" />
 	<meta name="renderer" content="webkit" />
@@ -13,9 +13,9 @@
 <body class="g-body">
 	<!-- header -->
 	<div class="g-header f-clearfix">
-	    <a class="m-logo f-fl">
+	    <a class="m-logo f-fl" href="/nui/">
             <img src="/nui/assets/images/logo.png" alt="Nui.js" class="f-fl" />
-            <em class="f-fl e-ml10 f-fs24">Nui.js</em>
+            <h1 class="f-fl e-ml10 e-mt5 f-fs24">Nui.js</h1>
         </a>
         <ul class="m-nav f-fr f-fs16">
             {% block nav %}{% endblock %}
@@ -29,11 +29,8 @@
 	</div>
 	<!-- /content -->
 
-	<!-- footer -->
-	<div class="g-footer">
 	{% block footer %}{% endblock %}
-	</div>
-	<!-- /footer -->
+
     <script type="text/javascript" src="/nui/assets/script/jquery.js"></script>
     <script type="text/javascript" src="/nui/dest/nui-min.js"></script>
     <script type="text/javascript">
