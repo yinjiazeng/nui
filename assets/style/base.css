@@ -135,9 +135,10 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 
 /* page */
 .g-html, .g-html body { width: 100%; height: 100%; overflow: hidden;}
-.g-body { width:100%; min-width:1000px;}
-.g-wrap { margin:0 auto; width:1000px;}
+.g-body { width:100%; min-width:1200px;}
+.g-wrap { margin:0 auto; width:1200px;}
 .g-header { padding: 10px 60px;}
+.m-logo:hover em { text-decoration: none;}
 .m-logo img { width: 40px;}
 .m-logo em { margin-top: 3px;}
 .m-logo:hover { color:#666;}
@@ -150,7 +151,7 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .g-footer a { margin: 0 5px;}
 .g-html .g-content { position: absolute; top: 60px; bottom: 0; width: 100%; border-top:2px solid #F6F6F6; *height:expression(eval(document.documentElement.clientHeight - 60))}
 .g-main { width: 100%; margin-left: -200px;}
-.g-main .mainbox { padding:10px 100px 50px 300px;}
+.g-main .mainbox { padding-left:300px; width:900px;}
 .g-sidecol, .g-main { height:100%; overflow: auto;}
 .g-sidecol { position: relative; width: 200px; background-color:#F6F6F6;}
 .g-sidecol .side { padding:30px 20px 30px 40px;}
@@ -158,7 +159,7 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .m-menu ul { padding-left:15px;}
 
 /* component */
-.ui-highlight { margin-top:20px; background-color:#282C34;}
+.ui-highlight { margin-top:20px; overflow:hidden; border-radius:3px; background-color:#F6F6F6;}
 .ui-highlight .inner { padding:10px 0; overflow:auto;}
 .ui-highlight table { width:100%;}
 .ui-highlight td { padding:4px 8px; vertical-align: middle;}
@@ -166,8 +167,8 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .ui-highlight .line:before { content:attr(number);}
 .ui-highlight .code { width: 100%; white-space:pre; word-wrap: normal;}
 .ui-highlight .code, .ui-highlight .symbol, .ui-highlight .text { color:#ABB2BF;}
-.ui-highlight tr.s-crt .line { color:#ABB2BF;}
-.ui-highlight tr.s-crt .code { background-color:#2C323C;}
+/*.ui-highlight tr.s-crt .line { color:#ABB2BF;}
+.ui-highlight tr.s-crt .code { background-color:#2C323C;}*/
 .ui-highlight .string { color:#98C379;}
 .ui-highlight .attr { color:#D19A66;}
 .ui-highlight .tag { color:#C36C6A;}
