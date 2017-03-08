@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var path = require('path');
 var uglify = require('gulp-uglify');
-var assetrev = require('gulp-asset-rev');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var nui = require('gulp-nui');
@@ -25,14 +24,6 @@ gulp.task('concat', function(){
      .pipe(gulp.dest('./dest'))
 });
 
-gulp.task('nunjucks', function(){
-  return gulp.src('./html/**/*.html')
-	  .pipe(nunjucks({
-	      path:'./tpl'
-	    }))
-	  .pipe(gulp.dest('./'))
-});
-
 var config = {
 	paths:{
 		base:__dirname+'/',
@@ -50,13 +41,20 @@ var config = {
 	}
 }
 
+gulp.task('nunjucks', function(){
+  return gulp.src('./html/**/*.html')
+	  .pipe(nunjucks({
+	      path:'./tpl'
+	    }))
+	  .pipe(nui(config))
+	  .pipe(gulp.dest('./'))
+});
+
 gulp.task('pages', function(){
     gulp.src(['./pages/**/*.html'])
 		.pipe(nui(config))
 		.pipe(gulp.dest('./pages'))
 });
-
-gulp.task('pagesall', ['nunjucks', 'pages']);
 
 gulp.task('index', function(){
 	return gulp.src(['./index.html'])
@@ -64,12 +62,10 @@ gulp.task('index', function(){
 		.pipe(gulp.dest('./'))
 });
 
-gulp.task('indexall', ['nunjucks', 'index']);
-
 gulp.task('watch', function(){
 	gulp.watch(['./src/*.js'], ['concat']);
-	gulp.watch(['./html/**/*.html', './tpl/*.tpl'], ['indexall', 'pagesall']);
-	gulp.watch(['./src/**/*.js', './pages/**/*.!(html)', './assets/**/*.*'], ['index', 'pages']);
+	gulp.watch(['./html/**/*.html', './tpl/*.tpl'], ['nunjucks']);
+	gulp.watch(['./src/components/**/*.js', './pages/**/*.!(html)', './dest/*.js', './assets/**/*.*'], ['index', 'pages']);
 });
 
-gulp.task('default', ['concat', 'indexall', 'pagesall', 'watch']);
+gulp.task('default', ['concat', 'nunjucks', 'watch']);
