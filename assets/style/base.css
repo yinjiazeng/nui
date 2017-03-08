@@ -9,6 +9,14 @@
  * Description: CSS Reset & Public Components
  */
 
+ @font-face {font-family: "iconfont";
+   src: url('iconfont.eot?v=2.1.9.1');
+   src: url('iconfont.eot?#iefix') format('embedded-opentype'),
+   url('iconfont.woff?v=2.1.9.1') format('woff'),
+   url('iconfont.ttf?v=2.1.9.1') format('truetype'),
+   url('iconfont.svg#iconfont') format('svg');
+ }
+
 /* reset */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp,
@@ -149,7 +157,7 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .g-footer { padding: 35px 0; background-color: #727F80;}
 .g-footer, .g-footer a, .g-footer a:hover { color:#fff;}
 .g-footer a { margin: 0 5px;}
-.g-html .g-content { position: absolute; top: 60px; bottom: 0; width: 100%; border-top:2px solid #F6F6F6; *height:expression(eval(document.documentElement.clientHeight - 60))}
+.g-html .g-content { position: absolute; top: 60px; bottom: 0; width: 100%; border-top:2px solid #F6F6F6; *height:expression(eval(document.documentElement.clientHeight - 60));}
 .g-main { width: 100%; margin-left: -200px;}
 .g-main .mainbox { padding-left:300px; width:900px;}
 .g-sidecol, .g-main { height:100%; overflow: auto;}
