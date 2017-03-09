@@ -1,0 +1,5 @@
+Nui.define(function(){
+    return ({
+        
+    })
+})

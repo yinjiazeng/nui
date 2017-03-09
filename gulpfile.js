@@ -3,6 +3,7 @@ var path = require('path');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
+var watch = require('gulp-watch');
 var nui = require('gulp-nui');
 var nunjucks = require('gulp-nunjucks-render');
 
@@ -50,22 +51,21 @@ gulp.task('nunjucks', function(){
 	  .pipe(gulp.dest('./'))
 });
 
-gulp.task('pages', function(){
-    gulp.src(['./pages/**/*.html'])
-		.pipe(nui(config))
-		.pipe(gulp.dest('./pages'))
-});
-
-gulp.task('index', function(){
-	return gulp.src(['./index.html'])
-		.pipe(nui(config))
-		.pipe(gulp.dest('./'))
-});
-
 gulp.task('watch', function(){
+	var watcher = watch(['./src/components/**/*.js', './pages/**/*.!(html)', './dest/*.js', './assets/**/*.*', '!./**/*-{debug,min}.{js,css}'], {
+		usePolling:true
+	}, function(){
+		config.watcher = watcher;
+		gulp.src(['./pages/**/*.html'])
+			.pipe(nui(config))
+			.pipe(gulp.dest('./pages'))
+
+		gulp.src(['./index.html'])
+			.pipe(nui(config))
+			.pipe(gulp.dest('./'))
+	})
 	gulp.watch(['./src/*.js'], ['concat']);
 	gulp.watch(['./html/**/*.html', './tpl/*.tpl'], ['nunjucks']);
-	gulp.watch(['./src/components/**/*.js', './pages/**/*.!(html)', './dest/*.js', './assets/**/*.*'], ['index', 'pages']);
 });
 
 gulp.task('default', ['concat', 'nunjucks', 'watch']);
