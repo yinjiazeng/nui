@@ -3,7 +3,7 @@ var path = require('path');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
-var watch = require('gulp-watch');
+var watch = require('gulp-nuiwatch');
 var nui = require('gulp-nui');
 var nunjucks = require('gulp-nunjucks-render');
 
@@ -52,9 +52,8 @@ gulp.task('nunjucks', function(){
 });
 
 gulp.task('watch', function(){
-	var watcher = watch(['./src/components/**/*.js', './pages/**/*.!(html)', './dest/*.js', './assets/**/*.*', '!./**/*-{debug,min}.{js,css}'], {
-		usePolling:true
-	}, function(){
+	watch(['./src/components/**/*.js', './pages/**/*.!(html)', './dest/*.js', './assets/**/*.*', '!./**/*-{debug,min}.{js,css}'],
+	function(watcher){
 		config.watcher = watcher;
 		gulp.src(['./pages/**/*.html'])
 			.pipe(nui(config))
