@@ -179,7 +179,7 @@ Nui.define('component', ['template'], function(tpl){
             return that
         },
         _tpl2html:function(tpls, data){
-            return tpl.render(tpls, data)
+            return tpl.render.call(this, tpls, data)
         },
         set:function(name, value){
             var that = this;

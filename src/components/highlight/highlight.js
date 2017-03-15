@@ -6,6 +6,7 @@
  */
 
 Nui.define(function(){
+    var renders = this.renders;
     return this.extands('component', {
         static:{
             _getcode:function(type, text){
@@ -71,25 +72,25 @@ Nui.define(function(){
                 that._event();
             }
         },
-        _tpl:function(){
-            return '<div class="ui-highlight{{if type}} ui-highlight-{{type}}{{/if}}{{if theme}} t-highlight-{{theme}}{{/if}}">\
-                        {{if isTitle}}\
-                        <div class="title">\
-                            <em class="type">{{type}}</em>\
-                        </div>\
-                        {{/if}}\
-                        <div class="inner">\
-                            <table>\
-                                {{each list val key}}\
-                                    <tr>\
-                                        {{if isLine === true}}<td class="line" number="{{key+1}}">{{if bsie7}}{{key+1}}{{/if}}</td>{{/if}}\
-                                        <td class="code">{{val}}</td>\
-                                    </tr>\
-                                {{/each}}\
-                            </table>\
-                        <div>\
-                    </div>'
-        },
+        _tpl:renders({
+            <div class="ui-highlight{{if type}} ui-highlight-{{type}}{{/if}}{{if theme}} t-highlight-{{theme}}{{/if}}">
+                {{if isTitle}}
+                <div class="title">
+                    <em class="type">{{type}}</em>
+                </div>
+                {{/if}}
+                <div class="inner">
+                    <table>
+                        {{each list val key}}
+                            <tr>
+                                {{if isLine === true}}<td class="line" number="{{key+1}}">{{if bsie7}}{{key+1}}{{/if}}</td>{{/if}}
+                                <td class="code">{{val}}</td>
+                            </tr>
+                        {{/each}}
+                    </table>
+                <div>
+            </div>
+        }),
         _create:function(){
             var that = this;
             var opts = that.options;
@@ -98,7 +99,7 @@ Nui.define(function(){
                 list:that._list(),
                 type:that._type
             }, that.options||{})
-            var html = that._tpl2html(that._tpl(), data);
+            var html = that._tpl2html(that._tpl, data);
             that.elem = $(html).insertAfter(that.target);
         },
         _list:function(){

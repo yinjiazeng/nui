@@ -33,23 +33,27 @@ Nui.define('template', ['util'], function(util){
         endTag:'}}'
     }
 
-    var render = function(tpl, source){
+    var render = function(tpl, data){
         var start = template.config.startTag, end = template.config.endTag, code = '';
         Nui.each(Nui.trim(tpl).split(start), function(val, key){
-            val = Nui.trim(val).split(end);
+            val = val.split(end);
             if(key >= 1){
-                code += compile(Nui.trim(val[0]), true)
+                code += compile(val[0], true)
             }
             else{
                 val[1] = val[0];
             }
             code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/[\n\r]+/g, ''))
         });
-        code = 'var that=this, code=""; with(data){'+code;
+        code = 'var that=this, render=that.render, code=""; with(data){'+code;
         code += '};that.echo=function(){return code;}';
         var Result = new Function('data', code);
         Result.prototype = methods;
-        return new Result(source).echo()
+        Result.prototype.render = this;
+        var res = new Result(data);
+        var html = res.echo();
+        Result = res = null;
+        return html;
     }
 
     var compile = function(code, logic){
