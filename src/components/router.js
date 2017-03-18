@@ -6,7 +6,7 @@
  */
 
 Nui.define(function(){
-    return this.extands('component', {
+    return this.extends('component', {
         options:{
             /**
              * @func 路由地址

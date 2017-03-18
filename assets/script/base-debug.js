@@ -7,7 +7,7 @@
 
 Nui.define('highlight',function(){
     var renders = this.renders;
-    return this.extands('component', {
+    return this.extends('component', {
         static:{
             _getcode:function(type, text){
                 return '<code class="'+ type +'">'+ text +'</code>'
@@ -73,24 +73,24 @@ Nui.define('highlight',function(){
             }
         },
         _tpl:renders(''+''
-+'            <div class="ui-highlight{{if type}} ui-highlight-{{type}}{{/if}}{{if theme}} t-highlight-{{theme}}{{/if}}">'+''
-+'                {{if isTitle}}'+''
-+'                <div class="title">'+''
-+'                    <em class="type">{{type}}</em>'+''
-+'                </div>'+''
-+'                {{/if}}'+''
-+'                <div class="inner">'+''
-+'                    <table>'+''
-+'                        {{each list val key}}'+''
-+'                            <tr>'+''
-+'                                {{if isLine === true}}<td class="line" number="{{key+1}}">{{if bsie7}}{{key+1}}{{/if}}</td>{{/if}}'+''
-+'                                <td class="code">{{val}}</td>'+''
-+'                            </tr>'+''
-+'                        {{/each}}'+''
-+'                    </table>'+''
-+'                <div>'+''
-+'            </div>'+''
-+'        '),
+            +'<div class="ui-highlight{{if type}} ui-highlight-{{type}}{{/if}}{{if theme}} t-highlight-{{theme}}{{/if}}">'+''
+                +'{{if isTitle}}'+''
+                +'<div class="title">'+''
+                    +'<em class="type">{{type}}</em>'+''
+                +'</div>'+''
+                +'{{/if}}'+''
+                +'<div class="inner">'+''
+                    +'<table>'+''
+                        +'{{each list val key}}'+''
+                            +'<tr>'+''
+                                +'{{if isLine === true}}<td class="line" number="{{key+1}}">{{if bsie7}}{{key+1}}{{/if}}</td>{{/if}}'+''
+                                +'<td class="code">{{val}}</td>'+''
+                            +'</tr>'+''
+                        +'{{/each}}'+''
+                    +'</table>'+''
+                +'<div>'+''
+            +'</div>'+''
+        +''),
         _create:function(){
             var that = this;
             var opts = that.options;
@@ -131,7 +131,7 @@ Nui.define('highlight',function(){
  */
 
 Nui.define('./style',function(){
-    return this.extands('highlight', {
+    return this.extends('highlight', {
         _type:'css',
         _css:function(code){
             var that = this;
@@ -172,7 +172,7 @@ Nui.define('./style',function(){
  */
 
 Nui.define('./javascript',function(){
-    return this.extands('highlight', {
+    return this.extends('highlight', {
         _type:'js',
         _js:function(code){
             var that = this;
@@ -224,7 +224,7 @@ Nui.define('./javascript',function(){
  */
 
 Nui.define('{light}/xml',['./javascript', './style'],function(js, css){
-    return this.extands('highlight', {
+    return this.extends('highlight', {
         _type:'xml',
         _xml:function(code){
             var that = this;
