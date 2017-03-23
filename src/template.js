@@ -8,7 +8,7 @@
 Nui.define('template', ['util'], function(util){
     var template = function(tplid, source){
         var ele = document.getElementById(tplid);
-        if(ele && ele.nodeName==='SCRIPT'){
+        if(ele && ele.nodeName==='SCRIPT' && ele.type === 'text/html'){
             source = source||{};
             return render(ele.innerHTML, source)
         }
@@ -45,15 +45,20 @@ Nui.define('template', ['util'], function(util){
             }
             code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/[\n\r]+/g, ''))
         });
-        code = 'var that=this, render=that.render, code=""; with(data){'+code;
-        code += '};that.echo=function(){return code;}';
-        var Result = new Function('data', code);
-        Result.prototype = methods;
-        Result.prototype.render = this;
-        var res = new Result(data);
-        var html = res.echo();
-        Result = res = null;
-        return html;
+        if(typeof data === 'object'){
+            code = 'var that=this, code=""; with(data){'+code;
+            code += '};that.echo=function(){return code;}';
+            var Result = new Function('data', code);
+            Result.prototype = methods;
+            var res = new Result(data);
+            var html = res.echo();
+            Result = res = null;
+            return html;
+        }
+        else if(typeof data === 'string' && data === 'include'){
+            return code
+        }
+        return tpl
     }
 
     var compile = function(code, logic){
@@ -85,6 +90,12 @@ Nui.define('template', ['util'], function(util){
             else if((modle = match(code, '|')) !== false){
                 modle = modle.split(/\s+/);
                 echo = 'code+=that.'+modle[0]+'('+ modle.slice(1).toString() +');'
+            }
+            else if((modle = match(code, 'include')) !== false){
+                modle = modle.replace(/\s+/g, '');
+                if(/^['"]/.test(modle)){
+                    code = template(modle.replace(/['"]/g, ''), 'include')
+                }
             }
             else{
                 echo = 'code+='+code+';'

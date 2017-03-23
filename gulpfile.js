@@ -25,7 +25,7 @@ gulp.task('concat', function(){
      .pipe(gulp.dest('./dest'))
 });
 
-var config = {
+var options = {
 	paths:{
 		base:__dirname+'/',
 		script:'/assets/script',
@@ -48,20 +48,20 @@ gulp.task('nunjucks', function(){
 	  .pipe(nunjucks({
 	      path:'./tpl'
 	    }))
-	  .pipe(nui(config))
+	  .pipe(nui(options))
 	  .pipe(gulp.dest('./'))
 });
 
 gulp.task('watch', function(){
 	watch(['./src/components/**/*.js', './pages/**/*.!(html)', './dest/*.js', './assets/**/*.*', '!./**/*-{debug,min}.{js,css}'],
 	function(watcher){
-		config.watcher = watcher;
+		options.watcher = watcher;
 		gulp.src(['./pages/**/*.html'])
-			.pipe(nui(config))
+			.pipe(nui(options))
 			.pipe(gulp.dest('./pages'))
 
 		gulp.src(['./index.html'])
-			.pipe(nui(config))
+			.pipe(nui(options))
 			.pipe(gulp.dest('./'))
 	})
 	gulp.watch(['./src/*.js'], ['concat']);

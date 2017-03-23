@@ -1046,7 +1046,7 @@ Nui.define('util', {
 Nui.define('template', ['util'], function(util){
     var template = function(tplid, source){
         var ele = document.getElementById(tplid);
-        if(ele && ele.nodeName==='SCRIPT'){
+        if(ele && ele.nodeName==='SCRIPT' && ){
             source = source||{};
             return render(ele.innerHTML, source)
         }
@@ -1083,15 +1083,17 @@ Nui.define('template', ['util'], function(util){
             }
             code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/[\n\r]+/g, ''))
         });
-        code = 'var that=this, render=that.render, code=""; with(data){'+code;
-        code += '};that.echo=function(){return code;}';
-        var Result = new Function('data', code);
-        Result.prototype = methods;
-        Result.prototype.render = this;
-        var res = new Result(data);
-        var html = res.echo();
-        Result = res = null;
-        return html;
+        if(data){
+            code = 'var that=this, code=""; with(data){'+code;
+            code += '};that.echo=function(){return code;}';
+            var Result = new Function('data', code);
+            Result.prototype = methods;
+            var res = new Result(data);
+            var html = res.echo();
+            Result = res = null;
+            return html;
+        }
+        return code
     }
 
     var compile = function(code, logic){
@@ -1123,6 +1125,12 @@ Nui.define('template', ['util'], function(util){
             else if((modle = match(code, '|')) !== false){
                 modle = modle.split(/\s+/);
                 echo = 'code+=that.'+modle[0]+'('+ modle.slice(1).toString() +');'
+            }
+            else if((modle = match(code, 'include')) !== false){
+                modle = modle.replace(/\s+/g, '');
+                if(/^['"]/.test(modle)){
+                    code = template(modle.replace(/['"]/g, ''))
+                }
             }
             else{
                 echo = 'code+='+code+';'
