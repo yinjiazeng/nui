@@ -48,70 +48,13 @@
 	<!-- content -->
 	<div class="g-content">
     
-<input type="text" placeholder="哈哈哈" />
-<script type="text/highlight" options-highlight>
-cnpm install --save-dev gulp-nui
+<script src="http://rs.axnfw.com/portal/common/template/template.js"></script>
+<script id="tpl" type="text/html">
+<%each list%>
+<p><%$value.a ? '1' : '2'%></p>
+<%/each%>
 </script>
-
-<script type="text/highlight" options-xml>
-<div class="" data-a="">
-	<div class="11">1111</div>
-	<!-- <div></div>-->
-</div>
-
-<style>
-* { color:#f60}
-</style>
-
-&lt;script&gt;
-/*dfgfdg*/
-/*
-dfg
-*/
-var a = 1;
-var b = 2;
-&lt;/script&gt;
-</script>
-<script type="text/highlight" options-javascript>
-/*我是jquery*/
-$(function(){
-	console.log(1)
-})
-function a(){
-	alert('11'+1)
-}
-//调用
-a();
-
-</script>
-<script type="text/highlight" options-style>
-a { color:#f60; b:aa;}
-b {
-	a {
-		a:1
-	}
-}
-/*dfgdfg*/
-/*
-dfgdfgf
-*/
-#a {a:1}
-.b {a:1}
-a:child {a:1}
-@keyframes mymove
-{
-	0%   {/*top:0px;*/
-		/*aa:1
-		a:1*/
-		v:1
-	}
-	/*25%  {top:200px;}*/
-	50%  {top:100px;}
-	75%  {top:200px;}
-	100% {top:0px;}
-}
-::select { color:1}
-</script>
+<div id="data"></div>
 
 	</div>
 	<!-- /content -->
@@ -138,8 +81,27 @@ a:child {a:1}
 	Nui.load("{script}/base-min?v=0987b50")
 
     
-	Nui.load('./script/page-min', function(c){
-		console.log(c)
+	Nui.load('template', function(tpl){
+		var list = (function(){
+			var arr = [];
+			for(var i=0; i <=1000000; i++){
+				arr.push({a:0})
+			}
+			return arr
+		})()
+
+		template.config('openTag', '<%')
+		template.config('closeTag', '%>')
+		
+		var s = new Date().getTime();
+		//$('.data').html(tpl('tpl', {list:list}))
+		data.innerHTML = template('tpl', {list:list})
+		var e = new Date().getTime();
+		console.log('artTemplate渲染1000000条数据耗时：'+(e - s)+'毫秒')
+		var s = new Date().getTime();
+		data.innerHTML = tpl('tpl', {list:list})
+		var e = new Date().getTime();
+		console.log('nuiTemplate渲染1000000条数据耗时：'+(e - s)+'毫秒')
 	})
 
     </script>

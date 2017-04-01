@@ -6,20 +6,113 @@
  */
 
 Nui.define('template', ['util'], function(util){
-    var template = function(tplid, source){
+    var template = function(tplid, data){
+        if(tplid && options.cache === true && caches[tplid]){
+            return render(caches[tplid], data)
+        }
         var ele = document.getElementById(tplid);
         if(ele && ele.nodeName==='SCRIPT' && ele.type === 'text/html'){
-            source = source||{};
-            return render(ele.innerHTML, source)
+            return render(caches[tplid] = ele.innerHTML, data)
         }
         return ''
     }
 
+    var caches = {};
+
+    var options = {
+        beginTag:'<%',
+        endTag:'%>',
+        cache:true
+    }
+
     var methods = {
-        'each':Nui.each,
-        'trim':Nui.trim,
-        'format':util.formatDate,
-        'seturl':util.setParam
+        each:Nui.each,
+        trim:Nui.trim,
+        format:util.formatDate,
+        seturl:util.setParam,
+        include:function(){
+            var args = arguments;
+        }
+    }
+
+    var render = function(tpl, data){
+        if(typeof data === 'object'){
+            if(Nui.type(data, 'Array')){
+                data = {
+                    $list:data
+                }
+            }
+            var start = options.beginTag, end = options.endTag, code = '';
+            tpl = tpl.replace(/[\r\n]+/g, '');
+            Nui.each(tpl.split(start), function(val, key){
+                val = val.split(end);
+                if(key >= 1){
+                    code += compile(val[0], true)
+                }
+                else{
+                    val[1] = val[0];
+                }
+                code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"'))
+            });
+            Nui.each(data, function(v, k){
+                code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1that._data.'+k)
+            })
+            var Tmpl = new Function('var that=this, code="";' + code + ';that._echo=function(){return code}');
+            Tmpl.prototype = methods;
+            Tmpl.prototype._data = data;
+            tpl = new Tmpl()._echo();
+            Tmpl = null;
+        }
+        return tpl
+    }
+
+    var compile = function(tpl, logic){
+        var code, res;
+        if(logic){
+            if((res = match(tpl, 'if')) !== false){
+                code = 'if('+res+'){'
+            }
+            else if((res = match(tpl, 'elseif')) !== false){
+                code = '\n}\nelse if('+res+'){'
+            }
+            else if(tpl.indexOf('else') !== -1){
+                code = '\n}\nelse{'
+            }
+            else if(tpl.indexOf('/if') !== -1){
+                code = '\n}'
+            }
+            else if((res = match(tpl, 'each', /\s+/)) !== false){
+                code = 'that.each('+ res[0] +', function('+(res[1]||'$value')+','+(res[2]||'$index')+'){'
+            }
+            else if(tpl.indexOf('/each') !== -1){
+                code = '\n});'
+            }
+            else if((res = match(tpl, '|', /\s*,\s*/)) !== false){
+                code = 'code+=that.'+res[0]+'('+ res.slice(1).toString() +');'
+            }
+            else{
+                code = 'code+='+tpl+';'
+            }
+        }
+        else{
+            code = 'code+=\''+tpl+'\';'
+        }
+        return code + '\n'
+    }
+
+    var match = function(str, filter, reg){
+        if(str.indexOf(filter) === 0 || (filter === '|' && str.indexOf(filter) > 0)){
+            var rep = '';
+            if(filter === '|'){
+                rep = ','
+            }
+            str = Nui.trim(str.replace(filter, rep));
+            if(reg){
+                return str.split(reg)
+            }
+            return str
+        }
+        return false
     }
 
     template.method = function(method, callback){
@@ -28,90 +121,16 @@ Nui.define('template', ['util'], function(util){
         }
     }
 
-    template.config = {
-        startTag:'{{',
-        endTag:'}}'
-    }
-
-    var render = function(tpl, data){
-        var start = template.config.startTag, end = template.config.endTag, code = '';
-        Nui.each(Nui.trim(tpl).split(start), function(val, key){
-            val = val.split(end);
-            if(key >= 1){
-                code += compile(val[0], true)
-            }
-            else{
-                val[1] = val[0];
-            }
-            code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/[\n\r]+/g, ''))
-        });
-        if(typeof data === 'object'){
-            code = 'var that=this, code=""; with(data){'+code;
-            code += '};that.echo=function(){return code;}';
-            var Result = new Function('data', code);
-            Result.prototype = methods;
-            var res = new Result(data);
-            var html = res.echo();
-            Result = res = null;
-            return html;
+    template.config = function(){
+        var args = arguments;
+        if(Nui.type(args[0], 'Object')){
+            Nui.each(args[0], function(v, k){
+                options[k] = v
+            })
         }
-        else if(typeof data === 'string' && data === 'include'){
-            return code
+        else if(args.length > 1 && typeof args[0] === 'string'){
+            options[args[0]] = args[1]
         }
-        return tpl
-    }
-
-    var compile = function(code, logic){
-        var modle, echo;
-        if(logic){
-            if((modle = match(code, 'if')) !== false){
-                echo = 'if('+modle+'){'
-            }
-            else if((modle = match(code, 'elseif')) !== false){
-                echo = '}else if('+modle+'){'
-            }
-            else if((modle = match(code, 'else')) !== false){
-                echo = '}else{'
-            }
-            else if(match(code, '/if') !== false){
-                echo = '}'
-            }
-            else if((modle = match(code, 'each')) !== false){
-                modle = modle.split(/\s+/);
-                echo = 'that.each('+ modle[0] +', function('+modle[1];
-                if(modle[2]){
-                    echo += ', '+modle[2]
-                }
-                echo += '){'
-            }
-            else if(match(code, '/each') !== false){
-                echo = '});'
-            }
-            else if((modle = match(code, '|')) !== false){
-                modle = modle.split(/\s+/);
-                echo = 'code+=that.'+modle[0]+'('+ modle.slice(1).toString() +');'
-            }
-            else if((modle = match(code, 'include')) !== false){
-                modle = modle.replace(/\s+/g, '');
-                if(/^['"]/.test(modle)){
-                    code = template(modle.replace(/['"]/g, ''), 'include')
-                }
-            }
-            else{
-                echo = 'code+='+code+';'
-            }
-        }
-        else{
-            echo = 'code+=\''+code+'\';'
-        }
-        return echo
-    }
-
-    var match = function(string, filter){
-        if(string.indexOf(filter) === 0 || (filter === '|' && string.indexOf(filter) > 0)){
-            return Nui.trim(string.replace(filter, ''))
-        }
-        return false
     }
 
     template.render = render;
