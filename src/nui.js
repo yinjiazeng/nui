@@ -452,13 +452,6 @@
 
         factory.imports = noop;
 
-        /*
-            Nui.define(function(){
-                return this.renders(%
-                    <div>{{if ...}}...{{/if}}</div>
-                %)
-            })
-        */
         factory.renders = function(tpl){
             return tpl
         }
