@@ -23,7 +23,7 @@
 <% /each %>
 </script>
 <script type="text/html" id="tpl3">
-<p><% aCount %>key:<% $index %>  val:<% $value %></p>
+<p><% aCount %>key:<% $index %>  val:<% $value %><% $index||$value ? 'cccccccccccc' : 'yyyyyyyyyy' %><% setParam | $index, $value %></p>
 </script>
 <div id="data"></div>
 {% endblock %}

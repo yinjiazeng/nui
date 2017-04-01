@@ -63,7 +63,7 @@
 <% /each %>
 </script>
 <script type="text/html" id="tpl3">
-<p><% aCount %>key:<% $index %>  val:<% $value %></p>
+<p><% aCount %>key:<% $index %>  val:<% $value %><% $index||$value ? 'cccccccccccc' : 'yyyyyyyyyy' %><% setParam | $index, $value %></p>
 </script>
 <div id="data"></div>
 
@@ -73,7 +73,7 @@
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
-    <script type="text/javascript" src="/nui/dest/nui-debug.js?v=df36d3c"></script>
+    <script type="text/javascript" src="/nui/dest/nui-debug.js?v=d86acfd"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{

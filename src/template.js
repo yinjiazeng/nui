@@ -85,6 +85,7 @@ Nui.define('template', ['util'], function(util){
                 Nui.each(data, function(v, k){
                     code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1that.data.'+k)
                 })
+                console.log(code)
                 var Tmpl = new Function('var that=this, code="";' + code + ';that.echo=function(){return code}');
                 Tmpl.prototype = methods;
                 Tmpl.prototype.each = Nui.each;
@@ -124,7 +125,7 @@ Nui.define('template', ['util'], function(util){
             else if(tpl.indexOf('/each') !== -1){
                 code = '\n});'
             }
-            else if((res = match(tpl, '|', /\s*,\s*/)) !== false){
+            else if((res = match(tpl, ' | ', /\s*,\s*/)) !== false){
                 code = 'code+=that.'+res[0]+'('+ res.slice(1).toString() +');'
             }
             else{
@@ -147,9 +148,10 @@ Nui.define('template', ['util'], function(util){
     * @return {Boolean} 模板片段不包含filter，返回false
     */
     var match = function(str, filter, reg){
-        if(str.indexOf(filter) === 0 || (filter === '|' && str.indexOf(filter) > 0)){
+        if(str.indexOf(filter) === 0 || (filter === ' | ' && str.indexOf(filter) > 0)){
             var rep = '';
-            if(filter === '|'){
+            if(filter === ' | '){
+                console.log(111)
                 rep = ','
             }
             str = str.replace(filter, rep).replace(/^\s+/, '');
