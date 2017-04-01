@@ -1052,7 +1052,7 @@ Nui.define('template', ['util'], function(util){
     * @return {String} 渲染后的html字符串
     */
     var template = function(tplid, data){
-        if(tplid && options.cache === true && caches[tplid]){
+        if(tplid && caches[tplid]){
             return render(caches[tplid], data)
         }
         var ele = document.getElementById(tplid);
@@ -1066,8 +1066,7 @@ Nui.define('template', ['util'], function(util){
 
     var options = {
         openTag:'{{',
-        closeTag:'}}',
-        cache:true
+        closeTag:'}}'
     }
 
     var methods = {
