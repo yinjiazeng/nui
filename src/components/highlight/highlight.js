@@ -99,7 +99,7 @@ Nui.define(function(){
                 list:that._list(),
                 type:that._type
             }, that.options||{})
-            var html = that._tpl2html(that._tpl, data);
+            var html = that._tpl2html.call(that, that._tpl, data);
             that.elem = $(html).insertAfter(that.target);
         },
         _list:function(){

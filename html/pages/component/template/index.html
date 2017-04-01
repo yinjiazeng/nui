@@ -8,36 +8,33 @@
 {% endblock %}
 
 {% block content %}
-<script src="http://rs.axnfw.com/portal/common/template/template.js"></script>
-<script id="tpl" type="text/html">
-<%each list%>
-<p><%$value.a ? '1' : '2'%></p>
-<%/each%>
+
+<script type="text/html" id="tpl">
+<% if aCount %>
+	<% aCount %>
+<% /if %>
+<% each list val key %>
+<% include 'tpl2' %>
+<% /each %>
+</script>
+<script type="text/html" id="tpl2">
+<% each val %>
+<% include 'tpl3' %>
+<% /each %>
+</script>
+<script type="text/html" id="tpl3">
+<p><% aCount %>key:<% $index %>  val:<% $value %></p>
 </script>
 <div id="data"></div>
 {% endblock %}
 
 {% block script %}
 	Nui.load('template', function(tpl){
-		var list = (function(){
-			var arr = [];
-			for(var i=0; i <=1000000; i++){
-				arr.push({a:0})
-			}
-			return arr
-		})()
-
-		template.config('openTag', '<%')
-		template.config('closeTag', '%>')
+		tpl.config('openTag', '<%')
+		tpl.config('closeTag', '%>')
+		$.getJSON('./data.json', function(res){
+			data.innerHTML = tpl('tpl', res)
+		})
 		
-		var s = new Date().getTime();
-		//$('.data').html(tpl('tpl', {list:list}))
-		data.innerHTML = template('tpl', {list:list})
-		var e = new Date().getTime();
-		console.log('artTemplate渲染1000000条数据耗时：'+(e - s)+'毫秒')
-		var s = new Date().getTime();
-		data.innerHTML = tpl('tpl', {list:list})
-		var e = new Date().getTime();
-		console.log('nuiTemplate渲染1000000条数据耗时：'+(e - s)+'毫秒')
 	})
 {% endblock %}

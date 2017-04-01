@@ -6,6 +6,13 @@
  */
 
 Nui.define('template', ['util'], function(util){
+
+    /**
+    * @name template
+    * @param tplid {String} 模板id
+    * @param data {Object, Array} 渲染数据
+    * @return {String} 渲染后的html字符串
+    */
     var template = function(tplid, data){
         if(tplid && options.cache === true && caches[tplid]){
             return render(caches[tplid], data)
@@ -20,52 +27,83 @@ Nui.define('template', ['util'], function(util){
     var caches = {};
 
     var options = {
-        beginTag:'<%',
-        endTag:'%>',
+        openTag:'{{',
+        closeTag:'}}',
         cache:true
     }
 
     var methods = {
-        each:Nui.each,
         trim:Nui.trim,
-        format:util.formatDate,
-        seturl:util.setParam,
-        include:function(){
-            var args = arguments;
-        }
+        formatDate:util.formatDate,
+        setParam:util.setParam
     }
 
+    /**
+    * @name render
+    * @param tpl {String} 模板字符串
+    * @param data {Object, Array} 渲染数据，data为数组会转为对象，属性为 $list
+    * @return {String} 渲染后的html字符串
+    */
     var render = function(tpl, data){
-        if(typeof data === 'object'){
-            if(Nui.type(data, 'Array')){
-                data = {
-                    $list:data
+        var that = this;
+        if(typeof tpl === 'string'){
+            var start = options.openTag, end = options.closeTag;
+            var regs = start.replace(/([^\s])/g, '\\$1');
+            var rege = end.replace(/([^\s])/g, '\\$1');
+            tpl = tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tplid){
+                if(tplid){
+                    var tmp = that[tplid];
+                    if(typeof tmp === 'function'){
+                        tmp = tmp();
+                    }
+                    if(typeof tmp === 'string'){
+                        return render.call(that, tmp)
+                    }
+                    else{
+                        return template(tplid)
+                    }
                 }
-            }
-            var start = options.beginTag, end = options.endTag, code = '';
-            tpl = tpl.replace(/[\r\n]+/g, '');
-            Nui.each(tpl.split(start), function(val, key){
-                val = val.split(end);
-                if(key >= 1){
-                    code += compile(val[0], true)
-                }
-                else{
-                    val[1] = val[0];
-                }
-                code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"'))
-            });
-            Nui.each(data, function(v, k){
-                code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1that._data.'+k)
+                return ''
             })
-            var Tmpl = new Function('var that=this, code="";' + code + ';that._echo=function(){return code}');
-            Tmpl.prototype = methods;
-            Tmpl.prototype._data = data;
-            tpl = new Tmpl()._echo();
-            Tmpl = null;
+            if(typeof data === 'object'){
+                if(Nui.type(data, 'Array')){
+                    data = {
+                        $list:data
+                    }
+                }
+                var code = '';
+                tpl = tpl.replace(/[\r\n]+/g, '');
+                Nui.each(tpl.split(start), function(val, key){
+                    val = val.split(end);
+                    if(key >= 1){
+                        code += compile(Nui.trim(val[0]), true)
+                    }
+                    else{
+                        val[1] = val[0];
+                    }
+                    code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"'))
+                });
+                Nui.each(data, function(v, k){
+                    code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1that.data.'+k)
+                })
+                var Tmpl = new Function('var that=this, code="";' + code + ';that.echo=function(){return code}');
+                Tmpl.prototype = methods;
+                Tmpl.prototype.each = Nui.each;
+                Tmpl.prototype.data = data;
+                tpl = new Tmpl().echo();
+                Tmpl = null;
+            }
+            return tpl
         }
-        return tpl
+        return ''
     }
 
+    /**
+    * @name compile
+    * @param tpl {String} 模板片段
+    * @param logic {Boolean} 是否为逻辑代码
+    * @return {String} 可被js识别的代码片段
+    */
     var compile = function(tpl, logic){
         var code, res;
         if(logic){
@@ -100,13 +138,22 @@ Nui.define('template', ['util'], function(util){
         return code + '\n'
     }
 
+    /**
+    * @name match
+    * @param str {String} 模板片段
+    * @param filter {String} 过滤的字符串
+    * @param reg {String, RegExp Object} 分割符号
+    * @return {Array} 当模板片段中包含“|”时，返回函数和参数组成的数组，第一个值为函数，后面的全部为参数
+    * @return {String} 过滤掉filter的模板片段
+    * @return {Boolean} 模板片段不包含filter，返回false
+    */
     var match = function(str, filter, reg){
         if(str.indexOf(filter) === 0 || (filter === '|' && str.indexOf(filter) > 0)){
             var rep = '';
             if(filter === '|'){
                 rep = ','
             }
-            str = Nui.trim(str.replace(filter, rep));
+            str = str.replace(filter, rep).replace(/^\s+/, '');
             if(reg){
                 return str.split(reg)
             }
