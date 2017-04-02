@@ -83,14 +83,13 @@ Nui.define('template', ['util'], function(util){
                     code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"'))
                 });
                 Nui.each(data, function(v, k){
-                    code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1that.data.'+k)
+                    code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1data.'+k)
                 })
                 console.log(code)
-                var Tmpl = new Function('var that=this, code="";' + code + ';that.echo=function(){return code}');
+                var Tmpl = new Function('data', 'var that=this, code="";' + code + ';that.echo=function(){return code}');
                 Tmpl.prototype = methods;
                 Tmpl.prototype.each = Nui.each;
-                Tmpl.prototype.data = data;
-                tpl = new Tmpl().echo();
+                tpl = new Tmpl(data).echo();
                 Tmpl = null;
             }
             return tpl

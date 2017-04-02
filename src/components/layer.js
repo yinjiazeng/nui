@@ -6,7 +6,7 @@
  */
 
  Nui.define(function(){
-     return this.extends('component', {
+     return this.extend('component', {
          static:{
              maskzIndex:10000,
              zIndex:10000,

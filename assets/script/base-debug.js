@@ -7,7 +7,7 @@
 
 Nui.define('highlight',function(){
     var renders = this.renders;
-    return this.extends('component', {
+    return this.extend('component', {
         static:{
             _getcode:function(type, text){
                 return '<code class="'+ type +'">'+ text +'</code>'
@@ -131,7 +131,7 @@ Nui.define('highlight',function(){
  */
 
 Nui.define('./style',function(){
-    return this.extends('highlight', {
+    return this.extend('highlight', {
         _type:'css',
         _css:function(code){
             var that = this;
@@ -172,7 +172,7 @@ Nui.define('./style',function(){
  */
 
 Nui.define('./javascript',function(){
-    return this.extends('highlight', {
+    return this.extend('highlight', {
         _type:'js',
         _js:function(code){
             var that = this;
@@ -224,7 +224,7 @@ Nui.define('./javascript',function(){
  */
 
 Nui.define('{light}/xml',['./javascript', './style'],function(js, css){
-    return this.extends('highlight', {
+    return this.extend('highlight', {
         _type:'xml',
         _xml:function(code){
             var that = this;

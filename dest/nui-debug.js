@@ -383,7 +383,7 @@
             return Module.require(mod.depmodules[id], options)
         }
 
-        factory.extends = function(module, members, inserts){
+        factory.extend = function(module, members, inserts){
             var exports;
 
             if(!module){
@@ -672,11 +672,11 @@
     Module.getdeps = function(str){
         var deps = [];
         var styles = [];
-        var match = str.match(/(require|extends|imports)\(('|")[^'"]+\2/g);
+        var match = str.match(/(require|extend|imports)\(('|")[^'"]+\2/g);
         if(match){
             Nui.each(match, function(val){
-                if(/^(require|extends)/.test(val)){
-                    deps.push(val.replace(/^(require|extends)|[\('"]/g, ''))
+                if(/^(require|extend)/.test(val)){
+                    deps.push(val.replace(/^(require|extend)|[\('"]/g, ''))
                 }
                 else{
                     styles.push(val.replace(/^imports|[\('"]/g, ''))
@@ -1114,14 +1114,13 @@ Nui.define('template', ['util'], function(util){
                     code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"'))
                 });
                 Nui.each(data, function(v, k){
-                    code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1that.data.'+k)
+                    code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1data.'+k)
                 })
                 console.log(code)
-                var Tmpl = new Function('var that=this, code="";' + code + ';that.echo=function(){return code}');
+                var Tmpl = new Function('data', 'var that=this, code="";' + code + ';that.echo=function(){return code}');
                 Tmpl.prototype = methods;
                 Tmpl.prototype.each = Nui.each;
-                Tmpl.prototype.data = data;
-                tpl = new Tmpl().echo();
+                tpl = new Tmpl(data).echo();
                 Tmpl = null;
             }
             return tpl

@@ -7,7 +7,7 @@
 
 Nui.define(function(){
     var renders = this.renders;
-    return this.extends('component', {
+    return this.extend('component', {
         static:{
             _getcode:function(type, text){
                 return '<code class="'+ type +'">'+ text +'</code>'

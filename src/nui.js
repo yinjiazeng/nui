@@ -383,7 +383,7 @@
             return Module.require(mod.depmodules[id], options)
         }
 
-        factory.extends = function(module, members, inserts){
+        factory.extend = function(module, members, inserts){
             var exports;
 
             if(!module){
@@ -672,11 +672,11 @@
     Module.getdeps = function(str){
         var deps = [];
         var styles = [];
-        var match = str.match(/(require|extends|imports)\(('|")[^'"]+\2/g);
+        var match = str.match(/(require|extend|imports)\(('|")[^'"]+\2/g);
         if(match){
             Nui.each(match, function(val){
-                if(/^(require|extends)/.test(val)){
-                    deps.push(val.replace(/^(require|extends)|[\('"]/g, ''))
+                if(/^(require|extend)/.test(val)){
+                    deps.push(val.replace(/^(require|extend)|[\('"]/g, ''))
                 }
                 else{
                     styles.push(val.replace(/^imports|[\('"]/g, ''))

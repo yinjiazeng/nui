@@ -7,7 +7,7 @@
 
 Nui.define(['util'], function(util){
     var support = util.supportHtml5('placeholder', 'input');
-    return this.extends('component', {
+    return this.extend('component', {
         options:{
             /**
              * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
