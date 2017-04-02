@@ -1116,7 +1116,6 @@ Nui.define('template', ['util'], function(util){
                 Nui.each(data, function(v, k){
                     code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1data.'+k)
                 })
-                console.log(code)
                 var Tmpl = new Function('data', 'var that=this, code="";' + code + ';that.echo=function(){return code}');
                 Tmpl.prototype = methods;
                 Tmpl.prototype.each = Nui.each;
@@ -1356,7 +1355,7 @@ Nui.define('component', ['template'], function(tpl){
         _init:$.noop,
         _exec:$.noop,
         _getTarget:function(){
-            return this.options.target ? $(this.options.target) : null
+            return this.target || (this.options.target ? $(this.options.target) : null)
         },
         _on:function(type, target, callback, trigger){
             var that = this;

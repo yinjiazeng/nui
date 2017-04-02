@@ -44,21 +44,20 @@ Nui.define(['util'], function(util){
                     ">{{text}}</b>'
         },
         _init:function(){
-            var that = this;
-            that.target = that._getTarget();
-            if(that.target){
-                that._exec();
-            }
+            this._exec();
         },
         _exec:function(){
             var that = this;
-            var text = that.deftext = that.target.attr('placeholder');
-            if(!that.deftext && that.options.text){
-                that.target.attr('placeholder', text = that.options.text)
-            }
-            that.text = $.trim(text);
-            if(that.text){
-                that._create()
+            that.target = that._getTarget();
+            if(that.target){
+                var text = that.deftext = that.target.attr('placeholder');
+                if(!that.deftext && that.options.text){
+                    that.target.attr('placeholder', text = that.options.text)
+                }
+                that.text = $.trim(text);
+                if(that.text){
+                    that._create()
+                }
             }
         },
         _create:function(){

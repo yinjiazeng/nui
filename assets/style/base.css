@@ -157,7 +157,8 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .g-footer { padding: 35px 0; background-color: #727F80;}
 .g-footer, .g-footer a, .g-footer a:hover { color:#fff;}
 .g-footer a { margin: 0 5px;}
-.g-html .g-content { position: absolute; top: 60px; bottom: 0; width: 100%; border-top:2px solid #F6F6F6; *height:expression(eval(document.documentElement.clientHeight - 60));}
+.g-html .g-header { border-bottom:2px solid #F6F6F6;}
+.g-html .g-content { position: absolute; top: 60px; bottom: 0; width: 100%; *height:expression(eval(document.documentElement.clientHeight - 62));}
 .g-main { width: 100%; margin-left: -200px;}
 .g-main .mainbox { padding-left:300px; width:900px;}
 .g-sidecol, .g-main { height:100%; overflow: auto;}

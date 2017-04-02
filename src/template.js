@@ -85,7 +85,6 @@ Nui.define('template', ['util'], function(util){
                 Nui.each(data, function(v, k){
                     code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1data.'+k)
                 })
-                console.log(code)
                 var Tmpl = new Function('data', 'var that=this, code="";' + code + ';that.echo=function(){return code}');
                 Tmpl.prototype = methods;
                 Tmpl.prototype.each = Nui.each;

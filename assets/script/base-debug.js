@@ -51,25 +51,26 @@ Nui.define('highlight',function(){
         },
         _type:'',
         _init:function(){
-            var that = this;
-            that.target = that._getTarget();
-            var dom = that.target.get(0);
-            if(dom.tagName === 'SCRIPT' && dom.type == 'text/highlight'){
-                that._exec();
-            }
+            this._exec();
         },
         _exec:function(){
             var that = this;
-            that.code = that.target.html()
-                            .replace(/^[\r\n]+|[\r\n]+$/g, '')
-                            .replace(/</g, '&lt;')
-                            .replace(/>/g, '&gt;');
-            if(that.elem){
-                that.elem.remove();
-            }
-            that._create();
-            if(that.options.isLight){
-                that._event();
+            that.target = that._getTarget();
+            if(that.target){
+                var dom = that.target.get(0);
+                if(dom.tagName === 'SCRIPT' && dom.type == 'text/highlight'){
+                    that.code = that.target.html()
+                                .replace(/^[\r\n]+|[\r\n]+$/g, '')
+                                .replace(/</g, '&lt;')
+                                .replace(/>/g, '&gt;');
+                    if(that.elem){
+                        that.elem.remove();
+                    }
+                    that._create();
+                    if(that.options.isLight){
+                        that._event();
+                    }
+                }
             }
         },
         _tpl:renders(''+''
@@ -295,5 +296,5 @@ Nui.define('{light}/xml',['./javascript', './style'],function(js, css){
 })
 Nui.define('{script}/base',['{light}/xml'], function(){
     this.imports('../style/base')
-    $('#nowyear').text('-'+new Date().getFullYear())
+    $('#nowyear').text('-'+new Date().getFullYear());
 })

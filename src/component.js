@@ -138,7 +138,7 @@ Nui.define('component', ['template'], function(tpl){
         _init:$.noop,
         _exec:$.noop,
         _getTarget:function(){
-            return this.options.target ? $(this.options.target) : null
+            return this.target || (this.options.target ? $(this.options.target) : null)
         },
         _on:function(type, target, callback, trigger){
             var that = this;

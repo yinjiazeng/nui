@@ -48,7 +48,7 @@
         }
     })
 
-	Nui.load('{script}/base-min')
+	Nui.load('{script}/base-debug')
 
     {% block script %}{% endblock %}
     </script>
