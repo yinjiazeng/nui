@@ -160,7 +160,7 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .g-html .g-header { border-bottom:2px solid #F6F6F6;}
 .g-html .g-content { position: absolute; top: 60px; bottom: 0; width: 100%; *height:expression(eval(document.documentElement.clientHeight - 62));}
 .g-main { width: 100%; margin-left: -200px;}
-.g-main .mainbox { padding-left:300px; width:900px;}
+.g-main .mainbox { position:relative; padding-left:300px; width:900px;}
 .g-sidecol, .g-main { height:100%; overflow: auto;}
 .g-sidecol { position: relative; width: 200px; background-color:#F6F6F6;}
 .g-sidecol .side { padding:30px 20px 30px 40px;}
