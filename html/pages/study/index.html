@@ -4,7 +4,7 @@
 
 {% block nav %}
 	{% import 'nav.tpl' as nav %}
-	{{nav.active('loader')}}
+	{{nav.active('study')}}
 {% endblock %}
 
 {% block subpage %} class="g-html"{% endblock %}
@@ -13,9 +13,9 @@
 	<div class="g-main f-fr">
 		<div class="mainbox">
 			<h1 class="e-pt20 e-pb20 f-fs28">介绍</h1>
-			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="Nui.js是什么">Nui是什么</h2>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="Nui是什么">Nui是什么</h2>
 			<div class="e-mt15 f-lh22">
-				<p>Nui是一个模块化前端框架， 开发目的是为了统一代码规范以及提高功能复用性</p>
+				<p>Nui是一个轻量级模块化前端UI框架，汇集了模块加载器与组件于一身，开发的目的是为了使团队编码风格统一，提高代码复用率以及可维护性。</p>
 			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 兼容性</h3>
 			<div class="e-mt15 f-lh22">
@@ -31,5 +31,5 @@
 		</div>
 	</div>
 	{% import 'sidecol.tpl' as side %}
-	{{side.active('loader', 'index')}}
+	{{side.active('study', 'index')}}
 {% endblock %}
