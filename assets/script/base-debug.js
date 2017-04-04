@@ -305,7 +305,7 @@ Nui.define('{script}/base',['{light}/xml'], function(){
     return ({
         init:function(){
             this.setYear();
-            this.scroll();
+            this.event();
             this.position();
         },
         setYear:function(){
@@ -316,7 +316,7 @@ Nui.define('{script}/base',['{light}/xml'], function(){
                 main.scrollTop($('[id="'+ hash +'"]').offset().top - $('.g-header').outerHeight())
             }
         },
-        scroll:function(){
+        event:function(){
             main.scroll(function(){
                 var stop = main.scrollTop();
                 items.each(function(i){
