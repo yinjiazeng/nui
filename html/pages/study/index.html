@@ -47,23 +47,27 @@
 &lt;script src="/nui/assets/nui.js"&gt;&lt;/script&gt;
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 入口模块调用</h3>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" options-xml>
+&lt;script&gt;
 Nui.load('./page', function(page){
 	page.init()
 })
+&lt;/script&gt;
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 模块写法</h3>
 <script type="text/highlight" options-javascript>
 // page.js
 Nui.define(['./hello'], function(hello){
+	var hello2 = this.require('./hello2');
 	return ({
 		init:function(){
 			console.log(hello())
+			console.log(hello2())
 		}
 	})
 })
 
-// hello.js
+// hello.js hello2.js
 Nui.define(function(){
     return function(){
         return 'Hello World!'

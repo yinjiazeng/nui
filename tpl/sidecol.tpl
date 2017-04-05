@@ -17,8 +17,8 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'factory' %} s-crt{% endif %}" href="/nui/pages/study/factory/">工厂四剑客</a>
-                {%if current == 'factory' %}
+                <a class="f-fs16{%if current == 'api' %} s-crt{% endif %}" href="/nui/pages/study/api/">API</a>
+                {%if current == 'api' %}
                 <ul>
                     <li>
                         <a href="#require">require</a>
