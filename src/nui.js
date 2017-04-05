@@ -48,8 +48,19 @@
                 }
             }
         },
-        trim:function(str){
-            return (str || '').replace(/^\s+|\s+$/g, '')
+        trim:function(str, type){
+            str = str || '';
+            var regexp = /^\s+|\s+$/g;
+            if(type === 'l'){
+                regexp = /^\s+/
+            }
+            else if(type === 'r'){
+                regexp = /\s+$/
+            }
+            else if(type === 'all'){
+                regexp = /\s+/g;
+            }
+            return str.replace(regexp, '')
         },
         //jquery1.9之后就移除了该方法，以插件形式存在
         browser:(function(){
@@ -92,6 +103,13 @@
     }
 
     if(typeof jQuery !== 'undefined'){
+        var jqueryCache = {};
+        Nui.$ = function(selector){
+            if(typeof selector === 'string'){
+                return jqueryCache[selector] || (jqueryCache[selector] = jQuery(selector))
+            }
+            return jQuery(selector)
+        }
         Nui.win = jQuery(window);
         Nui.doc = jQuery(document);
     }

@@ -359,6 +359,126 @@ Nui.define(function(){
 	var extend = this.extend, a = extend('./a'); //这是正确的
 })
 </script>
+			<h2 class="e-pt20 f-fs22" id="each">each</h2>
+			<p class="e-mt15 f-lh22">遍历数组或者对象</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.each(object, callback)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>object</td>
+					<td>Array, Object</td>
+					<td>被遍历的对象</td>
+				</tr>
+				<tr>
+					<td>callback</td>
+					<td>Function</td>
+					<td>遍历回调函数，接收2个参数，第一个为value，第二个为key；若回调函数return false，则跳出循环</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22" id="trim">trim</h2>
+			<p class="e-mt15 f-lh22">过滤字符串空格</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.trim(string, type?)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>string</td>
+					<td>String</td>
+					<td>被过滤的字符串</td>
+				</tr>
+				<tr>
+					<td>type</td>
+					<td>String</td>
+					<td>“l”过滤左边空白；“r”过滤右边空白；“all”过滤所有空白；其他条件过滤两端空白</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22" id="type">type</h2>
+			<p class="e-mt15 f-lh22">判断对象数据类型</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.type(object, type)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>object</td>
+					<td>任意类型</td>
+					<td>被判断的变量</td>
+				</tr>
+				<tr>
+					<td>type</td>
+					<td>String, Array</td>
+					<td>小写类型字符串，当为数组时，匹配是否满足数组中任意一种类型</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22" id="browser">browser</h2>
+			<p class="e-mt15 f-lh22">检测浏览器内核以及版本号</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.browser.version
+Nui.browser.msie
+Nui.browser.webkit
+Nui.browser.safari
+Nui.browser.mozilla
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">jQuery1.9+移除了$.browser</p>
+			<h2 class="e-pt20 f-fs22" id="bsie">bsie</h2>
+			<p class="e-mt15 f-lh22">检测是否是IE6/7</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.browser.bsie6
+Nui.browser.bsie7
+</script>
+			<h2 class="e-pt20 f-fs22" id="$">$</h2>
+			<p class="e-mt15 f-lh22">返回jQuery(selector)引用</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.$(selector)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>selector</td>
+					<td>String</td>
+					<td>字符串选择器</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">为了减小$(selector)被重新包装的开销</p>
+			<h2 class="e-pt20 f-fs22" id="win">win</h2>
+			<p class="e-mt15 f-lh22">返回jQuery(window)引用</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.win
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">为了减小$(window)被重新包装的开销</p>
+			<h2 class="e-pt20 f-fs22" id="doc">doc</h2>
+			<p class="e-mt15 f-lh22">返回jQuery(document)引用</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.doc
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">为了减小$(document)被重新包装的开销</p>
 		</div>	
 	</div>
 	
@@ -414,6 +534,9 @@ Nui.define(function(){
                         <a href="#bsie">bsie</a>
                     </li>
                     <li>
+                        <a href="#$">$</a>
+                    </li>
+                    <li>
                         <a href="#win">win</a>
                     </li>
                     <li>
@@ -452,7 +575,7 @@ Nui.define(function(){
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
-    <script type="text/javascript" src="/nui/dest/nui-debug.js?v=2201741"></script>
+    <script type="text/javascript" src="/nui/dest/nui-debug.js?v=5bf2650"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{
