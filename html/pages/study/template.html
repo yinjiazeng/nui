@@ -18,7 +18,7 @@
 				{% include 'note.tpl' %}
 			</div>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="快速上手">快速上手</h2>
-			<p class="e-mt15 f-lh22">模板可以存放在type="text/html"的script标签中，也可以存放在js字符串中</p>
+			<p class="e-mt15 f-lh22">模板可以存放在type="text/html"的script标签中，也可以存放在js变量中</p>
 			<p class="e-mt15 f-lh22">传入数据只能为数组或者json对象</p>
 <script type="text/highlight" options-xml>
 &lt;script type="text/html" id="tpl"&gt;
@@ -86,7 +86,7 @@ Nui.define(['template'], function(template){
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 导入模板</h3>
 <script type="text/highlight" options-xml>
-<% include '模板id或方法属性名' %>
+<% include '模板id或属性名' %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="方法">方法</h2>
 			<p class="e-mt15 f-lh22">渲染script模板</p>
