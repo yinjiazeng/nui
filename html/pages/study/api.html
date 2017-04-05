@@ -13,6 +13,117 @@
 	<div class="g-main f-fr">
 		<div class="mainbox">
 			<h1 class="e-pt20 e-pb20 f-fs28">API</h1>
+			<div class="e-mt15 f-lh22">
+				<p>引入Nui.js后，Nui会被注册为一个全局对象，下面介绍一下对象的属性和方法：</p>
+				<p>note:参数末尾包含“?”符号表示该参数非必填。</p>
+			</div>
+			<h2 class="e-pt20 f-fs22" id="load">load</h2>
+			<p class="e-mt15 f-lh22">入口模块调用方法</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.load(id, callback?)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>String</td>
+					<td>模块id，后缀.js可以省略</td>
+				</tr>
+				<tr>
+					<td>callback</td>
+					<td>Function</td>
+					<td>模块加在完毕后（包括内部依赖）回调函数</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22" id="config">config</h2>
+			<p class="e-mt15 f-lh22">配置模块和目录别名，用以简写模块路径</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.config(key, value?)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>key</td>
+					<td>String, Object</td>
+					<td>
+						<pre>
+Nui.config('paths', {name:path,...})
+
+Nui.config('alias', {name:path,...})
+
+Nui.config({
+	paths:{name:path,...},
+	alias:{name:path,...}
+})</pre>
+					</td>
+				</tr>
+				<tr>
+					<td>value</td>
+					<td>Object</td>
+					<td>{name:path,...}</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">paths表示路径别名，集合中base用以设置根目录，用绝对地址定义</p>
+			<p class="e-mt15 f-lh22">alias表示模块别名，集合中可以使用大括号“{目录别名}”简写路径</p>
+			<p class="e-mt15 f-lh22">可直接在id中使用大括号“{目录别名}”引用模块</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.config({
+	paths:{
+		base:'http://rs.axnfw.com/'
+		url:'/portal/common/'
+	},
+	alias:{
+		jquery:{url}/jquery.js
+	}
+})
+
+Nui.load('{url}/page', function(page){
+	//do something
+})
+
+Nui.load('jquery', function($){
+	//do something
+})
+</script>
+			<h2 class="e-pt20 f-fs22" id="define">define</h2>
+			<p class="e-mt15 f-lh22">定义封装模块</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(id?, deps?, fectory)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>String</td>
+					<td>模块id</td>
+				</tr>
+				<tr>
+					<td>deps</td>
+					<td>Array</td>
+					<td>模块依赖</td>
+				</tr>
+				<tr>
+					<td>fectory</td>
+					<td>任意类型</td>
+					<td>工厂</td>
+				</tr>
+			</table>
 		</div>	
 	</div>
 	{% import 'sidecol.tpl' as side %}

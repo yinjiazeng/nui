@@ -47,7 +47,7 @@ Nui.define('highlight',function(){
             //点击代码那一行高亮
             isLight:true,
             //是否显示行号
-            isLine:true
+            isLine:false
         },
         _type:'',
         _init:function(){
@@ -298,7 +298,7 @@ Nui.define('{light}/xml',['./javascript', './style'],function(js, css){
     })
 })
 
-Nui.define('{script}/base',['{light}/xml'], function(){
+Nui.define('{script}/base',['{light}/xml'], function(xml){
     this.imports('../style/base');
     var hash = location.hash.replace('#', '');
     var main = $('.g-main');
@@ -317,7 +317,8 @@ Nui.define('{script}/base',['{light}/xml'], function(){
         },
         position:function(){
             if(hash){
-                main.scrollTop($('[id="'+ hash +'"]').offset().top - $('.g-header').outerHeight())
+                var elem = $('[id="'+ hash +'"]');
+                elem.length && main.scrollTop(elem.offset().top - $('.g-header').outerHeight())
             }
         },
         event:function(){

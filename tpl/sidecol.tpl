@@ -28,6 +28,20 @@
                     </li>
                     <li>
                         <a href="#define">define</a>
+                        <ul>
+                            <li>
+                                <a href="#require">require</a>
+                            </li>
+                            <li>
+                                <a href="#imports">imports</a>
+                            </li>
+                            <li>
+                                <a href="#renders">renders</a>
+                            </li>
+                            <li>
+                                <a href="#extend">extend</a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <a href="#each">each</a>
@@ -92,7 +106,7 @@
                 {%if current == 'template' %}
                 <ul>
                     <li>
-                        <a href="#"></a>
+                        <a href="#比较">比较</a>
                     </li>
                 </ul>
                 {% endif %}

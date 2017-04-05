@@ -1,4 +1,4 @@
-Nui.define(['{light}/xml'], function(){
+Nui.define(['{light}/xml'], function(xml){
     this.imports('../style/base');
     var hash = location.hash.replace('#', '');
     var main = $('.g-main');
@@ -17,7 +17,8 @@ Nui.define(['{light}/xml'], function(){
         },
         position:function(){
             if(hash){
-                main.scrollTop($('[id="'+ hash +'"]').offset().top - $('.g-header').outerHeight())
+                var elem = $('[id="'+ hash +'"]');
+                elem.length && main.scrollTop(elem.offset().top - $('.g-header').outerHeight())
             }
         },
         event:function(){
