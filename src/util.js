@@ -173,7 +173,7 @@ Nui.define('util', {
     getJSON:function(data){
         if(typeof JSON !== 'undefined'){
             var jsonstr = JSON.stringify(data);
-            if($.browser.msie && $.browser.version == '8.0'){
+            if(Nui.browser.msie && Nui.browser.version == '8.0'){
                 return jsonstr.replace(/\\u([0-9a-fA-F]{2,4})/g,function(str, matched){
                     return String.fromCharCode(parseInt(matched,16))
                 })

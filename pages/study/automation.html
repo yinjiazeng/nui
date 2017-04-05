@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="g-html">
 <head>
 	<meta charset="utf-8" />
 	<meta name="renderer" content="webkit" />
@@ -22,10 +22,10 @@
 	
 	
     <li class="f-fl">
-        <a href="/nui/pages/study/">教程</a>
+        <a class="s-crt" href="/nui/pages/study/">教程</a>
     </li>
     <li class="f-fl">
-        <a class="s-crt" href="/nui/pages/component/">组件</a>
+        <a href="/nui/pages/component/">组件</a>
     </li>
     <li class="f-fl">
         <a href="https://axnfex.github.io/2017/02/28/jobs/" target="_blank">加入我们</a>
@@ -45,24 +45,54 @@
 	<!-- content -->
 	<div class="g-content">
     
+	<div class="g-main f-fr">
+		<div class="mainbox">
+			<h1 class="e-pt20 e-pb20 f-fs28">自动化</h1>
+		</div>	
+	</div>
+	
+	
+<div class="f-fl g-sidecol">
+    <div class="side">
+        <ul class="m-menu f-lh28">
+            
+            <li>
+                <a class="f-fs16" href="/nui/pages/study/">介绍</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/study/api.html">API</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/study/util.html">工具集</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/study/template.html">模板引擎</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/study/dev.html">组件开发</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16 s-crt" href="/nui/pages/study/automation.html">自动化</a>
+                
+                <ul>
+                    <li>
+                        <a href="#"></a>
+                    </li>
+                </ul>
+                
+            </li>
+            
 
-<script type="text/html" id="tpl">
-<% if aCount %>
-	<% aCount %>
-<% /if %>
-<% each list val key %>
-<% include 'tpl2' %>
-<% /each %>
-</script>
-<script type="text/html" id="tpl2">
-<% each val %>
-<% include 'tpl3' %>
-<% /each %>
-</script>
-<script type="text/html" id="tpl3">
-<p><% aCount %>key:<% $index %>  val:<% $value %><% $index||$value ? 'cccccccccccc' : 'yyyyyyyyyy' %><% setParam | $index, $value %></p>
-</script>
-<div id="data"></div>
+            
+        </ul>
+    </div>
+</div>
+
 
 	</div>
 	<!-- /content -->
@@ -91,15 +121,6 @@
     })
 
     
-	Nui.load('template', function(tpl){
-		tpl.config('openTag', '<%')
-		tpl.config('closeTag', '%>')
-		$.getJSON('./data.json', function(res){
-			data.innerHTML = tpl('tpl', res)
-		})
-		
-	})
-
     </script>
 </body>
 </html>

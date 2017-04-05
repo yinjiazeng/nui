@@ -51,18 +51,6 @@
         trim:function(str){
             return (str || '').replace(/^\s+|\s+$/g, '')
         },
-        // Nui.unique(['1', '2', '1']) => ['1', '2']
-        unique:function(arr){
-            var newarr = [];
-            var temp = {};
-            Nui.each(arr, function(val){
-                if(!temp[val]){
-                    temp[val] = true
-                    newarr.push(val)
-                }
-            })
-            return newarr
-        },
         //jquery1.9之后就移除了该方法，以插件形式存在
         browser:(function(){
             var ua = navigator.userAgent.toLowerCase();
@@ -106,6 +94,19 @@
     if(typeof jQuery !== 'undefined'){
         Nui.win = jQuery(window);
         Nui.doc = jQuery(document);
+    }
+
+    // unique(['1', '2', '1']) => ['1', '2']
+    var unique = function(arr){
+        var newarr = [];
+        var temp = {};
+        Nui.each(arr, function(val){
+            if(!temp[val]){
+                temp[val] = true
+                newarr.push(val)
+            }
+        })
+        return newarr
     }
 
     var isType = function(type){
@@ -358,14 +359,14 @@
         var loadedModule = [];
         var allmodules = [];
         Nui.each(roots, function(root){
-            var modules = Nui.unique(root.getModules());
+            var modules = unique(root.getModules());
             allmodules = allmodules.concat(modules);
             loadedModule.push({
                 root:root,
                 modules:modules
             })
         })
-        allmodules = Nui.unique(allmodules);
+        allmodules = unique(allmodules);
         var module;
         while(module = allmodules.shift()){
             if(!cacheModules[module].loaded){
@@ -684,7 +685,7 @@
 
             })
         }
-        return [Nui.unique(deps), Nui.unique(styles)]
+        return [unique(deps), unique(styles)]
     }
 
     Module.define = function(id, deps, factory){
