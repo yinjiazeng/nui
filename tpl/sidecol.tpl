@@ -11,7 +11,7 @@
                         <a href="#Nui是什么">Nui是什么</a>
                     </li>
                     <li>
-                        <a href="#安装使用">安装使用</a>
+                        <a href="#快速上手">快速上手</a>
                     </li>
                 </ul>
                 {% endif %}
@@ -109,7 +109,27 @@
                 {%if current == 'template' %}
                 <ul>
                     <li>
-                        <a href="#比较">比较</a>
+                        <a href="#快速上手">快速上手</a>
+                    </li>
+                    <li>
+                        <a href="#语法">语法</a>
+                    </li>
+                    <li>
+                        <a href="#方法">方法</a>
+                        <ul>
+                            <li>
+                                <a href="#render">render</a>
+                            </li>
+                            <li>
+                                <a href="#method">method</a>
+                            </li>
+                            <li>
+                                <a href="#config">config</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#性能测试">性能测试</a>
                     </li>
                 </ul>
                 {% endif %}

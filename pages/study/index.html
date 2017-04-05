@@ -48,10 +48,8 @@
 	<div class="g-main f-fr">
 		<div class="mainbox">
 			<h1 class="e-pt20 e-pb20 f-fs28">介绍</h1>
-			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="Nui是什么">Nui是什么</h2>
-			<div class="e-mt15 f-lh22">
-				<p>Nui是一个轻量级模块化前端UI框架，汇集了模块加载器与组件于一身，开发的目的是为了使团队编码风格统一，提高代码复用率以及可维护性。</p>
-			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="Nui是什么">Nui是什么</h2>
+			<p class="e-mt15 f-lh22">Nui是一个轻量级模块化前端UI框架，汇集了模块加载器与组件于一身，开发的目的是为了使团队编码风格统一，提高代码复用率以及可维护性。</p>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 兼容性</h3>
 			<div class="e-mt15 f-lh22">
 				<p>Internet Explorer 6+ <b class="f-cgreen f-fs16">✔</b></p>
@@ -60,7 +58,7 @@
 				<p>Chrome 3+ <b class="f-cgreen f-fs16">✔</b></p>
 				<p>Opera 10+ <b class="f-cgreen f-fs16">✔</b></p>
 			</div>
-			<h2 class="e-pt20 f-fs22" id="安装使用">安装使用</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="快速上手">快速上手</h2>
 			<div class="e-mt15 f-lh22">
 				<p>Nui.js默认由加载器、组件基类、工具集、模版引擎4部分组成，并没有将组件集成到里面，使用时可以根据页面需要加载相应的组件模块。若仅当作模块加载器使用，不使用其它功能，可以下载独立版本。</p>
 			</div>
@@ -81,15 +79,7 @@
 &lt;script src="/nui/assets/jquery.js"&gt;&lt;/script&gt;
 &lt;script src="/nui/assets/nui.js"&gt;&lt;/script&gt;
 </script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 入口模块调用</h3>
-<script type="text/highlight" options-xml>
-&lt;script&gt;
-Nui.load('./page', function(page){
-	page.init()
-})
-&lt;/script&gt;
-</script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 模块写法</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 编写模块</h3>
 <script type="text/highlight" options-javascript>
 // page.js
 Nui.define(['./hello'], function(hello){
@@ -108,6 +98,14 @@ Nui.define(function(){
         return 'Hello World!'
     }
 })
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 入口模块调用</h3>
+<script type="text/highlight" options-xml>
+&lt;script&gt;
+Nui.load('./page', function(page){
+	page.init()
+})
+&lt;/script&gt;
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 约定</h3>
 			<div class="e-mt15 f-lh22">
@@ -131,7 +129,7 @@ Nui.define(function(){
                         <a href="#Nui是什么">Nui是什么</a>
                     </li>
                     <li>
-                        <a href="#安装使用">安装使用</a>
+                        <a href="#快速上手">快速上手</a>
                     </li>
                 </ul>
                 
