@@ -124,6 +124,7 @@ Nui.define('highlight',function(){
         }
     })
 })
+
 /**
  * @author Aniu[2017-03-02 08:44]
  * @update Aniu[2017-03-02 08:44]
@@ -165,6 +166,7 @@ Nui.define('./style',function(){
         }
     })
 })
+
 /**
  * @author Aniu[2017-03-02 08:44]
  * @update Aniu[2017-03-02 08:44]
@@ -217,6 +219,7 @@ Nui.define('./javascript',function(){
         }
     })
 })
+
 /**
  * @author Aniu[2017-03-02 08:44]
  * @update Aniu[2017-03-02 08:44]
@@ -294,6 +297,7 @@ Nui.define('{light}/xml',['./javascript', './style'],function(js, css){
         }
     })
 })
+
 Nui.define('{script}/base',['{light}/xml'], function(){
     this.imports('../style/base');
     var hash = location.hash.replace('#', '');
@@ -345,3 +349,4 @@ Nui.define('{script}/base',['{light}/xml'], function(){
         }
     })
 })
+

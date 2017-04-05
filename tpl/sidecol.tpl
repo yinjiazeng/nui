@@ -11,16 +11,13 @@
                         <a href="#Nui是什么">Nui是什么</a>
                     </li>
                     <li>
-                        <a href="#安装">安装</a>
-                    </li>
-                    <li>
-                        <a href="#如何使用">如何使用</a>
+                        <a href="#安装使用">安装使用</a>
                     </li>
                 </ul>
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'factory' %} s-crt{% endif %}" href="/nui/pages/factory/">工厂四剑客</a>
+                <a class="f-fs16{%if current == 'factory' %} s-crt{% endif %}" href="/nui/pages/study/factory/">工厂四剑客</a>
                 {%if current == 'factory' %}
                 <ul>
                     <li>
@@ -30,7 +27,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'util' %} s-crt{% endif %}" href="/nui/pages/util/">工具集</a>
+                <a class="f-fs16{%if current == 'util' %} s-crt{% endif %}" href="/nui/pages/study/util/">工具集</a>
                 {%if current == 'util' %}
                 <ul>
                     <li>
@@ -40,7 +37,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'template' %} s-crt{% endif %}" href="/nui/pages/template/">模板引擎</a>
+                <a class="f-fs16{%if current == 'template' %} s-crt{% endif %}" href="/nui/pages/study/template/">模板引擎</a>
                 {%if current == 'template' %}
                 <ul>
                     <li>
@@ -50,7 +47,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'dev' %} s-crt{% endif %}" href="/nui/pages/dev/">组件开发</a>
+                <a class="f-fs16{%if current == 'dev' %} s-crt{% endif %}" href="/nui/pages/study/dev/">组件开发</a>
                 {%if current == 'dev' %}
                 <ul>
                     <li>
@@ -60,7 +57,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'gulp' %} s-crt{% endif %}" href="/nui/pages/gulp/">自动化</a>
+                <a class="f-fs16{%if current == 'gulp' %} s-crt{% endif %}" href="/nui/pages/study/gulp/">自动化</a>
                 {%if current == 'gulp' %}
                 <ul>
                     <li>
