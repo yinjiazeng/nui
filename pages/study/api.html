@@ -72,7 +72,7 @@ Nui.load(id, callback?)
 				<tr>
 					<td>callback</td>
 					<td>Function</td>
-					<td>模块加在完毕后（包括内部依赖）回调函数</td>
+					<td>模块加在完毕后（包括内部依赖）回调函数，该函数接收一个参数为模块返回值的引用</td>
 				</tr>
 			</table>
 			<h2 class="e-pt20 f-fs22" id="config">config</h2>
@@ -88,14 +88,19 @@ Nui.config(key, value?)
 					<th>参数说明</th>
 				</tr>
 				<tr>
-					<td>key</td>
-					<td>String, Object</td>
+					<td rowspan="2">key</td>
+					<td>String</td>
 					<td>
 						<pre>
 Nui.config('paths', {name:path,...})
 
-Nui.config('alias', {name:path,...})
-
+Nui.config('alias', {name:path,...})</pre>
+					</td>
+				</tr>
+				<tr>
+					<td>Object</td>
+					<td>
+						<pre>
 Nui.config({
 	paths:{name:path,...},
 	alias:{name:path,...}
@@ -146,7 +151,7 @@ Nui.define(id?, deps?, fectory)
 				<tr>
 					<td>id</td>
 					<td>String</td>
-					<td>模块id</td>
+					<td>模块id，一般不需要设置该值，在合并压缩后，会自动添加上</td>
 				</tr>
 				<tr>
 					<td>deps</td>
@@ -156,9 +161,204 @@ Nui.define(id?, deps?, fectory)
 				<tr>
 					<td>fectory</td>
 					<td>任意类型</td>
-					<td>工厂</td>
+					<td>用于编写业务逻辑和返回接口</td>
 				</tr>
 			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">当fectory为非函数时直接当作接口返回</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+//a.js
+Nui.define(['yinjiazeng', 'liumengmei'])
+//b.js
+Nui.define('hello world!')
+Nui.define(['./a', './b'], function(a, b){
+	console.log(a[0]) //yinjiazeng
+	console.log(b) //hello world!
+})
+</script>
+			<p class="e-mt15 f-lh22">当fectory为函数时，接收的参数为deps中对应模块的引用，内部提供
+				<a href="#require" class="f-corange">require</a> /
+				<a href="#imports" class="f-corange">imports</a> /
+				<a href="#renders" class="f-corange">renders</a> /
+				<a href="#extend" class="f-corange">extend</a> 四个方法</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+//模块置前
+Nui.define(['a', 'b', 'c', ...], function(a, b, c, ...){
+	a.init()
+	b.init()
+	b.init()
+	...
+})
+
+//模块就近
+Nui.define(function(){
+	var a = this.require('a');
+	a.init()
+	var b = this.require('b');
+	b.init()
+	var c = this.require('c');
+	c.init()
+	...
+})
+</script>
+			<h2 class="e-pt20 f-fs22" id="require">require</h2>
+			<p class="e-mt15 f-lh22">导入js模块</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	this.require(id, options?)
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>String</td>
+					<td>模块id</td>
+				</tr>
+				<tr>
+					<td rowspan="2">options</td>
+					<td>String</td>
+					<td>返回一个接口</td>
+				</tr>
+				<tr>
+					<td>Object</td>
+					<td>组件的参数</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">方法名不能变更</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	var req = this.require, a = req('./a'); //这是错误的
+	var require = this.require, a = require('./a'); //这是正确的
+})
+</script>
+			<h2 class="e-pt20 f-fs22" id="imports">imports</h2>
+			<p class="e-mt15 f-lh22">导入css模块</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	this.imports(id)
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>String</td>
+					<td>模块id，文件后缀.css可忽略</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">方法名不能变更</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	var imp = this.imports, a = imp('./a'); //这是错误的
+	var imports = this.imports, a = imports('./a'); //这是正确的
+})
+</script>
+			<h2 class="e-pt20 f-fs22" id="renders">renders</h2>
+			<p class="e-mt15 f-lh22">在js文件中用于渲染模版，不需要做字符串拼接处理</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	this.renders({tpl})
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>tpl</td>
+					<td>String</td>
+					<td>html模版字符串</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">该方法需要配合自动化工具使用，会自动转换为字符串拼接方式，书写时模版外部包含大括号</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){						
+	var tpl = this.renders({
+		<div>
+			<p>hello world</p> 
+		</div>
+	})
+})
+
+转换后
+
+Nui.define(function(){						
+	var tpl = this.renders(
+		'<div>'+
+			'<p>hello world</p>'+
+		'</div>'
+	)
+})
+</script>
+			<p class="e-mt15 f-lh22">方法名不能变更</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	var render = this.renders, a = render({<div />}); //这是错误的
+	var renders = this.renders, a = renders({<div />}); //这是正确的
+})
+</script>
+			<h2 class="e-pt20 f-fs22" id="extend">extend</h2>
+			<p class="e-mt15 f-lh22">模块继承</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	this.extend(module, members?, inserts?)
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td rowspan="2">module</td>
+					<td>String</td>
+					<td>被继承模块id</td>
+				</tr>
+				<tr>
+					<td>Object</td>
+					<td>被继承模块引用</td>
+				</tr>
+				<tr>
+					<td>members</td>
+					<td>任意类型</td>
+					<td>对继承模块新增或修改成员</td>
+				</tr>
+				<tr>
+					<td rowspan="2">inserts</td>
+					<td>Boolean</td>
+					<td>当module为数组时，是否将members插入到module末尾</td>
+				</tr>
+					<td>Array</td>
+					<td>在继承模块方法中增加代码块</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">方法名不能变更</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	var ext = this.extend, a = ext('./a'); //这是错误的
+	var extend = this.extend, a = extend('./a'); //这是正确的
+})
+</script>
 		</div>	
 	</div>
 	
@@ -252,7 +452,7 @@ Nui.define(id?, deps?, fectory)
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
-    <script type="text/javascript" src="/nui/dest/nui-debug.js?v=a1c534b"></script>
+    <script type="text/javascript" src="/nui/dest/nui-debug.js?v=2201741"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{

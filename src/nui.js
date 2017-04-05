@@ -590,12 +590,12 @@
                 return module[factory]
             }
             //因为对象和数组是引用的，使用时需拷贝
-            if(Nui.type(module, 'Object')){
+            /*if(Nui.type(module, 'Object')){
                 return extend(module)
             }
             else if(Nui.type(module, 'Array')){
                 return extend([], module)
-            }
+            }*/
             return module
         }
     }
