@@ -33,6 +33,7 @@
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js"></script>
     <script type="text/javascript" src="/nui/dest/nui-debug.js"></script>
+    {% block assets %}{% endblock %}
     <script type="text/javascript">
     Nui.config({
         paths:{

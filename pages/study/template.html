@@ -278,9 +278,9 @@ template.config(key, value?)
 			</table>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="性能测试">性能测试</h2>
 			<p class="e-mt15 f-lh22">
-				<input type="text" class="input piece" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="100" />
+				<input type="text" class="input piece" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="10" />
 				条数据
-				<input type="text" class="input count" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="10000" />
+				<input type="text" class="input count" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="1000" />
 				次渲染与其它模版引擎耗时对比 <a class="ui-btn ui-btn-small e-ml10" id="start">执行</a></p>
 			<div id="data" class="e-mt15" style="height:280px;"></div>
 		</div>	
@@ -348,8 +348,6 @@ template.config(key, value?)
     </div>
 </div>
 
-	<script src="/nui/assets/script/echarts.min.js?v=5f765d6"></script>
-	<script src="/nui/assets/script/template/arttemplate.js?v=d03cebe"></script>
 
 	</div>
 	<!-- /content -->
@@ -358,6 +356,12 @@ template.config(key, value?)
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
     <script type="text/javascript" src="/nui/dest/nui-debug.js?v=d8140b8"></script>
+    
+<script src="/nui/assets/script/echarts.min.js?v=5f765d6"></script>
+<script src="/nui/assets/script/template/artTemplate.js?v=d03cebe"></script>
+<script src="/nui/assets/script/template/baiduTemplate.js?v=472f123"></script>
+<script src="/nui/assets/script/template/tmpl.js?v=0d054f1"></script>
+
     <script type="text/javascript">
     Nui.config({
         paths:{
@@ -378,7 +382,7 @@ template.config(key, value?)
     })
 
     
-Nui.load("./script/template/page-min?v=159bc83")
+Nui.load("./script/template/page-min?v=8c5fc73")
 
     </script>
 </body>

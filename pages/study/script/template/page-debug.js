@@ -54,24 +54,46 @@ Nui.define('./script/template/page',['template'], function(tpl){
 		var list = setData();
 		options = setOption();
 
+		run('nuiTemplate', function(){
+			tpl.render(renders(''+''
+				+'{{each list val key}}'+''
+					+'{{key}}:'+''
+					+'{{each val v k}}'+''
+						+'{{k}}:{{v}}'+''
+					+'{{/each}}'+''
+				+'{{/each}}'+''
+			+''), list)
+		})
+
 		run('artTemplate', function(){
 			template.render(renders(''+''
 				+'{{each list as val key}}'+''
-				+'{{key}}:'+''
-				+'{{each val as v k}}'+''
-				+'{{k}}:{{v}}'+''
-				+'{{/each}}\n'+''
+					+'{{key}}:'+''
+					+'{{each val as v k}}'+''
+						+'{{k}}:{{v}}'+''
+					+'{{/each}}\n'+''
 				+'{{/each}}'+''
 			+''))(list)
 		})
 
-		run('nuiTemplate', function(){
-			tpl.render(renders(''+''
-				+'{{each list val key}}'+''
-				+'{{key}}:'+''
-				+'{{each val v k}}'+''
-				+'{{k}}:{{v}}'+''
-				+'{{/each}}'+''
+		run('baiduTemplate', function(){
+			baidu.template(renders(''+''
+				+'<%for(var i=0;i<list.length;i++){%>'+''
+					+'<%=i%>:'+''
+					+'<%for(var j=0;j<list[i].length;j++){%>'+''
+						+'<%=j%>:<%=list[i][j]%>'+''
+					+'<%}%>'+''
+				+'<%}%>'+''
+			+''), list)
+		})
+
+		run('tmpl', function(){
+			$.tmpl(renders(''+''
+				+'{{each(key, val) list}}'+''
+					+'${key}:'+''
+					+'{{each(k, v) val}}'+''
+						+'${k}:${v}'+''
+					+'{{/each}}'+''
 				+'{{/each}}'+''
 			+''), list)
 		})
