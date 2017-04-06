@@ -3,12 +3,28 @@ Nui.define('./script/template/page',['template'], function(tpl){
 	var chart = echarts.init(document.getElementById('data'));
 	var setOption = function(){
 		return ({
-			xAxis: {},
-			yAxis: {
+			xAxis:{
+				type:'value',
+				name:'毫秒'
+			},
+			yAxis:{
+				type:'category',
 				data:[]
 			},
-			series: [{
+			series:[{
 				type:'bar',
+				itemStyle: {
+					normal:{
+						color:function(params) {
+							var colorList = ['#AA4744','#4673A7','#89A54F','#806A9B','#3E96AE','#DB843E']
+							return colorList[params.dataIndex]
+						},
+						label:{
+							show:true,
+							position:'right'
+						}
+					}
+				},
 				data:[]
 			}]
 		})
@@ -30,14 +46,14 @@ Nui.define('./script/template/page',['template'], function(tpl){
 		var piece = $('.piece').val();
 		var count = $('.count').val();
 		var pieces = [];
-		var datas = [];
-		for(var i=0; i<piece; i++){
-			pieces.push(i)
-		}
+		var counts = {};
 		for(var i=0; i<count; i++){
-			datas.push(pieces)
+			counts['index'+i] = 'value'+i;
 		}
-		return {list:datas}
+		for(var i=0; i<piece; i++){
+			pieces.push(counts)
+		}
+		return {list:pieces}
 	}
 
 	function run(name, callback){
@@ -54,21 +70,9 @@ Nui.define('./script/template/page',['template'], function(tpl){
 		var list = setData();
 		options = setOption();
 
-		run('nuiTemplate', function(){
-			tpl.render(renders(''+''
-				+'{{each list val key}}'+''
-					+'{{key}}:'+''
-					+'{{each val v k}}'+''
-						+'{{k}}:{{v}}'+''
-					+'{{/each}}'+''
-				+'{{/each}}'+''
-			+''), list)
-		})
-
 		run('artTemplate', function(){
 			template.render(renders(''+''
 				+'{{each list as val key}}'+''
-					+'{{key}}:'+''
 					+'{{each val as v k}}'+''
 						+'{{k}}:{{v}}'+''
 					+'{{/each}}\n'+''
@@ -79,20 +83,48 @@ Nui.define('./script/template/page',['template'], function(tpl){
 		run('baiduTemplate', function(){
 			baidu.template(renders(''+''
 				+'<%for(var i=0;i<list.length;i++){%>'+''
-					+'<%=i%>:'+''
-					+'<%for(var j=0;j<list[i].length;j++){%>'+''
+					+'<%for(var j in list[i]){%>'+''
 						+'<%=j%>:<%=list[i][j]%>'+''
 					+'<%}%>'+''
 				+'<%}%>'+''
 			+''), list)
 		})
 
-		run('tmpl', function(){
-			$.tmpl(renders(''+''
-				+'{{each(key, val) list}}'+''
-					+'${key}:'+''
-					+'{{each(k, v) val}}'+''
+		run('juicer', function(){
+			juicer(renders(''+''
+				+'{@each list as item, key}'+''
+					+'{@each item as v, k}'+''
 						+'${k}:${v}'+''
+					+'{@/each}'+''
+				+'{@/each}'+''
+			+''), list)
+		})
+
+		run('handlebars', function(){
+			Handlebars.compile(renders(''+''
+				+'{{#each list}}'+''
+					+'{{#each this}}'+''
+						+'{{@key}}:{{this}}'+''
+					+'{{/each}}'+''
+				+'{{/each}}'+''
+			+''))(list)
+		})
+
+		run('dot', function(){
+			doT.compile(renders(''+''
+				+'{{~it.list :val:key}}'+''
+					+'{{ for(var k in val) { }}'+''
+						+'{{=k}}:{{=val[k]}}'+''
+					+'{{ } }}'+''
+				+'{{~}}'+''
+			+''))(list)
+		})
+
+		run('nuiTemplate', function(){
+			tpl.render(renders(''+''
+				+'{{each list val key}}'+''
+					+'{{each val v k}}'+''
+						+'{{k}}:{{v}}'+''
 					+'{{/each}}'+''
 				+'{{/each}}'+''
 			+''), list)
