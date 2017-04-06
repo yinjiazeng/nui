@@ -318,7 +318,7 @@ Nui.define('{script}/base',['{light}/xml'], function(xml){
         position:function(){
             if(hash){
                 var elem = $('[id="'+ hash +'"]');
-                elem.length && main.scrollTop(elem.offset().top - $('.g-header').outerHeight())
+                elem.length && main.scrollTop(elem.position().top)
             }
         },
         event:function(){

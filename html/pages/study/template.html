@@ -186,12 +186,17 @@ template.method(name, callback)
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 内置方法</h3>
+			<p class="e-mt15 f-lh22">过滤空格，参数等同<a class="f-corange" href="api.html#trim">Nui.trim</a></p>
 <script type="text/highlight" options-xml>
-<% trim | string, type %> //过滤空格
-
-<% formatDate | timestamp, format %> //格式化日期
-
-<% setParam | name, value, url %> //设置url参数
+<% trim | string, type %>
+</script>
+			<p class="e-mt15 f-lh22">格式化日期，参数等同<a class="f-corange" href="util.html#formatDate">formatDate</a></p>
+<script type="text/highlight" options-xml>
+<% formatDate | timestamp, format %>
+</script>
+			<p class="e-mt15 f-lh22">设置url参数，参数等同<a class="f-corange" href="util.html#setParam">setParam</a></p>
+<script type="text/highlight" options-xml>
+<% setParam | name, value, url %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="config">config</h2>
 			<p class="e-mt15 f-lh22">配置模板引擎参数</p>
