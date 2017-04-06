@@ -14,7 +14,7 @@ gulp.task('concat', function() {
             './src/component.js'
         ])
         .pipe(concat('nui-debug.js'))
-        .pipe(gulp.dest('./dest'))
+        .pipe(gulp.dest('./dist'))
         .pipe(uglify({
             mangle: true,
             output: {
@@ -22,7 +22,7 @@ gulp.task('concat', function() {
             }
         }))
         .pipe(rename('nui-min.js'))
-        .pipe(gulp.dest('./dest'))
+        .pipe(gulp.dest('./dist'))
 });
 
 var options = {
@@ -53,7 +53,7 @@ gulp.task('nunjucks', function() {
 });
 
 gulp.task('watch', function() {
-    watch(['./src/components/**/*.js', './pages/**/*.!(html)', './dest/*.js', './assets/**/*.*', '!./**/*-{debug,min}.{js,css}'],
+    watch(['./src/components/**/*.js', './pages/**/*.!(html)', './dist/*.js', './assets/**/*.*', '!./**/*-{debug,min}.{js,css}'],
         function(watcher) {
             options.watcher = watcher;
             gulp.src(['./pages/**/*.html'])
