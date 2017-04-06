@@ -142,9 +142,10 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .ui-selectxt::-webkit-selection { background-color:#ca061a; color:#fff;}
 .ui-selectxt::-ms-selection { background-color:#ca061a; color:#fff;}
 .ui-selectxt::selection { background-color:#ca061a; color:#fff;}
-.ui-btn { display: inline-block; padding:0 30px; height: 44px; border-radius:22px; line-height: 45px; border:1px solid #FD6E0E; background-color: #FD6E0E; color:#fff; font-size: 16px;}
+.ui-btn { display: inline-block; padding:0 30px; height: 44px; border-radius:22px; line-height: 44px; border:1px solid #FD6E0E; background-color: #FD6E0E; color:#fff; font-size: 16px;}
 .ui-btn:hover { color:#fff; text-decoration: none; opacity: 0.9; filter: alpha(opacity=90)}
 .ui-btn-line, .ui-btn-line:hover { background:none; color:#FD6E0E;}
+.ui-btn-small { height:30px; line-height:30px; border-radius:15px;}
 
 /* page */
 .g-html, .g-html body { width: 100%; height: 100%; overflow: hidden;}
@@ -164,7 +165,7 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .g-footer a { margin: 0 5px;}
 .g-html .g-header { border-bottom:2px solid #F6F6F6;}
 .g-html .g-content { position: absolute; top: 60px; bottom: 0; width: 100%; *height:expression(eval(document.documentElement.clientHeight - 62));}
-.g-main { width: 100%; margin-left: -200px;}
+.g-main { position:relative; width: 100%; margin-left: -200px;}
 .g-main .mainbox { position:relative; padding-left:300px; padding-bottom:30px; width:900px;}
 .g-main .data { width: 100%;}
 .g-main .data th { background-color: #F6F6F6;}
