@@ -1135,7 +1135,8 @@ Nui.define('template', ['util'], function(util){
                 Nui.each(data, function(v, k){
                     code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1data.'+k)
                 })
-                var Tmpl = new Function('data', 'var that=this, code="";' + code + ';that.echo=function(){return code}');
+                console.log(code)
+                var Tmpl = new Function('data', 'var that=this, code="", assign;' + code + ';that.echo=function(){return code}');
                 Tmpl.prototype = methods;
                 Tmpl.prototype.each = Nui.each;
                 tpl = new Tmpl(data).echo();
@@ -1161,13 +1162,13 @@ Nui.define('template', ['util'], function(util){
             else if((res = match(tpl, 'elseif')) !== false){
                 code = '\n}\nelse if('+res+'){'
             }
-            else if(tpl.indexOf('else') !== -1){
+            else if(tpl.indexOf('else ') !== -1){
                 code = '\n}\nelse{'
             }
             else if(tpl.indexOf('/if') !== -1){
                 code = '\n}'
             }
-            else if((res = match(tpl, 'each', /\s+/)) !== false){
+            else if((res = match(tpl, 'each ', /\s+/)) !== false){
                 code = 'that.each('+ res[0] +', function('+(res[1]||'$value')+','+(res[2]||'$index')+'){'
             }
             else if(tpl.indexOf('/each') !== -1){
@@ -1175,6 +1176,9 @@ Nui.define('template', ['util'], function(util){
             }
             else if((res = match(tpl, ' | ', /\s*,\s*/)) !== false){
                 code = 'code+=that.'+res[0]+'('+ res.slice(1).toString() +');'
+            }
+            else if(tpl.indexOf('var ') === 0){
+                code = tpl+';'
             }
             else{
                 code = 'code+='+tpl+';'
@@ -1199,7 +1203,6 @@ Nui.define('template', ['util'], function(util){
         if(str.indexOf(filter) === 0 || (filter === ' | ' && str.indexOf(filter) > 0)){
             var rep = '';
             if(filter === ' | '){
-                console.log(111)
                 rep = ','
             }
             str = str.replace(filter, rep).replace(/^\s+/, '');
