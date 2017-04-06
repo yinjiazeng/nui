@@ -145,7 +145,7 @@ Nui.define(['./a', './b'], function(a, b){
 				<a href="#require" class="f-corange">require</a> /
 				<a href="#imports" class="f-corange">imports</a> /
 				<a href="#renders" class="f-corange">renders</a> /
-				<a href="#extend" class="f-corange">extend</a> 四个方法</p>
+				<a href="#extend" class="f-corange">extend</a> 四个方法，若要暴漏接口给其他模块使用，return即可。</p>
 <script type="text/highlight" options-javascript="{isLine:false}">
 //模块置前
 Nui.define(['a', 'b', 'c', ...], function(a, b, c, ...){
@@ -164,6 +164,19 @@ Nui.define(function(){
 	var c = this.require('c');
 	c.init()
 	...
+})
+
+//暴漏接口
+Nui.define('demo', function(){
+	var init = function(){
+		console.log('hello world')
+	}
+
+	return init
+})
+//调用上面暴漏的接口
+Nui.define(['demo'], function(demo){
+	demo() //hello world
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="require">require</h2>
