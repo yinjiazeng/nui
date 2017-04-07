@@ -22,7 +22,7 @@
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> script模版</h3>
 			<p class="e-mt15 f-lh22">在页面body中创建type="text/html"的script标签，并且包含id属性</p>
 <script type="text/highlight" options-xml>
-<div id="data"></div>
+<div id="content"></div>
 &lt;script type="text/html" id="tpl"&gt;
 <ul>
 <% if result === 'success' %>
@@ -42,7 +42,7 @@ Nui.load('template', function(template){
 		name:'liumengmei',
 		career:'f2er'
 	}]}
-	document.getElementById('data').innerHTML = template('tpl', data, {
+	document.getElementById('content').innerHTML = template('tpl', data, {
 		openTag:'<%',
 		closeTag:'%>'
 	})
@@ -52,8 +52,8 @@ Nui.load('template', function(template){
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 字符串模版</h3>
 <script type="text/highlight" options-javascript>
-Nui.load('template', function(template){
-	var tmpl = '<ul>\
+Nui.load('template', function(tpl){
+	var str = '<ul>\
 				<% if result === "success" %>\
 					<% each list val key %>\
 					<li>姓名：<% val.name %> 职业：<% val.career %></li>\
@@ -67,7 +67,7 @@ Nui.load('template', function(template){
 		name:'liumengmei',
 		career:'f2er'
 	}]}
-	document.getElementById('data').innerHTML = template.render(tmpl, data, {
+	document.getElementById('content').innerHTML = tpl.render(str, data, {
 		openTag:'<%',
 		closeTag:'%>'
 	})
@@ -223,7 +223,7 @@ template.method(name, callback)
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 内置方法</h3>
 			<p class="e-mt15 f-lh22">过滤空格，参数等同<a class="f-corange" href="api.html#trim">Nui.trim</a></p>
 <script type="text/highlight" options-xml>
-<% trim | string, type %>
+<% trim | string %>
 </script>
 			<p class="e-mt15 f-lh22">格式化日期，参数等同<a class="f-corange" href="util.html#formatDate">formatDate</a></p>
 <script type="text/highlight" options-xml>
@@ -231,7 +231,7 @@ template.method(name, callback)
 </script>
 			<p class="e-mt15 f-lh22">设置url参数，参数等同<a class="f-corange" href="util.html#setParam">setParam</a></p>
 <script type="text/highlight" options-xml>
-<% setParam | name, value, url %>
+<% setParam | name, value, url? %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="config">config</h2>
 			<p class="e-mt15 f-lh22">配置全局参数</p>
