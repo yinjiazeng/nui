@@ -8,12 +8,14 @@
 Nui.define('template', ['util'], function(util){
 
     var template = function(tplid, data){
-        if(tplid && caches[tplid]){
-            return render(caches[tplid], data)
-        }
-        var ele = document.getElementById(tplid);
-        if(ele && ele.nodeName==='SCRIPT' && ele.type === 'text/html'){
-            return render(caches[tplid] = ele.innerHTML, data)
+        if(tplid){
+            if(caches[tplid]){
+                return render(caches[tplid], data, tplid)
+            }
+            var ele = document.getElementById(tplid);
+            if(ele && ele.nodeName==='SCRIPT' && ele.type === 'text/html'){
+                return render(caches[tplid] = ele.innerHTML, data, tplid)
+            }
         }
         return ''
     }
@@ -31,15 +33,15 @@ Nui.define('template', ['util'], function(util){
         setParam:util.setParam
     }
 
-    var render = function(tpl, data){
+    var render = function(tpl, data, tplid){
         var that = this;
         if(typeof tpl === 'string'){
             var start = options.openTag, end = options.closeTag;
             var regs = start.replace(/([^\s])/g, '\\$1');
             var rege = end.replace(/([^\s])/g, '\\$1');
-            tpl = tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tplid){
-                if(tplid){
-                    var tmp = that[tplid];
+            tpl = tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tid){
+                if(tid){
+                    var tmp = that[tid];
                     if(typeof tmp === 'function'){
                         tmp = tmp();
                     }
@@ -47,7 +49,7 @@ Nui.define('template', ['util'], function(util){
                         return render.call(that, tmp)
                     }
                     else{
-                        return template(tplid)
+                        return template(tid)
                     }
                 }
                 return ''
@@ -73,19 +75,51 @@ Nui.define('template', ['util'], function(util){
                 Nui.each(data, function(v, k){
                     code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1data.'+k)
                 })
-                var Tmpl = new Function('data', 'var that=this, code="";' + code + ';that.echo=function(){return code}');
-                Tmpl.prototype = methods;
-                Tmpl.prototype.each = Nui.each;
-                tpl = new Tmpl(data).echo();
-                Tmpl = null;
+                var Func = new Function('data', 'var that=this, line=1; this.code=""; try{' + code + ';}catch(e){that.error(e, line)};');
+                Func.prototype.methods = methods;
+                Func.prototype.error = error(code, data, tplid);
+                Func.prototype.out = function(){
+                    return this.code
+                }
+                tpl = new Func(data).out();
+                Func = null;
             }
             return tpl
         }
         return ''
     }
 
+    var error = function(code, data, tplid){
+        return function(e, line){
+            var msg = '\n';
+            var codes = [];
+            code = code.split('\n');
+            Nui.each(code, function(v, k){
+                codes.push((k+1)+ '      ' +v.replace('line += 1;', ''))
+            })
+            msg += 'code\n';
+            msg += codes.join('\n')+'\n\n';
+            if(typeof JSON !== undefined){
+                msg += 'data\n';
+                msg += JSON.stringify(data)+'\n\n';
+            }
+            if(tplid){
+                msg += 'templateid\n';
+                msg += tplid+'\n\n';
+            }
+            msg += 'line\n';
+            msg += line+'\n\n';
+            msg += 'message\n';
+            msg += e.message;
+            console.error(msg);
+        }
+    }
+
     var compile = function(tpl, logic){
         var code, res;
+        if(!tpl){
+            return ''
+        }
         if(logic){
             if((res = match(tpl, 'if')) !== false){
                 code = 'if('+res+'){'
@@ -97,28 +131,28 @@ Nui.define('template', ['util'], function(util){
                 code = '\n}\nelse{'
             }
             else if(tpl.indexOf('/if') !== -1){
-                code = '\n}'
+                code = '}'
             }
             else if((res = match(tpl, 'each ', /\s+/)) !== false){
-                code = 'that.each('+ res[0] +', function('+(res[1]||'$value')+','+(res[2]||'$index')+'){'
+                code = 'Nui.each('+ res[0] +', function('+(res[1]||'$value')+','+(res[2]||'$index')+'){'
             }
             else if(tpl.indexOf('/each') !== -1){
-                code = '\n});'
+                code = '});'
             }
             else if((res = match(tpl, ' | ', /\s*,\s*/)) !== false){
-                code = 'code+=that.'+res[0]+'('+ res.slice(1).toString() +');'
+                code = 'that.code+=that.methods.'+res[0]+'('+ res.slice(1).toString() +');'
             }
             else if(tpl.indexOf('var ') === 0){
                 code = tpl+';'
             }
             else{
-                code = 'code+='+tpl+';'
+                code = 'that.code+='+tpl+';'
             }
         }
         else{
-            code = 'code+=\''+tpl+'\';'
+            code = 'that.code+=\''+tpl+'\';'
         }
-        return code + '\n'
+        return code + '\n' + 'line += 1;'
     }
 
     var match = function(str, filter, reg){

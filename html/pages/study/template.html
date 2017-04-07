@@ -18,8 +18,8 @@
 				{% include 'note.tpl' %}
 			</div>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="快速上手">快速上手</h2>
-			<p class="e-mt15 f-lh22">模板可以存放在type="text/html"的script标签中，也可以存放在js变量中</p>
-			<p class="e-mt15 f-lh22">传入数据只能为数组或者json对象</p>
+			<p class="e-mt15 f-lh22">模版引擎渲染有2种方式，一种是script模版，另一种是字符串模版</p>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> script模版</h3>
 <script type="text/highlight" options-xml>
 &lt;script type="text/html" id="tpl"&gt;
 <ul>
@@ -30,8 +30,8 @@
 <% /if %>
 </ul>
 &lt;/script&gt;
-</script>
-<script type="text/highlight" options-javascript>
+
+&lt;script&gt;
 Nui.define(['template'], function(template){
 	var data = {result:'success', list:[{
 		name:'yinjiazeng',
@@ -41,7 +41,13 @@ Nui.define(['template'], function(template){
 		career:'f2er'
 	}]}
 	document.getElementById('data').innerHTML = template('tpl', data)
+})
+&lt;/script&gt;
+</script>
 
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 字符串模版</h3>
+<script type="text/highlight" options-javascript>
+Nui.define(['template'], function(template){
 	var tmpl = this.renders({
 		<ul>
 		<% if result === 'success' %>
@@ -51,9 +57,20 @@ Nui.define(['template'], function(template){
 		<% /if %>
 		</ul>
 	});
+	var data = {result:'success', list:[{
+		name:'yinjiazeng',
+		career:'jser'
+	}, {
+		name:'liumengmei',
+		career:'f2er'
+	}]}
 	document.getElementById('data').innerHTML = template.render(tmpl, data)
 })
 </script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<div class="e-mt15 f-lh22">
+				<p>渲染数据必须是数组或者JSON对象。</p>
+			</div>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="语法">语法</h2>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 输出值</h3>
 <script type="text/highlight" options-xml>
@@ -101,7 +118,7 @@ Nui.define(['template'], function(template){
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="方法">方法</h2>
 			<p class="e-mt15 f-lh22">渲染script模板</p>
 <script type="text/highlight" options-javascript>
-template(id, data?)
+template(tplid, data?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
 			<table class="data e-mt15">
@@ -111,9 +128,9 @@ template(id, data?)
 					<th>参数说明</th>
 				</tr>
 				<tr>
-					<td>id</td>
+					<td>tplid</td>
 					<td>String</td>
-					<td>模板id</td>
+					<td>script模版id</td>
 				</tr>
 				<tr>
 					<td>data</td>
@@ -124,7 +141,7 @@ template(id, data?)
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="render">render</h2>
 			<p class="e-mt15 f-lh22">渲染模板</p>
 <script type="text/highlight" options-javascript>
-template.render(tmpl, data?)
+template.render(tmpl, data?, tplid?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
 			<table class="data e-mt15">
@@ -142,6 +159,11 @@ template.render(tmpl, data?)
 					<td>data</td>
 					<td>Array, Object</td>
 					<td>模板数据</td>
+				</tr>
+				<tr>
+					<td>tplid</td>
+					<td>String</td>
+					<td>模版id，错误提示中用于标注哪个模版错误</td>
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
