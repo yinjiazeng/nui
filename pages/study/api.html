@@ -400,9 +400,9 @@ Nui.each(object, callback)
 				</tr>
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="trim">trim</h2>
-			<p class="e-mt15 f-lh22">过滤字符串空格</p>
+			<p class="e-mt15 f-lh22">过滤字符串两端空格</p>
 <script type="text/highlight" options-javascript="{isLine:false}">
-Nui.trim(string, type?)
+Nui.trim(string)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
 			<table class="data e-mt15">
@@ -416,10 +416,41 @@ Nui.trim(string, type?)
 					<td>String</td>
 					<td>被过滤的字符串</td>
 				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="trimLeft">trimLeft</h2>
+			<p class="e-mt15 f-lh22">过滤字符串左侧空格</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.trimLeft(string)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
 				<tr>
-					<td>type</td>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>string</td>
 					<td>String</td>
-					<td>“l”过滤左边空白；“r”过滤右边空白；“all”过滤所有空白；其他条件过滤两端空白</td>
+					<td>被过滤的字符串</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="trimRight">trimRight</h2>
+			<p class="e-mt15 f-lh22">过滤字符串右侧空格</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.trimRight(string)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>string</td>
+					<td>String</td>
+					<td>被过滤的字符串</td>
 				</tr>
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="type">type</h2>
@@ -542,6 +573,12 @@ Nui.doc
                         <a href="#trim">trim</a>
                     </li>
                     <li>
+                        <a href="#trimLeft">trimLeft</a>
+                    </li>
+                    <li>
+                        <a href="#trimRight">trimRight</a>
+                    </li>
+                    <li>
                         <a href="#type">type</a>
                     </li>
                     <li>
@@ -592,7 +629,7 @@ Nui.doc
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
-    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=255dd51"></script>
+    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=9698326"></script>
     
     <script type="text/javascript">
     Nui.config({

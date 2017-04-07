@@ -50,6 +50,12 @@
                         <a href="#trim">trim</a>
                     </li>
                     <li>
+                        <a href="#trimLeft">trimLeft</a>
+                    </li>
+                    <li>
+                        <a href="#trimRight">trimRight</a>
+                    </li>
+                    <li>
                         <a href="#type">type</a>
                     </li>
                     <li>

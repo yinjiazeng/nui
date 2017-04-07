@@ -56,7 +56,7 @@ Nui.define('./script/template/page',['template'], function(tpl){
 		return {list:pieces}
 	}
 
-	function run(name, callback){
+	function run(name, callback, next){
 		var stime = new Date().getTime();
 		if(Nui.browser.msie && Nui.browser.version <= 8 && name === 'dot'){
 			options.yAxis.data.unshift(name+'\/不兼容');
@@ -70,12 +70,16 @@ Nui.define('./script/template/page',['template'], function(tpl){
 			options.series[0].data.unshift(time)
 		}
 		chart.setOption(options);
+		setTimeout(function(){
+			next && next()
+		}, 500)
 	}
 
 	$('#start').click(function(){
 		var list = setData();
 		options = setOption();
-
+		var btn = $(this);
+		btn.hide();
 		run('nuiTemplate', function(){
 			tpl.render(renders(''+''
 				+'{{each list val key}}'+''
@@ -84,56 +88,58 @@ Nui.define('./script/template/page',['template'], function(tpl){
 					+'{{/each}}'+''
 				+'{{/each}}'+''
 			+''), list)
-		})
-
-		run('dot', function(){
-			doT.compile(renders(''+''
-				+'{{~it.list :val:key}}'+''
-					+'{{ for(var k in val) { }}'+''
-						+'{{=k}}:{{=val[k]}}'+''
-					+'{{ } }}'+''
-				+'{{~}}'+''
-			+''))(list)
-		})
-
-		run('artTemplate', function(){
-			template.render(renders(''+''
-				+'{{each list as val key}}'+''
-					+'{{each val as v k}}'+''
-						+'{{k}}:{{v}}'+''
-					+'{{/each}}\n'+''
-				+'{{/each}}'+''
-			+''))(list)
-		})
-
-		run('baiduTemplate', function(){
-			baidu.template(renders(''+''
-				+'<%for(var i=0;i<list.length;i++){%>'+''
-					+'<%for(var j in list[i]){%>'+''
-						+'<%=j%>:<%=list[i][j]%>'+''
-					+'<%}%>'+''
-				+'<%}%>'+''
-			+''), list)
-		})
-
-		run('juicer', function(){
-			juicer(renders(''+''
-				+'{@each list as item, key}'+''
-					+'{@each item as v, k}'+''
-						+'${k}:${v}'+''
-					+'{@/each}'+''
-				+'{@/each}'+''
-			+''), list)
-		})
-
-		run('handlebars', function(){
-			Handlebars.compile(renders(''+''
-				+'{{#each list}}'+''
-					+'{{#each this}}'+''
-						+'{{@key}}:{{this}}'+''
-					+'{{/each}}'+''
-				+'{{/each}}'+''
-			+''))(list)
+		}, function(){
+			run('dot', function(){
+				doT.compile(renders(''+''
+					+'{{~it.list :val:key}}'+''
+						+'{{ for(var k in val) { }}'+''
+							+'{{=k}}:{{=val[k]}}'+''
+						+'{{ } }}'+''
+					+'{{~}}'+''
+				+''))(list)
+			}, function(){
+				run('artTemplate', function(){
+					template.render(renders(''+''
+						+'{{each list as val key}}'+''
+							+'{{each val as v k}}'+''
+								+'{{k}}:{{v}}'+''
+							+'{{/each}}\n'+''
+						+'{{/each}}'+''
+					+''))(list)
+				}, function(){
+					run('baiduTemplate', function(){
+						baidu.template(renders(''+''
+							+'<%for(var i=0;i<list.length;i++){%>'+''
+								+'<%for(var j in list[i]){%>'+''
+									+'<%=j%>:<%=list[i][j]%>'+''
+								+'<%}%>'+''
+							+'<%}%>'+''
+						+''), list)
+					}, function(){
+						run('juicer', function(){
+							juicer(renders(''+''
+								+'{@each list as item, key}'+''
+									+'{@each item as v, k}'+''
+										+'${k}:${v}'+''
+									+'{@/each}'+''
+								+'{@/each}'+''
+							+''), list)
+						}, function(){
+							run('handlebars', function(){
+								Handlebars.compile(renders(''+''
+									+'{{#each list}}'+''
+										+'{{#each this}}'+''
+											+'{{@key}}:{{this}}'+''
+										+'{{/each}}'+''
+									+'{{/each}}'+''
+								+''))(list)
+							}, function(){
+								btn.show();
+							})
+						})
+					})
+				})
+			})
 		})
 	})
 })

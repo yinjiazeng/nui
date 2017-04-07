@@ -11,7 +11,6 @@
     }
 
     var Nui = window.Nui = {
-        version:'1.0.1',
         // Nui.type('nui', 'String') => true
         // Nui.type(['nui'], ['Object', 'Array']) => true
         type:function(obj, type){
@@ -48,20 +47,6 @@
                 }
             }
         },
-        trim:function(str, type){
-            str = str || '';
-            var regexp = /^\s+|\s+$/g;
-            if(type === 'l'){
-                regexp = /^\s+/
-            }
-            else if(type === 'r'){
-                regexp = /\s+$/
-            }
-            else if(type === 'all'){
-                regexp = /\s+/g;
-            }
-            return str.replace(regexp, '')
-        },
         //jquery1.9之后就移除了该方法，以插件形式存在
         browser:(function(){
             var ua = navigator.userAgent.toLowerCase();
@@ -92,6 +77,41 @@
             }
             return ret
         })()
+    }
+
+    var isType = function(type){
+        return function(obj){
+            return {}.toString.call(obj) === '[object ' + type + ']'
+        }
+    }
+
+    var isArray = Array.isArray || isType('Array');
+
+    Nui.each({
+        trim:/^\s+|\s+$/g,
+        trimLeft:/^\s+/g,
+        trimRight:/\s+$/g
+    }, function(v, k){
+        Nui[k] = (function(){
+            if(!String.prototype[k]){
+                return function(str){
+                    return str.replace(v, '')
+                }
+            }
+            return function(str){
+                return str[k]()
+            }
+        })()
+    })
+
+    var noop = function(){}
+
+    //防止不支持该对象的浏览器报错
+    window.console = window.console || {
+        log:noop,
+        debug:noop,
+        error:noop,
+        info:noop
     }
 
     Nui.bsie6 = Nui.browser.msie && Nui.browser.version <= 6;
@@ -125,16 +145,6 @@
             }
         })
         return newarr
-    }
-
-    var isArray = function(obj){
-        return (Array.isArray || isType('Array'))(obj)
-    }
-
-    var isType = function(type){
-        return function(obj){
-            return {}.toString.call(obj) === '[object ' + type + ']'
-        }
     }
 
     var extend = function(){
@@ -195,18 +205,6 @@
             return false;
         }
         return true;
-    }
-
-    var noop = function(){}
-
-    //防止不支持该对象的浏览器报错
-    if(typeof console === 'undefined'){
-        window.console = {
-            log:noop,
-            debug:noop,
-            error:noop,
-            info:noop
-        }
     }
 
     var domain = location.protocol+'//'+location.host;

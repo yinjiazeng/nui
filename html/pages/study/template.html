@@ -132,12 +132,12 @@ template(tplid, data?, options?)
 				<tr>
 					<td>tplid</td>
 					<td>String</td>
-					<td>script模版id</td>
+					<td>模版id</td>
 				</tr>
 				<tr>
 					<td>data</td>
 					<td>Array, Object</td>
-					<td>模板数据</td>
+					<td>渲染数据</td>
 				</tr>
 				<tr>
 					<td>options</td>
@@ -148,7 +148,7 @@ template(tplid, data?, options?)
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="render">render</h2>
 			<p class="e-mt15 f-lh22">渲染模板</p>
 <script type="text/highlight" options-javascript>
-template.render(tmpl, data?, options?, tplid?)
+template.render(tmpl, data?, options?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
 			<table class="data e-mt15">
@@ -165,17 +165,12 @@ template.render(tmpl, data?, options?, tplid?)
 				<tr>
 					<td>data</td>
 					<td>Array, Object</td>
-					<td>模板数据</td>
+					<td>渲染数据</td>
 				</tr>
 				<tr>
 					<td>options</td>
 					<td>Object</td>
 					<td>模版配置参数</td>
-				</tr>
-				<tr>
-					<td>tplid</td>
-					<td>String</td>
-					<td>模版id</td>
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>

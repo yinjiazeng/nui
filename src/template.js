@@ -8,13 +8,13 @@
 Nui.define('template', ['util'], function(util){
 
     var template = function(tplid, data, opts){
-        if(tplid){
+        if(this.tplid = tplid){
             if(caches[tplid]){
-                return render(caches[tplid], data, opts, tplid)
+                return render.call(this, caches[tplid], data, opts)
             }
             var ele = document.getElementById(tplid);
             if(ele && ele.nodeName==='SCRIPT' && ele.type === 'text/html'){
-                return render(caches[tplid] = ele.innerHTML, data, opts, tplid)
+                return render.call(this, caches[tplid] = ele.innerHTML, data, opts)
             }
         }
         return ''
@@ -33,13 +33,25 @@ Nui.define('template', ['util'], function(util){
         setParam:util.setParam
     }
 
-    var render = function(tpl, data, opts, tplid){
+    var isjoin = !!''.trim;
+
+    var joinInit = isjoin ? '""' : '[]';
+
+    var join = (function(){
+        if(isjoin){
+            return function(code){
+                return 'that.code += '+code+';'
+            }
+        }
+        return function(code){
+            return 'that.code.push('+code+');'
+        }
+    })()
+
+    var render = function(tpl, data, opts){
         var that = this;
         if(typeof tpl === 'string'){
             opts = opts || {};
-            if(typeof opts === 'string'){
-                tplid = opts;
-            }
             var openTag = opts.openTag || options.openTag, closeTag = opts.closeTag || options.closeTag;
             var regs = openTag.replace(/([^\s])/g, '\\$1');
             var rege = closeTag.replace(/([^\s])/g, '\\$1');
@@ -79,14 +91,21 @@ Nui.define('template', ['util'], function(util){
                 Nui.each(data, function(v, k){
                     code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1data.'+k)
                 })
-                var Func = new Function('data', 'var that=this, line=1; this.code=""; try{' + code + ';}catch(e){that.error(e, line)};');
-                Func.prototype.methods = methods;
-                Func.prototype.error = error(code, data, tplid);
-                Func.prototype.out = function(){
-                    return this.code
+                
+                try{
+                    var Func = new Function('data', 'var that=this, line=1; this.code='+ joinInit +'; try{' + code + ';}catch(e){that.error(e, line)};');
+                    Func.prototype.methods = methods;
+                    Func.prototype.error = error(code, data, that.tplid);
+                    Func.prototype.out = function(){
+                        return isjoin ? this.code : this.code.join('')
+                    }
+                    tpl = new Func(data).out();
+                    Func = null;
                 }
-                tpl = new Func(data).out();
-                Func = null;
+                catch(e){
+                    error(code, data, that.tplid)(e)
+                }
+                
             }
             return tpl
         }
@@ -111,8 +130,10 @@ Nui.define('template', ['util'], function(util){
                 msg += 'templateid\n';
                 msg += tplid+'\n\n';
             }
-            msg += 'line\n';
-            msg += line+'\n\n';
+            if(line){
+                msg += 'line\n';
+                msg += line+'\n\n';
+            }
             msg += 'message\n';
             msg += e.message;
             console.error(msg);
@@ -144,17 +165,17 @@ Nui.define('template', ['util'], function(util){
                 code = '});'
             }
             else if((res = match(tpl, ' | ', /\s*,\s*/)) !== false){
-                code = 'that.code+=that.methods.'+res[0]+'('+ res.slice(1).toString() +');'
+                code = join('that.methods.'+res[0]+'('+ res.slice(1).toString() +')')
             }
             else if(tpl.indexOf('var ') === 0){
                 code = tpl+';'
             }
             else{
-                code = 'that.code+='+tpl+';'
+                code = join(tpl)
             }
         }
         else{
-            code = 'that.code+=\''+tpl+'\';'
+            code = join('\''+tpl+'\'')
         }
         return code + '\n' + 'line += 1;'
     }

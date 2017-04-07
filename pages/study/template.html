@@ -171,12 +171,12 @@ template(tplid, data?, options?)
 				<tr>
 					<td>tplid</td>
 					<td>String</td>
-					<td>script模版id</td>
+					<td>模版id</td>
 				</tr>
 				<tr>
 					<td>data</td>
 					<td>Array, Object</td>
-					<td>模板数据</td>
+					<td>渲染数据</td>
 				</tr>
 				<tr>
 					<td>options</td>
@@ -187,7 +187,7 @@ template(tplid, data?, options?)
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="render">render</h2>
 			<p class="e-mt15 f-lh22">渲染模板</p>
 <script type="text/highlight" options-javascript>
-template.render(tmpl, data?, options?, tplid?)
+template.render(tmpl, data?, options?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
 			<table class="data e-mt15">
@@ -204,17 +204,12 @@ template.render(tmpl, data?, options?, tplid?)
 				<tr>
 					<td>data</td>
 					<td>Array, Object</td>
-					<td>模板数据</td>
+					<td>渲染数据</td>
 				</tr>
 				<tr>
 					<td>options</td>
 					<td>Object</td>
 					<td>模版配置参数</td>
-				</tr>
-				<tr>
-					<td>tplid</td>
-					<td>String</td>
-					<td>模版id</td>
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
@@ -405,13 +400,13 @@ template.config(key, value?)
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
-    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=ff69816"></script>
+    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=9698326"></script>
     
-<script src="/nui/assets/script/echarts.min.js?v=5f765d6"></script>
+<script src="/nui/assets/script/echarts.min.js?v=899e557"></script>
 <script src="/nui/assets/script/template/artTemplate.js?v=d03cebe"></script>
-<script src="/nui/assets/script/template/baiduTemplate.js?v=472f123"></script>
+<script src="/nui/assets/script/template/baiduTemplate.js?v=82e95db"></script>
 <script src="/nui/assets/script/template/juicer.js?v=cb37435"></script>
-<script src="/nui/assets/script/template/handlebars.js?v=f08c62a"></script>
+<script src="/nui/assets/script/template/handlebars.js?v=67c1431"></script>
 <script src="/nui/assets/script/template/doT.js?v=a04c664"></script>
 
     <script type="text/javascript">
@@ -434,7 +429,7 @@ template.config(key, value?)
     })
 
     
-Nui.load('./script/template/page-min')
+Nui.load("./script/template/page-min?v=7eb7872")
 
     </script>
 </body>
