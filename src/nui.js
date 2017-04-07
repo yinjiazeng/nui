@@ -18,7 +18,7 @@
             if(obj === null || obj === undefined){
                 return false
             }
-            if(isType('Array')(type)){
+            if(isArray(type)){
                 var ret = false;
                 Nui.each(type, function(v){
                     if(isType(v)(obj)){
@@ -32,7 +32,7 @@
         },
         each:function(obj, callback){
             var i;
-            if(Nui.type(obj, 'Array')){
+            if(isArray(obj)){
                 var len = obj.length;
                 for(i=0; i<len; i++){
                     if(callback(obj[i], i) === false){
@@ -127,6 +127,10 @@
         return newarr
     }
 
+    var isArray = function(obj){
+        return (Array.isArray || isType('Array'))(obj)
+    }
+
     var isType = function(type){
         return function(obj){
             return {}.toString.call(obj) === '[object ' + type + ']'
@@ -159,10 +163,10 @@
                     if(target === copy){
                         continue;
                     }
-                    if(deep && copy && (isObject(copy) || (copyIsArray = Nui.type(copy, 'Array')))){
+                    if(deep && copy && (isObject(copy) || (copyIsArray = isArray(copy)))){
                         if(copyIsArray){
                             copyIsArray = false;
-                            clone = src && Nui.type(src, 'Array') ? src : [];
+                            clone = src && isArray(src) ? src : [];
                         }
                         else{
                             clone = src && isObject(src) ? src : {};
@@ -417,10 +421,10 @@
                 module = _mod
             }
 
-            if(Nui.type(module, 'Array')){
+            if(isArray(module)){
                 exports = extend(true, [], module)
                 if(inserts === true){
-                    if(!Nui.type(members, 'Array')){
+                    if(!isArray(members)){
                         exports.push(members)
                     }
                     else{
@@ -443,7 +447,7 @@
                 exports = module
             }
 
-            if(Nui.type(inserts, 'Array') && Nui.type(exports, ['Object', 'Function'])){
+            if(isArray(inserts) && Nui.type(exports, ['Object', 'Function'])){
                 Nui.each(inserts, function(val){
                     if(val.method && val.content){
                         var arr = val.method.split('->');
@@ -791,7 +795,7 @@
 
         //Nui.define('id', {}, function(){})
         //Nui.define('id', '', function(){})
-        else if(len === 3 && !Nui.type(args[1], 'Array') && Nui.type(args[2], 'Function')){
+        else if(len === 3 && !isArray(args[1]) && Nui.type(args[2], 'Function')){
             params.push(args[0]);
             params.push(args[2]);
         }

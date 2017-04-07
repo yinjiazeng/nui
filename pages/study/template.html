@@ -159,7 +159,7 @@ Nui.define(['template'], function(template){
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="方法">方法</h2>
 			<p class="e-mt15 f-lh22">渲染script模板</p>
 <script type="text/highlight" options-javascript>
-template(tplid, data?)
+template(tplid, data?, options?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
 			<table class="data e-mt15">
@@ -178,11 +178,16 @@ template(tplid, data?)
 					<td>Array, Object</td>
 					<td>模板数据</td>
 				</tr>
+				<tr>
+					<td>options</td>
+					<td>Object</td>
+					<td>模版配置参数</td>
+				</tr>
 			</table>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="render">render</h2>
 			<p class="e-mt15 f-lh22">渲染模板</p>
 <script type="text/highlight" options-javascript>
-template.render(tmpl, data?, tplid?)
+template.render(tmpl, data?, options?, tplid?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
 			<table class="data e-mt15">
@@ -202,9 +207,14 @@ template.render(tmpl, data?, tplid?)
 					<td>模板数据</td>
 				</tr>
 				<tr>
+					<td>options</td>
+					<td>Object</td>
+					<td>模版配置参数</td>
+				</tr>
+				<tr>
 					<td>tplid</td>
 					<td>String</td>
-					<td>模版id，错误提示中用于标注哪个模版错误</td>
+					<td>模版id</td>
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
@@ -304,11 +314,14 @@ template.config(key, value?)
 				</tr>
 			</table>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="性能测试">性能测试</h2>
-			<p class="e-mt15 f-lh22">
-				<input type="text" class="input piece" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="10000" />
-				条数据
-				<input type="text" class="input count" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="10" />
-				次渲染与其它模版引擎耗时对比 <a class="ui-btn ui-btn-small e-ml10" id="start">执行</a></p>
+			<div class="e-mt15 f-lh22">
+				<p>
+					<input type="text" class="input piece" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="10000" />
+					条数据
+					<input type="text" class="input count" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="10" />
+					次渲染与其它模版引擎耗时对比 <a class="ui-btn ui-btn-small e-ml10" id="start">执行</a></p>
+				<p>IE6下不要用大数据测试，否则会导致崩溃！</p>
+			</div>
 <script type="text/highlight" options-javascript>
 [
 	{
@@ -392,7 +405,7 @@ template.config(key, value?)
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
-    <script type="text/javascript" src="/nui/dist/nui-min.js?v=146e989"></script>
+    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=ff69816"></script>
     
 <script src="/nui/assets/script/echarts.min.js?v=5f765d6"></script>
 <script src="/nui/assets/script/template/artTemplate.js?v=d03cebe"></script>

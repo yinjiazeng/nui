@@ -58,17 +58,43 @@ Nui.define('./script/template/page',['template'], function(tpl){
 
 	function run(name, callback){
 		var stime = new Date().getTime();
-		callback()
-		var etime = new Date().getTime();
-		var time = etime - stime;
-		options.yAxis.data.push(name);
-		options.series[0].data.push(time)
+		if(Nui.browser.msie && Nui.browser.version <= 8 && name === 'dot'){
+			options.yAxis.data.unshift(name+'\/不兼容');
+			options.series[0].data.unshift(0)
+		}
+		else{
+			callback()
+			var etime = new Date().getTime();
+			var time = etime - stime;
+			options.yAxis.data.unshift(name);
+			options.series[0].data.unshift(time)
+		}
 		chart.setOption(options);
 	}
 
 	$('#start').click(function(){
 		var list = setData();
 		options = setOption();
+
+		run('nuiTemplate', function(){
+			tpl.render(renders(''+''
+				+'{{each list val key}}'+''
+					+'{{each val v k}}'+''
+						+'{{k}}:{{v}}'+''
+					+'{{/each}}'+''
+				+'{{/each}}'+''
+			+''), list)
+		})
+
+		run('dot', function(){
+			doT.compile(renders(''+''
+				+'{{~it.list :val:key}}'+''
+					+'{{ for(var k in val) { }}'+''
+						+'{{=k}}:{{=val[k]}}'+''
+					+'{{ } }}'+''
+				+'{{~}}'+''
+			+''))(list)
+		})
 
 		run('artTemplate', function(){
 			template.render(renders(''+''
@@ -108,26 +134,6 @@ Nui.define('./script/template/page',['template'], function(tpl){
 					+'{{/each}}'+''
 				+'{{/each}}'+''
 			+''))(list)
-		})
-
-		run('dot', function(){
-			doT.compile(renders(''+''
-				+'{{~it.list :val:key}}'+''
-					+'{{ for(var k in val) { }}'+''
-						+'{{=k}}:{{=val[k]}}'+''
-					+'{{ } }}'+''
-				+'{{~}}'+''
-			+''))(list)
-		})
-		
-		run('nuiTemplate', function(){
-			tpl.render(renders(''+''
-				+'{{each list val key}}'+''
-					+'{{each val v k}}'+''
-						+'{{k}}:{{v}}'+''
-					+'{{/each}}'+''
-				+'{{/each}}'+''
-			+''), list)
 		})
 	})
 })

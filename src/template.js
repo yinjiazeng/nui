@@ -7,14 +7,14 @@
 
 Nui.define('template', ['util'], function(util){
 
-    var template = function(tplid, data){
+    var template = function(tplid, data, opts){
         if(tplid){
             if(caches[tplid]){
-                return render(caches[tplid], data, tplid)
+                return render(caches[tplid], data, opts, tplid)
             }
             var ele = document.getElementById(tplid);
             if(ele && ele.nodeName==='SCRIPT' && ele.type === 'text/html'){
-                return render(caches[tplid] = ele.innerHTML, data, tplid)
+                return render(caches[tplid] = ele.innerHTML, data, opts, tplid)
             }
         }
         return ''
@@ -33,12 +33,16 @@ Nui.define('template', ['util'], function(util){
         setParam:util.setParam
     }
 
-    var render = function(tpl, data, tplid){
+    var render = function(tpl, data, opts, tplid){
         var that = this;
         if(typeof tpl === 'string'){
-            var start = options.openTag, end = options.closeTag;
-            var regs = start.replace(/([^\s])/g, '\\$1');
-            var rege = end.replace(/([^\s])/g, '\\$1');
+            opts = opts || {};
+            if(typeof opts === 'string'){
+                tplid = opts;
+            }
+            var openTag = opts.openTag || options.openTag, closeTag = opts.closeTag || options.closeTag;
+            var regs = openTag.replace(/([^\s])/g, '\\$1');
+            var rege = closeTag.replace(/([^\s])/g, '\\$1');
             tpl = tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tid){
                 if(tid){
                     var tmp = that[tid];
@@ -46,15 +50,15 @@ Nui.define('template', ['util'], function(util){
                         tmp = tmp();
                     }
                     if(typeof tmp === 'string'){
-                        return render.call(that, tmp)
+                        return render.call(that, tmp, null, opts)
                     }
                     else{
-                        return template(tid)
+                        return template(tid, null, opts)
                     }
                 }
                 return ''
             })
-            if(typeof data === 'object'){
+            if(data && typeof data === 'object'){
                 if(Nui.type(data, 'Array')){
                     data = {
                         $list:data
@@ -62,8 +66,8 @@ Nui.define('template', ['util'], function(util){
                 }
                 var code = '';
                 tpl = tpl.replace(/[\r\n]+/g, '');
-                Nui.each(tpl.split(start), function(val, key){
-                    val = val.split(end);
+                Nui.each(tpl.split(openTag), function(val, key){
+                    val = val.split(closeTag);
                     if(key >= 1){
                         code += compile(Nui.trim(val[0]), true)
                     }
