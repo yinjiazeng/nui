@@ -119,7 +119,7 @@ Nui.define('./script/template/page',['template'], function(tpl){
 				+'{{~}}'+''
 			+''))(list)
 		})
-
+		
 		run('nuiTemplate', function(){
 			tpl.render(renders(''+''
 				+'{{each list val key}}'+''
