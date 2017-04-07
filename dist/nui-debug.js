@@ -1057,12 +1057,6 @@ Nui.define('util', {
 
 Nui.define('template', ['util'], function(util){
 
-    /**
-    * @name template
-    * @param tplid {String} 模板id
-    * @param data {Object, Array} 渲染数据
-    * @return {String} 渲染后的html字符串
-    */
     var template = function(tplid, data){
         if(tplid && caches[tplid]){
             return render(caches[tplid], data)
@@ -1087,12 +1081,6 @@ Nui.define('template', ['util'], function(util){
         setParam:util.setParam
     }
 
-    /**
-    * @name render
-    * @param tpl {String} 模板字符串
-    * @param data {Object, Array} 渲染数据，data为数组会转为对象，属性为 $list
-    * @return {String} 渲染后的html字符串
-    */
     var render = function(tpl, data){
         var that = this;
         if(typeof tpl === 'string'){
@@ -1146,12 +1134,6 @@ Nui.define('template', ['util'], function(util){
         return ''
     }
 
-    /**
-    * @name compile
-    * @param tpl {String} 模板片段
-    * @param logic {Boolean} 是否为逻辑代码
-    * @return {String} 可被js识别的代码片段
-    */
     var compile = function(tpl, logic){
         var code, res;
         if(logic){
@@ -1189,15 +1171,6 @@ Nui.define('template', ['util'], function(util){
         return code + '\n'
     }
 
-    /**
-    * @name match
-    * @param str {String} 模板片段
-    * @param filter {String} 过滤的字符串
-    * @param reg {String, RegExp Object} 分割符号
-    * @return {Array} 当模板片段中包含“|”时，返回函数和参数组成的数组，第一个值为函数，后面的全部为参数
-    * @return {String} 过滤掉filter的模板片段
-    * @return {Boolean} 模板片段不包含filter，返回false
-    */
     var match = function(str, filter, reg){
         if(str.indexOf(filter) === 0 || (filter === ' | ' && str.indexOf(filter) > 0)){
             var rep = '';
