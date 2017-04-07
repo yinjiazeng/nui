@@ -22,6 +22,7 @@
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> script模版</h3>
 			<p class="e-mt15 f-lh22">在页面body中创建type="text/html"的script标签，并且包含id属性</p>
 <script type="text/highlight" options-xml>
+<div id="data"></div>
 &lt;script type="text/html" id="tpl"&gt;
 <ul>
 <% if result === 'success' %>
@@ -31,9 +32,9 @@
 <% /if %>
 </ul>
 &lt;/script&gt;
-
+&lt;script src="nui.js"&gt;&lt;/script&gt;
 &lt;script&gt;
-Nui.define(['template'], function(template){
+Nui.load('template', function(template){
 	var data = {result:'success', list:[{
 		name:'yinjiazeng',
 		career:'jser'
@@ -41,23 +42,24 @@ Nui.define(['template'], function(template){
 		name:'liumengmei',
 		career:'f2er'
 	}]}
-	document.getElementById('data').innerHTML = template('tpl', data)
+	document.getElementById('data').innerHTML = template('tpl', data, {
+		openTag:'<%',
+		closeTag:'%>'
+	})
 })
 &lt;/script&gt;
 </script>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 字符串模版</h3>
 <script type="text/highlight" options-javascript>
-Nui.define(['template'], function(template){
-	var tmpl = this.renders({
-		<ul>
-		<% if result === 'success' %>
-			<% each list val key %>
-			<li>姓名：<% val.name %> 职业：<% val.career %></li>
-			<% /each %>
-		<% /if %>
-		</ul>
-	});
+Nui.load('template', function(template){
+	var tmpl = '<ul>\
+				<% if result === "success" %>\
+					<% each list val key %>\
+					<li>姓名：<% val.name %> 职业：<% val.career %></li>\
+					<% /each %>\
+				<% /if %>\
+				</ul>';
 	var data = {result:'success', list:[{
 		name:'yinjiazeng',
 		career:'jser'
@@ -65,7 +67,10 @@ Nui.define(['template'], function(template){
 		name:'liumengmei',
 		career:'f2er'
 	}]}
-	document.getElementById('data').innerHTML = template.render(tmpl, data)
+	document.getElementById('data').innerHTML = template.render(tmpl, data, {
+		openTag:'<%',
+		closeTag:'%>'
+	})
 })
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
@@ -229,7 +234,7 @@ template.method(name, callback)
 <% setParam | name, value, url %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="config">config</h2>
-			<p class="e-mt15 f-lh22">配置模板引擎参数</p>
+			<p class="e-mt15 f-lh22">配置全局参数</p>
 <script type="text/highlight" options-javascript>
 template.config(key, value?)
 </script>
