@@ -58,17 +58,11 @@ Nui.define('./script/template/page',['template'], function(tpl){
 
 	function run(name, callback, next){
 		var stime = new Date().getTime();
-		if(Nui.browser.msie && Nui.browser.version <= 8 && name === 'dot'){
-			options.yAxis.data.unshift(name+'\/不兼容');
-			options.series[0].data.unshift(0)
-		}
-		else{
-			callback()
-			var etime = new Date().getTime();
-			var time = etime - stime;
-			options.yAxis.data.unshift(name);
-			options.series[0].data.unshift(time)
-		}
+		callback()
+		var etime = new Date().getTime();
+		var time = etime - stime;
+		options.yAxis.data.unshift(name);
+		options.series[0].data.unshift(time)
 		chart.setOption(options);
 		setTimeout(function(){
 			next && next()

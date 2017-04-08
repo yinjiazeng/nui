@@ -85,7 +85,7 @@
         }
     }
 
-    var isArray = Array.isArray || isType('Array');
+    var isArray = Nui.isArray = Array.isArray || isType('Array');
 
     Nui.each({
         trim:/^\s+|\s+$/g,
@@ -1085,72 +1085,97 @@ Nui.define('template', ['util'], function(util){
         setParam:util.setParam
     }
 
-    var isjoin = !!''.trim;
+    var isstr = !!''.trim;
 
-    var joinInit = isjoin ? '""' : '[]';
+    var snippet = ';that.out = function(){return code';
 
-    var join = (function(){
-        if(isjoin){
-            return function(code){
-                return 'that.code += '+code+';'
+    //低版本IE用push拼接字符串效率更高
+    snippet = (isstr ? '""'+snippet : '[]'+snippet+'.join("")')+'}';
+
+    var join = function(iscode){
+        if(isstr){
+            if(iscode){
+                return function(code){
+                    return 'code += '+code+';'
+                }
+            }
+            return function(code, snippet){
+                return code += snippet
             }
         }
-        return function(code){
-            return 'that.code.push('+code+');'
+        if(iscode){
+            return function(code){
+                return 'code.push('+code+');'
+            }
         }
-    })()
+        return function(code, snippet){
+            code.push(snippet);
+            return code
+        }
+    }
+
+    var joinCode = join(true);
+
+    var joinSnippet = join();
+
+    var replaceInclude = function(tpl, openTag, closeTag, opts){
+        var that = this;
+        var regs = openTag.replace(/([^\s])/g, '\\$1');
+        var rege = closeTag.replace(/([^\s])/g, '\\$1');
+        return tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tid){
+            if(tid){
+                var tmp = that[tid];
+                if(typeof tmp === 'function'){
+                    tmp = tmp();
+                }
+                if(typeof tmp === 'string'){
+                    return render.call(that, tmp, null, opts)
+                }
+                else{
+                    return template(tid, null, opts)
+                }
+            }
+            return ''
+        })
+    }
 
     var render = function(tpl, data, opts){
         var that = this;
         if(typeof tpl === 'string'){
             opts = opts || {};
             var openTag = opts.openTag || options.openTag, closeTag = opts.closeTag || options.closeTag;
-            var regs = openTag.replace(/([^\s])/g, '\\$1');
-            var rege = closeTag.replace(/([^\s])/g, '\\$1');
-            tpl = tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tid){
-                if(tid){
-                    var tmp = that[tid];
-                    if(typeof tmp === 'function'){
-                        tmp = tmp();
-                    }
-                    if(typeof tmp === 'string'){
-                        return render.call(that, tmp, null, opts)
-                    }
-                    else{
-                        return template(tid, null, opts)
-                    }
-                }
-                return ''
-            })
+            tpl = replaceInclude.call(that, tpl, openTag, closeTag);
             if(data && typeof data === 'object'){
-                if(Nui.type(data, 'Array')){
+                if(Nui.isArray(data)){
                     data = {
                         $list:data
                     }
                 }
-                var code = '';
+                var code = isstr ? '' : [];
                 tpl = tpl.replace(/[\r\n]+/g, '');
                 Nui.each(tpl.split(openTag), function(val, key){
                     val = val.split(closeTag);
                     if(key >= 1){
-                        code += compile(Nui.trim(val[0]), true)
+                       code = joinSnippet(code, compile(Nui.trim(val[0]), true))
                     }
                     else{
                         val[1] = val[0];
                     }
-                    code += compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"'))
+                    code = joinSnippet(code, compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"')))
                 });
+
+                if(!isstr){
+                    code = code.join('')
+                }
+
                 Nui.each(data, function(v, k){
                     code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1data.'+k)
                 })
                 
                 try{
-                    var Func = new Function('data', 'var that=this, line=1; this.code='+ joinInit +'; try{' + code + ';}catch(e){that.error(e, line)};');
+                    var Func = new Function('data', 'var that=this, line=1, code='+ snippet +';try{' + code + ';}catch(e){that.error(e, line)};');
                     Func.prototype.methods = methods;
                     Func.prototype.error = error(code, data, that.tplid);
-                    Func.prototype.out = function(){
-                        return isjoin ? this.code : this.code.join('')
-                    }
                     tpl = new Func(data).out();
                     Func = null;
                 }
@@ -1217,17 +1242,17 @@ Nui.define('template', ['util'], function(util){
                 code = '});'
             }
             else if((res = match(tpl, ' | ', /\s*,\s*/)) !== false){
-                code = join('that.methods.'+res[0]+'('+ res.slice(1).toString() +')')
+                code = joinCode('that.methods.'+res[0]+'('+ res.slice(1).toString() +')')
             }
             else if(tpl.indexOf('var ') === 0){
                 code = tpl+';'
             }
             else{
-                code = join(tpl)
+                code = joinCode(tpl)
             }
         }
         else{
-            code = join('\''+tpl+'\'')
+            code = joinCode('\''+tpl+'\'')
         }
         return code + '\n' + 'line += 1;'
     }

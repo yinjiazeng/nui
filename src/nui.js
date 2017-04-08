@@ -85,7 +85,7 @@
         }
     }
 
-    var isArray = Array.isArray || isType('Array');
+    var isArray = Nui.isArray = Array.isArray || isType('Array');
 
     Nui.each({
         trim:/^\s+|\s+$/g,
