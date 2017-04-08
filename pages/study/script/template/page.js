@@ -42,6 +42,10 @@ Nui.define(['template'], function(tpl){
 		this.value = val || num;
 	})
 
+	if(Nui.bsie7){
+		$('.piece').val(300);
+	}
+
 	var setData = function(){
 		var piece = $('.piece').val();
 		var count = $('.count').val();

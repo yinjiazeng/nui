@@ -125,7 +125,7 @@ Nui.define('template', ['util'], function(util){
                     Func.prototype.methods = methods;
                     Func.prototype.error = error(code, data, that.tplid);
                     tpl = new Func(data).out();
-                    Func = null;
+                    Func = null
                 }
                 catch(e){
                     error(code, data, that.tplid)(e)
@@ -143,53 +143,53 @@ Nui.define('template', ['util'], function(util){
             var codes = [];
             code = code.split('\n');
             Nui.each(code, function(v, k){
-                codes.push((k+1)+ '      ' +v.replace('line += 1;', ''))
+                codes.push((k+1)+ '      ' +v.replace('line++;', ''))
             })
             msg += 'code\n';
             msg += codes.join('\n')+'\n\n';
             if(typeof JSON !== undefined){
                 msg += 'data\n';
-                msg += JSON.stringify(data)+'\n\n';
+                msg += JSON.stringify(data)+'\n\n'
             }
             if(tplid){
                 msg += 'templateid\n';
-                msg += tplid+'\n\n';
+                msg += tplid+'\n\n'
             }
             if(line){
                 msg += 'line\n';
-                msg += line+'\n\n';
+                msg += line+'\n\n'
             }
             msg += 'message\n';
             msg += e.message;
-            console.error(msg);
+            console.error(msg)
         }
     }
 
     var compile = function(tpl, logic){
-        var code, res;
         if(!tpl){
             return ''
         }
+        var code,res;
         if(logic){
-            if((res = match(tpl, 'if')) !== false){
+            if((res = match(tpl, 'if')) !== undefined){
                 code = 'if('+res+'){'
             }
-            else if((res = match(tpl, 'elseif')) !== false){
+            else if((res = match(tpl, 'elseif')) !== undefined){
                 code = '\n}\nelse if('+res+'){'
             }
-            else if(tpl.indexOf('else ') !== -1){
+            else if(tpl === 'else'){
                 code = '\n}\nelse{'
             }
-            else if(tpl.indexOf('/if') !== -1){
+            else if(tpl === '/if'){
                 code = '}'
             }
-            else if((res = match(tpl, 'each ', /\s+/)) !== false){
+            else if((res = match(tpl, 'each ', /\s+/)) !== undefined){
                 code = 'Nui.each('+ res[0] +', function('+(res[1]||'$value')+','+(res[2]||'$index')+'){'
             }
-            else if(tpl.indexOf('/each') !== -1){
+            else if(tpl === '/each'){
                 code = '});'
             }
-            else if((res = match(tpl, ' | ', /\s*,\s*/)) !== false){
+            else if((res = match(tpl, ' | ', /\s*,\s*/)) !== undefined){
                 code = joinCode('that.methods.'+res[0]+'('+ res.slice(1).toString() +')')
             }
             else if(tpl.indexOf('var ') === 0){
@@ -202,22 +202,21 @@ Nui.define('template', ['util'], function(util){
         else{
             code = joinCode('\''+tpl+'\'')
         }
-        return code + '\n' + 'line += 1;'
+        return code + '\n' + 'line++;'
     }
 
-    var match = function(str, filter, reg){
-        if(str.indexOf(filter) === 0 || (filter === ' | ' && str.indexOf(filter) > 0)){
-            var rep = '';
-            if(filter === ' | '){
-                rep = ','
-            }
-            str = str.replace(filter, rep).replace(/^\s+/, '');
-            if(reg){
-                return str.split(reg)
-            }
-            return str
+    var match = function(str, syntax, regexp){
+        var replace;
+        if(str.indexOf(syntax) === 0){
+            replace = ''
         }
-        return false
+        else if(syntax === ' | ' && str.indexOf(syntax) > 0){
+            replace = ','
+        }
+        if(replace !== undefined){
+            str = Nui.trimLeft(str.replace(syntax, replace));
+            return regexp ? str.split(regexp) : str
+        }
     }
 
     template.method = function(method, callback){

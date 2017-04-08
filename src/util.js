@@ -34,7 +34,7 @@ Nui.define('util', {
         startIndex = url.indexOf('?');
         if(startIndex++ > 0){
             var param = url.substr(startIndex).split('&'), temp;
-            $.each(param, function(key, val){
+            Nui.each(param, function(val){
                 temp = val.split('=');
                 value[temp[0]] = temp[1];
             });
@@ -53,11 +53,11 @@ Nui.define('util', {
      */
     setParam:function(name, value, urls){
         var url;
-        if($.isPlainObject(name)){
+        if(Nui.type(name, 'Object')){
             url = value||location.href;
-            $.each(name, function(key, val){
+            Nui.each(name, function(val, key){
                 if(val){
-                    if($.isPlainObject(val)){
+                    if(Nui.type(val, 'Object')){
                         val = tools.getJSON(val);
                     }
                     url = tools.setParam(key, val, url);
@@ -69,7 +69,7 @@ Nui.define('util', {
             if(url.indexOf('?') === -1){
                 url += '?';
             }
-            if($.isPlainObject(value)){
+            if(Nui.type(value, 'Object')){
                 value = tools.getJSON(value);
             }
             if(url.indexOf(name+'=') !== -1){
@@ -181,16 +181,16 @@ Nui.define('util', {
             return jsonstr;
         }
         else{
-            if($.isArray(data)){
+            if(Nui.isArray(data)){
                 var arr = [];
-                $.each(data, function(key, val){
+                Nui.each(data, function(val){
                     arr.push(tools.getJSON(val));
                 });
                 return '[' + arr.join(',') + ']';
             }
-            else if($.isPlainObject(data)){
+            else if(Nui.type(data, 'Object')){
                 var temp = [];
-                $.each(data, function(key, val){
+                Nui.each(data, function(val, key){
                     temp.push('"'+ key +'":'+ tools.getJSON(val));
                 });
                 return '{' + temp.join(',') + '}';
