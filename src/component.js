@@ -179,7 +179,10 @@ Nui.define('component', ['template'], function(tpl){
             return that
         },
         _tpl2html:function(tpls, data){
-            return tpl.render.call(this, tpls, data)
+            return tpl.render.call(this, tpls, data, {
+                openTag:'<%',
+                closeTag:'%>'
+            })
         },
         set:function(name, value){
             var that = this;
