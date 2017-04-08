@@ -80,16 +80,21 @@ Nui.load('template', function(tpl){
 			</div>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="语法">语法</h2>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 输出值</h3>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% value1 %>
 <% value2 %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 声明变量</h3>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% var a = 1, b = 2, ... %>
+<% 
+	var func = function(){
+		//do something
+	}
+%>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 遍历</h3>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% each list val key %>
 	<% key %>:<% val %>
 <% /each %>
@@ -101,7 +106,7 @@ Nui.load('template', function(tpl){
 <% /each %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 判断</h3>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% if key == 0 %>
 	<% vlaue %>
 <% elseif key == 1 %>
@@ -111,15 +116,15 @@ Nui.load('template', function(tpl){
 <% /if %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 三目</h3>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% key == 0 ? 1 : 2 %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 方法调用</h3>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% 方法名 | 参数1, 参数2, ... %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 导入模板</h3>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% include '模板id或属性名' %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="方法">方法</h2>
@@ -222,16 +227,28 @@ template.method(name, callback)
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 内置方法</h3>
 			<p class="e-mt15 f-lh22">过滤空格，参数等同<a class="f-corange" href="api.html#trim">Nui.trim</a></p>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% trim | string %>
 </script>
 			<p class="e-mt15 f-lh22">格式化日期，参数等同<a class="f-corange" href="util.html#formatDate">formatDate</a></p>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% formatDate | timestamp, format %>
 </script>
 			<p class="e-mt15 f-lh22">设置url参数，参数等同<a class="f-corange" href="util.html#setParam">setParam</a></p>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" options-javascript>
 <% setParam | name, value, url? %>
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">除了这种方式，也可以直接在模板中声明函数调用</p>
+<script type="text/highlight" options-javascript>
+<% 
+var filter = function(str){
+	return str.replace(/\d/g, '')
+}
+%>
+<% each $list %>
+<% filter($value) %>
+<% /each %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="config">config</h2>
 			<p class="e-mt15 f-lh22">配置全局参数</p>
@@ -265,12 +282,12 @@ template.config(key, value?)
 				</tr>
 				<tr>
 					<td>openTag</td>
-					<td>{ {</td>
+					<td>&lt;%</td>
 					<td>模板开始标签</td>
 				</tr>
 				<tr>
 					<td>closeTag</td>
-					<td>} }</td>
+					<td>%&gt;</td>
 					<td>模板闭合标签</td>
 				</tr>
 			</table>

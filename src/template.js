@@ -23,8 +23,8 @@ Nui.define('template', ['util'], function(util){
     var caches = {};
 
     var options = {
-        openTag:'{{',
-        closeTag:'}}'
+        openTag:'<%',
+        closeTag:'%>'
     }
 
     var methods = {
@@ -100,7 +100,7 @@ Nui.define('template', ['util'], function(util){
                     }
                 }
                 var code = isstr ? '' : [];
-                tpl = tpl.replace(/[\r\n]+/g, '');
+                //tpl = tpl.replace(/[\r\n]+/g, '');
                 Nui.each(tpl.split(openTag), function(val, key){
                     val = val.split(closeTag);
                     if(key >= 1){

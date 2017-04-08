@@ -32,16 +32,16 @@ Nui.define(['util'], function(util){
         },
         _tpl:{
             wrap:'<strong \
-                    class="nui-placeholder{{if theme}} t-placeholder-{{theme}}{{/if}}" style="\
-                    {{each style val key}}\
-                        {{key}}:{{val}};\
-                    {{/each}}\
+                    class="nui-placeholder<%if theme%> t-placeholder-<%theme%><%/if%>" style="\
+                    <%each style val key%>\
+                        <%key%>:<%val%>;\
+                    <%/each%>\
                     " />',
             elem:'<b style="\
-                    {{each style val key}}\
-                        {{key}}:{{val}};\
-                    {{/each}}\
-                    ">{{text}}</b>'
+                    <%each style val key%>\
+                        <%key%>:<%val%>;\
+                    <%/each%>\
+                    "><%text%></b>'
         },
         _init:function(){
             this._exec();

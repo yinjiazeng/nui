@@ -74,20 +74,20 @@ Nui.define(function(){
             }
         },
         _tpl:renders({
-            <div class="ui-highlight{{if type}} ui-highlight-{{type}}{{/if}}{{if theme}} t-highlight-{{theme}}{{/if}}">
-                {{if isTitle}}
+            <div class="ui-highlight<%if type%> ui-highlight-<%type%><%/if%><%if theme%> t-highlight-<%theme%><%/if%>">
+                <%if isTitle%>
                 <div class="title">
-                    <em class="type">{{type}}</em>
+                    <em class="type"><%type%></em>
                 </div>
-                {{/if}}
+                <%/if%>
                 <div class="inner">
                     <table>
-                        {{each list val key}}
+                        <%each list val key%>
                             <tr>
-                                {{if isLine === true}}<td class="line" number="{{key+1}}">{{if bsie7}}{{key+1}}{{/if}}</td>{{/if}}
-                                <td class="code">{{val}}</td>
+                                <%if isLine === true%><td class="line" number="<%key+1%>"><%if bsie7%><%key+1%><%/if%></td><%/if%>
+                                <td class="code"><%val%></td>
                             </tr>
-                        {{/each}}
+                        <%/each%>
                     </table>
                 <div>
             </div>
