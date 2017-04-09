@@ -35,7 +35,7 @@ Nui.define('template', ['util'], function(util){
 
     var isstr = !!''.trim;
 
-    var snippet = ';that.out = function(){return code';
+    var snippet = ';$that.out = function(){return $that.code';
 
     //低版本IE用push拼接字符串效率更高
     snippet = (isstr ? '""'+snippet : '[]'+snippet+'.join("")')+'}';
@@ -44,7 +44,7 @@ Nui.define('template', ['util'], function(util){
         if(isstr){
             if(iscode){
                 return function(code){
-                    return 'code += '+code+';'
+                    return '$that.code += '+code+';'
                 }
             }
             return function(code, snippet){
@@ -53,7 +53,7 @@ Nui.define('template', ['util'], function(util){
         }
         if(iscode){
             return function(code){
-                return 'code.push('+code+');'
+                return '$that.code.push('+code+');'
             }
         }
         return function(code, snippet){
@@ -104,7 +104,7 @@ Nui.define('template', ['util'], function(util){
                 Nui.each(tpl.split(openTag), function(val, key){
                     val = val.split(closeTag);
                     if(key >= 1){
-                       code = joinSnippet(code, compile(Nui.trim(val[0]), true))
+                        code = joinSnippet(code, compile(Nui.trim(val[0]), true))
                     }
                     else{
                         val[1] = val[0];
@@ -112,20 +112,24 @@ Nui.define('template', ['util'], function(util){
                     code = joinSnippet(code, compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"')))
                 });
 
+                var variables = isstr ? '' : [];
+                Nui.each(data, function(v, k){
+                    variables = joinSnippet(variables, k+'=$data.'+k+',')
+                })
+
                 if(!isstr){
-                    code = code.join('')
+                    code = code.join('');
+                    variables = variables.join('');
                 }
 
-                Nui.each(data, function(v, k){
-                    code = code.replace(new RegExp('([^\\w\\.\'\"]+)'+k.replace(/\$/g, '\\$'), 'g'), '$1data.'+k)
-                })
+                code = 'var '+ variables +'$that=this; $that.line=4; $that.code='+ snippet +';\ntry{\n' + code + ';}\ncatch(e){\n$that.error(e, $that.line)\n};';
                 
                 try{
-                    var Func = new Function('data', 'var that=this, line=1, code='+ snippet +';try{' + code + ';}catch(e){that.error(e, line)};');
-                    Func.prototype.methods = methods;
-                    Func.prototype.error = error(code, data, that.tplid);
-                    tpl = new Func(data).out();
-                    Func = null
+                    var Rander = new Function('$data', code);
+                    Rander.prototype.methods = methods;
+                    Rander.prototype.error = error(code, data, that.tplid);
+                    tpl = new Rander(data).out();
+                    Rander = null
                 }
                 catch(e){
                     error(code, data, that.tplid)(e)
@@ -141,9 +145,10 @@ Nui.define('template', ['util'], function(util){
         return function(e, line){
             var msg = '\n';
             var codes = [];
+            code = 'function anonymous($data){\n'+code+'\n}';
             code = code.split('\n');
             Nui.each(code, function(v, k){
-                codes.push((k+1)+ '      ' +v.replace('line++;', ''))
+                codes.push((k+1)+ '      ' +v.replace('$that.line++;', ''))
             })
             msg += 'code\n';
             msg += codes.join('\n')+'\n\n';
@@ -190,7 +195,7 @@ Nui.define('template', ['util'], function(util){
                 code = '});'
             }
             else if((res = match(tpl, ' | ', /\s*,\s*/)) !== undefined){
-                code = joinCode('that.methods.'+res[0]+'('+ res.slice(1).toString() +')')
+                code = joinCode('$that.methods.'+res[0]+'('+ res.slice(1).toString() +')')
             }
             else if(tpl.indexOf('var ') === 0){
                 code = tpl+';'
@@ -202,7 +207,7 @@ Nui.define('template', ['util'], function(util){
         else{
             code = joinCode('\''+tpl+'\'')
         }
-        return code + '\n' + 'line++;'
+        return code + '\n' + '$that.line++;'
     }
 
     var match = function(str, syntax, regexp){
