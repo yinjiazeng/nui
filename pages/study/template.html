@@ -140,7 +140,7 @@ Nui.load('template', function(tpl){
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 遍历</h3>
 			<div class="e-mt15 f-lh22">
 				<p>当渲染数据为数组时，可使用$list操作该数组</p>
-				<p>当遍历时没有声明键值变量时，可使用$value和$index对键值操作</p>
+				<p>遍历不声明键值变量时，可使用$value和$index分别操作值和键</p>
 			</div>
 <script type="text/highlight" options-javascript>
 <% each list val key %>
@@ -161,7 +161,7 @@ Nui.load('template', function(tpl){
 	<% vlaue %>
 <% /if %>
 </script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 三目</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 三目运算</h3>
 <script type="text/highlight" options-javascript>
 <% key == 0 ? 1 : 2 %>
 </script>
