@@ -36,7 +36,6 @@
 
     <script type="text/javascript" src="/nui/assets/script/jquery.js"></script>
     <script type="text/javascript" src="/nui/dist/nui-debug.js"></script>
-    {% block assets %}{% endblock %}
     <script type="text/javascript">
     Nui.config({
         paths:{
@@ -55,7 +54,9 @@
 	Nui.load('{script}/base-debug', function(page){
         page.init()
     })
-
+    </script>
+    {% block assets %}{% endblock %}
+    <script type="text/javascript">
     {% block script %}{% endblock %}
     </script>
 </body>
