@@ -75,26 +75,39 @@ Nui.load('template', function(tpl){
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="语法">语法</h2>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 输出值</h3>
 <script type="text/highlight" options-javascript>
-<% value1 %>
-<% value2 %>
+<% value %>
+<% list[0] %>
+<% data.result %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 声明变量</h3>
+			<div class="e-mt15 f-lh22">
+				<p>声明的变量名不要和渲染数据的属性名相同，不然属性值会被覆盖。</p>
+				<p>声明的变量不会被输出。</p>
+			</div>
 <script type="text/highlight" options-javascript>
-<% var a = 1, b = 2, ... %>
+<% var a = 1, b = 2 %>
+//使用变量
+<% a+b %> //3
+
+//声明函数
 <% 
-	var func = function(){
-		//do something
+	var func = function(a){
+		return 1+a
 	}
 %>
+//使用函数
+<% func(2) %> //3
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 遍历</h3>
+			<div class="e-mt15 f-lh22">
+				<p>当渲染数据为数组时，可使用$list操作该数组</p>
+				<p>当遍历时没有声明键值变量时，可使用$value和$index对键值操作</p>
+			</div>
 <script type="text/highlight" options-javascript>
 <% each list val key %>
 	<% key %>:<% val %>
 <% /each %>
 
-//当传入数据为数组时，可使用$list操作该数组
-//当遍历时没有声明键值变量时，可使用$value和$index对键值操作
 <% each $list %>
 	<% $index %>:<% $value %>
 <% /each %>
@@ -119,7 +132,7 @@ Nui.load('template', function(tpl){
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 导入模板</h3>
 <script type="text/highlight" options-javascript>
-<% include '模板id或属性名' %>
+<% include '模板id' %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="方法">方法</h2>
 			<p class="e-mt15 f-lh22">渲染script模板</p>
@@ -231,18 +244,6 @@ template.method(name, callback)
 			<p class="e-mt15 f-lh22">设置url参数，参数等同<a class="f-corange" href="util.html#setParam">setParam</a></p>
 <script type="text/highlight" options-javascript>
 <% setParam | name, value, url? %>
-</script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">除了这种方式，也可以直接在模板中声明函数调用</p>
-<script type="text/highlight" options-javascript>
-<% 
-var filter = function(str){
-	return str.replace(/\d/g, '')
-}
-%>
-<% each $list %>
-<% filter($value) %>
-<% /each %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="config">config</h2>
 			<p class="e-mt15 f-lh22">配置全局参数</p>
