@@ -127,6 +127,7 @@ Nui.load('template', function(tpl){
 <% key == 0 ? 1 : 2 %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 方法调用</h3>
+			<p class="e-mt15 f-lh22"><a href="#method" class="f-corange f-tdu">如何创建方法？</a></p>
 <script type="text/highlight" options-javascript>
 <% 方法名 | 参数1, 参数2, ... %>
 </script>
@@ -232,6 +233,19 @@ template.method(name, callback)
 					<td>处理回调</td>
 				</tr>
 			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 举个栗子</h3>
+			<p class="e-mt15 f-lh22">将手机号码中间4位加密</p>
+<script type="text/highlight" options-javascript>
+template.method('filter', function(mobile){
+	return mobile.replace(/(\d{3})\d{4}(\d+)/, '$1****$2')
+})
+
+//使用
+<% each $list %>
+name:<% $value.name %>
+mobile:<% filter | $value.mobile %>
+<% /each %>
+</script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 内置方法</h3>
 			<p class="e-mt15 f-lh22">过滤空格，参数等同<a class="f-corange" href="api.html#trim">Nui.trim</a></p>
 <script type="text/highlight" options-javascript>
