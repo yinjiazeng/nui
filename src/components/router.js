@@ -74,6 +74,11 @@ Nui.define(function(){
                     hashchange(true)
                 }
             },
+            trigger:function(){
+                if(!this._trigger){
+                    this._change();
+                }
+            },
             $ready:null
         },
         options:{
@@ -85,12 +90,9 @@ Nui.define(function(){
         _init:function(){
             var that = this, router = that.constructor;
             that._exec();
-            if(!router._trigger){
-                if(!router._bind){
-                    router._bind = true;
-                    router._bindHashchange();
-                }
-                router._change();
+            if(!router._bind){
+                router._bind = true;
+                router._bindHashchange();
             }
         },
         _exec:function(){

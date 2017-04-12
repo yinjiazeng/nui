@@ -33,4 +33,5 @@ Nui.define(['{cpns}/router', 'util', 'template'], function(router, util, tpl){
         onRender:render
     })
 
+    router('trigger');
 })
