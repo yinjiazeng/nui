@@ -14,7 +14,7 @@ Nui.define(function(){
             _params:{},
             _alias:{},
             _replace:function(hash){
-                return hash.replace(this._domain, '').replace(/^\#\!?/, '').replace(/^([^\/])/, '/$1').replace(/\/*$/g, '')
+                return hash.replace(this._domain, '').replace(/^\#\!?/, '').replace(/^([^\/])/, '/$1').replace(/\/$/g, '')
             },
             alias:function(val){
                 return $.extend(this._alias, val||{})
@@ -108,6 +108,18 @@ Nui.define(function(){
             if(opts.path && that.target){
                 var paths = that._getpath();
                 if(paths.params.length){
+                    var params = [];
+                    Nui.each(paths.params, function(v){
+                        params.push(v);
+                        var split = '/:';
+                        var subs = params.join(split);
+                        router._params[paths.path+split+subs] = {
+                            target:paths.target,
+                            params:subs.split(split),
+                            path:paths.path,
+                            render:paths.render
+                        }
+                    })
                     router._params[that.path] = paths
                 }
                 else{

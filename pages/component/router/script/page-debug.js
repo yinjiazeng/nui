@@ -1,3 +1,59 @@
+
+Nui.define('./data',['国内', '国际', '娱乐', '体育'])
+Nui.define('./detail',['template', './data'], function(tpl, data){
+    var module = this;
+    tpl.method('filter', function(type){
+        return data[type]
+    })
+    return ({
+        render:function(target, data){
+            $('.content').html(tpl.render(module.renders(''+''
+                +'<% if param.id === undefined %>'+''
+                +'<p>下面是<% filter | param.type %>新闻列表：</p>'+''
+                +'<ul>'+''
+                    +'<li class="e-mt10"><a class="detail" href="/news/<% param.type %>/1111">1111111111111111111</a></li>'+''
+                    +'<li class="e-mt10"><a class="detail" href="/news/<% param.type %>/2222">222222222222222222</a></li>'+''
+                    +'<li class="e-mt10"><a class="detail" href="/news/<% param.type %>/3333">3333333333333333</a></li>'+''
+                    +'<li class="e-mt10"><a class="detail" href="/news/<% param.type %>/4444">4444444444444444444</a></li>'+''
+                +'</ul>'+''
+                +'<% else %>'+''
+                +'<% var cols = new Array(8), lines = new Array(20) %>'+''
+                +'<% each lines %>'+''
+                +'<p>'+''
+                    +'<% each cols %>'+''
+                    +'<% param.id %>'+''
+                    +'<% /each %>'+''
+                +'</p>'+''
+                +'<% /each %>'+''
+                +'<% /if %>'+''
+            +''), data))
+        }
+    })
+})
+Nui.define('./news',['template', './data'], function(tpl, data){
+    var module = this;
+    return ({
+        render:function(target, result){
+            result.data = data;
+            $('.content').html(tpl.render(module.renders(''+''
+                +'<p>下面是新闻分类：</p>'+''
+                +'<% each data %>'+''
+                +'<a href="/news/<% $index %>" class="detail e-ml10"><% $value %></a>'+''
+                +'<% /each %>'+''
+            +''), result))
+        }
+    })
+})
+Nui.define('./home',['template'], function(tpl){
+    var module = this;
+    return ({
+        render:function(target, data){
+            $('.content').html(tpl.render(module.renders(''+''
+                +'Hi！欢迎来到首页。'+''
+            +''), data))
+        }
+    })
+})
 /**
  * @author Aniu[2017-02-27 23:46]
  * @update Aniu[2017-02-27 23:46]
@@ -14,7 +70,7 @@ Nui.define('{cpns}/router',function(){
             _params:{},
             _alias:{},
             _replace:function(hash){
-                return hash.replace(this._domain, '').replace(/^\#\!?/, '').replace(/^([^\/])/, '/$1').replace(/\/*$/g, '')
+                return hash.replace(this._domain, '').replace(/^\#\!?/, '').replace(/^([^\/])/, '/$1').replace(/\/$/g, '')
             },
             alias:function(val){
                 return $.extend(this._alias, val||{})
@@ -108,6 +164,18 @@ Nui.define('{cpns}/router',function(){
             if(opts.path && that.target){
                 var paths = that._getpath();
                 if(paths.params.length){
+                    var params = [];
+                    Nui.each(paths.params, function(v){
+                        params.push(v);
+                        var split = '/:';
+                        var subs = params.join(split);
+                        router._params[paths.path+split+subs] = {
+                            target:paths.target,
+                            params:subs.split(split),
+                            path:paths.path,
+                            render:paths.render
+                        }
+                    })
                     router._params[that.path] = paths
                 }
                 else{
@@ -167,75 +235,26 @@ Nui.define('{cpns}/router',function(){
     })
 })
 
-Nui.define('./script/page',['{cpns}/router', 'util', 'template'], function(router, util, tpl){
-    var renders = this.renders;
-
-    var render = function(target, data){
-        data.text = target.text();
-        $('.content').html(tpl.render(renders(''+''
-            +'这是<% text %><% if path === \'/photo/nui/\' && param.id %>子分类页面<%/if%> ，页面url是<% path %>，'+''
-            +'<% if !param.id && path !== \'/home\' %>'+''
-            +'<a href="<% path %>/1111/" class="child f-cblue">子页面</a>'+''
-            +'<% if path === \'/photo\' %>'+''
-            +'<a href="<% path %>/nui/" id="nui" class="f-cblue"> 子分类</a>'+''
-            +'<% /if %>'+''
-            +'<% /if %>'+''
-            +'<% if param.id %>'+''
-            +'这是子页面，传递的参数是 '+''
-            +'<% each param %>'+''
-                +'<% $index %>：<% $value %>，'+''
-            +'<% /each %>'+''
-            +'<% /if %>'+''
-        +''), data))
-    }
+Nui.define('./script/page',['{cpns}/router'], function(router){
+    var module = this;
 
     router({
         target:'#home',
         path:'/home/',
         enter:true,
-        onRender:render
+        onRender:module.require('./home').render
     })
 
     router({
         target:'#news',
         path:'/news/',
-        onRender:render
+        onRender:module.require('./news').render
     })
 
     router({
-        target:'.child',
-        path:'/news/:id/',
-        onRender:render
-    })
-
-    router({
-        target:'#photo',
-        path:'/photo/',
-        onRender:render
-    })
-
-    router({
-        target:'.child',
-        path:'/photo/:id/',
-        onRender:render
-    })
-
-    router({
-        target:'#nui',
-        path:'/photo/nui/',
-        onRender:render
-    })
-
-    router({
-        target:'.child',
-        path:'/photo/nui/:id/',
-        onRender:render
-    })
-
-    router({
-        target:'#about',
-        path:'/about/',
-        onRender:render
+        target:'.detail',
+        path:'/news/:type/:id/',
+        onRender:module.require('./detail').render
     })
 
     router('trigger');
