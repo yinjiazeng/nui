@@ -159,8 +159,8 @@ Nui.define(function(){
         },
         _event:function(){
             var that = this, opts = that.options;
-            that._on('click', that.target, function(e){
-                if(typeof opts.onBefore === 'function' && opts.onBefore() === false){
+            that._on('click', that.target, function(e, elem){
+                if(typeof opts.onBefore === 'function' && opts.onBefore(elem) === false){
                     return false
                 }
                 var me = $(this);

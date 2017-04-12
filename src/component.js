@@ -142,7 +142,9 @@ Nui.define('component', ['template'], function(tpl){
         },
         _on:function(type, target, callback, trigger){
             var that = this, selector = target.selector
-            Nui.doc.on(type, selector, callback);
+            Nui.doc.on(type, selector, function(e){
+                return callback.call(this, e, $(this))
+            });
             trigger === true && target[type]();
             that._eventArray.push({
                 selector:selector,

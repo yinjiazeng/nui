@@ -215,8 +215,8 @@ Nui.define('{cpns}/router',function(){
         },
         _event:function(){
             var that = this, opts = that.options;
-            that._on('click', that.target, function(e){
-                if(typeof opts.onBefore === 'function' && opts.onBefore() === false){
+            that._on('click', that.target, function(e, elem){
+                if(typeof opts.onBefore === 'function' && opts.onBefore(elem) === false){
                     return false
                 }
                 var me = $(this);
@@ -254,6 +254,13 @@ Nui.define('./script/page',['{cpns}/router'], function(router){
     router({
         target:'.detail',
         path:'/news/:type/:id/',
+        onBefore:function(target){
+            console.log(target)
+            if(target.text() === '娱乐'){
+                alert('该板块尚未开通')
+                return false
+            }
+        },
         onRender:module.require('./detail').render
     })
 
