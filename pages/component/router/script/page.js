@@ -4,7 +4,19 @@ Nui.define(['{cpns}/router', 'util', 'template'], function(router, util, tpl){
     var render = function(target, data){
         data.text = target.text();
         $('.content').html(tpl.render(renders({
-            这是<% text %> ，页面url是<% path %>，传递的参数是 <% each param %><% $index %>：<% $value %>，<% /each %>
+            这是<% text %><% if path === '/photo/nui/' && param.id %>子分类页面<%/if%> ，页面url是<% path %>，
+            <% if !param.id && path !== '/home' %>
+            <a href="<% path %>/1111/" class="child f-cblue">子页面</a>
+            <% if path === '/photo' %>
+            <a href="<% path %>/nui/" id="nui" class="f-cblue"> 子分类</a>
+            <% /if %>
+            <% /if %>
+            <% if param.id %>
+            这是子页面，传递的参数是 
+            <% each param %>
+                <% $index %>：<% $value %>，
+            <% /each %>
+            <% /if %>
         }), data))
     }
 
@@ -17,19 +29,43 @@ Nui.define(['{cpns}/router', 'util', 'template'], function(router, util, tpl){
 
     router({
         target:'#news',
-        path:'/news/:newsid/',
+        path:'/news/',
+        onRender:render
+    })
+
+    router({
+        target:'.child',
+        path:'/news/:id/',
         onRender:render
     })
 
     router({
         target:'#photo',
-        path:'/photo/:pid/:type/',
+        path:'/photo/',
+        onRender:render
+    })
+
+    router({
+        target:'.child',
+        path:'/photo/:id/',
+        onRender:render
+    })
+
+    router({
+        target:'#nui',
+        path:'/photo/nui/',
+        onRender:render
+    })
+
+    router({
+        target:'.child',
+        path:'/photo/nui/:id/',
         onRender:render
     })
 
     router({
         target:'#about',
-        path:'/about/:id/',
+        path:'/about/',
         onRender:render
     })
 

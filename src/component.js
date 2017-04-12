@@ -141,11 +141,11 @@ Nui.define('component', ['template'], function(tpl){
             return this.target || (this.options.target ? $(this.options.target) : null)
         },
         _on:function(type, target, callback, trigger){
-            var that = this;
-            target.on(type, callback);
+            var that = this, selector = target.selector
+            Nui.doc.on(type, selector, callback);
             trigger === true && target[type]();
             that._eventArray.push({
-                target:target,
+                selector:selector,
                 type:type,
                 callback:callback
             });
@@ -154,7 +154,7 @@ Nui.define('component', ['template'], function(tpl){
         _off:function(){
             var that = this;
             $.each(that._eventArray, function(key, val){
-                val && val.target.off(val.type, val.callback)
+                val && Nui.doc.off(val.type, val.selector, val.callback)
             });
             that._eventArray = [];
             return that

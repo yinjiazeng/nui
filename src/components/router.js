@@ -9,34 +9,41 @@ Nui.define(function(){
     return this.extend('component', {
         static:{
             _trigger:false,
-            _routers:{},
+            _domain:location.protocol+'//'+location.host,
+            _paths:{},
+            _params:{},
             _alias:{},
             _replace:function(hash){
-                return hash.replace(/^\#\!?/, '').replace(/\/{2,}/g, '//').replace(/^\/*|\/*$/g, '')
+                return hash.replace(this._domain, '').replace(/^\#\!?/, '').replace(/^([^\/])/, '/$1').replace(/\/*$/g, '')
             },
             alias:function(val){
-                this._alias = val
+                return $.extend(this._alias, val||{})
             },
             _change:function(){
-                var that = this, hash = that._replace(location.hash);
-                var routers = that._routers;
-                if(!$.isEmptyObject(routers)){
-                    Nui.each(routers, function(v){
-                        if(hash.indexOf(v.path) === 0){
-                            var params = hash.replace(v.path, '').replace(/^\//, '');
-                            params = params ? params.split('/') : [];
-                            if(params.length === v.params.length){
-                                var param = {};
-                                Nui.each(v.params, function(val, key){
-                                   param[val] = params[key]
-                                })
-                                v.render(v.target, {
-                                    path:v.path,
-                                    param:param
-                                })
-                                that._trigger = true;
-                                return false
+                var that = this, hash = that._replace(location.hash);   
+                if(!$.isEmptyObject(that._paths) || !$.isEmptyObject(that._params)){
+                    Nui.each([that._paths, that._params], function(val, key){
+                        var match = false;
+                        Nui.each(val, function(v){
+                            if((key === 0 && hash === v.path) || (key === 1 && hash.indexOf(v.path) === 0)){
+                                var params = hash.replace(v.path, '').replace(/^\//, '');
+                                params = params ? params.split('/') : [];
+                                if(params.length === v.params.length){
+                                    var param = {};
+                                    Nui.each(v.params, function(val, key){
+                                    param[val] = params[key]
+                                    })
+                                    v.render(v.target, {
+                                        path:v.path,
+                                        param:param
+                                    })
+                                    that._trigger = match = true;
+                                    return false
+                                }
                             }
+                        })
+                        if(match){
+                            return false
                         }
                     })
                     if(!that._trigger){
@@ -52,12 +59,7 @@ Nui.define(function(){
             },
             _bindHashchange:function(){
                 var that = this;
-                if('onhashchange' in window){
-                    Nui.win.on('hashchange', function(){
-                        that._change()
-                    })
-                }
-                else{
+                if(Nui.bsie7){
                     var hashchange = function(ret){
                         var hash = location.hash;
                         if(that._oldhash !== hash){
@@ -72,6 +74,11 @@ Nui.define(function(){
                         }
                     }, 100);
                     hashchange(true)
+                }
+                else{
+                    Nui.win.on('hashchange', function(){
+                        that._change()
+                    })
                 }
             },
             trigger:function(){
@@ -89,8 +96,7 @@ Nui.define(function(){
         },
         _init:function(){
             var that = this, router = that.constructor;
-            that._exec();
-            if(!router._bind){
+            if(that._exec() && !router._bind){
                 router._bind = true;
                 router._bindHashchange();
             }
@@ -100,8 +106,14 @@ Nui.define(function(){
             that.path = that._setpath(opts.path);
             that.target = that._getTarget();
             if(opts.path && that.target){
-                router._routers[that.path] = that._getpath();
-                that._event()
+                var paths = that._getpath();
+                if(paths.params.length){
+                    router._params[that.path] = paths
+                }
+                else{
+                    router._paths[that.path] = paths
+                }
+                return that._event()
             }
         },
         _setpath:function(path){
@@ -143,11 +155,13 @@ Nui.define(function(){
                 that._sethash(me.attr('href'));
                 return false
             })
+            return that
         },
         _reset:function(){
-            var that = this;
+            var that = this, router = that.constructor;
             that._off();
-            delete that.constructor._routers[that.path]
+            delete router._paths[that.path];
+            delete router._params[that.path];
             return that
         }
     })
