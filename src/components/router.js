@@ -13,6 +13,7 @@ Nui.define(function(){
             _paths:{},
             _params:{},
             _alias:{},
+            _cache:{},
             _replace:function(hash){
                 return hash.replace(this._domain, '').replace(/^\#\!?/, '').replace(/^([^\/])/, '/$1').replace(/\/$/g, '')
             },
@@ -31,9 +32,9 @@ Nui.define(function(){
                                 if(params.length === v.params.length){
                                     var param = {};
                                     Nui.each(v.params, function(val, key){
-                                    param[val] = params[key]
+                                        param[val] = params[key]
                                     })
-                                    v.render(v.target, {
+                                    v.render(v.target, v.container, {
                                         path:v.path,
                                         param:param
                                     })
@@ -90,6 +91,7 @@ Nui.define(function(){
         },
         options:{
             path:'',
+            container:null,
             enter:false,
             onBefore:null,
             onRender:null
@@ -105,6 +107,7 @@ Nui.define(function(){
             var that = this, opts = that.options, router = that.constructor;
             that.path = that._setpath(opts.path);
             that.target = that._getTarget();
+            that.container = $(opts.container);
             if(opts.path && that.target){
                 var paths = that._getpath();
                 if(paths.params.length){
@@ -113,12 +116,9 @@ Nui.define(function(){
                         params.push(v);
                         var split = '/:';
                         var subs = params.join(split);
-                        router._params[paths.path+split+subs] = {
-                            target:paths.target,
-                            params:subs.split(split),
-                            path:paths.path,
-                            render:paths.render
-                        }
+                        router._params[paths.path+split+subs] = $.extend({}, paths, {
+                            params:subs.split(split)
+                        })
                     })
                     router._params[that.path] = paths
                 }
@@ -141,6 +141,7 @@ Nui.define(function(){
             var that = this, path = that.path, opts = that.options, index = path.indexOf('/:');
             var paths = {
                 target:that.target,
+                container:that.container,
                 params:[]
             }
             if(index !== -1){
@@ -154,17 +155,18 @@ Nui.define(function(){
             return paths
         },
         _sethash:function(hash){
-            hash = this.constructor._replace(hash);
-            location.hash = '#!'+hash;
+            location.hash = '#!'+this.constructor._replace(hash);
         },
         _event:function(){
             var that = this, opts = that.options;
             that._on('click', that.target, function(e, elem){
-                if(typeof opts.onBefore === 'function' && opts.onBefore(elem) === false){
+                var callback = function(){
+                    that._sethash(elem.attr('href'));
+                }
+                if(typeof opts.onBefore === 'function' && opts.onBefore(elem, callback) === false){
                     return false
                 }
-                var me = $(this);
-                that._sethash(me.attr('href'));
+                callback();
                 return false
             })
             return that

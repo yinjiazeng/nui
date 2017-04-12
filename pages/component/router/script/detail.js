@@ -4,8 +4,8 @@ Nui.define(['template', './data'], function(tpl, data){
         return data[type]
     })
     return ({
-        render:function(target, data){
-            $('.content').html(tpl.render(module.renders({
+        render:function(target, container, data){
+            container.html(tpl.render(module.renders({
                 <% if param.id === undefined %>
                 <p>下面是<% filter | param.type %>新闻列表：</p>
                 <ul>

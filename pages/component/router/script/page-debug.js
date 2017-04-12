@@ -6,8 +6,8 @@ Nui.define('./detail',['template', './data'], function(tpl, data){
         return data[type]
     })
     return ({
-        render:function(target, data){
-            $('.content').html(tpl.render(module.renders(''+''
+        render:function(target, container, data){
+            container.html(tpl.render(module.renders(''+''
                 +'<% if param.id === undefined %>'+''
                 +'<p>下面是<% filter | param.type %>新闻列表：</p>'+''
                 +'<ul>'+''
@@ -33,9 +33,9 @@ Nui.define('./detail',['template', './data'], function(tpl, data){
 Nui.define('./news',['template', './data'], function(tpl, data){
     var module = this;
     return ({
-        render:function(target, result){
+        render:function(target, container, result){
             result.data = data;
-            $('.content').html(tpl.render(module.renders(''+''
+            container.html(tpl.render(module.renders(''+''
                 +'<p>下面是新闻分类：</p>'+''
                 +'<% each data %>'+''
                 +'<a href="/news/<% $index %>" class="detail e-ml10"><% $value %></a>'+''
@@ -47,8 +47,8 @@ Nui.define('./news',['template', './data'], function(tpl, data){
 Nui.define('./home',['template'], function(tpl){
     var module = this;
     return ({
-        render:function(target, data){
-            $('.content').html(tpl.render(module.renders(''+''
+        render:function(target, container, data){
+            container.html(tpl.render(module.renders(''+''
                 +'Hi！欢迎来到首页。'+''
             +''), data))
         }
@@ -69,6 +69,7 @@ Nui.define('{cpns}/router',function(){
             _paths:{},
             _params:{},
             _alias:{},
+            _cache:{},
             _replace:function(hash){
                 return hash.replace(this._domain, '').replace(/^\#\!?/, '').replace(/^([^\/])/, '/$1').replace(/\/$/g, '')
             },
@@ -87,9 +88,9 @@ Nui.define('{cpns}/router',function(){
                                 if(params.length === v.params.length){
                                     var param = {};
                                     Nui.each(v.params, function(val, key){
-                                    param[val] = params[key]
+                                        param[val] = params[key]
                                     })
-                                    v.render(v.target, {
+                                    v.render(v.target, v.container, {
                                         path:v.path,
                                         param:param
                                     })
@@ -146,6 +147,7 @@ Nui.define('{cpns}/router',function(){
         },
         options:{
             path:'',
+            container:null,
             enter:false,
             onBefore:null,
             onRender:null
@@ -161,6 +163,7 @@ Nui.define('{cpns}/router',function(){
             var that = this, opts = that.options, router = that.constructor;
             that.path = that._setpath(opts.path);
             that.target = that._getTarget();
+            that.container = $(opts.container);
             if(opts.path && that.target){
                 var paths = that._getpath();
                 if(paths.params.length){
@@ -169,12 +172,9 @@ Nui.define('{cpns}/router',function(){
                         params.push(v);
                         var split = '/:';
                         var subs = params.join(split);
-                        router._params[paths.path+split+subs] = {
-                            target:paths.target,
-                            params:subs.split(split),
-                            path:paths.path,
-                            render:paths.render
-                        }
+                        router._params[paths.path+split+subs] = $.extend({}, paths, {
+                            params:subs.split(split)
+                        })
                     })
                     router._params[that.path] = paths
                 }
@@ -197,6 +197,7 @@ Nui.define('{cpns}/router',function(){
             var that = this, path = that.path, opts = that.options, index = path.indexOf('/:');
             var paths = {
                 target:that.target,
+                container:that.container,
                 params:[]
             }
             if(index !== -1){
@@ -210,17 +211,18 @@ Nui.define('{cpns}/router',function(){
             return paths
         },
         _sethash:function(hash){
-            hash = this.constructor._replace(hash);
-            location.hash = '#!'+hash;
+            location.hash = '#!'+this.constructor._replace(hash);
         },
         _event:function(){
             var that = this, opts = that.options;
             that._on('click', that.target, function(e, elem){
-                if(typeof opts.onBefore === 'function' && opts.onBefore(elem) === false){
+                var callback = function(){
+                    that._sethash(elem.attr('href'));
+                }
+                if(typeof opts.onBefore === 'function' && opts.onBefore(elem, callback) === false){
                     return false
                 }
-                var me = $(this);
-                that._sethash(me.attr('href'));
+                callback();
                 return false
             })
             return that
@@ -237,25 +239,27 @@ Nui.define('{cpns}/router',function(){
 
 Nui.define('./script/page',['{cpns}/router'], function(router){
     var module = this;
-
+    var container = $('.content');
     router({
         target:'#home',
         path:'/home/',
         enter:true,
+        container:container,
         onRender:module.require('./home').render
     })
 
     router({
         target:'#news',
         path:'/news/',
+        container:container,
         onRender:module.require('./news').render
     })
 
     router({
         target:'.detail',
         path:'/news/:type/:id/',
+        container:container,
         onBefore:function(target){
-            console.log(target)
             if(target.text() === '娱乐'){
                 alert('该板块尚未开通')
                 return false
