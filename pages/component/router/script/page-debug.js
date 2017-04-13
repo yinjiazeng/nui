@@ -70,15 +70,28 @@ Nui.define('{cpns}/router',function(){
             _params:{},
             _alias:{},
             _cache:{},
+            _cacheContainer:{},
             _replace:function(hash){
                 return hash.replace(this._domain, '').replace(/^\#\!?/, '').replace(/^([^\/])/, '/$1').replace(/\/$/g, '')
             },
             alias:function(val){
                 return $.extend(this._alias, val||{})
             },
+            _setCache:function(hash){
+                var that = this, hash = that._oldhash;
+                if(hash){
+                    Nui.each(that._cacheContainer, function(v, k){
+                        if(k === hash){
+                            that._cache[hash] = v.html();
+                            return false
+                        }
+                    })
+                }
+            },
             _change:function(){
-                var that = this, hash = that._replace(location.hash);   
+                var that = this, _hash = location.hash, hash = that._replace(_hash);
                 if(!$.isEmptyObject(that._paths) || !$.isEmptyObject(that._params)){
+                    that._setCache();
                     Nui.each([that._paths, that._params], function(val, key){
                         var match = false;
                         Nui.each(val, function(v){
@@ -90,9 +103,12 @@ Nui.define('{cpns}/router',function(){
                                     Nui.each(v.params, function(val, key){
                                         param[val] = params[key]
                                     })
+                                    that._cacheContainer[_hash] = v.container;
                                     v.render(v.target, v.container, {
                                         path:v.path,
-                                        param:param
+                                        url:hash,
+                                        param:param,
+                                        cache:that._cache[_hash]
                                     })
                                     that._trigger = match = true;
                                     return false
@@ -113,6 +129,7 @@ Nui.define('{cpns}/router',function(){
                         })
                     }
                 }
+                that._oldhash = _hash;
             },
             _bindHashchange:function(){
                 var that = this;
@@ -120,7 +137,6 @@ Nui.define('{cpns}/router',function(){
                     var hashchange = function(ret){
                         var hash = location.hash;
                         if(that._oldhash !== hash){
-                            that._oldhash = hash;
                             return !ret
                         }
                         return false
