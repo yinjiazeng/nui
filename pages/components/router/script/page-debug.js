@@ -1,3 +1,71 @@
+Nui.define('./menu',[{
+    name:'凭证',
+    icon:'',
+    subs:[{
+        name:'录凭证',
+        icon:'',
+        path:'',
+    }, {
+        name:'查凭证',
+        icon:'',
+        path:'',
+    }]
+}, {
+    name:'账簿',
+    icon:'',
+    subs:[{
+        name:'总账',
+        icon:'',
+        path:'',
+    }, {
+        name:'明细账',
+        icon:'',
+        path:'',
+    }, {
+        name:'科目余额表',
+        icon:'',
+        path:'',
+    }]
+}])
+Nui.define('./head',{
+    result:'success',
+    data:{
+        username:'阿牛の喵呜',
+        date:'2017年3月'
+    }
+})
+Nui.define('./index',['./head', './menu', 'template'], function(head, menu, tpl){
+    var module = this;
+
+    if(head.result === 'success'){
+        $('.name').text(head.data.username);
+        $('.month').text(head.data.date);
+    }
+
+    var menus = tpl.render(module.renders(''+''
+        +'<% each $list %>'+''
+        +'<dl class="m-menu-item">'+''
+            +'<dt>'+''
+                +'<a href="<% $value.path || \'javascript:void(0)\' %>">'+''
+                    +'<em><i class="iconfont"><% $value.icon %></i></em>'+''
+                    +'<span><% $value.name %></span>   '+''
+                +'</a>'+''
+            +'</dt>'+''
+            +'<% if $value.subs && $value.subs.length %>'+''
+            +'<dd>'+''
+                +'<% each $value.subs val %>'+''
+                +'<a href="<% val.path || \'javascript:void(0)\' %>">'+''
+                    +'<span><% val.name %></span>'+''
+                +'</a>'+''
+                +'<% /each %>'+''
+            +'</dd>'+''
+            +'<% /if %>'+''
+        +'</dl>'+''
+        +'<% /each %>'+''
+    +''), menu);
+
+    $('.m-menu').html(menus)
+})
 /**
  * @author Aniu[2017-02-27 23:46]
  * @update Aniu[2017-02-27 23:46]
@@ -199,5 +267,9 @@ Nui.define('{cpns}/router',function(){
 })
 
 Nui.define('./script/page',['{cpns}/router'], function(router){
-    
+    var module = this;
+    module.imports('../style/base');
+    module.imports('../style/index');
+
+    module.require('./index');
 })

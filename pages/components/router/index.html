@@ -12,6 +12,8 @@
 	<link rel="shortcut icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
 	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css?v=74d448e"/>
     
+<link rel="stylesheet" href="./style/page-min.css?v=b1ee4ca" />
+
 </head>
 <body class="g-body">
 	<!-- header -->
@@ -127,13 +129,9 @@ Nui.define(['../src/components/router'], function(router){
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 实例方法</h3>
 			<p class="e-mt15 f-lh22">继承组件基类 <a href="" class="f-corange">实例方法</a></p>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 案例</h3>
-			<div class="m-example">
-				
-			</div>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 更新历史</h3>
-			<div class="e-mt15 f-lh22">
-				<p>1111111</p>
-			</div>
+			<p class="e-mt15 f-lh22">
+				<a href="./cloud.html" target="_blank" class="f-corange f-tdu">诺诺云记账单页版</a>
+			</p>
 		</div>	
 	</div>
 	
@@ -217,23 +215,23 @@ Nui.define(['../src/components/router'], function(router){
             script:'/assets/script',
             style:'/assets/style',
             cpns:'/src/components',
-			light:'/src/components/highlight'
+            light:'/src/components/highlight'
         },
         alias:{
             placeholder:'{cpns}/placeholder',
-			highlight:'{light}/highlight'
+            highlight:'{light}/highlight'
         }
     })
+    </script>
 
-	Nui.load("{script}/base-debug?v=21b72af", function(page){
+    <script type="text/javascript">
+	Nui.load("{script}/base-min?v=e118956", function(page){
         page.init()
     })
     </script>
     
     <script type="text/javascript">
     
-Nui.load('./script/page-min')
-
     </script>
 </body>
 </html>

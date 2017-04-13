@@ -436,29 +436,31 @@ template.config(key, value?)
             script:'/assets/script',
             style:'/assets/style',
             cpns:'/src/components',
-			light:'/src/components/highlight'
+            light:'/src/components/highlight'
         },
         alias:{
             placeholder:'{cpns}/placeholder',
-			highlight:'{light}/highlight'
+            highlight:'{light}/highlight'
         }
     })
+    </script>
 
-	Nui.load("{script}/base-debug?v=21b72af", function(page){
+    <script type="text/javascript">
+	Nui.load("{script}/base-min?v=e118956", function(page){
         page.init()
     })
     </script>
     
-<script src="/nui/assets/script/echarts.min.js?v=5f765d6"></script>
+<script src="/nui/assets/script/echarts.min.js?v=899e557"></script>
 <script src="/nui/assets/script/template/artTemplate.js?v=d03cebe"></script>
-<script src="/nui/assets/script/template/baiduTemplate.js?v=472f123"></script>
+<script src="/nui/assets/script/template/baiduTemplate.js?v=82e95db"></script>
 <script src="/nui/assets/script/template/juicer.js?v=cb37435"></script>
-<script src="/nui/assets/script/template/handlebars.js?v=f08c62a"></script>
+<script src="/nui/assets/script/template/handlebars.js?v=67c1431"></script>
 <script src="/nui/assets/script/template/doT.js?v=05036fa"></script>
 
     <script type="text/javascript">
     
-Nui.load('./script/template/page-min')
+Nui.load("./script/template/page-min?v=40c0d1e")
 
     </script>
 </body>

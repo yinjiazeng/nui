@@ -53,7 +53,7 @@ gulp.task('nunjucks', function() {
 });
 
 gulp.task('watch', function() {
-    watch(['./src/components/**/*.js', './pages/**/*.!(html)', './dist/*.js', './assets/**/*.*', '!./**/*-{debug,min}.{js,css}'],
+    watch(['./src/components/**/*.js', './pages/**/*.*', '!./pages/**/*.html', './dist/*.js', './assets/**/*.*', '!./**/*-{debug,min}.{js,css}'],
         function(watcher) {
             options.watcher = watcher;
             gulp.src(['./pages/**/*.html'])

@@ -133,15 +133,17 @@
             script:'/assets/script',
             style:'/assets/style',
             cpns:'/src/components',
-			light:'/src/components/highlight'
+            light:'/src/components/highlight'
         },
         alias:{
             placeholder:'{cpns}/placeholder',
-			highlight:'{light}/highlight'
+            highlight:'{light}/highlight'
         }
     })
+    </script>
 
-	Nui.load("{script}/base-debug?v=21b72af", function(page){
+    <script type="text/javascript">
+	Nui.load("{script}/base-min?v=e118956", function(page){
         page.init()
     })
     </script>
