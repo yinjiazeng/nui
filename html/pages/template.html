@@ -1,0 +1,340 @@
+{% extends "layout.tpl" %}
+
+{% block title %}{% endblock %}
+
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('study')}}
+{% endblock %}
+
+{% block subpage %} class="g-html"{% endblock %}
+
+{% block content %}
+	<div class="g-main f-fr">
+		<div class="mainbox">
+			<h1 class="e-pt20 e-pb20 f-fs28">模版引擎</h1>
+			<div class="e-mt15 f-lh22">
+				<p>template为Nui.js内置模块，使用时需作为依赖引入</p>
+				{% include 'note.tpl' %}
+			</div>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="快速上手">快速上手</h2>
+			<p class="e-mt15 f-lh22">模版引擎渲染有2种方式，一种是通过script标签渲染，另一种是直接渲染</p>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> script标签渲染模版</h3>
+			<p class="e-mt15 f-lh22">在页面body中创建type="text/html"的script标签，并且包含id属性</p>
+<script type="text/highlight" options-xml>
+<div id="content"></div>
+&lt;script type="text/html" id="tpl"&gt;
+<ul>
+<% if result === 'success' %>
+	<% each list val key %>
+	<li>姓名：<% val.name %> 职业：<% val.career %></li>
+	<% /each %>
+<% /if %>
+</ul>
+&lt;/script&gt;
+&lt;script src="nui.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+//加载内置template模块
+Nui.load('template', function(template){
+	var data = {result:'success', list:[{
+		name:'yinjiazeng',
+		career:'jser'
+	}, {
+		name:'liumengmei',
+		career:'f2er'
+	}]}
+	document.getElementById('content').innerHTML = template('tpl', data)
+})
+&lt;/script&gt;
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 直接渲染模板</h3>
+<script type="text/highlight" options-javascript>
+Nui.load('template', function(tpl){
+	var str = '<ul>\
+				<% if result === "success" %>\
+					<% each list val key %>\
+					<li>姓名：<% val.name %> 职业：<% val.career %></li>\
+					<% /each %>\
+				<% /if %>\
+			</ul>';
+	var data = {result:'success', list:[{
+		name:'yinjiazeng',
+		career:'jser'
+	}, {
+		name:'liumengmei',
+		career:'f2er'
+	}]}
+	document.getElementById('content').innerHTML = tpl.render(str, data)
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<div class="e-mt15 f-lh22">
+				<p>渲染数据必须是数组或者JSON对象。</p>
+				<p>推荐在js文件中创建模板作为独立模块，这样就避免了页面包含大量的script模版标签</p>
+			</div>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="语法">语法</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 输出值</h3>
+<script type="text/highlight" options-javascript>
+<% value %>
+<% list[0] %>
+<% data.result %>
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 声明变量</h3>
+			<div class="e-mt15 f-lh22">
+				<p>声明的变量名不要和渲染数据的属性名相同，不然属性值会被覆盖。</p>
+				<p>声明的变量不会被输出。</p>
+			</div>
+<script type="text/highlight" options-javascript>
+<% var a = 1, b = 2 %>
+//使用变量
+<% a+b %> //3
+
+//声明函数
+<% 
+	var func = function(a){
+		return 1+a
+	}
+%>
+//使用函数
+<% func(2) %> //3
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 遍历</h3>
+			<div class="e-mt15 f-lh22">
+				<p>当渲染数据为数组时，可使用$list操作该数组</p>
+				<p>遍历不声明键值变量时，可使用$value和$index分别操作值和键</p>
+			</div>
+<script type="text/highlight" options-javascript>
+<% each list val key %>
+	<% key %>:<% val %>
+<% /each %>
+
+<% each $list %>
+	<% $index %>:<% $value %>
+<% /each %>
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 判断</h3>
+<script type="text/highlight" options-javascript>
+<% if key == 0 %>
+	<% vlaue %>
+<% elseif key == 1 %>
+	<% vlaue %>
+<% else %>
+	<% vlaue %>
+<% /if %>
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 三目运算</h3>
+<script type="text/highlight" options-javascript>
+<% key == 0 ? 1 : 2 %>
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 方法调用</h3>
+			<p class="e-mt15 f-lh22"><a href="#method" class="f-corange f-tdu">如何创建方法？</a></p>
+<script type="text/highlight" options-javascript>
+<% 方法名 | 参数1, 参数2, ... %>
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 导入模板</h3>
+<script type="text/highlight" options-javascript>
+<% include '模板id' %>
+</script>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="方法">方法</h2>
+			<p class="e-mt15 f-lh22">渲染script模板</p>
+<script type="text/highlight" options-javascript>
+template(tplid, data?, options?)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>tplid</td>
+					<td>String</td>
+					<td>模版id</td>
+				</tr>
+				<tr>
+					<td>data</td>
+					<td>Array, Object</td>
+					<td>渲染数据</td>
+				</tr>
+				<tr>
+					<td>options</td>
+					<td>Object</td>
+					<td>模版配置参数</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="render">render</h2>
+			<p class="e-mt15 f-lh22">渲染模板</p>
+<script type="text/highlight" options-javascript>
+template.render(tmpl, data?, options?)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>tmpl</td>
+					<td>String</td>
+					<td>模板字符串</td>
+				</tr>
+				<tr>
+					<td>data</td>
+					<td>Array, Object</td>
+					<td>渲染数据</td>
+				</tr>
+				<tr>
+					<td>options</td>
+					<td>Object</td>
+					<td>模版配置参数</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">如果模板中include非script模板，则需要通过call或者apply方法调用</p>
+<script type="text/highlight" options-javascript>
+var tpls = {
+	tpl1:renders({
+		<p>模板1</p>
+	}),
+	tpl2:renders({
+		<p>模板2</p>
+	})
+}
+var tmpl = renders({
+	<div>
+		<% include 'tpl1' %>
+		<% include 'tpl2' %>
+	</div>
+})
+template.render.call(tpls, tmpl)
+</script>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="method">method</h2>
+			<p class="e-mt15 f-lh22">添加模板方法</p>
+<script type="text/highlight" options-javascript>
+template.method(name, callback)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>name</td>
+					<td>String</td>
+					<td>方法名</td>
+				</tr>
+				<tr>
+					<td>callback</td>
+					<td>Function</td>
+					<td>处理回调</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 举个栗子</h3>
+			<p class="e-mt15 f-lh22">将手机号码中间4位加密</p>
+<script type="text/highlight" options-javascript>
+template.method('filter', function(mobile){
+	return mobile.replace(/(\d{3})\d{4}(\d+)/, '$1****$2')
+})
+
+//使用
+<% each $list %>
+name:<% $value.name %>
+mobile:<% filter | $value.mobile %>
+<% /each %>
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 内置方法</h3>
+			<p class="e-mt15 f-lh22">过滤空格，参数等同<a class="f-corange" href="api.html#trim">Nui.trim</a></p>
+<script type="text/highlight" options-javascript>
+<% trim | string %>
+</script>
+			<p class="e-mt15 f-lh22">格式化日期，参数等同<a class="f-corange" href="util.html#formatDate">formatDate</a></p>
+<script type="text/highlight" options-javascript>
+<% formatDate | timestamp, format %>
+</script>
+			<p class="e-mt15 f-lh22">设置url参数，参数等同<a class="f-corange" href="util.html#setParam">setParam</a></p>
+<script type="text/highlight" options-javascript>
+<% setParam | name, value, url? %>
+</script>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="config">config</h2>
+			<p class="e-mt15 f-lh22">配置全局参数</p>
+<script type="text/highlight" options-javascript>
+template.config(key, value?)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>key</td>
+					<td>String, Object</td>
+					<td>参数名或者参数集合</td>
+				</tr>
+				<tr>
+					<td>value</td>
+					<td>String</td>
+					<td>参数值</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 模板默认参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">默认值</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>openTag</td>
+					<td>&lt;%</td>
+					<td>模板开始标签</td>
+				</tr>
+				<tr>
+					<td>closeTag</td>
+					<td>%&gt;</td>
+					<td>模板闭合标签</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="性能测试">性能测试</h2>
+			<div class="e-mt15 f-lh22">
+				<p>
+					<input type="text" class="input piece" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="10000" />
+					条数据
+					<input type="text" class="input count" style="padding:0 8px; width:50px; height:24px; border:1px solid #ddd;" value="10" />
+					次渲染与其它模版引擎耗时对比 <a class="ui-btn ui-btn-small e-ml10" id="start">执行</a></p>
+				<p>IE6/7下不要用大数据测试，否则会导致崩溃，建议最大300*10</p>
+			</div>
+<script type="text/highlight" options-javascript>
+[
+	{
+		k1:v1, 
+		v2:v2, 
+		...10个属性
+	}, 
+	...10000条数据
+]
+</script>
+			<div id="data" style="height:280px;"></div>
+		</div>	
+	</div>
+	{% import 'sidecol.tpl' as side %}
+	{{side.active('template')}}
+{% endblock %}
+
+{% block assets %}
+<script src="/nui/assets/script/echarts.min.js"></script>
+<script src="/nui/assets/script/template/artTemplate.js"></script>
+<script src="/nui/assets/script/template/baiduTemplate.js"></script>
+<script src="/nui/assets/script/template/juicer.js"></script>
+<script src="/nui/assets/script/template/handlebars.js"></script>
+<script src="/nui/assets/script/template/doT.js"></script>
+{% endblock %}
+
+{% block script %}
+Nui.load('./script/template/page-min')
+{% endblock %}

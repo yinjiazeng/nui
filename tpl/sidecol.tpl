@@ -1,10 +1,9 @@
-{% macro active(menu='study', current='index') %}
+{% macro active(current='index', page='index') %}
 <div class="f-fl g-sidecol">
     <div class="side">
         <ul class="m-menu f-lh28">
-            {%if menu == 'study' %}
             <li>
-                <a class="f-fs16{%if current == 'index' %} s-crt{% endif %}" href="/nui/pages/study/">介绍</a>
+                <a class="f-fs16{%if current == 'index' %} s-crt{% endif %}" href="/nui/pages/">介绍</a>
                 {%if current == 'index' %}
                 <ul>
                     <li>
@@ -17,8 +16,8 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'api' %} s-crt{% endif %}" href="/nui/pages/study/api.html">API</a>
-                {%if current == 'api' %}
+                <a class="f-fs16{%if current == 'doc' %} s-crt{% endif %}" href="/nui/pages/doc.html">API文档</a>
+                {%if current == 'doc' %}
                 <ul>
                     <li>
                         <a href="#load">load</a>
@@ -77,7 +76,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'util' %} s-crt{% endif %}" href="/nui/pages/study/util.html">工具集</a>
+                <a class="f-fs16{%if current == 'util' %} s-crt{% endif %}" href="/nui/pages/util.html">实用工具</a>
                 {%if current == 'util' %}
                 <ul>
                     <li>
@@ -111,7 +110,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'template' %} s-crt{% endif %}" href="/nui/pages/study/template.html">模板引擎</a>
+                <a class="f-fs16{%if current == 'template' %} s-crt{% endif %}" href="/nui/pages/template.html">模板引擎</a>
                 {%if current == 'template' %}
                 <ul>
                     <li>
@@ -141,8 +140,8 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'dev' %} s-crt{% endif %}" href="/nui/pages/study/dev.html">组件开发</a>
-                {%if current == 'dev' %}
+                <a class="f-fs16{%if current == 'element' %} s-crt{% endif %}" href="/nui/pages/element.html">页面元素</a>
+                {%if current == 'element' %}
                 <ul>
                     <li>
                         <a href="#"></a>
@@ -151,7 +150,40 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'auto' %} s-crt{% endif %}" href="/nui/pages/study/automation.html">自动化</a>
+                <a class="f-fs16{%if current == 'cpns' %} s-crt{% endif %}" href="/nui/pages/components/">组件</a>
+                {%if current == 'cpns' %}
+                <ul>
+                    <li>
+                        <a{%if page == 'index' %} class="s-crt"{% endif %} href="#快速入门">快速入门</a>
+                        <ul>
+                            <li>
+                                <a href="#规范">规范</a>
+                            </li>
+                            <li>
+                                <a href="#开发组件">开发组件</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a{%if page == 'router' %} class="s-crt"{% endif %} href="/nui/pages/components/router/">路由</a>
+                    </li>
+                    <li>
+                        <a{%if page == 'layer' %} class="s-crt"{% endif %} href="/nui/pages/components/layer/">弹出层</a>
+                    </li>
+                    <li>
+                        <a{%if page == 'calendar' %} class="s-crt"{% endif %} href="/nui/pages/components/calendar/">日历</a>
+                    </li>
+                    <li>
+                        <a{%if page == 'placeholder' %} class="s-crt"{% endif %} href="/nui/pages/components/placeholder/">输入框占位</a>
+                    </li>
+                    <li>
+                        <a{%if page == 'dev' %} class="s-crt"{% endif %} href="/nui/pages/components/dev/">组件开发</a>
+                    </li>
+                </ul>
+                {% endif %}
+            </li>
+            <li>
+                <a class="f-fs16{%if current == 'auto' %} s-crt{% endif %}" href="/nui/pages/auto.html">自动化</a>
                 {%if current == 'auto' %}
                 <ul>
                     <li>
@@ -160,11 +192,6 @@
                 </ul>
                 {% endif %}
             </li>
-            {% endif %}
-
-            {%if menu == 'component' %}
-
-            {% endif %}
         </ul>
     </div>
 </div>

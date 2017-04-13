@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html class="g-html">
+<head>
+	<meta charset="utf-8" />
+	<meta name="renderer" content="webkit" />
+	<meta name="keywords" content="Nui,Nui框架,Nui组件,axnfex,诺诺框架,诺诺前端,爱信诺框架,爱信诺前端" />
+	<meta name="description" content="Nui框架是诺诺网前端团队根据自身业务的特点开发出来的模块化前端框架，提供了丰富的组件以适应不同业务需求进行快速开发。" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<title>Nui.js</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
+	<link rel="icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
+	<link rel="shortcut icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
+	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css?v=74d448e"/>
+    
+</head>
+<body class="g-body">
+	<!-- header -->
+	<div class="g-header f-clearfix">
+	    <a class="m-logo f-fl" href="/nui/">
+            <img src="/nui/assets/images/logo.png?v=a987f30" alt="Nui.js" class="f-fl" />
+            <em class="f-fl e-ml10 f-fs24">Nui.js</em>
+        </a>
+        <ul class="m-nav f-fr f-fs16">
+            
+	
+	
+    <li class="f-fl">
+        <a class="s-crt" href="/nui/pages/">教程</a>
+    </li>
+    <li class="f-fl">
+        <a href="https://axnfex.github.io/2017/02/28/jobs/" target="_blank">加入我们</a>
+    </li>
+    <li class="f-fl">
+        <a href="http://zjaisino.github.io/" target="_blank">前端规范</a>
+    </li>
+    <li class="f-fl">
+        <a href="https://axnfex.github.io/" target="_blank">团队博客</a>
+    </li>
+
+
+        </ul>
+	</div>
+	<!-- /header -->
+
+	<!-- content -->
+	<div class="g-content">
+    
+	<div class="g-main f-fr">
+		<div class="mainbox">
+			<h1 class="e-pt20 e-pb20 f-fs28">API文档</h1>
+			<div class="e-mt15 f-lh22">
+				<p>引入Nui.js后，Nui会被注册为一个全局对象，下面介绍一下对象的属性和方法：</p>
+				<p>note:方法参数末尾包含“?”表示该参数非必填。</p>
+
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="load">load</h2>
+			<p class="e-mt15 f-lh22">入口模块调用方法</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.load(id, callback?)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>String</td>
+					<td>模块id，后缀.js可以省略</td>
+				</tr>
+				<tr>
+					<td>callback</td>
+					<td>Function</td>
+					<td>模块加在完毕后（包括内部依赖）回调函数，该函数接收一个参数为模块返回值的引用</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="config">config</h2>
+			<p class="e-mt15 f-lh22">配置模块和目录别名，用以简写模块路径</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.config(key, value?)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td rowspan="2">key</td>
+					<td>String</td>
+					<td>
+						<pre>
+Nui.config('paths', {name:path,...})
+
+Nui.config('alias', {name:path,...})</pre>
+					</td>
+				</tr>
+				<tr>
+					<td>Object</td>
+					<td>
+						<pre>
+Nui.config({
+	paths:{name:path,...},
+	alias:{name:path,...}
+})</pre>
+					</td>
+				</tr>
+				<tr>
+					<td>value</td>
+					<td>Object</td>
+					<td>{name:path,...}</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">paths表示路径别名，集合中base用以设置根目录，用绝对地址定义</p>
+			<p class="e-mt15 f-lh22">alias表示模块别名，集合中可以使用大括号“{目录别名}”简写路径</p>
+			<p class="e-mt15 f-lh22">可直接在id中使用大括号“{目录别名}”引用模块</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.config({
+	paths:{
+		base:'http://rs.axnfw.com/'
+		url:'/portal/common/'
+	},
+	alias:{
+		jquery:{url}/jquery.js
+	}
+})
+
+Nui.load('{url}/page', function(page){
+	//do something
+})
+
+Nui.load('jquery', function($){
+	//do something
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="define">define</h2>
+			<p class="e-mt15 f-lh22">定义封装模块</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(id?, deps?, fectory)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>String</td>
+					<td>模块id，一般不需要设置该值，在合并压缩后，会自动添加上</td>
+				</tr>
+				<tr>
+					<td>deps</td>
+					<td>Array</td>
+					<td>模块依赖</td>
+				</tr>
+				<tr>
+					<td>fectory</td>
+					<td>任意类型</td>
+					<td>用于编写业务逻辑和返回接口</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">当fectory为非函数时直接当作接口返回</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+//a.js
+Nui.define(['yinjiazeng', 'liumengmei'])
+//b.js
+Nui.define('hello world!')
+Nui.define(['./a', './b'], function(a, b){
+	console.log(a[0]) //yinjiazeng
+	console.log(b) //hello world!
+})
+</script>
+			<p class="e-mt15 f-lh22">当fectory为函数时，接收的参数为deps中对应模块的引用，内部提供
+				<a href="#require" class="f-corange">require</a> /
+				<a href="#imports" class="f-corange">imports</a> /
+				<a href="#renders" class="f-corange">renders</a> /
+				<a href="#extend" class="f-corange">extend</a> 四个方法，若要暴漏接口给其他模块使用，return即可。</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+//模块置前
+Nui.define(['a', 'b', 'c', ...], function(a, b, c, ...){
+	a.init()
+	b.init()
+	b.init()
+	...
+})
+
+//模块就近
+Nui.define(function(){
+	var a = this.require('a');
+	a.init()
+	var b = this.require('b');
+	b.init()
+	var c = this.require('c');
+	c.init()
+	...
+})
+
+//暴漏接口
+Nui.define('demo', function(){
+	var init = function(){
+		console.log('hello world')
+	}
+
+	return init
+})
+//调用上面暴漏的接口
+Nui.define(['demo'], function(demo){
+	demo() //hello world
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="require">require</h2>
+			<p class="e-mt15 f-lh22">导入js模块</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	this.require(id, options?)
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>String</td>
+					<td>模块id</td>
+				</tr>
+				<tr>
+					<td rowspan="2">options</td>
+					<td>String</td>
+					<td>返回一个接口</td>
+				</tr>
+				<tr>
+					<td>Object</td>
+					<td>组件的参数</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">方法名不能变更</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	var req = this.require, a = req('./a'); //这是错误的
+	var require = this.require, a = require('./a'); //这是正确的
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="imports">imports</h2>
+			<p class="e-mt15 f-lh22">导入css模块</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	this.imports(id)
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>String</td>
+					<td>模块id，文件后缀.css可忽略</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">方法名不能变更</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	var imp = this.imports, a = imp('./a'); //这是错误的
+	var imports = this.imports, a = imports('./a'); //这是正确的
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="renders">renders</h2>
+			<p class="e-mt15 f-lh22">在js文件中用于渲染模版，不需要做字符串拼接处理</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	this.renders({tpl})
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>tpl</td>
+					<td>String</td>
+					<td>html模版字符串</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">该方法需要配合自动化工具使用，会自动转换为字符串拼接方式，书写时模版外部包含大括号</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){						
+	var tpl = this.renders({
+		<div>
+			<p>hello world</p> 
+		</div>
+	})
+})
+
+转换后
+
+Nui.define(function(){						
+	var tpl = this.renders(
+		'<div>'+
+			'<p>hello world</p>'+
+		'</div>'
+	)
+})
+</script>
+			<p class="e-mt15 f-lh22">方法名不能变更</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	var render = this.renders, a = render({<div />}); //这是错误的
+	var renders = this.renders, a = renders({<div />}); //这是正确的
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="extend">extend</h2>
+			<p class="e-mt15 f-lh22">模块继承</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	this.extend(module, members?, inserts?)
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td rowspan="2">module</td>
+					<td>String</td>
+					<td>被继承模块id</td>
+				</tr>
+				<tr>
+					<td>Object</td>
+					<td>被继承模块引用</td>
+				</tr>
+				<tr>
+					<td>members</td>
+					<td>任意类型</td>
+					<td>对继承模块新增或修改成员</td>
+				</tr>
+				<tr>
+					<td rowspan="2">inserts</td>
+					<td>Boolean</td>
+					<td>当module为数组时，是否将members插入到module末尾</td>
+				</tr>
+					<td>Array</td>
+					<td>在继承模块方法中增加代码块</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">方法名不能变更</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(function(){
+	var ext = this.extend, a = ext('./a'); //这是错误的
+	var extend = this.extend, a = extend('./a'); //这是正确的
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="each">each</h2>
+			<p class="e-mt15 f-lh22">遍历数组或者对象</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.each(object, callback)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>object</td>
+					<td>Array, Object</td>
+					<td>被遍历的对象</td>
+				</tr>
+				<tr>
+					<td>callback</td>
+					<td>Function</td>
+					<td>遍历回调函数，接收2个参数，第一个为value，第二个为key；若回调函数return false，则跳出循环</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="trim">trim</h2>
+			<p class="e-mt15 f-lh22">过滤字符串两端空格</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.trim(string)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>string</td>
+					<td>String</td>
+					<td>被过滤的字符串</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="trimLeft">trimLeft</h2>
+			<p class="e-mt15 f-lh22">过滤字符串左侧空格</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.trimLeft(string)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>string</td>
+					<td>String</td>
+					<td>被过滤的字符串</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="trimRight">trimRight</h2>
+			<p class="e-mt15 f-lh22">过滤字符串右侧空格</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.trimRight(string)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>string</td>
+					<td>String</td>
+					<td>被过滤的字符串</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="type">type</h2>
+			<p class="e-mt15 f-lh22">判断对象数据类型</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.type(object, type)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>object</td>
+					<td>任意类型</td>
+					<td>被判断的变量</td>
+				</tr>
+				<tr>
+					<td>type</td>
+					<td>String, Array</td>
+					<td>小写类型字符串，当为数组时，匹配是否满足数组中任意一种类型</td>
+				</tr>
+			</table>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="browser">browser</h2>
+			<p class="e-mt15 f-lh22">检测浏览器内核以及版本号</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.browser.version
+Nui.browser.msie
+Nui.browser.webkit
+Nui.browser.safari
+Nui.browser.mozilla
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">jQuery1.9+移除了$.browser</p>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="bsie">bsie</h2>
+			<p class="e-mt15 f-lh22">检测是否是IE6/7</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.browser.bsie6
+Nui.browser.bsie7
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="$">$</h2>
+			<p class="e-mt15 f-lh22">返回jQuery(selector)引用</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.$(selector)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>selector</td>
+					<td>String</td>
+					<td>字符串选择器</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">为了减小$(selector)被重新包装的开销</p>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="win">win</h2>
+			<p class="e-mt15 f-lh22">返回jQuery(window)引用</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.win
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">为了减小$(window)被重新包装的开销</p>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="doc">doc</h2>
+			<p class="e-mt15 f-lh22">返回jQuery(document)引用</p>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.doc
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">为了减小$(document)被重新包装的开销</p>
+		</div>	
+	</div>
+	
+	
+<div class="f-fl g-sidecol">
+    <div class="side">
+        <ul class="m-menu f-lh28">
+            <li>
+                <a class="f-fs16" href="/nui/pages/">介绍</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16 s-crt" href="/nui/pages/doc.html">API文档</a>
+                
+                <ul>
+                    <li>
+                        <a href="#load">load</a>
+                    </li>
+                    <li>
+                        <a href="#config">config</a>
+                    </li>
+                    <li>
+                        <a href="#define">define</a>
+                        <ul>
+                            <li>
+                                <a href="#require">require</a>
+                            </li>
+                            <li>
+                                <a href="#imports">imports</a>
+                            </li>
+                            <li>
+                                <a href="#renders">renders</a>
+                            </li>
+                            <li>
+                                <a href="#extend">extend</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#each">each</a>
+                    </li>
+                    <li>
+                        <a href="#trim">trim</a>
+                    </li>
+                    <li>
+                        <a href="#trimLeft">trimLeft</a>
+                    </li>
+                    <li>
+                        <a href="#trimRight">trimRight</a>
+                    </li>
+                    <li>
+                        <a href="#type">type</a>
+                    </li>
+                    <li>
+                        <a href="#browser">browser</a>
+                    </li>
+                    <li>
+                        <a href="#bsie">bsie</a>
+                    </li>
+                    <li>
+                        <a href="#$">$</a>
+                    </li>
+                    <li>
+                        <a href="#win">win</a>
+                    </li>
+                    <li>
+                        <a href="#doc">doc</a>
+                    </li>
+                </ul>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/util.html">实用工具</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/template.html">模板引擎</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/element.html">页面元素</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/components/">组件</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/auto.html">自动化</a>
+                
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+	</div>
+	<!-- /content -->
+
+	
+
+    <script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
+    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=bf95fee"></script>
+    <script type="text/javascript">
+    Nui.config({
+        paths:{
+            base:'/nui',
+            script:'/assets/script',
+            style:'/assets/style',
+            cpns:'/src/components',
+			light:'/src/components/highlight'
+        },
+        alias:{
+            placeholder:'{cpns}/placeholder',
+			highlight:'{light}/highlight'
+        }
+    })
+
+	Nui.load("{script}/base-debug?v=a2ed139", function(page){
+        page.init()
+    })
+    </script>
+    
+    <script type="text/javascript">
+    
+    </script>
+</body>
+</html>

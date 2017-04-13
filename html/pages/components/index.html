@@ -1,0 +1,22 @@
+{% extends "layout.tpl" %}
+
+{% block title %}{% endblock %}
+
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('study')}}
+{% endblock %}
+
+{% block subpage %} class="g-html"{% endblock %}
+
+{% block content %}
+	<div class="g-main f-fr">
+		<div class="mainbox">
+			<h1 class="e-pt20 e-pb20 f-fs28">组件</h1>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="快速入门">快速入门</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="规范">规范</h2>
+		</div>	
+	</div>
+	{% import 'sidecol.tpl' as side %}
+	{{side.active('cpns')}}
+{% endblock %}

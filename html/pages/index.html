@@ -1,0 +1,85 @@
+{% extends "layout.tpl" %}
+
+{% block title %}{% endblock %}
+
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('study')}}
+{% endblock %}
+
+{% block subpage %} class="g-html"{% endblock %}
+
+{% block content %}
+	<div class="g-main f-fr">
+		<div class="mainbox">
+			<h1 class="e-pt20 e-pb20 f-fs28">介绍</h1>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="Nui是什么">Nui是什么</h2>
+			<p class="e-mt15 f-lh22">Nui是一个轻量级模块化前端UI框架，汇集了模块加载器与组件于一身，开发的目的是为了使团队编码风格统一，提高代码复用率以及可维护性。</p>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 兼容性</h3>
+			<div class="e-mt15 f-lh22">
+				<p>Internet Explorer 6+ <b class="f-cgreen f-fs16">✔</b></p>
+				<p>Firefox 2+ <b class="f-cgreen f-fs16">✔</b></p>
+				<p>Safari 3.2+ <b class="f-cgreen f-fs16">✔</b></p>
+				<p>Chrome 3+ <b class="f-cgreen f-fs16">✔</b></p>
+				<p>Opera 10+ <b class="f-cgreen f-fs16">✔</b></p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="快速上手">快速上手</h2>
+			<div class="e-mt15 f-lh22">
+				<p>Nui.js由模块加载器以及组件基类、实用工具、模版引擎3个模块组成，并没有将组件集成到里面，使用时可以根据页面需要加载相应的组件模块。若仅当作模块加载器使用，不使用其它功能，可以下载加载器版。</p>
+			</div>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 下载</h3>
+			<div class="e-mt15 f-lh22">
+				<p>
+					<a href="/nui/dest/nui-debug.js" class="f-corange f-tdu">开发版</a> 
+					<a href="/nui/dest/nui-min.js" class="f-corange f-tdu e-ml10">压缩版</a>
+					<a href="/nui/src/nui.js" class="f-corange f-tdu e-ml10">加载器版</a> 
+				</p>
+			</div>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 引入</h3>
+			<div class="e-mt15 f-lh22">
+				<p>下载任意版本放到项目中并用script标签引入，Nui会被注册为一个全局变量。</p>
+				<p>如果要使用Nui组件，在引入Nui之前需先引入jQuery，使用版本需1.8以及以上版本。</p>
+			</div>
+<script type="text/highlight" options-xml>
+&lt;script src="/nui/assets/jquery.js"&gt;&lt;/script&gt;
+&lt;script src="/nui/assets/nui.js"&gt;&lt;/script&gt;
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 编写模块</h3>
+<script type="text/highlight" options-javascript>
+// page.js
+Nui.define(['./hello'], function(hello){
+	var hello2 = this.require('./hello2');
+	return ({
+		init:function(){
+			console.log(hello())
+			console.log(hello2())
+		}
+	})
+})
+
+// hello.js hello2.js
+Nui.define(function(){
+    return function(){
+        return 'Hello World!'
+    }
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 入口模块调用</h3>
+<script type="text/highlight" options-xml>
+&lt;script&gt;
+Nui.load('./page', function(page){
+	page.init()
+})
+&lt;/script&gt;
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 约定</h3>
+			<div class="e-mt15 f-lh22">
+				<p>一个模块就是一个js文件，一个js文件中不要写多个模块。</p>
+				<p>理论上一个页面只有一个入口模块，但往往页面都会存在公共部分，因此可以将公共部分独立一个入口，也就是每个页面至多2个入口模块。</p>
+				<p>入口模块调用不要放在js文件中，而应该写在页面底部body标签之前。</p>
+			</div>
+		</div>
+	</div>
+	{% import 'sidecol.tpl' as side %}
+	{{side.active('index')}}
+{% endblock %}
