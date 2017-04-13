@@ -48,11 +48,12 @@ Nui.define(function(){
                                         param[val] = params[key]
                                     })
                                     that._cacheContainer[_hash] = v.container;
+                                    var cache = that._cache[_hash];
                                     v.render(v.target, v.container, {
                                         path:v.path,
                                         url:hash,
                                         param:param,
-                                        cache:that._cache[_hash]
+                                        cache:cache
                                     })
                                     that._trigger = match = true;
                                     return false

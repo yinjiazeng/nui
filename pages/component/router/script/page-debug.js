@@ -7,7 +7,7 @@ Nui.define('./detail',['template', './data'], function(tpl, data){
     })
     return ({
         render:function(target, container, data){
-            container.html(tpl.render(module.renders(''+''
+            container.html(data.cache || tpl.render(module.renders(''+''
                 +'<% if param.id === undefined %>'+''
                 +'<p>下面是<% filter | param.type %>新闻列表：</p>'+''
                 +'<ul>'+''
@@ -104,11 +104,12 @@ Nui.define('{cpns}/router',function(){
                                         param[val] = params[key]
                                     })
                                     that._cacheContainer[_hash] = v.container;
+                                    var cache = that._cache[_hash];
                                     v.render(v.target, v.container, {
                                         path:v.path,
                                         url:hash,
                                         param:param,
-                                        cache:that._cache[_hash]
+                                        cache:cache
                                     })
                                     that._trigger = match = true;
                                     return false
