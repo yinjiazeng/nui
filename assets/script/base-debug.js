@@ -309,8 +309,10 @@ Nui.define('{script}/base',['{light}/xml'], function(xml){
     return ({
         init:function(){
             this.setYear();
-            this.event();
-            this.position();
+            if(main.find('h2[id]').length){
+                this.event();
+                this.position();
+            }
         },
         setYear:function(){
             $('#nowyear').text('-'+new Date().getFullYear());

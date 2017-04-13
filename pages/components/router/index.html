@@ -48,6 +48,92 @@
 	<div class="g-main f-fr">
 		<div class="mainbox">
 			<h1 class="e-pt20 e-pb20 f-fs28">路由</h1>
+			<div class="e-mt15 f-lh22">
+				<p>介绍</p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">使用文档</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 使用模块</h3>
+			<div class="e-mt15 f-lh22">
+				<p><a href="/nui/src/components/router.js" class="f-corange" target="_blank">下载</a>最新版作为依赖项引入到模块中</p>
+				<p>调用方式：实例 / 选择器</p>
+			</div>
+<script type="text/highlight" options-javascript="{isLine:false}">
+Nui.define(['../src/components/router'], function(router){
+	//实例调用
+	router({
+		target:'#elem',
+		enter:true,
+		....
+	})
+
+	//选择器调用
+	$('#elem').router({
+		enter:true,
+		....
+	})
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 选项参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>path</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>container</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>enter</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>onBefore</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>onRender</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 静态方法</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>alias</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>trigger</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 实例方法</h3>
+			<p class="e-mt15 f-lh22">继承组件基类 <a href="" class="f-corange">实例方法</a></p>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 案例</h3>
+			<div class="m-example">
+				
+			</div>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 更新历史</h3>
+			<div class="e-mt15 f-lh22">
+				<p>1111111</p>
+			</div>
 		</div>	
 	</div>
 	
@@ -139,13 +225,15 @@
         }
     })
 
-	Nui.load("{script}/base-debug?v=a2ed139", function(page){
+	Nui.load("{script}/base-debug?v=21b72af", function(page){
         page.init()
     })
     </script>
     
     <script type="text/javascript">
     
+Nui.load('./script/page-min')
+
     </script>
 </body>
 </html>
