@@ -1396,18 +1396,13 @@ Nui.define('component', ['template'], function(tpl){
             },
             $ready:function(name, module){
                 var attr = 'options-'+name;
-                var _$fn = $.fn[name];
-                var _$ = $[name];
+                var $fn = $.fn[name];
                 $('['+ attr +']').each(function(index, item){
                     var ele = $(item);
                     var options = ele.attr(attr)
-                    options = options ? $.parseJSON(options) : {};
-                    options.target = item;
-                    if(_$fn){
+                    options = options ? eval('('+ options +')') : {};
+                    if($fn){
                         ele[name](options)
-                    }
-                    else if(_$){
-                        $[name](options)
                     }
                     else{
                         module(options)
@@ -1433,9 +1428,9 @@ Nui.define('component', ['template'], function(tpl){
             if(!this.target){
                 var target = this.options.target;
                 if(!target){
-                    target = null
+                    return null
                 }
-                else if(typeof target === 'string'){
+                else if(typeof target === 'string' || target.selector === undefined){
                     target = $(target)
                 }
                 this.target = target;
