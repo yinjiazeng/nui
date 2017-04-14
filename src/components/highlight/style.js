@@ -14,8 +14,8 @@ Nui.define(function(){
             var str = '';
             var match = code.match(/(\/\*(.|\s)*?\*\/)|(\{[^\{\}\/]*\})/g);
             var array = self._getarr(match, code);
-            $.each(array, function(k, v){
-                if($.trim(v)){
+            Nui.each(array, function(v){
+                if(Nui.trim(v)){
                     //多行注释
                     if(/^\s*\/\*/.test(v)){
                         v = v.replace(/(.+)/g, self._getcode('comment', '$1'))

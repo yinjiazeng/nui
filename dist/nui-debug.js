@@ -572,7 +572,7 @@
             var that = this;
             extend(true, that, object.attr, {
                 index:Class._index++,
-                _eventArray:[]
+                _events:[]
             });
             that.options = extend(true, {}, that.options, Class._options, options||{})
             that.optionsCache = extend(that.options);
@@ -1341,9 +1341,9 @@ Nui.define('component', ['template'], function(tpl){
                 }, {
                     margin:group
                 }];
-                $.each(arr, function(key, val){
+                Nui.each(arr, function(val){
                     if(val[attr]){
-                        $.each(val[attr][dir], function(k, v){
+                        Nui.each(val[attr][dir], function(v){
                             var value = parseInt(selector.css(attr+v));
                             size += isNaN(value) ? 0 : value
                         });
@@ -1352,13 +1352,17 @@ Nui.define('component', ['template'], function(tpl){
                 return size
             },
             $:function(name, module){
+                if($[name]){
+                    return
+                }
                 $[name] = function(options){
-                    if(options){
-                        return module(options)
-                    }
+                    return module(options)
                 }
             },
             $fn:function(name, module){
+                if($.fn[name]){
+                    return
+                }
                 $.fn[name] = function(){
                     var args = arguments;
                     var options = args[0];
@@ -1385,12 +1389,7 @@ Nui.define('component', ['template'], function(tpl){
                         if(typeof options === 'string'){
                             if(options.indexOf('_') !== 0){
                                 if(options === 'options'){
-                                    if(typeof args[1] === 'object'){
-                                        obj.set(args[1])
-                                    }
-                                    else if(typeof args[1] === 'string'){
-                                        obj.set(args[1], args[2])
-                                    }
+                                    obj.set(args[1], args[2])
                                 }
                                 else{
                                     var attr = obj[options];
@@ -1441,25 +1440,60 @@ Nui.define('component', ['template'], function(tpl){
         _getTarget:function(){
             return this.target || (this.options.target ? $(this.options.target) : null)
         },
-        _on:function(type, target, callback, trigger){
-            var that = this, selector = target.selector
-            Nui.doc.on(type, selector, function(e){
+        _on:function(type, dalegate, selector, callback, trigger){
+            var that = this;
+            if(typeof selector === 'function'){
+                trigger = callback;
+                callback = selector;
+                selector = dalegate;
+                dalegate = null;
+                if(typeof selector === 'string'){
+                    selector = $(selector)
+                }
+            }
+
+            var _callback = function(e){
                 return callback.call(this, e, $(this))
-            });
-            trigger === true && target[type]();
-            that._eventArray.push({
+            }
+
+            if(dalegate){
+                if(typeof selector !== 'string'){
+                    selector = selector.selector
+                }
+                dalegate.on(type, selector, _callback);
+                if(trigger){
+                    dalegate.find(selector).trigger(type)
+                }
+            }
+            else{
+                selector.on(type, _callback);
+                if(trigger){
+                    selector.trigger(type)
+                }
+            }
+
+            that._events.push({
+                dalegate:dalegate,
                 selector:selector,
                 type:type,
-                callback:callback
+                callback:_callback
             });
+
             return that
         },
         _off:function(){
-            var that = this;
-            $.each(that._eventArray, function(key, val){
-                val && Nui.doc.off(val.type, val.selector, val.callback)
+            var that = this, _events = that._events;
+            Nui.each(_events, function(val, key){
+                if(val.dalegate){
+                    val.dalegate.off(val.type, val.selector, val.callback)
+                }
+                else{
+                    val.selector.off(val.type, val.callback)
+                }
+                _events[key] = null;
+                delete _events[key]
             });
-            that._eventArray = [];
+            that._events = [];
             return that
         },
         _delete:function(){

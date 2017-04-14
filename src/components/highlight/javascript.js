@@ -18,7 +18,7 @@ Nui.define(function(){
             var symbol = '&lt;|&gt;|;|!|%|\\\|\\\[|\\\]|\\\(|\\\)|\\\{|\\\}|\\\=|\\\/|-|\\\+|,|\\\.|\\\:|\\\?|~|\\\*|&';
             var match = code.match(/(\/\/.*)|(\/\*(.|\s)*?\*\/)|('[^']*')|("[^"]*")/g);
             var array = self._getarr(match, code);
-            $.each(array, function(k, v){
+            Nui.each(array, function(v){
                 if($.trim(v)){
                     //单行注释
                     if(/^\s*\/\//.test(v)){

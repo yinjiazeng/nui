@@ -176,7 +176,7 @@ Nui.define(function(){
         },
         _event:function(){
             var that = this, opts = that.options;
-            that._on('click', that.target, function(e, elem){
+            that._on('click', Nui.doc, that.target, function(e, elem){
                 var callback = function(){
                     that._sethash(elem.attr('href'));
                 }

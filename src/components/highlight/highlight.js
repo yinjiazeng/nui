@@ -18,7 +18,7 @@ Nui.define(function(){
                     array.push(code)
                 }
                 else{
-                    $.each(match, function(k, v){
+                    Nui.each(match, function(v){
                         var index = code.indexOf(v);
                         var sub = code.substr(0, index);
                         code = code.substr(index+v.length);
@@ -112,14 +112,19 @@ Nui.define(function(){
         },
         _event:function(){
             var that = this;
-            that._on('click', that.elem.find('tr'), function(e){
-                $(this).addClass('s-crt').siblings().removeClass('s-crt');
+            that.evt = false;
+            that._on('click', that.elem, 'tr', function(e, elem){
+                that.evt = true;
+                elem.addClass('s-crt').siblings().removeClass('s-crt')
             })
             that._on('click', that.elem, function(e){
                 e.stopPropagation()
             })
             that._on('click', Nui.doc, function(e){
-                that.elem.find('tr.s-crt').removeClass('s-crt')
+                if(that.evt){
+                    that.elem.find('tr.s-crt').removeClass('s-crt');
+                    that.evt = false;
+                }
             })
         }
     })

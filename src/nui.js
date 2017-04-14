@@ -572,7 +572,7 @@
             var that = this;
             extend(true, that, object.attr, {
                 index:Class._index++,
-                _eventArray:[]
+                _events:[]
             });
             that.options = extend(true, {}, that.options, Class._options, options||{})
             that.optionsCache = extend(that.options);

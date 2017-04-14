@@ -6,8 +6,9 @@
  */
 
 Nui.define(['util'], function(util){
+    var module = this;
     var support = util.supportHtml5('placeholder', 'input');
-    return this.extend('component', {
+    return module.extend('component', {
         options:{
             /**
              * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
@@ -30,19 +31,15 @@ Nui.define(['util'], function(util){
              */
             color:'#ccc'
         },
-        _tpl:{
-            wrap:'<strong \
-                    class="nui-placeholder<%if theme%> t-placeholder-<%theme%><%/if%>" style="\
-                    <%each style val key%>\
-                        <%key%>:<%val%>;\
-                    <%/each%>\
-                    " />',
-            elem:'<b style="\
-                    <%each style val key%>\
-                        <%key%>:<%val%>;\
-                    <%/each%>\
-                    "><%text%></b>'
-        },
+        _tpllist:module.renders({
+            <%each style%><%$index%>:<%$value%>;<%/each%>
+        }),
+        _tplwrap:module.renders({
+            <strong class="ui-placeholder<%if theme%> t-placeholder-<%theme%><%/if%>" style="<%include '_tpllist'%>" />
+        }),
+        _tplelem:module.renders({
+            <b style="<%include '_tpllist'%>"><%text%></b>
+        }),
         _init:function(){
             this._exec();
         },
@@ -54,7 +51,7 @@ Nui.define(['util'], function(util){
                 if(!that.deftext && that.options.text){
                     that.target.attr('placeholder', text = that.options.text)
                 }
-                that.text = $.trim(text);
+                that.text = Nui.trim(text);
                 if(that.text){
                     that._create()
                 }
@@ -62,11 +59,11 @@ Nui.define(['util'], function(util){
         },
         _create:function(){
             var that = this, opts = that.options, self = that.constructor;
-            if(opts.animate){
-                that.target.removeAttr('placeholder')
-            }
             if(opts.animate || (!opts.animate && !support)){
-                that.target.wrap(that._tpl2html(that._tpl.wrap, {
+                if(opts.animate){
+                    that.target.removeAttr('placeholder')
+                }
+                that.target.wrap(that._tpl2html(that._tplwrap, {
                         theme:opts.theme,
                         style:{
                             'position':'relative',
@@ -76,12 +73,13 @@ Nui.define(['util'], function(util){
                             'cursor':'text'
                         }
                     }))
-                that.elem = $(that._tpl2html(that._tpl.elem, {
+                that.elem = $(that._tpl2html(that._tplelem, {
                         text:that.text,
                         style:(function(){
                             var height = that.target.outerHeight();
                             var isText = that.target.is('textarea');
                             return ({
+                                'display':Nui.trim(that.target.val()) ? 'none' : 'inline',
                                 'position':'absolute',
                                 'left':self._getSize(that.target, 'l', 'padding')+self._getSize(that.target, 'l')+'px',
                                 'top':self._getSize(that.target, 't', 'padding')+self._getSize(that.target, 't')+'px',
@@ -121,7 +119,7 @@ Nui.define(['util'], function(util){
                 sheet.deleteRule(index)
             }
             catch(e){}
-            $.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(k, v){
+            Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
                 var selector = '.'+that.className+v;
                 var rules = 'opacity:1; color:'+(that.options.color||'');
                 try{
@@ -146,10 +144,10 @@ Nui.define(['util'], function(util){
                 opts.animate && that.elem.stop(true, false).animate({left:pleft+10, opacity:'0.5'});
             })
 
-            that._on('blur change', that.target, function(){
-                var val = $.trim(that.target.val());
-                if((!opts.equal && val == that.text) || !val){
-                    that.target.val('');
+            that._on('blur change', that.target, function(e, elem){
+                var val = Nui.trim(elem.val());
+                if((!opts.equal && val === that.text) || !val){
+                    elem.val('');
                     that.elem.show();
                     opts.animate && that.elem.stop(true, false).animate({left:pleft, opacity:'1'})
                 }
@@ -158,11 +156,9 @@ Nui.define(['util'], function(util){
                 }
             })
 
-            that._on('keyup keydown', that.target, function(){
-                $.trim(that.target.val()) ? that.elem.hide() : that.elem.show()
+            that._on('keyup keydown', that.target, function(e, elem){
+                Nui.trim(elem.val()) ? that.elem.hide() : that.elem.show()
             })
-
-            that.target.blur()
         },
         _reset:function(){
             var that = this;

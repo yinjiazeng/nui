@@ -15,11 +15,11 @@ Nui.define(['./javascript', './style'],function(js, css){
             code = code.replace(/&lt;\s*![^!]+-\s*&gt;/g, function(res){
                 return res.replace(/&lt;/g, '<<').replace(/&gt;/g, '>>')
             });
-            $.each(code.split('&lt;'), function(k1, v1){
+            Nui.each(code.split('&lt;'), function(v1){
                 v1 = v1.split('&gt;');
                 var length = v1.length;
-                $.each(v1, function(k2, v2){
-                    if($.trim(v2)){
+                Nui.each(v1, function(v2, k2){
+                    if(Nui.trim(v2)){
                         if(k2 == 0){
                             var istag = false;
                             if(/^\s*\//.test(v2)){
