@@ -176,9 +176,6 @@
                     <li>
                         <a{%if page == 'placeholder' %} class="s-crt"{% endif %} href="/nui/pages/components/placeholder/">输入框占位</a>
                     </li>
-                    <li>
-                        <a{%if page == 'dev' %} class="s-crt"{% endif %} href="/nui/pages/components/dev/">组件开发</a>
-                    </li>
                 </ul>
                 {% endif %}
             </li>

@@ -50,14 +50,6 @@ Nui.define('component', ['template'], function(tpl){
                 });
                 return size
             },
-            $:function(name, module){
-                if($[name]){
-                    return
-                }
-                $[name] = function(options){
-                    return module(options)
-                }
-            },
             $fn:function(name, module){
                 if($.fn[name]){
                     return
@@ -108,7 +100,7 @@ Nui.define('component', ['template'], function(tpl){
                 $('['+ attr +']').each(function(index, item){
                     var ele = $(item);
                     var options = ele.attr(attr)
-                    options = options ? eval('('+ ele.attr(attr) +')') : {};
+                    options = options ? $.parseJSON(options) : {};
                     options.target = item;
                     if(_$fn){
                         ele[name](options)
@@ -137,7 +129,17 @@ Nui.define('component', ['template'], function(tpl){
         _init:$.noop,
         _exec:$.noop,
         _getTarget:function(){
-            return this.target || (this.options.target ? $(this.options.target) : null)
+            if(!this.target){
+                var target = this.options.target;
+                if(!target){
+                    target = null
+                }
+                else if(typeof target === 'string'){
+                    target = $(target)
+                }
+                this.target = target;
+            }
+            return this.target
         },
         _on:function(type, dalegate, selector, callback, trigger){
             var that = this;

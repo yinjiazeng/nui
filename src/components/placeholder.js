@@ -44,12 +44,11 @@ Nui.define(['util'], function(util){
             this._exec();
         },
         _exec:function(){
-            var that = this;
-            that.target = that._getTarget();
-            if(that.target){
-                var text = that.deftext = that.target.attr('placeholder');
+            var that = this, target = that._getTarget();
+            if(target){
+                var text = that.deftext = target.attr('placeholder');
                 if(!that.deftext && that.options.text){
-                    that.target.attr('placeholder', text = that.options.text)
+                    target.attr('placeholder', text = that.options.text)
                 }
                 that.text = Nui.trim(text);
                 if(that.text){

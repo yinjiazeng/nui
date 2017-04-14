@@ -510,7 +510,7 @@
                 obj.static._componentname_ = name;
                 var module = mod.module = Module.createClass(mod, obj);
                 module.exports = exports;
-                Nui.each(['$', '$fn', '$ready'], function(v){
+                Nui.each(['$fn', '$ready'], function(v){
                     module(v, name, module)
                 })
             }

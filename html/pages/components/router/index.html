@@ -20,18 +20,18 @@
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 使用模块</h3>
 			<div class="e-mt15 f-lh22">
 				<p><a href="/nui/src/components/router.js" class="f-corange" target="_blank">下载</a>最新版作为依赖项引入到模块中</p>
-				<p>调用方式：实例 / 选择器</p>
+				<p>调用方式：实例对象 / jQuery插件</p>
 			</div>
 <script type="text/highlight" options-javascript="{isLine:false}">
 Nui.define(['../src/components/router'], function(router){
-	//实例调用
+	//实例对象形式调用
 	router({
 		target:'#elem',
 		enter:true,
 		....
 	})
 
-	//选择器调用
+	//jQuery插件形式调用
 	$('#elem').router({
 		enter:true,
 		....

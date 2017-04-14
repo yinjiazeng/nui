@@ -1,29 +1,30 @@
 Nui.define([{
-    name:'凭证',
+    id:'recordVoucher',
+    name:'录凭证',
     icon:'',
-    subs:[{
-        name:'录凭证',
-        icon:'',
-        path:'',
-    }, {
-        name:'查凭证',
-        icon:'',
-        path:'',
-    }]
+    path:'/voucher/record'
+}, {
+    id:'seeVoucher',
+    name:'查凭证',
+    icon:'',
+    path:'/voucher/list/aniu/jser',
 }, {
     name:'账簿',
     icon:'',
     subs:[{
+        id:'summary',
         name:'总账',
         icon:'',
-        path:'',
+        path:'/books/summary',
     }, {
+        id:'detailed',
         name:'明细账',
         icon:'',
-        path:'',
+        path:'/books/detailed',
     }, {
+        id:'accountbalance',
         name:'科目余额表',
         icon:'',
-        path:'',
+        path:'/books/accountbalance',
     }]
 }])

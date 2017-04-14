@@ -99,8 +99,8 @@
 
 	
 
-    <script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
-    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=bf95fee"></script>
+    <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
+    <script type="text/javascript" src="/nui/dist/nui-min.js?v=ef4ff51"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{
@@ -108,17 +108,15 @@
             script:'/assets/script',
             style:'/assets/style',
             cpns:'/src/components',
-            light:'/src/components/highlight'
+			light:'/src/components/highlight'
         },
         alias:{
             placeholder:'{cpns}/placeholder',
-            highlight:'{light}/highlight'
+			highlight:'{light}/highlight'
         }
     })
-    </script>
 
-    <script type="text/javascript">
-	Nui.load("{script}/base-min?v=e118956", function(page){
+	Nui.load("{script}/base-debug?v=0f7bdcf", function(page){
         page.init()
     })
     </script>

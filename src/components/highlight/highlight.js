@@ -54,12 +54,11 @@ Nui.define(function(){
             this._exec();
         },
         _exec:function(){
-            var that = this;
-            that.target = that._getTarget();
-            if(that.target){
-                var dom = that.target.get(0);
+            var that = this, target = that._getTarget();
+            if(target){
+                var dom = target.get(0);
                 if(dom.tagName === 'SCRIPT' && dom.type == 'text/highlight'){
-                    that.code = that.target.html()
+                    that.code = target.html()
                                 .replace(/^[\r\n]+|[\r\n]+$/g, '')
                                 .replace(/</g, '&lt;')
                                 .replace(/>/g, '&gt;');

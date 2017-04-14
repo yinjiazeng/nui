@@ -43,8 +43,11 @@ Nui.define(function(){
                                 var params = hash.replace(v.path, '').replace(/^\//, '');
                                 params = params ? params.split('/') : [];
                                 if(params.length === v.params.length){
-                                    var param = {};
+                                    var param;
                                     Nui.each(v.params, function(val, key){
+                                        if(!param){
+                                            param = {};
+                                        }
                                         param[val] = params[key]
                                     })
                                     that._cacheContainer[_hash] = v.container;
@@ -66,7 +69,8 @@ Nui.define(function(){
                     })
                     if(!that._trigger){
                         Nui.each(that._instances, function(v){
-                            if(v.options.enter === true){
+                            if(!that._hasEnter && v.options.enter === true){
+                                that._hasEnter = true;
                                 v.target.eq(0).trigger('click');
                                 that._trigger = true;
                                 return false
@@ -110,6 +114,7 @@ Nui.define(function(){
             path:'',
             container:null,
             enter:false,
+            split:false,
             onBefore:null,
             onRender:null
         },
@@ -121,23 +126,23 @@ Nui.define(function(){
             }
         },
         _exec:function(){
-            var that = this, opts = that.options, router = that.constructor;
-            that.path = that._setpath(opts.path);
-            that.target = that._getTarget();
-            that.container = $(opts.container);
-            if(opts.path && that.target){
+            var that = this, opts = that.options, router = that.constructor, target = that._getTarget();
+            if(opts.path && target){
+                that.path = that._setpath(opts.path);
+                that.container = typeof opts.container === 'string' ? Nui.$(opts.container) : $(opts.container);
                 var paths = that._getpath();
                 if(paths.params.length){
-                    var params = [];
-                    Nui.each(paths.params, function(v){
-                        params.push(v);
-                        var split = '/:';
-                        var subs = params.join(split);
+                    var params = [], split = '/:', param, sub;
+                    while(param = paths.params.shift()){
+                        params.push(param);
+                        subs = params.join(split);
                         router._params[paths.path+split+subs] = $.extend({}, paths, {
                             params:subs.split(split)
                         })
-                    })
-                    router._params[that.path] = paths
+                    }
+                    if(opts.split === true){
+                        router._paths[paths.path] = paths
+                    }
                 }
                 else{
                     router._paths[that.path] = paths

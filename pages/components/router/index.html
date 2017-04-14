@@ -55,18 +55,18 @@
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 使用模块</h3>
 			<div class="e-mt15 f-lh22">
 				<p><a href="/nui/src/components/router.js" class="f-corange" target="_blank">下载</a>最新版作为依赖项引入到模块中</p>
-				<p>调用方式：实例 / 选择器</p>
+				<p>调用方式：实例对象 / jQuery插件</p>
 			</div>
 <script type="text/highlight" options-javascript="{isLine:false}">
 Nui.define(['../src/components/router'], function(router){
-	//实例调用
+	//实例对象形式调用
 	router({
 		target:'#elem',
 		enter:true,
 		....
 	})
 
-	//选择器调用
+	//jQuery插件形式调用
 	$('#elem').router({
 		enter:true,
 		....
@@ -127,13 +127,9 @@ Nui.define(['../src/components/router'], function(router){
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 实例方法</h3>
 			<p class="e-mt15 f-lh22">继承组件基类 <a href="" class="f-corange">实例方法</a></p>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 案例</h3>
-			<div class="m-example">
-				
-			</div>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 更新历史</h3>
-			<div class="e-mt15 f-lh22">
-				<p>1111111</p>
-			</div>
+			<p class="e-mt15 f-lh22">
+				<a href="./cloud.html" target="_blank" class="f-corange f-tdu">诺诺云记账单页版</a>
+			</p>
 		</div>	
 	</div>
 	
@@ -188,9 +184,6 @@ Nui.define(['../src/components/router'], function(router){
                     <li>
                         <a href="/nui/pages/components/placeholder/">输入框占位</a>
                     </li>
-                    <li>
-                        <a href="/nui/pages/components/dev/">组件开发</a>
-                    </li>
                 </ul>
                 
             </li>
@@ -209,7 +202,7 @@ Nui.define(['../src/components/router'], function(router){
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=f5f89fd"></script>
+    <script type="text/javascript" src="/nui/dist/nui-min.js?v=ef4ff51"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{
@@ -225,15 +218,13 @@ Nui.define(['../src/components/router'], function(router){
         }
     })
 
-	Nui.load("{script}/base-debug?v=94e7c24", function(page){
+	Nui.load("{script}/base-debug?v=0f7bdcf", function(page){
         page.init()
     })
     </script>
     
     <script type="text/javascript">
     
-Nui.load("./script/page-min?v=7d31897")
-
     </script>
 </body>
 </html>
