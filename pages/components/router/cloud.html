@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>诺诺云记账单页版</title>
+	<link rel="stylesheet" type="text/css" href="./style/page-min.css"/>
+</head>
+<body>
+	<div class="g-header">
+        <div class="m-logo"></div>
+            <div class="m-head">
+            <div class="m-headbox">
+                <div class="f-fl m-head-main">
+                    <p class="f-fl name"></p>
+                    <p class="f-fl month"></p>
+				</div>
+            </div>
+        </div>
+    </div>
+    <div class="g-wrap f-clearfix">
+        <!-- sidecol -->
+        <div class="g-sidecol f-fl">
+            <div class="m-menu"></div>
+        </div>
+        <!-- /sidecol -->
+        
+        <!-- content -->
+        <div class="g-content f-fr">
+            <div class="g-con">
+                <div class="g-main"></div>
+            </div>
+        </div>
+        <!-- /content -->
+    </div>
+
+	<script type="text/javascript" src="/nui/assets/script/jquery.js?v=618538b"></script>
+    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=bf95fee"></script>
+    <script type="text/javascript">
+    Nui.config({
+        paths:{
+            base:'/nui',
+            script:'/assets/script',
+            style:'/assets/style',
+            cpns:'/src/components',
+            light:'/src/components/highlight'
+        },
+        alias:{
+            placeholder:'{cpns}/placeholder',
+            highlight:'{light}/highlight'
+        }
+    })
+    </script>
+	<script type="text/javascript">
+	Nui.load('./script/page-debug')
+	</script>
+</body>
+</html>
