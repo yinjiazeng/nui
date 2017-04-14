@@ -52,7 +52,7 @@ Nui.define(function(){
                                     })
                                     that._cacheContainer[_hash] = v.container;
                                     var cache = that._cache[_hash];
-                                    v.render(v.target, v.container, {
+                                    v.render(v.target.length ? v.target : $(v.target.selector), v.container, {
                                         path:v.path,
                                         url:hash,
                                         param:param,

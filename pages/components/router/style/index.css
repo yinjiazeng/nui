@@ -9,11 +9,11 @@ html { overflow:hidden;}
 .g-wrap.s-hide .ui-tabmenu-wrap { margin-left:70px;}
 .m-logo { position:absolute; top:0; left:0; width:65px; height:51px; background:#4C81C2 url(../images/logo.png?v=2) no-repeat center; z-index:1;}
 .m-menu dl { position:relative; zoom:1;}
-.m-menu dl a:hover { color:#fff; -webkit-transition:all .1s ease-in; -ms-transition:all .1s ease-in; transition:all .1s ease-in;}
+.m-menu dl a:hover, .m-menu dl a.s-crt { color:#fff; background-color:#4C81C2; -webkit-transition:all .1s ease-in; -ms-transition:all .1s ease-in; transition:all .1s ease-in;}
 .m-menu dd { position:absolute; left:64px; bottom:0; display:none;}
 .m-menu-item dd { top:0;}
 .m-menu dd a { width:115px; height:33px; line-height:33px; background-color:#84B3ED; font-size:12px; color:#fff;}
-.m-menu dd a:hover { background-color:#4C81C2;}
+.m-menu dd a:hover, .m-menu dd a.s-crt { background-color:#4C81C2;}
 .m-menu dd a span { padding-left:14px;}
 .m-menu dt a, .m-menu dd a, .m-menu dt em, .m-menu dt span { display:block;}
 .m-menu dt a { padding:12px 0 10px; text-align:center; zoom:1;}

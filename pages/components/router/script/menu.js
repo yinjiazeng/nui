@@ -7,7 +7,7 @@ Nui.define([{
     id:'seeVoucher',
     name:'查凭证',
     icon:'',
-    path:'/voucher/list/aniu/jser',
+    path:'/voucher/list/aniu/jser'
 }, {
     name:'账簿',
     icon:'',
@@ -15,16 +15,16 @@ Nui.define([{
         id:'summary',
         name:'总账',
         icon:'',
-        path:'/books/summary',
+        path:'/books/summary'
     }, {
         id:'detailed',
         name:'明细账',
         icon:'',
-        path:'/books/detailed',
+        path:'/books/detailed'
     }, {
         id:'accountbalance',
         name:'科目余额表',
         icon:'',
-        path:'/books/accountbalance',
+        path:'/books/accountbalance'
     }]
 }])

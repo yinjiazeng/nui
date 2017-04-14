@@ -44,6 +44,8 @@ Nui.define('../tpls/seeVoucher',function(){
 Nui.define('./modules/seeVoucher',['../tpls/seeVoucher', 'template'], function(tmpl, tpl){
     var module = this;
     return function(target, container, data){
+        $('.m-menu-item a.s-crt').removeClass('s-crt');
+        target.addClass('s-crt');
         container.html(tpl.render(tmpl, data))
     }
 })
@@ -55,17 +57,25 @@ Nui.define('../tpls/recordVoucher',function(){
 Nui.define('./modules/recordVoucher',['../tpls/recordVoucher', 'template'], function(tmpl, tpl){
     var module = this;
     return function(target, container, data){
+        $('.m-menu-item a.s-crt').removeClass('s-crt');
+        target.addClass('s-crt');
         container.html(tpl.render(tmpl, data))
     }
 })
 Nui.define('../tpls/index',function(){
     return this.renders(''+''
+        +'<% if !cache %>'+''
         +'这是首页，页面完整url是：<% url %>，路径是：<% path %>'+''
+        +'<% else %>'+''
+        +'这是页面缓存<br>'+''
+        +'<% cache %>'+''
+        +'<% /if %>'+''
     +'')
 })
 Nui.define('./modules/index',['../tpls/index', 'template'], function(tmpl, tpl){
     var module = this;
     return function(target, container, data){
+        $('.m-menu-item a.s-crt').removeClass('s-crt');
         container.html(tpl.render(tmpl, data))
     }
 })
@@ -123,7 +133,7 @@ Nui.define('{cpns}/router',function(){
                                     })
                                     that._cacheContainer[_hash] = v.container;
                                     var cache = that._cache[_hash];
-                                    v.render(v.target, v.container, {
+                                    v.render(v.target.length ? v.target : $(v.target.selector), v.container, {
                                         path:v.path,
                                         url:hash,
                                         param:param,
@@ -344,7 +354,7 @@ Nui.define('./menu',[{
     id:'seeVoucher',
     name:'查凭证',
     icon:'',
-    path:'/voucher/list/aniu/jser',
+    path:'/voucher/list/aniu/jser'
 }, {
     name:'账簿',
     icon:'',
@@ -352,17 +362,17 @@ Nui.define('./menu',[{
         id:'summary',
         name:'总账',
         icon:'',
-        path:'/books/summary',
+        path:'/books/summary'
     }, {
         id:'detailed',
         name:'明细账',
         icon:'',
-        path:'/books/detailed',
+        path:'/books/detailed'
     }, {
         id:'accountbalance',
         name:'科目余额表',
         icon:'',
-        path:'/books/accountbalance',
+        path:'/books/accountbalance'
     }]
 }])
 Nui.define('./render',['./menu', './tpls/layout', 'template'], function(menu, layout, tpl){
@@ -378,7 +388,7 @@ Nui.define('./script/page',['./render', './router', './ajax'], function(render, 
     module.imports('../style/base');
     module.imports('../style/index');
     ajax({
-        url:'http://127.0.0.1/data/',
+        url:'./script/data.json',
         success:function(res){
             render(res);
             router('trigger')
