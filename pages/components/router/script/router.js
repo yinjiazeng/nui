@@ -10,14 +10,14 @@ Nui.define(['{cpns}/router'], function(router){
     })
 
     router({
-        target:'#recordVoucher',
+        target:'#recordVoucher, #recordVoucherIndex',
         path:'/voucher/record',
         container:'.g-main',
         onRender:module.require('./modules/recordVoucher')
     })
 
     router({
-        target:'#seeVoucher',
+        target:'#seeVoucher, #seeVoucherIndex',
         path:'/voucher/list/:nickname/:career',
         container:'.g-main',
         split:true,

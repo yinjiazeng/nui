@@ -1,12 +1,14 @@
 Nui.define([{
     id:'recordVoucher',
     name:'录凭证',
+    index:true,
     icon:'',
     path:'/voucher/record'
 }, {
     id:'seeVoucher',
     name:'查凭证',
     icon:'',
+    index:true,
     path:'/voucher/list/aniu/jser'
 }, {
     name:'账簿',
