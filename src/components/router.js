@@ -114,7 +114,7 @@ Nui.define(function(){
             path:'',
             container:null,
             enter:false,
-            split:false,
+            splitLevel:1,
             onBefore:null,
             onRender:null
         },
@@ -132,16 +132,23 @@ Nui.define(function(){
                 that.container = typeof opts.container === 'string' ? Nui.$(opts.container) : $(opts.container);
                 var paths = that._getpath();
                 if(paths.params.length){
-                    var params = [], split = '/:', param, sub;
-                    while(param = paths.params.shift()){
-                        params.push(param);
-                        subs = params.join(split);
-                        router._params[paths.path+split+subs] = $.extend({}, paths, {
-                            params:subs.split(split)
-                        })
+                    if(!opts.splitLevel){
+                        router._params[that.path] = paths
                     }
-                    if(opts.split === true){
-                        router._paths[paths.path] = paths
+                    else{
+                        if(opts.splitLevel <= 2){
+                            var params = [], split = '/:', param, sub;
+                            while(param = paths.params.shift()){
+                                params.push(param);
+                                subs = params.join(split);
+                                router._params[paths.path+split+subs] = $.extend({}, paths, {
+                                    params:subs.split(split)
+                                })
+                            }
+                        }
+                        if(opts.splitLevel === 2){
+                            router._paths[paths.path] = paths
+                        }
                     }
                 }
                 else{

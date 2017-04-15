@@ -20,7 +20,7 @@ Nui.define(['{cpns}/router'], function(router){
         target:'#seeVoucher, #seeVoucherIndex',
         path:'/voucher/list/:nickname/:career',
         container:'.g-main',
-        split:true,
+        splitLevel:2,
         onRender:module.require('./modules/seeVoucher')
     })
 
