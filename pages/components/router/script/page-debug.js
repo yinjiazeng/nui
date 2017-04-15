@@ -49,17 +49,385 @@ Nui.define('./modules/seeVoucher',['../tpls/seeVoucher', 'template'], function(t
         container.html(tpl.render(tmpl, data))
     }
 })
+/**
+ * @author Aniu[2016-11-10 22:39]
+ * @update Aniu[2016-11-10 22:39]
+ * @version 1.0.1
+ * @description 输入框占位符
+ */
+
+Nui.define('{cpns}/placeholder',['util'], function(util){
+    var module = this;
+    var support = util.supportHtml5('placeholder', 'input');
+    return module.extend('component', {
+        options:{
+            /**
+             * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
+             * @type <String>
+             */
+            text:'',
+            /**
+             * @func 是否启用动画显示展示
+             * @type <Boolean>
+             */
+            animate:false,
+            /**
+             * @func 输入框值是否可以和占位符相同
+             * @type <Boolean>
+             */
+            equal:false,
+            /**
+             * @func 占位符文本颜色
+             * @type <String>
+             */
+            color:'#ccc'
+        },
+        _tpllist:module.renders(''+''
+            +'<%each style%><%$index%>:<%$value%>;<%/each%>'+''
+        +''),
+        _tplwrap:module.renders(''+''
+            +'<strong class="ui-placeholder<%if theme%> t-placeholder-<%theme%><%/if%>" style="<%include \'_tpllist\'%>" />'+''
+        +''),
+        _tplelem:module.renders(''+''
+            +'<b style="<%include \'_tpllist\'%>"><%text%></b>'+''
+        +''),
+        _init:function(){
+            this._exec();
+        },
+        _exec:function(){
+            var that = this, target = that._getTarget();
+            if(target){
+                var text = that.deftext = target.attr('placeholder');
+                if(!that.deftext && that.options.text){
+                    target.attr('placeholder', text = that.options.text)
+                }
+                that.text = Nui.trim(text);
+                if(that.text){
+                    that._create()
+                }
+            }
+        },
+        _create:function(){
+            var that = this, opts = that.options, self = that.constructor;
+            if(opts.animate || (!opts.animate && !support)){
+                if(opts.animate){
+                    that.target.removeAttr('placeholder')
+                }
+                that.target.wrap(that._tpl2html(that._tplwrap, {
+                        theme:opts.theme,
+                        style:{
+                            'position':'relative',
+                            'display':'inline-block',
+                            'width':that.target.outerWidth()+'px',
+                            'overflow':'hidden',
+                            'cursor':'text'
+                        }
+                    }))
+                that.elem = $(that._tpl2html(that._tplelem, {
+                        text:that.text,
+                        style:(function(){
+                            var height = that.target.outerHeight();
+                            var isText = that.target.is('textarea');
+                            return ({
+                                'display':Nui.trim(that.target.val()) ? 'none' : 'inline',
+                                'position':'absolute',
+                                'left':self._getSize(that.target, 'l', 'padding')+self._getSize(that.target, 'l')+'px',
+                                'top':self._getSize(that.target, 't', 'padding')+self._getSize(that.target, 't')+'px',
+                                'height':isText ? 'auto' : height+'px',
+                                'line-height':isText ? 'normal' : height+'px',
+                                'color':opts.color
+                            })
+                        })()
+                    })).insertAfter(that.target)
+
+                that._event()
+            }
+            else{
+                that._setStyle()
+            }
+        },
+        _setStyle:function(){
+            var that = this, opts = that.options;
+            that.className = 'nui-placeholder-'+that.index;
+            that.target.addClass(that.className);
+            if(!that.constructor.style){
+                that._createStyle()
+            }
+            that._createRules()
+        },
+        _createStyle:function(){
+            var that = this;
+            var style = document.createElement('style');
+            document.head.appendChild(style);
+            that.constructor.style = style.sheet
+        },
+        _createRules:function(){
+            var that = this;
+            var sheet = that.constructor.style;
+            var index = that.index;
+            try{
+                sheet.deleteRule(index)
+            }
+            catch(e){}
+            Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
+                var selector = '.'+that.className+v;
+                var rules = 'opacity:1; color:'+(that.options.color||'');
+                try{
+                    if('addRule' in sheet){
+                        sheet.addRule(selector, rules, index)
+                    }
+                    else if('insertRule' in sheet){
+                        sheet.insertRule(selector + '{' + rules + '}', index)
+                    }
+                }
+                catch(e){}
+            })
+        },
+        _event:function(){
+            var that = this, opts = that.options, self = that.constructor;
+            var pleft = self._getSize(that.target, 'l', 'padding') + self._getSize(that.target, 'l');
+            that._on('click', that.elem, function(){
+                that.target.focus()
+            })
+
+            that._on('focus', that.target, function(){
+                opts.animate && that.elem.stop(true, false).animate({left:pleft+10, opacity:'0.5'});
+            })
+
+            that._on('blur change', that.target, function(e, elem){
+                var val = Nui.trim(elem.val());
+                if((!opts.equal && val === that.text) || !val){
+                    elem.val('');
+                    that.elem.show();
+                    opts.animate && that.elem.stop(true, false).animate({left:pleft, opacity:'1'})
+                }
+                else{
+                    that.elem.hide()
+                }
+            })
+
+            that._on('keyup keydown', that.target, function(e, elem){
+                Nui.trim(elem.val()) ? that.elem.hide() : that.elem.show()
+            })
+        },
+        _reset:function(){
+            var that = this;
+            that._off();
+            if(that.elem){
+                that.elem.remove();
+                that.target.unwrap();
+            }
+            that.target.removeClass(that.className);
+            if(that.deftext){
+                that.target.attr('placeholder', that.deftext)
+            }
+            else{
+                that.target.removeAttr('placeholder')
+            }
+        }
+    })
+})
+
+/**
+ * @author Aniu[2017-03-02 08:44]
+ * @update Aniu[2017-03-02 08:44]
+ * @version 1.0.1
+ * @description 语法高亮组件
+ */
+
+Nui.define('highlight',function(){
+    var renders = this.renders;
+    return this.extend('component', {
+        static:{
+            _getcode:function(type, text){
+                return '<code class="'+ type +'">'+ text +'</code>'
+            },
+            _getarr:function(match, code){
+                var array = [];
+                if(!match){
+                    array.push(code)
+                }
+                else{
+                    Nui.each(match, function(v){
+                        var index = code.indexOf(v);
+                        var sub = code.substr(0, index);
+                        code = code.substr(index+v.length);
+                        array.push(sub);
+                        array.push(v);
+                    })
+                    array.push(code);
+                }
+                return array
+            },
+            _comment:function(code){
+                //多行注释
+                if(/\/\*/.test(code)){
+                    code = code.replace(/(\/\*(.|\s)*?\*\/)/g, this._getcode('comment', '$1'))
+                }
+                //单行注释
+                else if(/\/\//.test(code)){
+                    code = code.replace(/(\/\/.*)$/g, this._getcode('comment', '$1'))
+                }
+                return code
+            }
+        },
+        options:{
+            //是否显示title
+            isTitle:false,
+            //点击代码那一行高亮
+            isLight:true,
+            //是否显示行号
+            isLine:false
+        },
+        _type:'',
+        _init:function(){
+            this._exec();
+        },
+        _exec:function(){
+            var that = this, target = that._getTarget();
+            if(target){
+                var dom = target.get(0);
+                if(dom.tagName === 'SCRIPT' && dom.type == 'text/highlight'){
+                    that.code = target.html()
+                                .replace(/^[\r\n]+|[\r\n]+$/g, '')
+                                .replace(/</g, '&lt;')
+                                .replace(/>/g, '&gt;');
+                    if(that.elem){
+                        that.elem.remove();
+                    }
+                    that._create();
+                    if(that.options.isLight){
+                        that._event();
+                    }
+                }
+            }
+        },
+        _tpl:renders(''+''
+            +'<div class="ui-highlight<%if type%> ui-highlight-<%type%><%/if%><%if theme%> t-highlight-<%theme%><%/if%>">'+''
+                +'<%if isTitle%>'+''
+                +'<div class="title">'+''
+                    +'<em class="type"><%type%></em>'+''
+                +'</div>'+''
+                +'<%/if%>'+''
+                +'<div class="inner">'+''
+                    +'<table>'+''
+                        +'<%each list val key%>'+''
+                            +'<tr>'+''
+                                +'<%if isLine === true%><td class="line" number="<%key+1%>"><%if bsie7%><%key+1%><%/if%></td><%/if%>'+''
+                                +'<td class="code"><%val%></td>'+''
+                            +'</tr>'+''
+                        +'<%/each%>'+''
+                    +'</table>'+''
+                +'<div>'+''
+            +'</div>'+''
+        +''),
+        _create:function(){
+            var that = this;
+            var opts = that.options;
+            var data = $.extend({
+                bsie7:Nui.bsie7,
+                list:that._list(),
+                type:that._type
+            }, that.options||{})
+            var html = that._tpl2html.call(that, that._tpl, data);
+            that.elem = $(html).insertAfter(that.target);
+        },
+        _list:function(){
+            var that = this;
+            if(that._type){
+                return that['_'+that._type](that.code).split('\n')
+            }
+            return that.code.split('\n')
+        },
+        _event:function(){
+            var that = this;
+            that.evt = false;
+            that._on('click', that.elem, 'tr', function(e, elem){
+                that.evt = true;
+                elem.addClass('s-crt').siblings().removeClass('s-crt')
+            })
+            that._on('click', that.elem, function(e){
+                e.stopPropagation()
+            })
+            that._on('click', Nui.doc, function(e){
+                if(that.evt){
+                    that.elem.find('tr.s-crt').removeClass('s-crt');
+                    that.evt = false;
+                }
+            })
+        }
+    })
+})
+
+/**
+ * @author Aniu[2017-03-02 08:44]
+ * @update Aniu[2017-03-02 08:44]
+ * @version 1.0.1
+ * @description javascript语法高亮组件
+ */
+
+Nui.define('{light}/javascript',function(){
+    return this.extend('highlight', {
+        _type:'js',
+        _js:function(code){
+            var that = this;
+            var self = that.constructor;
+            var str = '';
+            var kws = 'abstract|arguments|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|elseif|each|enum|eval|export|'+
+                      'extends|false|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|include|interface|let|long|native|new|null|'+
+                      'package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|true|try|typeof|var';
+            var symbol = '&lt;|&gt;|;|!|%|\\\|\\\[|\\\]|\\\(|\\\)|\\\{|\\\}|\\\=|\\\/|-|\\\+|,|\\\.|\\\:|\\\?|~|\\\*|&';
+            var match = code.match(/(\/\/.*)|(\/\*(.|\s)*?\*\/)|('[^']*')|("[^"]*")/g);
+            var array = self._getarr(match, code);
+            Nui.each(array, function(v){
+                if($.trim(v)){
+                    //单行注释
+                    if(/^\s*\/\//.test(v)){
+                        v = self._getcode('comment', v);
+                    }
+                    //多行注释
+                    else if(/^\s*\/\*/.test(v)){
+                        v = v.replace(/(.+)/g, self._getcode('comment', '$1'))
+                    }
+                    else{
+                        //字符串
+                        if(/'|"/.test(v)){
+                            v = v.replace(/(.+)/g, self._getcode('string', '$1'))
+                        }
+                        //关键字、符号、单词
+                        else{
+                            v = v.replace(new RegExp('('+ symbol +')', 'g'), self._getcode('symbol', '$1'))
+                                .replace(new RegExp('('+ kws +')(\\s+|\\\<code)', 'g'), self._getcode('keyword', '$1')+'$2')
+                                .replace(/(\/code>\s*)(\d+)/g, '$1'+self._getcode('number', '$2'))
+                                .replace(/(\/code>\s*)?([^<>\s]+)(\s*<code)/g, '$1'+self._getcode('word', '$2')+'$3')
+
+                        }
+                        v = self._comment(v);
+                    }
+                }
+                str += v;
+            })
+            return str
+        }
+    })
+})
+
 Nui.define('../tpls/recordVoucher',function(){
     return this.renders(''+''
-        +'这是录凭证页面，页面完整url是：<% url %>，路径是：<% path %>'+''
+        +'<input type="text" placeholder="aaaaaaaaaaa" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
+        +'<script type="text/highlight" data-javascript-options>'+''
+        +'var a = 1;'+''
+        +'var b = 2;'+''
+        +'</script> '+''
     +'')
 })
-Nui.define('./modules/recordVoucher',['../tpls/recordVoucher', 'template'], function(tmpl, tpl){
+Nui.define('./modules/recordVoucher',['../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(tmpl, tpl){
     var module = this;
     return function(target, container, data){
         $('.m-menu-item a.s-crt').removeClass('s-crt');
         target.addClass('s-crt');
         container.html(tpl.render(tmpl, data))
+        container.components();
     }
 })
 Nui.define('./menu',[{

@@ -235,6 +235,8 @@
 
     var roots = [];
 
+    var components = {};
+
     var config = {
         paths:{},
         alias:{}
@@ -477,6 +479,12 @@
             return tpl
         }
 
+        if(mod.name === 'component'){
+            factory.components = function(){
+                return components
+            }
+        }
+
         return factory
     }
 
@@ -507,12 +515,15 @@
                     }
                 })
                 var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\{[^\{\}]+\}/g, '');
-                obj.static._componentname_ = name;
-                var module = mod.module = Module.createClass(mod, obj);
-                module.exports = exports;
-                Nui.each(['$fn', '$ready'], function(v){
-                    module(v, name, module)
-                })
+                if(!components[name]){
+                    components[name] = true;
+                    obj.static._componentname_ = name;
+                    var module = mod.module = Module.createClass(mod, obj);
+                    module.exports = exports;
+                    Nui.each(['$fn', '$ready'], function(v){
+                        module(v, name, module)
+                    })
+                }
             }
             else{
                 mod.module = exports;
@@ -1307,6 +1318,29 @@ Nui.define('template', ['util'], function(util){
  */
 
 Nui.define('component', ['template'], function(tpl){
+    var module = this;
+    var getOptions = function(name, elem){
+        var options = elem.data(name+'Options');
+        if(!options){
+            return
+        }
+        if(typeof options === 'string'){
+            options = eval('('+ options +')')
+        }
+        return options
+    }
+    $.fn.components = function(){
+        var that = $(this);
+        Nui.each(module.components(), function(v, k){
+            that.find('[data-'+k+'-options]').each(function(){
+                var ele = $(this);
+                if(ele[k]){
+                    ele[k](getOptions(k, ele))
+                }
+            })
+        })
+        return that
+    }
     return ({
         static:{
             _index:0,
@@ -1395,12 +1429,10 @@ Nui.define('component', ['template'], function(tpl){
                 }
             },
             $ready:function(name, module){
-                var attr = 'options-'+name;
                 var $fn = $.fn[name];
-                $('['+ attr +']').each(function(index, item){
+                Nui.doc.find('[data-'+name+'-options]').each(function(index, item){
                     var ele = $(item);
-                    var options = ele.attr(attr)
-                    options = options ? eval('('+ options +')') : {};
+                    options = getOptions(name, ele);
                     if($fn){
                         ele[name](options)
                     }

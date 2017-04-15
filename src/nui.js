@@ -235,6 +235,8 @@
 
     var roots = [];
 
+    var components = {};
+
     var config = {
         paths:{},
         alias:{}
@@ -477,6 +479,12 @@
             return tpl
         }
 
+        if(mod.name === 'component'){
+            factory.components = function(){
+                return components
+            }
+        }
+
         return factory
     }
 
@@ -507,12 +515,15 @@
                     }
                 })
                 var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\{[^\{\}]+\}/g, '');
-                obj.static._componentname_ = name;
-                var module = mod.module = Module.createClass(mod, obj);
-                module.exports = exports;
-                Nui.each(['$fn', '$ready'], function(v){
-                    module(v, name, module)
-                })
+                if(!components[name]){
+                    components[name] = true;
+                    obj.static._componentname_ = name;
+                    var module = mod.module = Module.createClass(mod, obj);
+                    module.exports = exports;
+                    Nui.each(['$fn', '$ready'], function(v){
+                        module(v, name, module)
+                    })
+                }
             }
             else{
                 mod.module = exports;

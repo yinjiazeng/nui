@@ -57,7 +57,7 @@
 			<p class="e-mt15 f-lh22">模版引擎渲染有2种方式，一种是通过script标签渲染，另一种是直接渲染</p>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> script标签渲染模版</h3>
 			<p class="e-mt15 f-lh22">在页面body中创建type="text/html"的script标签，并且包含id属性</p>
-<script type="text/highlight" options-xml>
+<script type="text/highlight" data-xml-options>
 <div id="content"></div>
 &lt;script type="text/html" id="tpl"&gt;
 <ul>
@@ -84,7 +84,7 @@ Nui.load('template', function(template){
 &lt;/script&gt;
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 直接渲染模板</h3>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 Nui.load('template', function(tpl){
 	var str = '<ul>\
 				<% if result === "success" %>\
@@ -110,7 +110,7 @@ Nui.load('template', function(tpl){
 			</div>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="语法">语法</h2>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 输出值</h3>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% value %>
 <% list[0] %>
 <% data.result %>
@@ -120,7 +120,7 @@ Nui.load('template', function(tpl){
 				<p>声明的变量名不要和渲染数据的属性名相同，不然属性值会被覆盖。</p>
 				<p>声明的变量不会被输出。</p>
 			</div>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% var a = 1, b = 2 %>
 //使用变量
 <% a+b %> //3
@@ -139,7 +139,7 @@ Nui.load('template', function(tpl){
 				<p>当渲染数据为数组时，可使用$list操作该数组</p>
 				<p>遍历不声明键值变量时，可使用$value和$index分别操作值和键</p>
 			</div>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% each list val key %>
 	<% key %>:<% val %>
 <% /each %>
@@ -149,7 +149,7 @@ Nui.load('template', function(tpl){
 <% /each %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 判断</h3>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% if key == 0 %>
 	<% vlaue %>
 <% elseif key == 1 %>
@@ -159,21 +159,21 @@ Nui.load('template', function(tpl){
 <% /if %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 三目运算</h3>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% key == 0 ? 1 : 2 %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 方法调用</h3>
 			<p class="e-mt15 f-lh22"><a href="#method" class="f-corange f-tdu">如何创建方法？</a></p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% 方法名 | 参数1, 参数2, ... %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 导入模板</h3>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% include '模板id' %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="方法">方法</h2>
 			<p class="e-mt15 f-lh22">渲染script模板</p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 template(tplid, data?, options?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -201,7 +201,7 @@ template(tplid, data?, options?)
 			</table>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="render">render</h2>
 			<p class="e-mt15 f-lh22">渲染模板</p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 template.render(tmpl, data?, options?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -229,7 +229,7 @@ template.render(tmpl, data?, options?)
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<p class="e-mt15 f-lh22">如果模板中include非script模板，则需要通过call或者apply方法调用</p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 var tpls = {
 	tpl1:renders({
 		<p>模板1</p>
@@ -248,7 +248,7 @@ template.render.call(tpls, tmpl)
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="method">method</h2>
 			<p class="e-mt15 f-lh22">添加模板方法</p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 template.method(name, callback)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -271,7 +271,7 @@ template.method(name, callback)
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 举个栗子</h3>
 			<p class="e-mt15 f-lh22">将手机号码中间4位加密</p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 template.method('filter', function(mobile){
 	return mobile.replace(/(\d{3})\d{4}(\d+)/, '$1****$2')
 })
@@ -284,20 +284,20 @@ mobile:<% filter | $value.mobile %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 内置方法</h3>
 			<p class="e-mt15 f-lh22">过滤空格，参数等同<a class="f-corange" href="api.html#trim">Nui.trim</a></p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% trim | string %>
 </script>
 			<p class="e-mt15 f-lh22">格式化日期，参数等同<a class="f-corange" href="util.html#formatDate">formatDate</a></p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% formatDate | timestamp, format %>
 </script>
 			<p class="e-mt15 f-lh22">设置url参数，参数等同<a class="f-corange" href="util.html#setParam">setParam</a></p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 <% setParam | name, value, url? %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="config">config</h2>
 			<p class="e-mt15 f-lh22">配置全局参数</p>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 template.config(key, value?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -345,7 +345,7 @@ template.config(key, value?)
 					次渲染与其它模版引擎耗时对比 <a class="ui-btn ui-btn-small e-ml10" id="start">执行</a></p>
 				<p>IE6/7下不要用大数据测试，否则会导致崩溃，建议最大300*10</p>
 			</div>
-<script type="text/highlight" options-javascript>
+<script type="text/highlight" data-javascript-options>
 [
 	{
 		k1:v1, 
@@ -428,7 +428,7 @@ template.config(key, value?)
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-    <script type="text/javascript" src="/nui/dist/nui-min.js?v=9cdd297"></script>
+    <script type="text/javascript" src="/nui/dist/nui-min.js?v=d8aa5ce"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{

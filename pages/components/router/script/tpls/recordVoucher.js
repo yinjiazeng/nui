@@ -1,5 +1,9 @@
 Nui.define(function(){
     return this.renders({
-        这是录凭证页面，页面完整url是：<% url %>，路径是：<% path %>
+        <input type="text" placeholder="aaaaaaaaaaa" data-placeholder-options='{"color":"#f60", "animate":true}' />
+        <script type="text/highlight" data-javascript-options>
+        var a = 1;
+        var b = 2;
+        </script> 
     })
 })

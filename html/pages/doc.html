@@ -19,7 +19,7 @@
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="load">load</h2>
 			<p class="e-mt15 f-lh22">入口模块调用方法</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.load(id, callback?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -42,7 +42,7 @@ Nui.load(id, callback?)
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="config">config</h2>
 			<p class="e-mt15 f-lh22">配置模块和目录别名，用以简写模块路径</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.config(key, value?)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -82,7 +82,7 @@ Nui.config({
 			<p class="e-mt15 f-lh22">paths表示路径别名，集合中base用以设置根目录，用绝对地址定义</p>
 			<p class="e-mt15 f-lh22">alias表示模块别名，集合中可以使用大括号“{目录别名}”简写路径</p>
 			<p class="e-mt15 f-lh22">可直接在id中使用大括号“{目录别名}”引用模块</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.config({
 	paths:{
 		base:'http://rs.axnfw.com/'
@@ -103,7 +103,7 @@ Nui.load('jquery', function($){
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="define">define</h2>
 			<p class="e-mt15 f-lh22">定义封装模块</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(id?, deps?, fectory)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -131,7 +131,7 @@ Nui.define(id?, deps?, fectory)
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<p class="e-mt15 f-lh22">当fectory为非函数时直接当作接口返回</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 //a.js
 Nui.define(['yinjiazeng', 'liumengmei'])
 //b.js
@@ -146,7 +146,7 @@ Nui.define(['./a', './b'], function(a, b){
 				<a href="#imports" class="f-corange">imports</a> /
 				<a href="#renders" class="f-corange">renders</a> /
 				<a href="#extend" class="f-corange">extend</a> 四个方法，若要暴漏接口给其他模块使用，return即可。</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 //模块置前
 Nui.define(['a', 'b', 'c', ...], function(a, b, c, ...){
 	a.init()
@@ -181,7 +181,7 @@ Nui.define(['demo'], function(demo){
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="require">require</h2>
 			<p class="e-mt15 f-lh22">导入js模块</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
 	this.require(id, options?)
 })
@@ -210,7 +210,7 @@ Nui.define(function(){
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<p class="e-mt15 f-lh22">方法名不能变更</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
 	var req = this.require, a = req('./a'); //这是错误的
 	var require = this.require, a = require('./a'); //这是正确的
@@ -218,7 +218,7 @@ Nui.define(function(){
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="imports">imports</h2>
 			<p class="e-mt15 f-lh22">导入css模块</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
 	this.imports(id)
 })
@@ -238,7 +238,7 @@ Nui.define(function(){
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<p class="e-mt15 f-lh22">方法名不能变更</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
 	var imp = this.imports, a = imp('./a'); //这是错误的
 	var imports = this.imports, a = imports('./a'); //这是正确的
@@ -246,7 +246,7 @@ Nui.define(function(){
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="renders">renders</h2>
 			<p class="e-mt15 f-lh22">在js文件中用于渲染模版，不需要做字符串拼接处理</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
 	this.renders({tpl})
 })
@@ -266,7 +266,7 @@ Nui.define(function(){
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<p class="e-mt15 f-lh22">该方法需要配合自动化工具使用，会自动转换为字符串拼接方式，书写时模版外部包含大括号</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){						
 	var tpl = this.renders({
 		<div>
@@ -286,7 +286,7 @@ Nui.define(function(){
 })
 </script>
 			<p class="e-mt15 f-lh22">方法名不能变更</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
 	var render = this.renders, a = render({<div />}); //这是错误的
 	var renders = this.renders, a = renders({<div />}); //这是正确的
@@ -294,7 +294,7 @@ Nui.define(function(){
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="extend">extend</h2>
 			<p class="e-mt15 f-lh22">模块继承</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
 	this.extend(module, members?, inserts?)
 })
@@ -331,7 +331,7 @@ Nui.define(function(){
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<p class="e-mt15 f-lh22">方法名不能变更</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
 	var ext = this.extend, a = ext('./a'); //这是错误的
 	var extend = this.extend, a = extend('./a'); //这是正确的
@@ -339,7 +339,7 @@ Nui.define(function(){
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="each">each</h2>
 			<p class="e-mt15 f-lh22">遍历数组或者对象</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.each(object, callback)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -362,7 +362,7 @@ Nui.each(object, callback)
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="trim">trim</h2>
 			<p class="e-mt15 f-lh22">过滤字符串两端空格</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.trim(string)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -380,7 +380,7 @@ Nui.trim(string)
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="trimLeft">trimLeft</h2>
 			<p class="e-mt15 f-lh22">过滤字符串左侧空格</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.trimLeft(string)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -398,7 +398,7 @@ Nui.trimLeft(string)
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="trimRight">trimRight</h2>
 			<p class="e-mt15 f-lh22">过滤字符串右侧空格</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.trimRight(string)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -416,7 +416,7 @@ Nui.trimRight(string)
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="type">type</h2>
 			<p class="e-mt15 f-lh22">判断对象数据类型</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.type(object, type)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -439,7 +439,7 @@ Nui.type(object, type)
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="browser">browser</h2>
 			<p class="e-mt15 f-lh22">检测浏览器内核以及版本号</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.browser.version
 Nui.browser.msie
 Nui.browser.webkit
@@ -450,13 +450,13 @@ Nui.browser.mozilla
 			<p class="e-mt15 f-lh22">jQuery1.9+移除了$.browser</p>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="bsie">bsie</h2>
 			<p class="e-mt15 f-lh22">检测是否是IE6/7</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.browser.bsie6
 Nui.browser.bsie7
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="$">$</h2>
 			<p class="e-mt15 f-lh22">返回jQuery(selector)引用</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.$(selector)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -476,14 +476,14 @@ Nui.$(selector)
 			<p class="e-mt15 f-lh22">为了减小$(selector)被重新包装的开销</p>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="win">win</h2>
 			<p class="e-mt15 f-lh22">返回jQuery(window)引用</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.win
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<p class="e-mt15 f-lh22">为了减小$(window)被重新包装的开销</p>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="doc">doc</h2>
 			<p class="e-mt15 f-lh22">返回jQuery(document)引用</p>
-<script type="text/highlight" options-javascript="{isLine:false}">
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.doc
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
