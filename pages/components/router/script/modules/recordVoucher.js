@@ -1,4 +1,4 @@
-Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js, p){
+Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascript'], function(component, tmpl, tpl, js){
     var module = this;
     return function(target, container, data){
         $('.m-menu-item a.s-crt').removeClass('s-crt');

@@ -402,8 +402,11 @@
         var mod = this;
         var factory = mod.factory;
 
-        factory.require = function(id, options){
-            return Module.require(mod.depmodules[id], options)
+        factory.require = function(id){
+            var _mod = mod.depmodules[id];
+            if(_mod){
+                return _mod.module
+            }
         }
 
         factory.extend = function(module, members, inserts){
@@ -608,26 +611,6 @@
                 return new Class(options)
             }
         })
-    }
-
-    Module.require = function(mod, options){
-        if(mod){
-            var module = mod.module;
-            if(Nui.type(options, 'Object')){
-                return module(factory)
-            }
-            else if(Nui.type(options, 'String')){
-                return module[factory]
-            }
-            //因为对象和数组是引用的，使用时需拷贝
-            /*if(Nui.type(module, 'Object')){
-                return extend(module)
-            }
-            else if(Nui.type(module, 'Array')){
-                return extend([], module)
-            }*/
-            return module
-        }
     }
 
     Module.setPath = function(id){
