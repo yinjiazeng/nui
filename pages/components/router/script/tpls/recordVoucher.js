@@ -5,5 +5,7 @@ Nui.define(function(){
         var a = 1;
         var b = 2;
         </script> 
+
+        <a id="aaa">aaaaaaaaaaa</a>
     })
 })

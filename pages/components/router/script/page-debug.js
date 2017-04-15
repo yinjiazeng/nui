@@ -419,15 +419,24 @@ Nui.define('../tpls/recordVoucher',function(){
         +'var a = 1;'+''
         +'var b = 2;'+''
         +'</script> '+''
+
+        +'<a id="aaa">aaaaaaaaaaa</a>'+''
     +'')
 })
-Nui.define('./modules/recordVoucher',['../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(tmpl, tpl){
+Nui.define('./modules/recordVoucher',['component', '../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js, p){
     var module = this;
     return function(target, container, data){
         $('.m-menu-item a.s-crt').removeClass('s-crt');
         target.addClass('s-crt');
-        container.html(tpl.render(tmpl, data))
-        container.components();
+        container.html(tpl.render(tmpl, data)).find('#aaa').click(function(){
+            //js('trigger', container, 'destroy')
+            component.static.trigger(container, 'destroy');
+            setTimeout(function(){
+                js('trigger', container, 'init')
+            }, 5000)
+            //js('trigger', container, 'destroy')
+        })
+        component.static.trigger(container, 'init')
     }
 })
 Nui.define('./menu',[{
@@ -508,7 +517,7 @@ Nui.define('./modules/index',['../tpls/index', 'template', '../menu'], function(
 Nui.define('{cpns}/router',function(){
     return this.extend('component', {
         static:{
-            _trigger:false,
+            _running:false,
             _domain:location.protocol+'//'+location.host,
             _paths:{},
             _params:{},
@@ -558,7 +567,7 @@ Nui.define('{cpns}/router',function(){
                                         param:param,
                                         cache:cache
                                     })
-                                    that._trigger = match = true;
+                                    that._running = match = true;
                                     return false
                                 }
                             }
@@ -567,12 +576,12 @@ Nui.define('{cpns}/router',function(){
                             return false
                         }
                     })
-                    if(!that._trigger){
+                    if(!that._running){
                         Nui.each(that._instances, function(v){
                             if(!that._hasEnter && v.options.enter === true){
                                 that._hasEnter = true;
                                 v.target.eq(0).trigger('click');
-                                that._trigger = true;
+                                that._running = true;
                                 return false
                             }
                         })
@@ -603,8 +612,8 @@ Nui.define('{cpns}/router',function(){
                     })
                 }
             },
-            trigger:function(){
-                if(!this._trigger){
+            run:function(){
+                if(!this._running){
                     this._change();
                 }
             },
@@ -787,7 +796,7 @@ Nui.define('./script/page',['./render', './router', './ajax'], function(render, 
         url:'./script/data.json',
         success:function(res){
             render(res);
-            router('trigger')
+            router('run')
         }
     })
 })

@@ -17,18 +17,6 @@ Nui.define('component', ['template'], function(tpl){
         }
         return options
     }
-    $.fn.components = function(){
-        var that = $(this);
-        Nui.each(module.components(), function(v, k){
-            that.find('[data-'+k+'-options]').each(function(){
-                var ele = $(this);
-                if(ele[k]){
-                    ele[k](getOptions(k, ele))
-                }
-            })
-        })
-        return that
-    }
     return ({
         static:{
             _index:0,
@@ -99,7 +87,7 @@ Nui.define('component', ['template'], function(tpl){
                             }
                             obj = that.nui[name] = module(opts)
                         }
-
+                        
                         if(typeof options === 'string'){
                             if(options.indexOf('_') !== 0){
                                 if(options === 'options'){
@@ -135,6 +123,40 @@ Nui.define('component', ['template'], function(tpl){
                 }
                 else if(Nui.type(key, 'String')){
                     this._options[key] = value
+                }
+            },
+            trigger:function(){
+                var that = this, args = arguments, type = args[1];
+                if(!args.length || typeof type !== 'string'){
+                    return
+                }
+                var container = args[0], params = Array.prototype.slice.call(args, 1), name = that._componentname_;
+                if(name){
+                    if(!container){
+                        Nui.each(that._instances, function(val){
+                            params.shift();
+                            val[type].apply(val, params)
+                        })
+                    }
+                    else{
+                        container.find('[data-'+name+'-options]').each(function(){
+                            var ele = $(this);
+                            if(ele[name]){
+                                if(type === 'init'){
+                                    ele[name](getOptions(name, ele))
+                                }
+                                else{
+                                    ele[name].apply(ele, params)
+                                }
+                            }
+                        })
+                    }
+                }
+                else{
+                    var components = module.components();
+                    Nui.each(components, function(v){
+                        v.apply(v, ['trigger', container].concat(params))
+                    })
                 }
             }
         },

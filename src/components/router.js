@@ -8,7 +8,7 @@
 Nui.define(function(){
     return this.extend('component', {
         static:{
-            _trigger:false,
+            _running:false,
             _domain:location.protocol+'//'+location.host,
             _paths:{},
             _params:{},
@@ -58,7 +58,7 @@ Nui.define(function(){
                                         param:param,
                                         cache:cache
                                     })
-                                    that._trigger = match = true;
+                                    that._running = match = true;
                                     return false
                                 }
                             }
@@ -67,12 +67,12 @@ Nui.define(function(){
                             return false
                         }
                     })
-                    if(!that._trigger){
+                    if(!that._running){
                         Nui.each(that._instances, function(v){
                             if(!that._hasEnter && v.options.enter === true){
                                 that._hasEnter = true;
                                 v.target.eq(0).trigger('click');
-                                that._trigger = true;
+                                that._running = true;
                                 return false
                             }
                         })
@@ -103,8 +103,8 @@ Nui.define(function(){
                     })
                 }
             },
-            trigger:function(){
-                if(!this._trigger){
+            run:function(){
+                if(!this._running){
                     this._change();
                 }
             },

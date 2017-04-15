@@ -516,9 +516,8 @@
                 })
                 var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\{[^\{\}]+\}/g, '');
                 if(!components[name]){
-                    components[name] = true;
                     obj.static._componentname_ = name;
-                    var module = mod.module = Module.createClass(mod, obj);
+                    var module = mod.module = components[name] = Module.createClass(mod, obj);
                     module.exports = exports;
                     Nui.each(['$fn', '$ready'], function(v){
                         module(v, name, module)

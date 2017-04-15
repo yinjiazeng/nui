@@ -6,7 +6,7 @@ Nui.define(['./render', './router', './ajax'], function(render, router, ajax){
         url:'./script/data.json',
         success:function(res){
             render(res);
-            router('trigger')
+            router('run')
         }
     })
 })
