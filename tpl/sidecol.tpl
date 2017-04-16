@@ -150,7 +150,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'cpns' %} s-crt{% endif %}" href="/nui/pages/components/">组件</a>
+                <a class="f-fs16{%if current == 'cpns' %} s-crt{% endif %}" href="/nui/pages/components/">交互组件</a>
                 {%if current == 'cpns' %}
                 <ul>
                     <li>

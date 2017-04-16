@@ -4,13 +4,16 @@ Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascrip
         $('.m-menu-item a.s-crt').removeClass('s-crt');
         target.addClass('s-crt');
         container.html(tpl.render(tmpl, data)).find('#aaa').click(function(){
-            //js('trigger', container, 'destroy')
-            component.static.trigger(container, 'destroy');
+            js('destroy', container)
+            //component.static.trigger(null, 'destroy');
             setTimeout(function(){
-                js('trigger', container, 'init')
-            }, 5000)
+                js('init', container)
+                js('set', container, {
+                    isLine:true
+                })
+            }, 2000)
             //js('trigger', container, 'destroy')
         })
-        component.static.trigger(container, 'init')
+        component.static.init(container)
     }
 })

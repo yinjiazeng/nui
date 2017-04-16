@@ -72,7 +72,7 @@ Nui.define(['util'], function(util){
                             'cursor':'text'
                         }
                     }))
-                that.elem = $(that._tpl2html(that._tplelem, {
+                that.element = $(that._tpl2html(that._tplelem, {
                         text:that.text,
                         style:(function(){
                             var height = that.target.outerHeight();
@@ -135,35 +135,35 @@ Nui.define(['util'], function(util){
         _event:function(){
             var that = this, opts = that.options, self = that.constructor;
             var pleft = self._getSize(that.target, 'l', 'padding') + self._getSize(that.target, 'l');
-            that._on('click', that.elem, function(){
+            that._on('click', that.element, function(){
                 that.target.focus()
             })
 
             that._on('focus', that.target, function(){
-                opts.animate && that.elem.stop(true, false).animate({left:pleft+10, opacity:'0.5'});
+                opts.animate && that.element.stop(true, false).animate({left:pleft+10, opacity:'0.5'});
             })
 
             that._on('blur change', that.target, function(e, elem){
                 var val = Nui.trim(elem.val());
                 if((!opts.equal && val === that.text) || !val){
                     elem.val('');
-                    that.elem.show();
-                    opts.animate && that.elem.stop(true, false).animate({left:pleft, opacity:'1'})
+                    that.element.show();
+                    opts.animate && that.element.stop(true, false).animate({left:pleft, opacity:'1'})
                 }
                 else{
-                    that.elem.hide()
+                    that.element.hide()
                 }
             })
 
             that._on('keyup keydown', that.target, function(e, elem){
-                Nui.trim(elem.val()) ? that.elem.hide() : that.elem.show()
+                Nui.trim(elem.val()) ? that.element.hide() : that.element.show()
             })
         },
         _reset:function(){
             var that = this;
             that._off();
-            if(that.elem){
-                that.elem.remove();
+            if(that.element){
+                that.element.remove();
                 that.target.unwrap();
             }
             that.target.removeClass(that.className);

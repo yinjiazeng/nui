@@ -519,7 +519,8 @@
                 })
                 var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\{[^\{\}]+\}/g, '');
                 if(!components[name]){
-                    obj.static._componentname_ = name;
+                    obj.static._component_name_ = name;
+                    obj.static._component_attr_name_ = 'nui_component_'+name;
                     var module = mod.module = components[name] = Module.createClass(mod, obj);
                     module.exports = exports;
                     Nui.each(['$fn', '$ready'], function(v){
@@ -1301,6 +1302,7 @@ Nui.define('template', ['util'], function(util){
 
 Nui.define('component', ['template'], function(tpl){
     var module = this;
+
     var getOptions = function(name, elem){
         var options = elem.data(name+'Options');
         if(!options){
@@ -1311,149 +1313,148 @@ Nui.define('component', ['template'], function(tpl){
         }
         return options
     }
-    return ({
-        static:{
-            _index:0,
-            _instances:{},
-            _options:{},
-            _getSize:function(selector, dir, attr){
-                var size = 0;
-                attr = attr || 'border';
-                dir = dir || 'tb';
-                if(attr === 'all'){
-                    return this._getSize(selector, dir) + this._getSize(selector, dir, 'padding')
+
+    var statics = {
+        _index:0,
+        _instances:{},
+        _options:{},
+        _getSize:function(selector, dir, attr){
+            var size = 0;
+            attr = attr || 'border';
+            dir = dir || 'tb';
+            if(attr === 'all'){
+                return this._getSize(selector, dir) + this._getSize(selector, dir, 'padding')
+            }
+            var group = {
+                l:['Left'],
+                r:['Right'],
+                lr:['Left', 'Right'],
+                t:['Top'],
+                b:['Bottom'],
+                tb:['Top', 'Bottom']
+            }
+            var arr = [{
+                border:{
+                    l:['LeftWidth'],
+                    r:['RightWidth'],
+                    lr:['LeftWidth', 'RightWidth'],
+                    t:['TopWidth'],
+                    b:['BottomWidth'],
+                    tb:['TopWidth', 'BottomWidth']
                 }
-                var group = {
-                    l:['Left'],
-                    r:['Right'],
-                    lr:['Left', 'Right'],
-                    t:['Top'],
-                    b:['Bottom'],
-                    tb:['Top', 'Bottom']
+            }, {
+                padding:group
+            }, {
+                margin:group
+            }];
+            Nui.each(arr, function(val){
+                if(val[attr]){
+                    Nui.each(val[attr][dir], function(v){
+                        var value = parseInt(selector.css(attr+v));
+                        size += isNaN(value) ? 0 : value
+                    });
                 }
-                var arr = [{
-                    border:{
-                        l:['LeftWidth'],
-                        r:['RightWidth'],
-                        lr:['LeftWidth', 'RightWidth'],
-                        t:['TopWidth'],
-                        b:['BottomWidth'],
-                        tb:['TopWidth', 'BottomWidth']
-                    }
-                }, {
-                    padding:group
-                }, {
-                    margin:group
-                }];
-                Nui.each(arr, function(val){
-                    if(val[attr]){
-                        Nui.each(val[attr][dir], function(v){
-                            var value = parseInt(selector.css(attr+v));
-                            size += isNaN(value) ? 0 : value
-                        });
-                    }
-                });
-                return size
-            },
-            $fn:function(name, module){
-                if($.fn[name]){
-                    return
-                }
-                $.fn[name] = function(){
-                    var args = arguments;
-                    var options = args[0];
-                    return this.each(function(){
-                        var that = this;
-                        if(!that.nui){
-                            that.nui = {}
+            });
+            return size
+        },
+        $fn:function(name, module){
+            if($.fn[name]){
+                return
+            }
+            $.fn[name] = function(){
+                var args = arguments;
+                var options = args[0];
+                return this.each(function(){
+                    if(typeof options !== 'string'){
+                        if(Nui.type(options, 'Object')){
+                            options.target = this
                         }
-                        var me = $(that);
-                        var obj = that.nui[name];
-                        if(!obj){
-                            var opts = options;
-                            if(Nui.type(opts, 'Object')){
-                                options.target = that
+                        else{
+                            options = {
+                                target:this
+                            }
+                        }
+                        module(options);
+                    }
+                    else if(options){
+                        var object = this.nui[name];
+                        if(options.indexOf('_') !== 0){
+                            if(options === 'options'){
+                                object.set(args[1], args[2])
                             }
                             else{
-                                opts = {
-                                    target:that
-                                }
-                            }
-                            obj = that.nui[name] = module(opts)
-                        }
-                        
-                        if(typeof options === 'string'){
-                            if(options.indexOf('_') !== 0){
-                                if(options === 'options'){
-                                    obj.set(args[1], args[2])
-                                }
-                                else{
-                                    var attr = obj[options];
-                                    if(typeof attr === 'function'){
-                                        attr.apply(obj, Array.prototype.slice.call(args, 1))
-                                    }
+                                var attr = object[options];
+                                if(typeof attr === 'function'){
+                                    attr.apply(object, Array.prototype.slice.call(args, 1))
                                 }
                             }
                         }
-                    })
-                }
-            },
-            $ready:function(name, module){
-                var $fn = $.fn[name];
-                Nui.doc.find('[data-'+name+'-options]').each(function(index, item){
-                    var ele = $(item);
-                    options = getOptions(name, ele);
-                    if($fn){
-                        ele[name](options)
-                    }
-                    else{
-                        module(options)
                     }
                 })
-            },
-            options:function(key, value){
-                if(Nui.type(key, 'Object')){
-                    $.extend(true, this._options, key)
+            }
+        },
+        $ready:function(name, module){
+            var $fn = $.fn[name];
+            Nui.doc.find('[data-'+name+'-options]').each(function(index, item){
+                var ele = $(item);
+                options = getOptions(name, ele);
+                if($fn){
+                    ele[name](options)
                 }
-                else if(Nui.type(key, 'String')){
-                    this._options[key] = value
+                else{
+                    module(options)
                 }
-            },
-            trigger:function(){
-                var that = this, args = arguments, type = args[1];
-                if(!args.length || typeof type !== 'string'){
-                    return
-                }
-                var container = args[0], params = Array.prototype.slice.call(args, 1), name = that._componentname_;
-                if(name){
-                    if(!container){
-                        Nui.each(that._instances, function(val){
-                            params.shift();
-                            val[type].apply(val, params)
-                        })
-                    }
-                    else{
+            })
+        },
+        options:function(key, value){
+            if(Nui.type(key, 'Object')){
+                $.extend(true, this._options, key)
+            }
+            else if(Nui.type(key, 'String')){
+                this._options[key] = value
+            }
+        }
+    }
+
+    Nui.each(['init', 'set', 'reset', 'destroy'], function(method){
+        statics[method] = function(){
+            var that = this, args = arguments, container = args[0], name = that._component_name_;
+            if(name){
+                if(container && container.selector){
+                    if(method === 'init'){
                         container.find('[data-'+name+'-options]').each(function(){
                             var ele = $(this);
                             if(ele[name]){
-                                if(type === 'init'){
-                                    ele[name](getOptions(name, ele))
-                                }
-                                else{
-                                    ele[name].apply(ele, params)
-                                }
+                                ele[name](getOptions(name, ele))
+                            }
+                        })
+                    }
+                    else{
+                        container.find('[nui_component_'+ name +']').each(function(){
+                            var object;
+                            if(this.nui && (object = this.nui[name]) && object[method]){
+                                object[method].apply(object, Array.prototype.slice.call(args, 1))
                             }
                         })
                     }
                 }
                 else{
-                    var components = module.components();
-                    Nui.each(components, function(v){
-                        v.apply(v, ['trigger', container].concat(params))
+                    Nui.each(that._instances, function(val){
+                        val[method].apply(val, args)
                     })
                 }
             }
-        },
+            else{
+                Array.prototype.unshift.call(args, method);
+                Nui.each(module.components(), function(v){
+                    v.apply(v, args)
+                })
+            }
+        }
+    })
+
+    return ({
+        static:statics,
         options:{
             target:null,
             theme:''
@@ -1461,17 +1462,25 @@ Nui.define('component', ['template'], function(tpl){
         _init:$.noop,
         _exec:$.noop,
         _getTarget:function(){
-            if(!this.target){
-                var target = this.options.target;
+            var that = this;
+            if(!that.target){
+                var target = that.options.target;
+                var self = that.constructor;
                 if(!target){
                     return null
                 }
                 else if(typeof target === 'string' || target.selector === undefined){
                     target = $(target)
                 }
-                this.target = target;
+                that.target = target.attr(self._component_attr_name_, '');
+                that.target.each(function(){
+                    if(!this.nui){
+                        this.nui = {};
+                    }
+                    this.nui[self._component_name_] = that
+                })
             }
-            return this.target
+            return that.target
         },
         _on:function(type, dalegate, selector, callback, trigger){
             var that = this;
@@ -1532,19 +1541,20 @@ Nui.define('component', ['template'], function(tpl){
         _delete:function(){
             var that = this;
             var self = that.constructor;
-            var dom = that.target[0];
-            if(dom && dom.nui){
-                dom.nui[that.constructor._componentname_] = null;
-                delete dom.nui[that.constructor._componentname_];
-            }
+            that.target.removeAttr(self._component_attr_name_).each(function(){
+                if(this.nui){
+                    this.nui[self._component_name_] = null;
+                    delete this.nui[self._component_name_];
+                }
+            })
             self._instances[that.index] = null;
             delete self._instances[that.index]
         },
         _reset:function(){
             var that = this;
             that._off();
-            if(that.elem){
-                that.elem.remove();
+            if(that.element){
+                that.element.remove();
             }
             return that
         },

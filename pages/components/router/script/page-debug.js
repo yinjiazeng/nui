@@ -113,8 +113,8 @@ Nui.define('highlight',function(){
                                 .replace(/^[\r\n]+|[\r\n]+$/g, '')
                                 .replace(/</g, '&lt;')
                                 .replace(/>/g, '&gt;');
-                    if(that.elem){
-                        that.elem.remove();
+                    if(that.element){
+                        that.element.remove();
                     }
                     that._create();
                     if(that.options.isLight){
@@ -151,7 +151,7 @@ Nui.define('highlight',function(){
                 type:that._type
             }, that.options||{})
             var html = that._tpl2html.call(that, that._tpl, data);
-            that.elem = $(html).insertAfter(that.target);
+            that.element = $(html).insertAfter(that.target);
         },
         _list:function(){
             var that = this;
@@ -163,16 +163,16 @@ Nui.define('highlight',function(){
         _event:function(){
             var that = this;
             that.evt = false;
-            that._on('click', that.elem, 'tr', function(e, elem){
+            that._on('click', that.element, 'tr', function(e, elem){
                 that.evt = true;
                 elem.addClass('s-crt').siblings().removeClass('s-crt')
             })
-            that._on('click', that.elem, function(e){
+            that._on('click', that.element, function(e){
                 e.stopPropagation()
             })
             that._on('click', Nui.doc, function(e){
                 if(that.evt){
-                    that.elem.find('tr.s-crt').removeClass('s-crt');
+                    that.element.find('tr.s-crt').removeClass('s-crt');
                     that.evt = false;
                 }
             })
@@ -250,14 +250,17 @@ Nui.define('./modules/recordVoucher',['component', '../tpls/recordVoucher', 'tem
         $('.m-menu-item a.s-crt').removeClass('s-crt');
         target.addClass('s-crt');
         container.html(tpl.render(tmpl, data)).find('#aaa').click(function(){
-            //js('trigger', container, 'destroy')
-            component.static.trigger(container, 'destroy');
+            js('destroy', container)
+            //component.static.trigger(null, 'destroy');
             setTimeout(function(){
-                js('trigger', container, 'init')
-            }, 5000)
+                js('init', container)
+                js('set', container, {
+                    isLine:true
+                })
+            }, 2000)
             //js('trigger', container, 'destroy')
         })
-        component.static.trigger(container, 'init')
+        component.static.init(container)
     }
 })
 Nui.define('./menu',[{
