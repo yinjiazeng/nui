@@ -358,7 +358,7 @@ Nui.define('{cpns}/router',function(){
                 var that = this, hash = that._oldhash;
                 if(hash){
                     Nui.each(that._cacheContainer, function(v, k){
-                        if(k === hash){
+                        if(v && k === hash){
                             that._cache[hash] = v.html();
                             return false
                         }
@@ -462,7 +462,7 @@ Nui.define('{cpns}/router',function(){
             var that = this, opts = that.options, router = that.constructor, target = that._getTarget();
             if(opts.path && target){
                 that.path = that._setpath(opts.path);
-                that.container = typeof opts.container === 'string' ? Nui.$(opts.container) : $(opts.container);
+                that.container = that._jquery(opts.container);
                 var paths = that._getpath();
                 if(paths.params.length){
                     if(!opts.splitLevel){

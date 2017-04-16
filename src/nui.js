@@ -123,13 +123,6 @@
     }
 
     if(typeof jQuery !== 'undefined'){
-        var jqueryCache = {};
-        Nui.$ = function(selector){
-            if(typeof selector === 'string'){
-                return jqueryCache[selector] || (jqueryCache[selector] = jQuery(selector))
-            }
-            return jQuery(selector)
-        }
         Nui.win = jQuery(window);
         Nui.doc = jQuery(document);
     }

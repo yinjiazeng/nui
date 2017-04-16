@@ -64,9 +64,6 @@
                         <a href="#bsie">bsie</a>
                     </li>
                     <li>
-                        <a href="#$">$</a>
-                    </li>
-                    <li>
                         <a href="#win">win</a>
                     </li>
                     <li>

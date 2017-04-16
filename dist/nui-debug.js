@@ -123,13 +123,6 @@
     }
 
     if(typeof jQuery !== 'undefined'){
-        var jqueryCache = {};
-        Nui.$ = function(selector){
-            if(typeof selector === 'string'){
-                return jqueryCache[selector] || (jqueryCache[selector] = jQuery(selector))
-            }
-            return jQuery(selector)
-        }
         Nui.win = jQuery(window);
         Nui.doc = jQuery(document);
     }
@@ -1461,6 +1454,12 @@ Nui.define('component', ['template'], function(tpl){
         },
         _init:$.noop,
         _exec:$.noop,
+        _jquery:function(elem){
+            if(typeof elem === 'string' || elem.selector === undefined){
+                return $(elem)
+            }
+            return elem
+        },
         _getTarget:function(){
             var that = this;
             if(!that.target){
@@ -1469,9 +1468,7 @@ Nui.define('component', ['template'], function(tpl){
                 if(!target){
                     return null
                 }
-                else if(typeof target === 'string' || target.selector === undefined){
-                    target = $(target)
-                }
+                target = that._jquery(target);
                 that.target = target.attr(self._component_attr_name_, '');
                 that.target.each(function(){
                     if(!this.nui){
