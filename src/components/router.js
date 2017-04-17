@@ -22,14 +22,11 @@ Nui.define(function(){
                 return $.extend(this._alias, val||{})
             },
             _setCache:function(hash){
-                var that = this, hash = that._oldhash;
+                var that = this, hash = that._oldhash, container;
                 if(hash){
-                    Nui.each(that._cacheContainer, function(v, k){
-                        if(v && k === hash){
-                            that._cache[hash] = v.html();
-                            return false
-                        }
-                    })
+                    if(container = that._cacheContainer[hash]){
+                        that._cache[hash] = container.html();
+                    }
                 }
             },
             _change:function(){
@@ -111,7 +108,7 @@ Nui.define(function(){
             $ready:null
         },
         options:{
-            path:'',
+            path:null,
             container:null,
             enter:false,
             splitLevel:1,

@@ -14,84 +14,156 @@
 		<div class="mainbox">
 			<h1 class="e-pt20 e-pb20 f-fs28">路由</h1>
 			<div class="e-mt15 f-lh22">
-				<p>介绍</p>
+				<p>页面不刷新实现页面切换效果，用于开发单页应用</p>
+				<p>note：<br>页面中提及的url或者路径为浏览器url中#!后面的部分</p>
 			</div>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10">使用文档</h2>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 使用模块</h3>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">使用模块</h2>
 			<div class="e-mt15 f-lh22">
-				<p><a href="/nui/src/components/router.js" class="f-corange" target="_blank">下载</a>最新版作为依赖项引入到模块中</p>
-				<p>调用方式：实例对象 / jQuery插件</p>
+				<p>在页面中创建一个元素建议a标签，并包含href属性</p>
+				<p><a href="/nui/src/components/router.js" class="f-corange" target="_blank">下载</a>最新版作为依赖项引入到模块中，并创建实例</p>
 			</div>
+<script type="text/highlight" data-xml-options='{"isLine":false}'>
+<a href="/home/" id="home">首页</a>
+<a href="/news/1/" class="news">体育新闻</a>
+<a href="/news/2/" class="news">国际新闻</a>
+</script>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(['../src/components/router'], function(router){
 	//实例对象形式调用
 	router({
-		target:'#elem',
+		target:'#home',
 		enter:true,
-		....
+		path:'/home/'
 	})
 
 	//jQuery插件形式调用
-	$('#elem').router({
-		enter:true,
-		....
+	$('.news').router({
+		path:'/news/:type/'
 	})
+
+	router('run')
 })
 </script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 选项参数</h3>
-			<table class="data e-mt15">
-				<tr>
-					<th width="100">参数名</th>
-					<th width="150">参数类型</th>
-					<th>参数说明</th>
-				</tr>
-				<tr>
-					<td>path</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>container</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>enter</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>onBefore</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>onRender</td>
-					<td></td>
-					<td></td>
-				</tr>
-			</table>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 静态方法</h3>
-			<table class="data e-mt15">
-				<tr>
-					<th width="100">参数名</th>
-					<th width="150">参数类型</th>
-					<th>参数说明</th>
-				</tr>
-				<tr>
-					<td>alias</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>trigger</td>
-					<td></td>
-					<td></td>
-				</tr>
-			</table>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 实例方法</h3>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">选项参数</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> path</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{String}</p>
+				<p>默认值：null</p>
+				<p>说明：路径匹配规则，冒号为参数名，url匹配上该规则才会触发onRender回调</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router({
+	path:'/news/:type/:id/'
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> container</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{jQuery Object}</p>
+				<p>默认值：null</p>
+				<p>说明：模板渲染容器，用于缓存内容</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router({
+	container:$(selector)
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> enter</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Boolean}</p>
+				<p>默认值：false</p>
+				<p>说明：是否设置为入口页面，页面中只能设置一个入口；当url不满足path规则时，会自动跳转到入口页面</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router({
+	enter:true
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> splitLevel</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Number}</p>
+				<p>默认值：1</p>
+				<p>说明：当匹配规则path中包含参数时才会启用，取值分别为0、1、2。当值为0时url必须满足匹配条件，参数不能少；当值为1时允许url少参数，但不能无参数；当值为2时允许url不传参数</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router({
+	splitLevel:2
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onBefore</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>默认值：null</p>
+				<p>说明：点击元素在onRender之前触发，若return false则不会触发onRender</p>
+				<p>参数：elem {jQuery Object} 点击元素的jQuery对象</p>
+				<p>参数：callback {Function} 触发执行onRender，一般异步操作中使用</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router({
+	onBefore:function(elem, callback){
+		if(elem.attr('id') === 'admin'){
+			return false
+		}
+	}
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onRender</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>默认值：null</p>
+				<p>说明：执行onRender之前触发，若return false则不会触发onRender</p>
+				<p>参数：target {jQuery Object} 调用组件的jQuery对象</p>
+				<p>参数：container {jQuery Object} 模板渲染容器jQuery对象</p>
+				<p>参数：data {JSON Object} 包含4个属性，url：完整路径，path：url中参数除外的路径，param：路径中的参数，cache：container内容缓存</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router({
+	path:'/news/:type/:id',
+	onRender:function(target, container, data){
+		target.addClass('active');
+		if(data.param.type === '1'){
+			container.html(data.cache || '<div>.....</div>')
+		}
+		else{
+			container.html('<div>.....</div>')
+		}
+	}
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> run</h3>
+			<div class="e-mt15 f-lh22">
+				<p>用于初始化跳转到入口页面</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router({
+	target:'#home',
+	path:'/home/',
+	enter:true
+})
+
+router({
+	target:'#news',
+	path:'/news/'
+})
+
+router('run')
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> alias</h3>
+			<div class="e-mt15 f-lh22">
+				<p>设置路径匹配别名，用于简化path参数，在path中用大括号使用该别名</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router('alias', {
+	'news':'/a/b/news/'
+})
+
+router({
+	path:'{news}/:type/:id'
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例方法</h2>
 			<p class="e-mt15 f-lh22">继承组件基类 <a href="" class="f-corange">实例方法</a></p>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 案例</h3>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">案例</h2>
 			<p class="e-mt15 f-lh22">
 				<a href="./cloud.html" target="_blank" class="f-corange f-tdu">诺诺云记账单页版</a>
 			</p>

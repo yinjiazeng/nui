@@ -247,6 +247,7 @@ Nui.define('../tpls/recordVoucher',function(){
 Nui.define('./modules/recordVoucher',['component', '../tpls/recordVoucher', 'template', '{light}/javascript'], function(component, tmpl, tpl, js){
     var module = this;
     return function(target, container, data){
+        console.log(data)
         $('.m-menu-item a.s-crt').removeClass('s-crt');
         target.addClass('s-crt');
         container.html(tpl.render(tmpl, data)).find('#aaa').click(function(){
@@ -327,6 +328,7 @@ Nui.define('./modules/index',['../tpls/index', 'template', '../menu'], function(
     var module = this;
     module.imports('../../style/index')
     return function(target, container, data){
+        console.log(data)
         $('.m-menu-item a.s-crt').removeClass('s-crt');
         container.html(tpl.render(tmpl, menu))
     }
@@ -355,14 +357,11 @@ Nui.define('{cpns}/router',function(){
                 return $.extend(this._alias, val||{})
             },
             _setCache:function(hash){
-                var that = this, hash = that._oldhash;
+                var that = this, hash = that._oldhash, container;
                 if(hash){
-                    Nui.each(that._cacheContainer, function(v, k){
-                        if(v && k === hash){
-                            that._cache[hash] = v.html();
-                            return false
-                        }
-                    })
+                    if(container = that._cacheContainer[hash]){
+                        that._cache[hash] = container.html();
+                    }
                 }
             },
             _change:function(){
@@ -444,7 +443,7 @@ Nui.define('{cpns}/router',function(){
             $ready:null
         },
         options:{
-            path:'',
+            path:null,
             container:null,
             enter:false,
             splitLevel:1,
