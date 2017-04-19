@@ -33,7 +33,7 @@ Nui.define(['template'], function(tpl){
 
 	chart.setOption(options);
 
-	Nui.$('.input').blur(function(){
+	$('.input').blur(function(){
 		var val = this.value.replace(/[^\d]+/g, '');
 		var num = 100
 		if($(this).hasClass('count')){
