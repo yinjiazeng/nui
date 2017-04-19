@@ -511,13 +511,16 @@
                     }
                 })
                 var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\{[^\{\}]+\}/g, '');
-                if(!components[name]){
+                if(components[name]){
+                    mod.module = components[name]
+                }
+                else{
                     obj.static._component_name_ = name;
                     obj.static._component_attr_name_ = 'nui_component_'+name;
-                    var module = mod.module = components[name] = Module.createClass(mod, obj);
-                    module.exports = exports;
+                    mod.module = components[name] = Module.createClass(mod, obj);
+                    mod.module.exports = exports;
                     Nui.each(['$fn', '$ready'], function(v){
-                        module(v, name, module)
+                        mod.module(v, name, mod.module)
                     })
                 }
             }
