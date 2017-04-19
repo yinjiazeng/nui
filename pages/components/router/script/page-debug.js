@@ -264,7 +264,7 @@ Nui.define('./modules/recordVoucher',['component', '../tpls/recordVoucher', 'tem
         component.static.init(container)
     }
 })
-Nui.define('../menu',[{
+Nui.define('./menu',[{
     id:'recordVoucher',
     name:'录凭证',
     index:true,
@@ -324,7 +324,7 @@ Nui.define('../tpls/index',function(){
         +'</div>'+''
     +'')
 })
-Nui.define('./modules/index',['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
+Nui.define('./modules/index',['../tpls/index', 'template', './menu'], function(tmpl, tpl, menu){
     var module = this;
     module.imports('../../style/index')
     return function(target, container, data){
@@ -603,38 +603,6 @@ Nui.define('./tpls/layout',function(){
         +'')
     })
 })
-Nui.define('./menu',[{
-    id:'recordVoucher',
-    name:'录凭证',
-    index:true,
-    icon:'',
-    path:'/voucher/record'
-}, {
-    id:'seeVoucher',
-    name:'查凭证',
-    icon:'',
-    index:true,
-    path:'/voucher/list/aniu/jser'
-}, {
-    name:'账簿',
-    icon:'',
-    subs:[{
-        id:'summary',
-        name:'总账',
-        icon:'',
-        path:'/books/summary'
-    }, {
-        id:'detailed',
-        name:'明细账',
-        icon:'',
-        path:'/books/detailed'
-    }, {
-        id:'accountbalance',
-        name:'科目余额表',
-        icon:'',
-        path:'/books/accountbalance'
-    }]
-}])
 Nui.define('./render',['./menu', './tpls/layout', 'template'], function(menu, layout, tpl){
     var module = this;
     return function(data){
