@@ -37,7 +37,7 @@ var options = {
         placeholder: '{cpns}/placeholder',
         highlight: '{light}/highlight'
     },
-    //jsdebug: true,
+    jsdebug:true,
     filterPath: function(src) {
         return src.replace(/^\/nui\//, this.paths.base)
     }

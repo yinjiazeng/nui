@@ -1,28 +1,45 @@
 Nui.define(['{cpns}/router'], function(router){
     var module = this;
 
-    router({
-        target:'#index',
-        enter:true,
-        path:'/index',
-        container:'.g-main',
-        onRender:module.require('./modules/index')
-    })
+    return function(){
+        router('alias', {
+            'list':'/voucher/list/:nickname/:career'
+        })
 
-    router({
-        target:'#recordVoucher, #recordVoucherIndex',
-        path:'/voucher/record',
-        container:'.g-main',
-        onRender:module.require('./modules/recordVoucher')
-    })
+        router('options', {
+            container:'.g-main',
+            //wrapper:true,
+            onAfter:function(elem){
+                $('.m-menu-item a.s-crt').removeClass('s-crt');
+                elem.addClass('s-crt');
+            }
+        })
 
-    router({
-        target:'#seeVoucher, #seeVoucherIndex',
-        path:'/voucher/list/:nickname/:career',
-        container:'.g-main',
-        splitLevel:2,
-        onRender:module.require('./modules/seeVoucher')
-    })
+        router({
+            target:'#index',
+            enter:true,
+            path:'/index',
+            onRender:module.require('./modules/index'),
+            onBefore:function(ele, render){
+                
+            }
+        })
 
-    return router
+        router({
+            target:'#recordVoucher, #recordVoucherIndex',
+            path:'/voucher/record',
+            wrapper:false,
+            onRender:module.require('./modules/recordVoucher')
+        })
+
+        router({
+            target:'#seeVoucher, #seeVoucherIndex',
+            path:'{list}',
+            wrapper:false,
+            splitLevel:2,
+            onRender:module.require('./modules/seeVoucher')
+        })
+
+        router('init')
+    }
 })

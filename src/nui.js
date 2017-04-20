@@ -581,12 +581,12 @@
         var Class = function(options){
             var that = this;
             extend(true, that, object.attr, {
-                index:Class._index++,
+                _index:Class._index++,
                 _events:[]
             });
             that.options = extend(true, {}, that.options, Class._options, options||{})
             that.optionsCache = extend(that.options);
-            Class._instances[that.index] = that;
+            Class._instances[that._index] = that;
             that.static = null;
             that._init()
         }
@@ -594,12 +594,19 @@
         extend(true, Class.prototype, object.proto);
         return (function(){
             var args = arguments;
+            var len = args.length;
             var options = args[0];
             if(typeof options === 'string'){
                 if(options.indexOf('_') !== 0){
                     var attr = Class[options];
                     if(typeof attr === 'function'){
+                        if((options === '$ready' || options === '$fn') && len === 1){
+                            return attr
+                        }
                         return attr.apply(Class, Array.prototype.slice.call(args, 1))
+                    }
+                    else if(len > 1){
+                        return Class[options] = args[1]
                     }
                     return attr
                 }

@@ -1,20 +1,20 @@
-Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascript'], function(component, tmpl, tpl, js){
+Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js){
     var module = this;
-    return function(target, container, data){
-        console.log(data)
-        $('.m-menu-item a.s-crt').removeClass('s-crt');
-        target.addClass('s-crt');
-        container.html(tpl.render(tmpl, data)).find('#aaa').click(function(){
-            js('destroy', container)
+    return function(target, wrapper, data){
+        wrapper.html(tpl.render(tmpl, data))
+        .on('click', '#aaa', function(){
+            js('destroy', wrapper)
             //component.static.trigger(null, 'destroy');
             setTimeout(function(){
-                js('init', container)
-                js('set', container, {
+                js('init', wrapper)
+                js('set', wrapper, {
                     isLine:true
                 })
             }, 2000)
             //js('trigger', container, 'destroy')
         })
-        component.static.init(container)
+        .on('click', 'b', function(){
+            alert()
+        })
     }
 })

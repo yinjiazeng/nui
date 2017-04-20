@@ -50,7 +50,7 @@
 			<h1 class="e-pt20 e-pb20 f-fs28">路由</h1>
 			<div class="e-mt15 f-lh22">
 				<p>页面不刷新实现页面切换效果，用于开发单页应用</p>
-				<p>note：<br>页面中提及的url或者路径为浏览器url中#!后面的部分</p>
+				<p>note：页面中提及的url或者路径表示浏览器地址#!后面的部分</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">使用模块</h2>
 			<div class="e-mt15 f-lh22">
@@ -84,6 +84,7 @@ Nui.define(['../src/components/router'], function(router){
 			<div class="e-mt15 f-lh22">
 				<p>类型：{String}</p>
 				<p>默认值：null</p>
+				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
 				<p>说明：路径匹配规则，冒号为参数名，url匹配上该规则才会触发onRender回调</p>
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
@@ -93,13 +94,17 @@ router({
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> container</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{jQuery Object}</p>
+				<p>类型：{String, jQuery Object}</p>
 				<p>默认值：null</p>
-				<p>说明：模板渲染容器，用于缓存内容</p>
+				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
+				<p>说明：实例创建后会生成&lt;div class="wrapper" /&gt;作为container子元素，该wrapper就是路由渲染容器</p>
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 router({
-	container:$(selector)
+	container:'#main'
+})
+router({
+	container:$('#main')
 })
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> enter</h3>
@@ -111,6 +116,17 @@ router({
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 router({
 	enter:true
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> wrapper</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Boolean}</p>
+				<p>默认值：false</p>
+				<p>说明：值为false时，所有设置该值的路由实例都将共享一个wrapper，每次切换路径都会触发onRender；当值为true是，实例会独享一个wrapper，仅在初始化时会触发onRender，后期切换仅会触发onAfter回调。当页面在被切换到其它页面，再被切换回来后需要保持原来的状态时设置为true再好不过了。</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router({
+	wrapper:true
 })
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> splitLevel</h3>
@@ -130,13 +146,16 @@ router({
 				<p>默认值：null</p>
 				<p>说明：点击元素在onRender之前触发，若return false则不会触发onRender</p>
 				<p>参数：elem {jQuery Object} 点击元素的jQuery对象</p>
-				<p>参数：callback {Function} 触发执行onRender，一般异步操作中使用</p>
+				<p>参数：render {Function} 强制触发执行onRender</p>
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 router({
-	onBefore:function(elem, callback){
+	onBefore:function(elem, render){
 		if(elem.attr('id') === 'admin'){
 			return false
+		}
+		else{
+			render()
 		}
 	}
 })
@@ -145,29 +164,48 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>默认值：null</p>
-				<p>说明：执行onRender之前触发，若return false则不会触发onRender</p>
+				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
+				<p>说明：页面渲染处理</p>
 				<p>参数：target {jQuery Object} 调用组件的jQuery对象</p>
-				<p>参数：container {jQuery Object} 模板渲染容器jQuery对象</p>
-				<p>参数：data {JSON Object} 包含4个属性，url：完整路径，path：url中参数除外的路径，param：路径中的参数，cache：container内容缓存</p>
+				<p>参数：wrapper {jQuery Object} 模板渲染容器jQuery对象</p>
+				<p>参数：data {JSON Object} 包含4个属性，url：完整路径，path：url中参数除外的路径，param：路径中的参数，cache：wrapper内容缓存</p>
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 router({
 	path:'/news/:type/:id',
-	onRender:function(target, container, data){
-		target.addClass('active');
+	onRender:function(target, wrapper, data){
 		if(data.param.type === '1'){
-			container.html(data.cache || '<div>.....</div>')
+			wrapper.html(data.cache || '<div>.....</div>')
 		}
 		else{
-			container.html('<div>.....</div>')
+			wrapper.html('<div>.....</div>')
 		}
 	}
 })
 </script>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> run</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onAfter</h3>
 			<div class="e-mt15 f-lh22">
-				<p>用于初始化跳转到入口页面</p>
+				<p>类型：{Function}</p>
+				<p>默认值：null</p>
+				<p>说明：渲染后触发回调，一般用于将触发的按钮高亮</p>
+				<p>参数：target {jQuery Object} 调用组件的jQuery对象</p>
+				<p>参数：wrapper {jQuery Object} 模板渲染容器jQuery对象</p>
+			</div>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+router({
+	path:'/news/:type/:id',
+	onRender:function(target, wrapper, data){
+		//渲染操作
+	},
+	onAfter:function(target){
+		target.addClass('active').siblings().removeClass('active')
+	}
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> init</h3>
+			<div class="e-mt15 f-lh22">
+				<p>页面刚加载时，如果url不符合规则就跳转到入口页面，若符合规则就显示当前页面内容</p>
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 router({
@@ -181,7 +219,7 @@ router({
 	path:'/news/'
 })
 
-router('run')
+router('init')
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> alias</h3>
 			<div class="e-mt15 f-lh22">
@@ -274,7 +312,7 @@ router({
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-    <script type="text/javascript" src="/nui/dist/nui-min.js?v=712b6ee"></script>
+    <script type="text/javascript" src="/nui/dist/nui-min.js?v=9b5f7f2"></script>
     <script type="text/javascript">
     Nui.config({
         paths:{

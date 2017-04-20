@@ -23,6 +23,12 @@ Nui.define('component', ['template'], function(tpl){
         _index:0,
         _instances:{},
         _options:{},
+        _jquery:function(elem){
+            if(elem && (typeof elem === 'string' || elem.nodeType)){
+                return $(elem)
+            }
+            return elem
+        },
         _getSize:function(selector, dir, attr){
             var size = 0;
             attr = attr || 'border';
@@ -125,7 +131,7 @@ Nui.define('component', ['template'], function(tpl){
         statics[method] = function(){
             var that = this, args = arguments, container = args[0], name = that._component_name_;
             if(name){
-                if(container && container.selector){
+                if(container){
                     if(method === 'init'){
                         container.find('[data-'+name+'-options]').each(function(){
                             var ele = $(this);
@@ -151,9 +157,19 @@ Nui.define('component', ['template'], function(tpl){
             }
             else{
                 Array.prototype.unshift.call(args, method);
-                Nui.each(module.components(), function(v){
-                    v.apply(v, args)
-                })
+                var components = module.components();
+                if(method !== 'init'){
+                    Nui.each(components, function(v){
+                        v.apply(v, args)
+                    })
+                }
+                else{
+                    Nui.each(components, function(v){
+                        if(typeof v('$ready') === 'function'){
+                            v.apply(v, args)
+                        }
+                    })
+                }
             }
         }
     })
@@ -166,12 +182,6 @@ Nui.define('component', ['template'], function(tpl){
         },
         _init:$.noop,
         _exec:$.noop,
-        _jquery:function(elem){
-            if(typeof elem === 'string' || elem.selector === undefined){
-                return $(elem)
-            }
-            return elem
-        },
         _getTarget:function(){
             var that = this;
             if(!that.target){
@@ -180,7 +190,7 @@ Nui.define('component', ['template'], function(tpl){
                 if(!target){
                     return null
                 }
-                target = that._jquery(target);
+                target = self._jquery(target);
                 that.target = target.attr(self._component_attr_name_, '');
                 that.target.each(function(){
                     if(!this.nui){
@@ -198,9 +208,7 @@ Nui.define('component', ['template'], function(tpl){
                 callback = selector;
                 selector = dalegate;
                 dalegate = null;
-                if(typeof selector === 'string'){
-                    selector = $(selector)
-                }
+                selector = that.constructor._jquery(selector)
             }
 
             var _callback = function(e){

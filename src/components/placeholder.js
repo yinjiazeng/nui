@@ -97,7 +97,7 @@ Nui.define(['util'], function(util){
         },
         _setStyle:function(){
             var that = this, opts = that.options;
-            that.className = 'nui-placeholder-'+that.index;
+            that.className = 'nui-placeholder-'+that._index;
             that.target.addClass(that.className);
             if(!that.constructor.style){
                 that._createStyle()
@@ -113,7 +113,7 @@ Nui.define(['util'], function(util){
         _createRules:function(){
             var that = this;
             var sheet = that.constructor.style;
-            var index = that.index;
+            var index = that._index;
             try{
                 sheet.deleteRule(index)
             }
@@ -159,7 +159,20 @@ Nui.define(['util'], function(util){
                 Nui.trim(elem.val()) ? that.element.hide() : that.element.show()
             })
         },
+        _delete:function(){
+            var that = this;
+            var self = that.constructor;
+            that.target.removeAttr(self._component_attr_name_).each(function(){
+                if(this.nui){
+                    this.nui[self._component_name_] = null;
+                    delete this.nui[self._component_name_];
+                }
+            })
+            self._instances[that._index] = null;
+            delete self._instances[that._index]
+        },
         _reset:function(){
+            
             var that = this;
             that._off();
             if(that.element){
