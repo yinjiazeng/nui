@@ -6,9 +6,22 @@
  */
 
 Nui.define('highlight',function(){
-    var renders = this.renders;
     return this.extend('component', {
         static:{
+            _init:function(){
+                var that = this;
+                Nui.doc.on('click', function(){
+                    if(that._active){
+                        Nui.each(that._instances, function(val){
+                            if(val._active){
+                                val.element.find('tr.s-crt').removeClass('s-crt');
+                                val._active = false;
+                            }
+                        })
+                    }
+                    that._active = false;
+                })
+            },
             _getcode:function(type, text){
                 return '<code class="'+ type +'">'+ text +'</code>'
             },
@@ -72,25 +85,23 @@ Nui.define('highlight',function(){
                 }
             }
         },
-        _tpl:renders(''+''
-            +'<div class="ui-highlight<%if type%> ui-highlight-<%type%><%/if%><%if theme%> t-highlight-<%theme%><%/if%>">'+''
-                +'<%if isTitle%>'+''
-                +'<div class="title">'+''
-                    +'<em class="type"><%type%></em>'+''
-                +'</div>'+''
-                +'<%/if%>'+''
-                +'<div class="inner">'+''
-                    +'<table>'+''
-                        +'<%each list val key%>'+''
-                            +'<tr>'+''
-                                +'<%if isLine === true%><td class="line" number="<%key+1%>"><%if bsie7%><%key+1%><%/if%></td><%/if%>'+''
-                                +'<td class="code"><%val%></td>'+''
-                            +'</tr>'+''
-                        +'<%/each%>'+''
-                    +'</table>'+''
-                +'<div>'+''
-            +'</div>'+''
-        +''),
+        _tpl:'<div class="ui-highlight<%if type%> ui-highlight-<%type%><%/if%><%if theme%> t-highlight-<%theme%><%/if%>">'
+                +'<%if isTitle%>'
+                +'<div class="title">'
+                    +'<em class="type"><%type%></em>'
+                +'</div>'
+                +'<%/if%>'
+                +'<div class="inner">'
+                    +'<table>'
+                        +'<%each list val key%>'
+                            +'<tr>'
+                                +'<%if isLine === true%><td class="line" number="<%key+1%>"><%if bsie7%><%key+1%><%/if%></td><%/if%>'
+                                +'<td class="code"><%val%></td>'
+                            +'</tr>'
+                        +'<%/each%>'
+                    +'</table>'
+                +'<div>'
+            +'</div>',
         _create:function(){
             var that = this;
             var opts = that.options;
@@ -111,19 +122,10 @@ Nui.define('highlight',function(){
         },
         _event:function(){
             var that = this;
-            that.evt = false;
             that._on('click', that.element, 'tr', function(e, elem){
-                that.evt = true;
-                elem.addClass('s-crt').siblings().removeClass('s-crt')
-            })
-            that._on('click', that.element, function(e){
+                that.constructor._active = that._active = true;
+                elem.addClass('s-crt').siblings().removeClass('s-crt');
                 e.stopPropagation()
-            })
-            that._on('click', Nui.doc, function(e){
-                if(that.evt){
-                    that.element.find('tr.s-crt').removeClass('s-crt');
-                    that.evt = false;
-                }
             })
         }
     })

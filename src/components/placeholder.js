@@ -6,9 +6,8 @@
  */
 
 Nui.define(['util'], function(util){
-    var module = this;
     var support = util.supportHtml5('placeholder', 'input');
-    return module.extend('component', {
+    return this.extend('component', {
         options:{
             /**
              * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
@@ -31,15 +30,9 @@ Nui.define(['util'], function(util){
              */
             color:'#ccc'
         },
-        _tpllist:module.renders({
-            <%each style%><%$index%>:<%$value%>;<%/each%>
-        }),
-        _tplwrap:module.renders({
-            <strong class="ui-placeholder<%if theme%> t-placeholder-<%theme%><%/if%>" style="<%include '_tpllist'%>" />
-        }),
-        _tplelem:module.renders({
-            <b style="<%include '_tpllist'%>"><%text%></b>
-        }),
+        _tpllist:'<%each style%><%$index%>:<%$value%>;<%/each%>',
+        _tplwrap:'<strong class="ui-placeholder<%if theme%> t-placeholder-<%theme%><%/if%>" style="<%include \'_tpllist\'%>" />',
+        _tplelem:'<b style="<%include \'_tpllist\'%>"><%text%></b>',
         _init:function(){
             this._exec();
         },

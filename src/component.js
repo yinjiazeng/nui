@@ -23,6 +23,7 @@ Nui.define('component', ['template'], function(tpl){
         _index:0,
         _instances:{},
         _options:{},
+        _init:null,
         _jquery:function(elem){
             if(elem && (typeof elem === 'string' || elem.nodeType)){
                 return $(elem)

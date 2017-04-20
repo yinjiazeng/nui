@@ -592,6 +592,9 @@
         }
         extend(true, Class, object.static);
         extend(true, Class.prototype, object.proto);
+        if(typeof Class._init === 'function'){
+            Class._init()
+        }
         return (function(){
             var args = arguments;
             var len = args.length;

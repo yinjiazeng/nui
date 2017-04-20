@@ -592,6 +592,9 @@
         }
         extend(true, Class, object.static);
         extend(true, Class.prototype, object.proto);
+        if(typeof Class._init === 'function'){
+            Class._init()
+        }
         return (function(){
             var args = arguments;
             var len = args.length;
@@ -1321,6 +1324,7 @@ Nui.define('component', ['template'], function(tpl){
         _index:0,
         _instances:{},
         _options:{},
+        _init:null,
         _jquery:function(elem){
             if(elem && (typeof elem === 'string' || elem.nodeType)){
                 return $(elem)
