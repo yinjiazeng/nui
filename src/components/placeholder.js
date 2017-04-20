@@ -152,20 +152,7 @@ Nui.define(['util'], function(util){
                 Nui.trim(elem.val()) ? that.element.hide() : that.element.show()
             })
         },
-        _delete:function(){
-            var that = this;
-            var self = that.constructor;
-            that.target.removeAttr(self._component_attr_name_).each(function(){
-                if(this.nui){
-                    this.nui[self._component_name_] = null;
-                    delete this.nui[self._component_name_];
-                }
-            })
-            self._instances[that._index] = null;
-            delete self._instances[that._index]
-        },
         _reset:function(){
-            
             var that = this;
             that._off();
             if(that.element){
