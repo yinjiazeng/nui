@@ -510,7 +510,7 @@
                         obj.attr[key] = val
                     }
                 })
-                var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\{[^\{\}]+\}/g, '');
+                var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\W/g, '');
                 if(components[name]){
                     mod.module = components[name]
                 }

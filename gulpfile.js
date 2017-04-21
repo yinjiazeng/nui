@@ -26,17 +26,8 @@ gulp.task('concat', function() {
 });
 
 var options = {
-    paths: {
-        base: __dirname + '/',
-        script: '/assets/script',
-        style: '/assets/style',
-        cpns: '/src/components',
-        light: '/src/components/highlight'
-    },
-    alias: {
-        placeholder: '{cpns}/placeholder',
-        highlight: '{light}/highlight'
-    },
+    base: __dirname + '/',
+    config:'./tpl/script.tpl',
     jsdebug:true,
     filterPath: function(src) {
         return src.replace(/^\/nui\//, this.paths.base)

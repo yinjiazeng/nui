@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>诺诺云记账单页版</title>
-	<link rel="stylesheet" type="text/css" href="./style/page-min.css?v=7709a19"/>
+	<link rel="stylesheet" type="text/css" href="./style/page-min.css"/>
 </head>
 <body>
 	<div class="g-header">
@@ -36,24 +36,24 @@
     </div>
 
 	<script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-    <script type="text/javascript" src="/nui/dist/nui-debug.js?v=07f8b27"></script>
-    <script type="text/javascript">
-    Nui.config({
-        paths:{
-            base:'/nui',
-            script:'/assets/script',
-            style:'/assets/style',
-            cpns:'/src/components',
-            light:'/src/components/highlight'
-        },
-        alias:{
-            placeholder:'{cpns}/placeholder',
-            highlight:'{light}/highlight'
-        }
-    })
-    </script>
+<script type="text/javascript" src="/nui/dist/nui-debug.js?v=1dbb135"></script>
+<script type="text/javascript">
+Nui.config({
+    paths:{
+        base:'/nui',
+        script:'/assets/script',
+        style:'/assets/style',
+        cpns:'/src/components',
+        light:'/src/components/highlight'
+    },
+    alias:{
+        placeholder:'{cpns}/placeholder',
+        highlight:'{light}/highlight'
+    }
+})
+</script>
 	<script type="text/javascript">
-	Nui.load("./script/page-debug?v=c92f296")
+	Nui.load('./script/page-debug')
 	</script>
 </body>
 </html>

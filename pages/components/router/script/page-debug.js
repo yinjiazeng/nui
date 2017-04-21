@@ -830,7 +830,7 @@ Nui.define('./script/page',['./render', './router', './ajax'], function(render, 
         url:'./script/data.json',
         success:function(res){
             render(res);
-            router()
+            router(12)
         }
     })
 })
