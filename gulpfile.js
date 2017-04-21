@@ -27,7 +27,7 @@ gulp.task('concat', function() {
 
 var options = {
     base: __dirname + '/',
-    config:'./tpl/script.tpl',
+    url:'./tpl/script.tpl',
     jsdebug:true,
     filterPath: function(src) {
         return src.replace(/^\/nui\//, this.paths.base)

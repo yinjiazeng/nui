@@ -6,6 +6,7 @@
  */
 
 Nui.define(['component'], function(component){
+    var module = this;
     var statics = {
         _maskzIndex:10000,
         _zIndex:10000,
@@ -75,13 +76,60 @@ Nui.define(['component'], function(component){
             var that = this, layer = that.constructor;
             that.zIndex = ++layer.zIndex;
             this._exec()
-         },
+        },
         _exec:function(){
-             var that = this, opts = that.options, layer = that.constructor;
-             that._container = layer._jquery(opts.container);
-             if(opts.content && that._container){
-                
-             }
-         }
-     })
+            var that = this, opts = that.options, layer = that.constructor;
+            that.container = layer._jquery(opts.container);
+            if(opts.content && that.container){
+                if(that.container.get(0).tagName !== 'BODY'){
+                    opts.isFixed = false;
+                    if(' absolute relative'.indexOf(that.container.css('position')) <= 0){
+                        that.container.css('position', 'relative')
+                    }
+                }
+                that._create();
+                if(that.buttons){
+                    that._event()
+                }
+                if(opts.isMove === true && that.title){
+                    that._move();
+                }
+            }
+        },
+        _tpls:module.renders({
+            <div class="ui-layer" style="">
+                <div class="ui-layer-box">
+                    <div class="ui-layer-title">
+                    
+                    </div>
+                    <div class="ui-layer-main">
+                    
+                    </div>
+                    <div class="ui-layer-foot">
+
+                    </div>
+                </div>
+            </div>
+        }),
+        _create:function(){
+            that._createButton();
+            that.element = $(that._tpl2html(that._tpls, that)).appendTo(that.container);
+
+        },
+        _createButton:function(){
+            var that = this, opts = that.options;
+            if(opts.close){
+
+            }
+        },
+        _createIframe:function(){
+
+        },
+        _event:function(){
+
+        },
+        _move:function(){
+
+        }
+    })
 })
