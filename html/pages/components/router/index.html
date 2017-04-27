@@ -62,7 +62,7 @@ router({
 				<p>类型：{String, jQuery Object}</p>
 				<p>默认值：null</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：实例创建后会生成&lt;div class="wrapper" /&gt;作为container子元素，该wrapper就是路由渲染容器</p>
+				<p>说明：实例创建后会生成wrapper（&lt;div class="wrapper"&gt;&lt;/div&gt;）作为container子元素，该元素就是路由渲染容器</p>
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 router({
@@ -87,7 +87,7 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Boolean}</p>
 				<p>默认值：false</p>
-				<p>说明：值为false时，所有设置该值的路由实例都将共享一个wrapper，每次切换路径都会触发onRender；当值为true是，实例会独享一个wrapper，仅在初始化时会触发onRender，后期切换仅会触发onAfter回调。当页面在被切换到其它页面，再被切换回来后需要保持原来的状态时设置为true再好不过了。</p>
+				<p>说明：值为false时，所有设置该值的路由实例都将共享一个wrapper，每次加载都会触发onRender；当值为true是，实例会独享一个wrapper，仅在第一次加载时时会触发onRender。</p>
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 router({
