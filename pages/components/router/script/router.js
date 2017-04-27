@@ -19,16 +19,19 @@ Nui.define(['{cpns}/router'], function(router){
             target:'#index',
             enter:true,
             path:'/index',
-            onRender:module.require('./modules/index'),
-            onBefore:function(ele, render){
-                
-            }
+            onRender:module.require('./modules/index')
         })
 
         router({
             target:'#recordVoucher, #recordVoucherIndex',
             path:'/voucher/record',
             wrapper:false,
+            onBefore:function(ele, render){
+                if(confirm('点击取消不会切换页面')){
+                    render()
+                }
+                return false;
+            },
             onRender:module.require('./modules/recordVoucher')
         })
 
