@@ -69,7 +69,7 @@ Nui.define(['component'], function(component){
                                         component.static.init(wrapper);
                                     }
                                     var wrapper = object._wrapper || that._wrapper;
-                                    wrapper.show().siblings().hide();
+                                    wrapper.show().siblings('.wrapper').hide();
                                     if(typeof opts.onAfter === 'function'){
                                         opts.onAfter(object.target, wrapper)
                                     }

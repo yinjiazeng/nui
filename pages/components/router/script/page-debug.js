@@ -420,7 +420,7 @@ Nui.define('./modules/recordVoucher',['component', '../tpls/recordVoucher', 'tem
     var module = this;
     return function(target, wrapper, data){
         wrapper.html(tpl.render(tmpl, data))
-        .on('click', '#aaa', function(){
+        wrapper.on('click', '#aaa', function(){
             js('destroy', wrapper, 'b')
             //component.static.trigger(null, 'destroy');
             setTimeout(function(){
@@ -574,7 +574,7 @@ Nui.define('{cpns}/router',['component'], function(component){
                                         component.static.init(wrapper);
                                     }
                                     var wrapper = object._wrapper || that._wrapper;
-                                    wrapper.show().siblings().hide();
+                                    wrapper.show().siblings('.wrapper').hide();
                                     if(typeof opts.onAfter === 'function'){
                                         opts.onAfter(object.target, wrapper)
                                     }

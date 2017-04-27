@@ -2,7 +2,7 @@ Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascrip
     var module = this;
     return function(target, wrapper, data){
         wrapper.html(tpl.render(tmpl, data))
-        .on('click', '#aaa', function(){
+        wrapper.on('click', '#aaa', function(){
             js('destroy', wrapper, 'b')
             //component.static.trigger(null, 'destroy');
             setTimeout(function(){
