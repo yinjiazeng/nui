@@ -85,7 +85,7 @@ Nui.define('highlight',function(){
                 }
             }
         },
-        _tpl:'<div class="ui-highlight<%if type%> ui-highlight-<%type%><%/if%><%if theme%> t-highlight-<%theme%><%/if%>">'
+        _tpl:'<div class="nui-highlight<%if type%> nui-highlight-<%type%><%/if%><%if skin%> highlight-<%skin%><%/if%>">'
                 +'<%if isTitle%>'
                 +'<div class="title">'
                     +'<em class="type"><%type%></em>'

@@ -156,19 +156,19 @@ a.f-c666:hover { color:#FF9300;}
 .e-pt60 { padding-top:60px;}
 .e-m20 { margin:20px;}
 
-.ui-highlight { margin-top:15px; overflow:hidden; border-radius:3px; background-color:#F6F6F6;}
-.ui-highlight .inner { padding:10px 0; overflow:auto;}
-.ui-highlight table { width:100%;}
-.ui-highlight td { padding:4px 10px; vertical-align: middle;}
-.ui-highlight .line { text-align: right; -webkit-user-select:none; -ms-user-select:none; user-select:none; color:#5A616D;}
-.ui-highlight .line:before { content:attr(number);}
-.ui-highlight .code { width: 100%; white-space:pre; word-wrap: normal;}
-.ui-highlight .code, .ui-highlight .symbol, .ui-highlight .text, .ui-highlight tr.s-crt .line, .ui-highlight .comment { color:#ABB2BF;}
-.ui-highlight tr.s-crt .code { background-color:#eee;}
-.ui-highlight .string { color:#98C379;}
-.ui-highlight .attr { color:#D19A66;}
-.ui-highlight .tag { color:#C36C6A;}
-.ui-highlight .selector { color:#56B6C2;}
-.ui-highlight .keyword { color:#C678DD;}
-.ui-highlight .word { color:#61AFE9;}
-.ui-highlight .number { color:#DC322F;}
+.nui-highlight { margin-top:15px; overflow:hidden; border-radius:3px; background-color:#F6F6F6;}
+.nui-highlight .inner { padding:10px 0; overflow:auto;}
+.nui-highlight table { width:100%;}
+.nui-highlight td { padding:4px 10px; vertical-align: middle;}
+.nui-highlight .line { text-align: right; -webkit-user-select:none; -ms-user-select:none; user-select:none; color:#5A616D;}
+.nui-highlight .line:before { content:attr(number);}
+.nui-highlight .code { width: 100%; white-space:pre; word-wrap: normal;}
+.nui-highlight .code, .nui-highlight .symbol, .nui-highlight .text, .nui-highlight tr.s-crt .line, .nui-highlight .comment { color:#ABB2BF;}
+.nui-highlight tr.s-crt .code { background-color:#eee;}
+.nui-highlight .string { color:#98C379;}
+.nui-highlight .attr { color:#D19A66;}
+.nui-highlight .tag { color:#C36C6A;}
+.nui-highlight .selector { color:#56B6C2;}
+.nui-highlight .keyword { color:#C678DD;}
+.nui-highlight .word { color:#61AFE9;}
+.nui-highlight .number { color:#DC322F;}

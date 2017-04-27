@@ -80,7 +80,7 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
             color:'#ccc'
         },
         _tpllist:'<%each style%><%$index%>:<%$value%>;<%/each%>',
-        _tplwrap:'<strong class="ui-placeholder<%if theme%> t-placeholder-<%theme%><%/if%>" style="<%include \'_tpllist\'%>" />',
+        _tplwrap:'<strong class="nui-placeholder<%if skin%> placeholder-<%skin%><%/if%>" style="<%include \'_tpllist\'%>" />',
         _tplelem:'<b style="<%include \'_tpllist\'%>"><%text%></b>',
         _init:function(){
             this._exec();
@@ -105,7 +105,7 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
                     that.target.removeAttr('placeholder')
                 }
                 that.target.wrap(that._tpl2html(that._tplwrap, {
-                        theme:opts.theme,
+                        skin:opts.skin,
                         style:{
                             'position':'relative',
                             'display':'inline-block',
@@ -139,7 +139,7 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
         },
         _setStyle:function(){
             var that = this, opts = that.options;
-            that.className = 'nui-placeholder-'+that._index;
+            that.className = '_placeholder-'+that._index;
             that.target.addClass(that.className);
             if(!that.constructor.style){
                 that._createStyle()
@@ -306,7 +306,7 @@ Nui.define('highlight',function(){
                 }
             }
         },
-        _tpl:'<div class="ui-highlight<%if type%> ui-highlight-<%type%><%/if%><%if theme%> t-highlight-<%theme%><%/if%>">'
+        _tpl:'<div class="nui-highlight<%if type%> nui-highlight-<%type%><%/if%><%if skin%> highlight-<%skin%><%/if%>">'
                 +'<%if isTitle%>'
                 +'<div class="title">'
                     +'<em class="type"><%type%></em>'
@@ -408,7 +408,7 @@ Nui.define('{light}/javascript',function(){
 Nui.define('../tpls/recordVoucher',function(){
     return this.renders(''+''
         +'<input type="text" placeholder="aaaaaaaaaaa" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
-        +'<script type="text/highlight" data-javascript-options>'+''
+        +'<script type="text/highlight" data-javascript-options="{id:\'b\'}">'+''
         +'var a = 1;'+''
         +'var b = 2;'+''
         +'</script> '+''
@@ -421,7 +421,7 @@ Nui.define('./modules/recordVoucher',['component', '../tpls/recordVoucher', 'tem
     return function(target, wrapper, data){
         wrapper.html(tpl.render(tmpl, data))
         .on('click', '#aaa', function(){
-            js('destroy', wrapper)
+            js('destroy', wrapper, 'b')
             //component.static.trigger(null, 'destroy');
             setTimeout(function(){
                 js('init', wrapper)

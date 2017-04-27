@@ -1433,7 +1433,7 @@ Nui.define('component', ['template'], function(tpl){
         statics[method] = function(){
             var that = this, args = arguments, container = args[0], name = that._component_name_;
             if(name){
-                if(container){
+                if(container && container instanceof jQuery){
                     if(method === 'init'){
                         container.find('[data-'+name+'-options]').each(function(){
                             var ele = $(this);
@@ -1480,7 +1480,8 @@ Nui.define('component', ['template'], function(tpl){
         static:statics,
         options:{
             target:null,
-            theme:''
+            id:null,
+            skin:''
         },
         _init:$.noop,
         _exec:$.noop,
@@ -1570,12 +1571,11 @@ Nui.define('component', ['template'], function(tpl){
             delete self._instances[that.index]
         },
         _reset:function(){
-            var that = this;
-            that._off();
-            if(that.element){
-                that.element.remove();
+            this._off();
+            if(this.element){
+                this.element.remove();
             }
-            return that
+            return this
         },
         _tpl2html:function(tpls, data){
             return tpl.render.call(this, tpls, data, {
@@ -1584,35 +1584,35 @@ Nui.define('component', ['template'], function(tpl){
             })
         },
         set:function(name, value){
-            var that = this;
-            that._reset();
+            this._reset();
             if(name || value){
                 if($.isPlainObject(name)){
-                    that.options = $.extend(true, that.options, name)
+                    this.options = $.extend(true, this.options, name)
                 }
                 else{
-                    that.options[name] = value
+                    this.options[name] = value
                 }
-                that._exec()
+                this._exec()
             }
-            return that
+            return this
         },
         get:function(key){
-            var that = this;
             if(!key){
-                return that.options
+                return this.options
             }
             else{
-                return that.options[key]
+                return this.options[key]
             }
         },
         reset:function(){
             return this.set(that.optionsCache)
         },
-        destroy:function(){
-            var that = this;
-            that._reset();
-            that._delete();
+        destroy:function(id){
+            if(id && this.options.id !== id){
+                return
+            }
+            this._reset();
+            this._delete();
         }
     })
 })

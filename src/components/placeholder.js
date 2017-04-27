@@ -31,7 +31,7 @@ Nui.define(['util'], function(util){
             color:'#ccc'
         },
         _tpllist:'<%each style%><%$index%>:<%$value%>;<%/each%>',
-        _tplwrap:'<strong class="ui-placeholder<%if theme%> t-placeholder-<%theme%><%/if%>" style="<%include \'_tpllist\'%>" />',
+        _tplwrap:'<strong class="nui-placeholder<%if skin%> placeholder-<%skin%><%/if%>" style="<%include \'_tpllist\'%>" />',
         _tplelem:'<b style="<%include \'_tpllist\'%>"><%text%></b>',
         _init:function(){
             this._exec();
@@ -56,7 +56,7 @@ Nui.define(['util'], function(util){
                     that.target.removeAttr('placeholder')
                 }
                 that.target.wrap(that._tpl2html(that._tplwrap, {
-                        theme:opts.theme,
+                        skin:opts.skin,
                         style:{
                             'position':'relative',
                             'display':'inline-block',
@@ -90,7 +90,7 @@ Nui.define(['util'], function(util){
         },
         _setStyle:function(){
             var that = this, opts = that.options;
-            that.className = 'nui-placeholder-'+that._index;
+            that.className = '_placeholder-'+that._index;
             that.target.addClass(that.className);
             if(!that.constructor.style){
                 that._createStyle()
