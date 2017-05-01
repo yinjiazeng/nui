@@ -39,12 +39,13 @@ Nui.define('../tpls/seeVoucher',function(){
         +'<% $index %>=<% $value %>，'+''
         +'<% /each %>'+''
         +'<% /if %>'+''
+        +'<a id="aaa">aaaaaaaaaaa</a> '+''
     +'')
 })
 Nui.define('./modules/seeVoucher',['../tpls/seeVoucher', 'template'], function(tmpl, tpl){
     var module = this;
-    return function(target, wrapper, data){
-        wrapper.html(tpl.render(tmpl, data))
+    return function(target, wrapper, request){
+        wrapper.html(tpl.render(tmpl, request))
     }
 })
 /**
@@ -418,21 +419,25 @@ Nui.define('../tpls/recordVoucher',function(){
 })
 Nui.define('./modules/recordVoucher',['component', '../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js){
     var module = this;
-    return function(target, wrapper, data){
-        wrapper.html(tpl.render(tmpl, data))
-        wrapper.on('click', '#aaa', function(){
+    return function(target, wrapper, request){
+
+        wrapper.html(tpl.render(tmpl, request))
+       
+        wrapper.on('click', 'b', function(){
+            alert()
+        })
+
+         wrapper.find('a').click(function(){
+             alert()
             js('destroy', wrapper, 'b')
             //component.static.trigger(null, 'destroy');
             setTimeout(function(){
                 js('init', wrapper)
                 js('set', wrapper, {
                     isLine:true
-                })
+                }) 
             }, 2000)
             //js('trigger', container, 'destroy')
-        })
-        .on('click', 'b', function(){
-            alert()
         })
     }
 })
@@ -441,13 +446,13 @@ Nui.define('./menu',[{
     name:'录凭证',
     index:true,
     icon:'',
-    path:'/voucher/record'
+    path:'/voucher/record/'
 }, {
     id:'seeVoucher',
     name:'查凭证',
     icon:'',
     index:true,
-    path:'/voucher/list/aniu/jser'
+    path:'/voucher/list/aniu/jser/'
 }, {
     name:'账簿',
     icon:'',
@@ -455,17 +460,17 @@ Nui.define('./menu',[{
         id:'summary',
         name:'总账',
         icon:'',
-        path:'/books/summary'
+        path:'/books/summary/'
     }, {
         id:'detailed',
         name:'明细账',
         icon:'',
-        path:'/books/detailed'
+        path:'/books/detailed/'
     }, {
         id:'accountbalance',
         name:'科目余额表',
         icon:'',
-        path:'/books/accountbalance'
+        path:'/books/accountbalance/'
     }]
 }])
 Nui.define('../tpls/index',function(){
@@ -499,7 +504,7 @@ Nui.define('../tpls/index',function(){
 Nui.define('./modules/index',['../tpls/index', 'template', './menu'], function(tmpl, tpl, menu){
     var module = this;
     module.imports('../../style/index')
-    return function(target, wrapper, data){
+    return function(target, wrapper, request){
         wrapper.html(tpl.render(tmpl, menu))
     }
 })
@@ -513,7 +518,6 @@ Nui.define('./modules/index',['../tpls/index', 'template', './menu'], function(t
 Nui.define('{cpns}/router',['component'], function(component){
     return this.extend(component, {
         static:{
-            _init:false,
             _paths:{},
             _params:{},
             _alias:{},
@@ -552,6 +556,7 @@ Nui.define('{cpns}/router',['component'], function(component){
                                         }
                                         param[val] = params[key]
                                     })
+
                                     if(!object._wrapper){
                                         if(opts.wrapper && !object._wrapper){
                                             object._wrapper = that._getWrapper(object.container)
@@ -578,7 +583,7 @@ Nui.define('{cpns}/router',['component'], function(component){
                                     if(typeof opts.onAfter === 'function'){
                                         opts.onAfter(object.target, wrapper)
                                     }
-                                    that._init = match = true;
+                                    that._initialize = match = true;
                                     return false
                                 }
                             }
@@ -587,12 +592,12 @@ Nui.define('{cpns}/router',['component'], function(component){
                             return false
                         }
                     })
-                    if(!that._init){
+                    if(!that._initialize){
                         Nui.each(that._instances, function(v){
                             if(!that._hasEnter && v.options.enter === true){
                                 that._hasEnter = true;
                                 v._render(v.target.eq(0));
-                                that._init = true;
+                                that._initialize = true;
                                 return false
                             }
                         })
@@ -624,11 +629,12 @@ Nui.define('{cpns}/router',['component'], function(component){
                 }
             },
             init:function(){
-                if(!this._init){
+                if(!this._initialize){
                     this._change();
                 }
             },
-            $ready:null
+            $ready:null,
+            $fn:null
         },
         options:{
             path:null,
@@ -637,7 +643,8 @@ Nui.define('{cpns}/router',['component'], function(component){
             wrapper:false,
             splitLevel:1,
             onBefore:null,
-            onRender:null
+            onRender:null,
+            onAfter:null
         },
         _init:function(){
             var that = this, router = that.constructor;
@@ -708,7 +715,7 @@ Nui.define('{cpns}/router',['component'], function(component){
                 var trigger = false;
                 var render = function(){
                     trigger = true;
-                    location.hash = '#!'+that.constructor._replace(elem.attr('href'));
+                    location.hash = '#!'+that.constructor._replace(href);
                 }
                 if(typeof opts.onBefore === 'function' && opts.onBefore(elem, render) === false){
                     return false
@@ -764,11 +771,12 @@ Nui.define('./router',['{cpns}/router'], function(router){
             target:'#recordVoucher, #recordVoucherIndex',
             path:'/voucher/record',
             wrapper:false,
-            onBefore:function(ele, render){
-                if(confirm('点击取消不会切换页面')){
+            onBefore:function(target, render){
+                console.log(target.attr('href'))
+                /*if(confirm('点击取消不会切换页面')){
                     render()
                 }
-                return false;
+                return false;*/
             },
             onRender:module.require('./modules/recordVoucher')
         })

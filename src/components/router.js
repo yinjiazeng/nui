@@ -8,7 +8,6 @@
 Nui.define(['component'], function(component){
     return this.extend(component, {
         static:{
-            _init:false,
             _paths:{},
             _params:{},
             _alias:{},
@@ -47,6 +46,7 @@ Nui.define(['component'], function(component){
                                         }
                                         param[val] = params[key]
                                     })
+
                                     if(!object._wrapper){
                                         if(opts.wrapper && !object._wrapper){
                                             object._wrapper = that._getWrapper(object.container)
@@ -73,7 +73,7 @@ Nui.define(['component'], function(component){
                                     if(typeof opts.onAfter === 'function'){
                                         opts.onAfter(object.target, wrapper)
                                     }
-                                    that._init = match = true;
+                                    that._initialize = match = true;
                                     return false
                                 }
                             }
@@ -82,12 +82,12 @@ Nui.define(['component'], function(component){
                             return false
                         }
                     })
-                    if(!that._init){
+                    if(!that._initialize){
                         Nui.each(that._instances, function(v){
                             if(!that._hasEnter && v.options.enter === true){
                                 that._hasEnter = true;
                                 v._render(v.target.eq(0));
-                                that._init = true;
+                                that._initialize = true;
                                 return false
                             }
                         })
@@ -119,11 +119,12 @@ Nui.define(['component'], function(component){
                 }
             },
             init:function(){
-                if(!this._init){
+                if(!this._initialize){
                     this._change();
                 }
             },
-            $ready:null
+            $ready:null,
+            $fn:null
         },
         options:{
             path:null,
@@ -132,7 +133,8 @@ Nui.define(['component'], function(component){
             wrapper:false,
             splitLevel:1,
             onBefore:null,
-            onRender:null
+            onRender:null,
+            onAfter:null
         },
         _init:function(){
             var that = this, router = that.constructor;
@@ -203,7 +205,7 @@ Nui.define(['component'], function(component){
                 var trigger = false;
                 var render = function(){
                     trigger = true;
-                    location.hash = '#!'+that.constructor._replace(elem.attr('href'));
+                    location.hash = '#!'+that.constructor._replace(href);
                 }
                 if(typeof opts.onBefore === 'function' && opts.onBefore(elem, render) === false){
                     return false

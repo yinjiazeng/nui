@@ -1326,10 +1326,10 @@ Nui.define('component', ['template'], function(tpl){
         _options:{},
         _init:null,
         _jquery:function(elem){
-            if(elem && (typeof elem === 'string' || elem.nodeType)){
-                return $(elem)
+            if(elem instanceof jQuery){
+                return elem
             }
-            return elem
+            return $(elem)
         },
         _getSize:function(selector, dir, attr){
             var size = 0;

@@ -29,16 +29,11 @@
 </script>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(['../src/components/router'], function(router){
-	//实例对象形式调用
+
 	router({
 		target:'#home',
 		enter:true,
 		path:'/home/'
-	})
-
-	//jQuery插件形式调用
-	$('.news').router({
-		path:'/news/:type/'
 	})
 
 	router('run')

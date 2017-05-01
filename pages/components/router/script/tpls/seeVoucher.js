@@ -8,5 +8,6 @@ Nui.define(function(){
         <% $index %>=<% $value %>，
         <% /each %>
         <% /if %>
+        <a id="aaa">aaaaaaaaaaa</a> 
     })
 })

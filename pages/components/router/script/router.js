@@ -26,11 +26,12 @@ Nui.define(['{cpns}/router'], function(router){
             target:'#recordVoucher, #recordVoucherIndex',
             path:'/voucher/record',
             wrapper:false,
-            onBefore:function(ele, render){
-                if(confirm('点击取消不会切换页面')){
+            onBefore:function(target, render){
+                console.log(target.attr('href'))
+                /*if(confirm('点击取消不会切换页面')){
                     render()
                 }
-                return false;
+                return false;*/
             },
             onRender:module.require('./modules/recordVoucher')
         })
