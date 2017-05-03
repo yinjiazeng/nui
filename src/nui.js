@@ -643,7 +643,7 @@
             suffix = match[0]
         }
         id = Module.setPath(config.alias[name] || name);
-        if(!/^(https?|file):\/\//.test(id)){
+        if(!/^((https?|file):)?\/\//.test(id)){
             dirid = Module.replacePath(dirname + id);
             id = (uri || dirname) + id;
         }
@@ -814,11 +814,11 @@
             extend(true, config[key], value)
         }
         var base = config.paths.base || '';
-        if(!/^(https?|file):\/\//.test(base)){
+        if(!/^((https?|file):)?\/\//.test(base)){
             base = config.paths.base = domain+base
         }
         Nui.each(config.paths, function(v, k){
-            if(k !== 'base' && !/^(https?|file):\/\//.test(v)){
+            if(k !== 'base' && !/^((https?|file):)?\/\//.test(v)){
                 config.paths[k] = base+'/' + v
             }
         })
