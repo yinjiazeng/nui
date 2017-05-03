@@ -101,7 +101,7 @@ Nui.define('./script/template/page',['template'], function(tpl){
 						+'{{each list as val key}}'+''
 							+'{{each val as v k}}'+''
 								+'{{k}}:{{v}}'+''
-							+'{{/each}}\n'+''
+							+'{{/each}}'+''
 						+'{{/each}}'+''
 					+''))(list)
 				}, function(){
