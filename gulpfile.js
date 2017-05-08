@@ -27,7 +27,7 @@ gulp.task('concat', function() {
 
 var options = {
     base: __dirname + '/',
-    url:'./tpl/script.tpl',
+    url:'./assets/script/config.js',
     jsdebug:true,
     filterPath: function(src) {
         return src.replace(/^\/nui\//, this.paths.base)
@@ -44,7 +44,7 @@ gulp.task('nunjucks', function() {
 });
 
 gulp.task('watch', function() {
-    watch(['./src/components/**/*.js', './pages/**/*.*', '!./pages/**/*.html', './dist/*.js', './assets/**/*.*', '!./**/*-{debug,min}.{js,css}'],
+    watch(['./src/components/**/*.js', './pages/**/*', '!./pages/**/*.html', './dist/*.js', './assets/**/*', '!./assets/script/config.js', '!./**/*-{debug,min}.{js,css}'],
         function(watcher) {
             options.watcher = watcher;
             gulp.src(['./pages/**/*.html'])

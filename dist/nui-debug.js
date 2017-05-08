@@ -232,7 +232,8 @@
 
     var config = {
         paths:{},
-        alias:{}
+        alias:{},
+        maps:{}
     }
 
     //讲道理说，文件在被加载完毕后会立即执行define方法，在onload(onreadystatechange IE9-)事件中得到moduleData，这个过程是同步的
@@ -272,8 +273,8 @@
         mod.id = attrs[0];
         //模块名
         mod.name = attrs[1];
-        //模块url参数
-        mod.parameter = '';
+        //文件参数
+        mod.version = '';
         //文件后缀 -debug和-min
         mod.suffix = attrs[2];
         //所在目录
@@ -284,7 +285,11 @@
         var mod = this;
         if(!mod.loaded && !/_module_\d+$/.test(mod.id)){
             var node = document.createElement('script');
-            mod.url = mod.id+mod.suffix+'.js'+mod.parameter;
+            var version = config.maps[mod.name]||'';
+            if(version && !/^\?/.test(version)){
+                version = '?v='+version
+            }
+            mod.url = mod.id+mod.suffix+'.js'+(version ? version : mod.version);
             node.src = mod.url;
             node.id = mod.id;
             currentlyAddingScript = node;
@@ -312,7 +317,7 @@
         if(mod.alldeps.length && isEmptyObject(mod.depmodules)){
             Nui.each(mod.alldeps, function(val){
                 var module = Module.getModule(val, [], mod.uri);
-                module.parameter = mod.parameter;
+                module.version = mod.version;
                 mod.depmodules[val] = module.loaded ? module : module.load()
             })
         }
@@ -538,7 +543,7 @@
                 var path = Module.getAttrs(val, mod.uri)[0];
                 if(!cacheStyles[path]){
                     cacheStyles[path] = true;
-                    path = path+'.css'+mod.parameter;
+                    path = path+'.css'+mod.version;
                     var node = document.createElement('link');
                     node.rel = 'stylesheet';
                     node.href = path;
@@ -663,7 +668,7 @@
             var match = id.match(/(\?[\s\S]+)$/);
             var mod = cacheModules[Module.getAttrs(id)[0]] || Module.getModule(_module_, [id]);
             if(match){
-                mod.parameter = match[0]
+                mod.version = match[0]
             }
             roots.push(mod);
             mod.callback = function(modules){

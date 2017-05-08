@@ -122,25 +122,11 @@
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-debug.js?v=b5d3628"></script>
-<script type="text/javascript">
-Nui.config({
-    paths:{
-        base:'/nui',
-        script:'/assets/script',
-        style:'/assets/style',
-        cpns:'/src/components',
-        light:'/src/components/highlight'
-    },
-    alias:{
-        placeholder:'{cpns}/placeholder',
-        highlight:'{light}/highlight'
-    }
-})
-</script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=0a4d6a3"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=d1624cb"></script>
     
     <script type="text/javascript">
-	Nui.load("{script}/base-min?v=85fa6cc", function(page){
+	Nui.load("{script}/base-min", function(page){
         page.init()
     })
     </script>
