@@ -1,6 +1,6 @@
 Nui.config({
+    "base": "/nui",
     "paths": {
-        "base": "/nui",
         "script": "/assets/script",
         "style": "/assets/style",
         "cpns": "/src/components",

@@ -811,14 +811,12 @@
         Module.define.apply(Module, params)
     }
 
-    Nui.config = function(key, value){
-        if(Nui.type(key, 'Object')){
-            extend(true, config, key)
+    Nui.config = function(obj){
+        if(!Nui.type(obj, 'Object')){
+            return
         }
-        else if(Nui.type(key, 'String') && value){
-            extend(true, config[key], value)
-        }
-        var base = config.paths.base || '';
+        config = extend({}, config, obj);
+        var base = config.base || config.paths.base || '';
         if(!/^((https?|file):)?\/\//.test(base)){
             base = config.paths.base = domain+base
         }
