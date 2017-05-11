@@ -1,4 +1,4 @@
-Nui.define('./ajax',function(){
+Nui.define('pages/components/router/script/ajax',function(){
     var ajax = $.ajax;
     return function(options){
         if(typeof options === 'string'){
@@ -29,7 +29,7 @@ Nui.define('./ajax',function(){
         }, options))
     }
 })
-Nui.define('../tpls/seeVoucher',function(){
+Nui.define('pages/components/router/script/tpls/seeVoucher',function(){
     return this.renders(''+''
         +'这是查凭证页面，页面完整url是：<% url %>，路径是：<% path %>'+''
         +'<% if param %>'+''
@@ -42,7 +42,7 @@ Nui.define('../tpls/seeVoucher',function(){
         +'<a id="aaa">aaaaaaaaaaa</a> '+''
     +'')
 })
-Nui.define('./modules/seeVoucher',['../tpls/seeVoucher', 'template'], function(tmpl, tpl){
+Nui.define('pages/components/router/script/modules/seeVoucher',['pages/components/router/script/tpls/seeVoucher', 'template'], function(tmpl, tpl){
     var module = this;
     return function(target, wrapper, request){
         wrapper.html(tpl.render(tmpl, request))
@@ -406,7 +406,7 @@ Nui.define('{light}/javascript',function(){
     })
 })
 
-Nui.define('../tpls/recordVoucher',function(){
+Nui.define('pages/components/router/script/tpls/recordVoucher',function(){
     return this.renders(''+''
         +'<input type="text" placeholder="aaaaaaaaaaa" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
         +'<script type="text/highlight" data-javascript-options="{id:\'b\'}">'+''
@@ -417,7 +417,7 @@ Nui.define('../tpls/recordVoucher',function(){
         +'<a id="aaa">aaaaaaaaaaa</a>'+''
     +'')
 })
-Nui.define('./modules/recordVoucher',['component', '../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js){
+Nui.define('pages/components/router/script/modules/recordVoucher',['component', 'pages/components/router/script/tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js){
     var module = this;
     return function(target, wrapper, request){
 
@@ -441,7 +441,7 @@ Nui.define('./modules/recordVoucher',['component', '../tpls/recordVoucher', 'tem
         })
     }
 })
-Nui.define('./menu',[{
+Nui.define('pages/components/router/script/menu',[{
     id:'recordVoucher',
     name:'录凭证',
     index:true,
@@ -473,7 +473,7 @@ Nui.define('./menu',[{
         path:'/books/accountbalance/'
     }]
 }])
-Nui.define('../tpls/index',function(){
+Nui.define('pages/components/router/script/tpls/index',function(){
     return this.renders(''+''
         +'<div class="m-main ui-bgw">'+''
             +'<h3 class="ui-bdb ui-fcb">'+''
@@ -501,7 +501,7 @@ Nui.define('../tpls/index',function(){
         +'</div>'+''
     +'')
 })
-Nui.define('./modules/index',['../tpls/index', 'template', './menu'], function(tmpl, tpl, menu){
+Nui.define('pages/components/router/script/modules/index',['pages/components/router/script/tpls/index', 'template', 'pages/components/router/script/menu'], function(tmpl, tpl, menu){
     var module = this;
     module.imports('../../style/index')
     return function(target, wrapper, request){
@@ -743,7 +743,7 @@ Nui.define('{cpns}/router',['component'], function(component){
     })
 })
 
-Nui.define('./router',['{cpns}/router'], function(router){
+Nui.define('pages/components/router/script/router',['{cpns}/router'], function(router){
     var module = this;
 
     return function(){
@@ -764,7 +764,7 @@ Nui.define('./router',['{cpns}/router'], function(router){
             target:'#index',
             enter:true,
             path:'/index',
-            onRender:module.require('./modules/index')
+            onRender:module.require('pages/components/router/script/modules/index')
         })
 
         router({
@@ -778,7 +778,7 @@ Nui.define('./router',['{cpns}/router'], function(router){
                 }
                 return false;*/
             },
-            onRender:module.require('./modules/recordVoucher')
+            onRender:module.require('pages/components/router/script/modules/recordVoucher')
         })
 
         router({
@@ -786,13 +786,13 @@ Nui.define('./router',['{cpns}/router'], function(router){
             path:'{list}',
             wrapper:false,
             splitLevel:2,
-            onRender:module.require('./modules/seeVoucher')
+            onRender:module.require('pages/components/router/script/modules/seeVoucher')
         })
 
         router('init')
     }
 })
-Nui.define('./tpls/layout',function(){
+Nui.define('pages/components/router/script/tpls/layout',function(){
     var module = this;
     return ({
         head:module.renders(''+''
@@ -825,7 +825,7 @@ Nui.define('./tpls/layout',function(){
         +'')
     })
 })
-Nui.define('./render',['./menu', './tpls/layout', 'template'], function(menu, layout, tpl){
+Nui.define('pages/components/router/script/render',['pages/components/router/script/menu', 'pages/components/router/script/tpls/layout', 'template'], function(menu, layout, tpl){
     var module = this;
     return function(data){
         $('.m-headbox').html(tpl.render(layout.head, data))
@@ -833,7 +833,7 @@ Nui.define('./render',['./menu', './tpls/layout', 'template'], function(menu, la
         $('.m-menu').html(tpl.render(layout.menu, data))
     }
 })
-Nui.define('./script/page',['./render', './router', './ajax'], function(render, router, ajax){
+Nui.define('./script/page',['pages/components/router/script/render', 'pages/components/router/script/router', 'pages/components/router/script/ajax'], function(render, router, ajax){
     var module = this;
     module.imports('../style/base');
     module.imports('../style/page');

@@ -211,7 +211,7 @@ Nui.define('util', {
             voidTotal:0
         }, arr = form.serializeArray(), len = arr.length, i = 0;
         for(i; i<len; i++){
-            var val = $.trim(arr[i].value)
+            var val = Nui.trim(arr[i].value)
             data.all++;
             if(!val){
                 data.voidTotal++

@@ -11,9 +11,9 @@ Nui.config({
         "highlight": "{light}/highlight"
     },
     "maps": {
-        "{script}/base": "85fa6cc",
-        "{script}/index": "3865d4d",
+        "{script}/base": "b575b57",
+        "{script}/index": "a8f7a62",
         "./script/template/page": "33624d4",
-        "./script/page": "e6fce83"
+        "./script/page": "0a5a90a"
     }
 })

@@ -122,11 +122,6 @@
         document.execCommand('BackgroundImageCache', false, true);
     }
 
-    if(typeof jQuery !== 'undefined'){
-        Nui.win = jQuery(window);
-        Nui.doc = jQuery(document);
-    }
-
     // unique(['1', '2', '1']) => ['1', '2']
     var unique = function(arr){
         var newarr = [];

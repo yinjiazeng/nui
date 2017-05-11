@@ -138,7 +138,7 @@ Nui.define('highlight',function(){
  * @description css语法高亮组件
  */
 
-Nui.define('./style',function(){
+Nui.define('src/components/highlight/style',function(){
     return this.extend('highlight', {
         _type:'css',
         _css:function(code){
@@ -180,7 +180,7 @@ Nui.define('./style',function(){
  * @description javascript语法高亮组件
  */
 
-Nui.define('./javascript',function(){
+Nui.define('src/components/highlight/javascript',function(){
     return this.extend('highlight', {
         _type:'js',
         _js:function(code){
@@ -233,7 +233,7 @@ Nui.define('./javascript',function(){
  * @description xml语法高亮组件
  */
 
-Nui.define('{light}/xml',['./javascript', './style'],function(js, css){
+Nui.define('{light}/xml',['src/components/highlight/javascript', 'src/components/highlight/style'],function(js, css){
     return this.extend('highlight', {
         _type:'xml',
         _xml:function(code){
