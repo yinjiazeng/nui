@@ -475,6 +475,8 @@
             return tpl
         }
 
+        factory.exports = {};
+
         if(mod.name === 'component'){
             factory.components = function(){
                 return components
@@ -493,6 +495,11 @@
                 modules.push(factory.require(val))
             })
             var exports = factory.apply(factory, modules);
+
+            if(typeof exports === 'undefined'){
+                exports = factory.exports
+            }
+
             if(mod.name !== 'component' && Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
                 var obj = {
                     static:{},

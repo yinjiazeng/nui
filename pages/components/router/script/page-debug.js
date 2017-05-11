@@ -833,15 +833,21 @@ Nui.define('pages/components/router/script/render',['pages/components/router/scr
         $('.m-menu').html(tpl.render(layout.menu, data))
     }
 })
-Nui.define('./script/page',['pages/components/router/script/render', 'pages/components/router/script/router', 'pages/components/router/script/ajax'], function(render, router, ajax){
-    var module = this;
-    module.imports('../style/base');
-    module.imports('../style/page');
-    ajax({
-        url:'./script/data.json',
-        success:function(res){
-            render(res);
-            router()
-        }
-    })
-})
+Nui.define('./script/page',function(){
+	var module=this,require=module.require,imports=module.imports,renders=module.renders,extend=module.extend;
+	var render = require('pages/components/router/script/render');
+	var router = require('pages/components/router/script/router');
+	var ajax = require('pages/components/router/script/ajax');
+	var base = imports('../style/base');
+	var page = imports('../style/page');
+	ajax({
+	    url:'./script/data.json',
+	    success:function(res){
+	        render(res);
+	        router()
+	    }
+	});
+	module.exports = function(){
+	    
+	}
+});
