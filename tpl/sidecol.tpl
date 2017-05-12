@@ -177,7 +177,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'auto' %} s-crt{% endif %}" href="/nui/pages/auto.html">自动化</a>
+                <a class="f-fs16{%if current == 'auto' %} s-crt{% endif %}" href="/nui/pages/pack.html">打包工具</a>
                 {%if current == 'auto' %}
                 <ul>
                     <li>
