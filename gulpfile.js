@@ -26,7 +26,6 @@ gulp.task('concat', function() {
 });
 
 var options = {
-    base: __dirname + '/',
     url:'./assets/script/config.js',
     jsdebug:true,
     filterPath: function(src) {
