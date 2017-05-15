@@ -1319,7 +1319,10 @@ Nui.define('template', ['util'], function(util){
  * @description 组件基类
  */
 
-;!(function(window, document, $, undefined){
+;!(function(window, document, undefined){
+    if(typeof jQuery === undefined){
+        return
+    }
     Nui.define('component', ['template'], function(tpl){
         var module = this;
 
@@ -1633,4 +1636,4 @@ Nui.define('template', ['util'], function(util){
             }
         })
     })
-})(this, document, jQuery);
+})(this, document);

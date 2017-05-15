@@ -180,11 +180,14 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'pack' %} s-crt{% endif %}" href="/nui/pages/pack.html">打包工具</a>
+                <a class="f-fs16{%if current == 'pack' %} s-crt{% endif %}" href="/nui/pages/pack.html">构建工具</a>
                 {%if current == 'pack' %}
                 <ul>
                     <li>
-                        <a href="#"></a>
+                        <a href="#install">安装使用</a>
+                    </li>
+                    <li>
+                        <a href="#question">常见问题</a>
                     </li>
                 </ul>
                 {% endif %}

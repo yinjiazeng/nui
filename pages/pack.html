@@ -10,7 +10,7 @@
     <link rel="icon" type="image/vnd.microsoft.icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
 	<link rel="icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
 	<link rel="shortcut icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
-	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css?v=71d12f9"/>
+	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css?v=38aeced"/>
     
 </head>
 <body class="g-body">
@@ -47,7 +47,49 @@
     
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28">打包工具</h1>
+			<h1 class="e-pt20 e-pb20 f-fs28">构建工具</h1>
+			<div class="e-mt15 f-lh22">
+				<p>开发中往往会需要做一些重复的事情，比如创建目录、合并压缩文件、修改资源版本号等，这些事不仅浪费时间而且时间久了会造成厌倦感，
+				使用构建工具可以帮助我们处理这些事情。这里生成目录的用的是<a href="http://www.yowebapp.com/" target="_blank" class="f-cblue">yeoman</a>
+				，俗称脚手架，合并压缩以及修改版本号用的是<a href="http://www.gulpjs.com.cn/" target="_blank" class="f-cblue">gulp</a>，使用2个工具之前需先安装
+				<a href="http://nodejs.cn/" target="_blank" class="f-cblue">nodejs</a>，并将npm切换为<a href="http://npm.taobao.org/" target="_blank" class="f-cblue">cnpm</a>。</p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="安装使用">安装使用</h2>
+			<p class="e-mt15 f-lh22">全局安装yeoman和gulp</p>
+<script type="text/highlight" data-highlight-options='{"isLine":false}'>
+cnpm install -g yo
+</script>
+<script type="text/highlight" data-highlight-options='{"isLine":false}'>
+cnpm install -g gulp
+</script>
+			<p class="e-mt15 f-lh22">生成项目目录</p>
+<script type="text/highlight" data-highlight-options='{"isLine":false}'>
+
+</script>
+			<p class="e-mt15 f-lh22">执行后会生成以下目录结构，用浏览器打开index.html文件可以看到页面中输出hello world</p>
+<script type="text/highlight" data-style-options='{"isLine":false}'>
+┌─ images
+├─ script
+│       ├─ libs 
+│       │       ├─ jquery  /*存放jquery类库，1.8.1及以上版本*/
+│       │       └─ nui
+│       │             ├─ nui-debug.js
+│       │             └─ nui-min.js
+│       ├─ components  /*存放nui组件*/
+│       ├─ modules     /*存放业务逻辑模块*/
+│       ├─ config.js   /*nui配置文件*/
+│       └─ main.js     /*入口模块*/
+├─ style
+│       ├─ base.css
+│       └─ main.css
+├─ gulpfile.js
+└─ index.html
+</script>
+			<p class="e-mt15 f-lh22">切换至项目根目录作为开发依赖分别安装gulp和<a href="https://www.npmjs.com/package/gulp-nui" target="_blank" class="f-cblue">gulp-nui</a></p>
+<script type="text/highlight" data-highlight-options='{"isLine":false}'>
+cnpm install --save-dev gulp gulp-nui
+</script>
+
 		</div>	
 	</div>
 	
@@ -80,11 +122,14 @@
                 
             </li>
             <li>
-                <a class="f-fs16 s-crt" href="/nui/pages/pack.html">打包工具</a>
+                <a class="f-fs16 s-crt" href="/nui/pages/pack.html">构建工具</a>
                 
                 <ul>
                     <li>
-                        <a href="#"></a>
+                        <a href="#install">安装使用</a>
+                    </li>
+                    <li>
+                        <a href="#question">常见问题</a>
                     </li>
                 </ul>
                 
@@ -100,7 +145,7 @@
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=f219bc9"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=5eb51a2"></script>
 <script type="text/javascript" src="/nui/assets/script/config.js?v=ce610f9"></script>
     
     <script type="text/javascript">
