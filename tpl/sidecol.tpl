@@ -29,6 +29,9 @@
                         <a href="#define">define</a>
                         <ul>
                             <li>
+                                <a href="#exports">exports</a>
+                            </li>
+                            <li>
                                 <a href="#require">require</a>
                             </li>
                             <li>
@@ -177,8 +180,8 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'auto' %} s-crt{% endif %}" href="/nui/pages/pack.html">打包工具</a>
-                {%if current == 'auto' %}
+                <a class="f-fs16{%if current == 'pack' %} s-crt{% endif %}" href="/nui/pages/pack.html">打包工具</a>
+                {%if current == 'pack' %}
                 <ul>
                     <li>
                         <a href="#"></a>

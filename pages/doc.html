@@ -50,7 +50,7 @@
 			<h1 class="e-pt20 e-pb20 f-fs28">API文档</h1>
 			<div class="e-mt15 f-lh22">
 				<p>引入Nui.js后，Nui会被注册为一个全局对象，下面介绍一下对象的属性和方法：</p>
-				<p>note:方法参数末尾包含“?”表示该参数非必填。</p>
+				
 
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="load">load</h2>
@@ -149,7 +149,7 @@ Nui.load('jquery', function($){
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="define">define</h2>
-			<p class="e-mt15 f-lh22">定义封装模块</p>
+			<p class="e-mt15 f-lh22">定义模块</p>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(id?, deps?, fectory)
 </script>
@@ -168,7 +168,7 @@ Nui.define(id?, deps?, fectory)
 				<tr>
 					<td>deps</td>
 					<td>Array</td>
-					<td>模块依赖</td>
+					<td>依赖模块</td>
 				</tr>
 				<tr>
 					<td>fectory</td>
@@ -177,7 +177,10 @@ Nui.define(id?, deps?, fectory)
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">当fectory为非函数时直接当作接口返回</p>
+			<div class="e-mt15 f-lh22">
+				<p>一个模块就是一个js文件，一个js文件中只能使用一次Nui.define</p>
+				<p>当fectory为非函数时直接当作接口返回</p>
+			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 //a.js
 Nui.define(['yinjiazeng', 'liumengmei'])
@@ -188,42 +191,98 @@ Nui.define(['./a', './b'], function(a, b){
 	console.log(b) //hello world!
 })
 </script>
-			<p class="e-mt15 f-lh22">当fectory为函数时，接收的参数为deps中对应模块的引用，内部提供
-				<a href="#require" class="f-corange">require</a> /
-				<a href="#imports" class="f-corange">imports</a> /
-				<a href="#renders" class="f-corange">renders</a> /
-				<a href="#extend" class="f-corange">extend</a> 四个方法，若要暴漏接口给其他模块使用，return即可。</p>
+			<div class="e-mt15 f-lh22">
+				<p>fectory内部提供一个属性
+					<a href="#exports" class="f-corange">exports</a> 以及四个方法
+					<a href="#require" class="f-corange">require</a> /
+					<a href="#imports" class="f-corange">imports</a> /
+					<a href="#renders" class="f-corange">renders</a> /
+					<a href="#extend" class="f-corange">extend</a></p>
+				<p>若要暴漏接口给其他模块使用，return或者exports即可，其中return会覆盖掉exports中的接口。</p>
+			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
-//模块置前
-Nui.define(['a', 'b', 'c', ...], function(a, b, c, ...){
-	a.init()
-	b.init()
-	b.init()
-	...
-})
-
-//模块就近
-Nui.define(function(){
-	var a = this.require('a');
-	a.init()
-	var b = this.require('b');
-	b.init()
-	var c = this.require('c');
-	c.init()
-	...
-})
-
-//暴漏接口
-Nui.define('demo', function(){
+//a.js
+Nui.define( function(){
 	var init = function(){
-		console.log('hello world')
+		console.log('aaa')
 	}
 
 	return init
 })
-//调用上面暴漏的接口
-Nui.define(['demo'], function(demo){
-	demo() //hello world
+
+//b.js
+Nui.define( function(){
+	var init = function(){
+		console.log('bbb')
+	}
+
+	this.exports = init
+})
+
+//c.js
+Nui.define( function(){
+	var init = function(){
+		console.log('ccc')
+	}
+
+	this.exports = init
+
+	return function(){
+		console.log('hello world')
+	}
+})
+
+//d.js
+Nui.define(['./a', './b', './c'], function(a, b, c){
+	a() //aaa
+	b() //bbb
+	c() //hello world
+})
+</script>
+			<p class="e-mt15 f-lh22">内部四个方法如要赋值使用时，名称不可变更，因为代码解析时会通过正则匹配提取依赖</p>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+Nui.define(function(){
+	var req = this.require, req('./a') //错误
+	var require = this.require, require('./a') //正确
+	//其它方法同理
+})
+</script>
+			<p class="e-mt15 f-lh22">配合打包工具使用时，可无需定义模块，合并时脚本会自动用Nui.define包装起来，内部4个方法也可以直接调用</p>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+//a.js
+module.exports = function(){
+	return 'world'
+}
+
+//b.js
+var a = require('./a');
+a('hello '); //hello world
+
+//打包后将变为
+//b-debug.js
+Nui.define('./a', function(){
+	var module = this, require = module.require, ...
+	module.exports = function(){
+		return 'world'
+	}
+})
+Nui.define('./b', function(){
+	var module = this, require = module.require, ...
+	var a = require('./a');
+	a('hello '); //hello world
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="exports">exports</h2>
+			<p class="e-mt15 f-lh22">导出接口</p>
+<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+Nui.define(function(){
+	this.exports.a = function(){
+
+	}
+	this.exports.b = function(){
+
+	}
+	//...
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="require">require</h2>
@@ -246,14 +305,6 @@ Nui.define(function(){
 					<td>模块id</td>
 				</tr>
 			</table>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">方法名不能变更</p>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
-Nui.define(function(){
-	var req = this.require, a = req('./a'); //这是错误的
-	var require = this.require, a = require('./a'); //这是正确的
-})
-</script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="imports">imports</h2>
 			<p class="e-mt15 f-lh22">导入css模块</p>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
@@ -274,14 +325,6 @@ Nui.define(function(){
 					<td>模块id，文件后缀.css可忽略</td>
 				</tr>
 			</table>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">方法名不能变更</p>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
-Nui.define(function(){
-	var imp = this.imports, a = imp('./a'); //这是错误的
-	var imports = this.imports, a = imports('./a'); //这是正确的
-})
-</script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="renders">renders</h2>
 			<p class="e-mt15 f-lh22">在js文件中用于渲染模版，不需要做字符串拼接处理</p>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
@@ -303,7 +346,7 @@ Nui.define(function(){
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">该方法需要配合自动化工具使用，会自动转换为字符串拼接方式，书写时模版外部包含大括号</p>
+			<p class="e-mt15 f-lh22">该方法需要配合打包工具使用，会自动转换为字符串拼接方式，书写时模版外部包含大括号</p>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){						
 	var tpl = this.renders({
@@ -321,13 +364,6 @@ Nui.define(function(){
 			'<p>hello world</p>'+
 		'</div>'
 	)
-})
-</script>
-			<p class="e-mt15 f-lh22">方法名不能变更</p>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
-Nui.define(function(){
-	var render = this.renders, a = render({<div />}); //这是错误的
-	var renders = this.renders, a = renders({<div />}); //这是正确的
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="extend">extend</h2>
@@ -364,15 +400,51 @@ Nui.define(function(){
 					<td>当module为数组时，是否将members插入到module末尾</td>
 				</tr>
 					<td>Array</td>
-					<td>在继承模块方法中增加代码块</td>
+					<td>在继承模块方法末尾插入代码块，[{method:'方法名', 'content':'代码块'}, ...]</td>
 				</tr>
 			</table>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">方法名不能变更</p>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 栗子</h3>
+			<p class="e-mt15 f-lh22">有2个页面a和b，b页面比a页面多一个按钮点击事件，其它功能都完全一样</p>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
+//a.js
 Nui.define(function(){
-	var ext = this.extend, a = ext('./a'); //这是错误的
-	var extend = this.extend, a = extend('./a'); //这是正确的
+	return {
+		init:function(){
+			$('#a').click(function(){
+				alert('aaa')
+			})
+		}
+	}
+})
+
+//b.js
+Nui.define(function(){
+	return this.extend('./a', {
+		event:function(){
+			$('#b').click(function(){
+				alert('bbb')
+			})
+		}
+	}, [
+		method:'init',
+		content:'this.event()'
+	])
+})
+//b.js的代码实际上被转换为：
+Nui.define(function(){
+	return {
+		init:function(){
+			$('#a').click(function(){
+				alert('aaa')
+			})
+			this.event()
+		},
+		event:function(){
+			$('#b').click(function(){
+				alert('bbb')
+			})
+		}
+	}
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="each">each</h2>
@@ -531,6 +603,9 @@ Nui.doc
                         <a href="#define">define</a>
                         <ul>
                             <li>
+                                <a href="#exports">exports</a>
+                            </li>
+                            <li>
                                 <a href="#require">require</a>
                             </li>
                             <li>
@@ -605,7 +680,7 @@ Nui.doc
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=9e5e964"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=f219bc9"></script>
 <script type="text/javascript" src="/nui/assets/script/config.js?v=ce610f9"></script>
     
     <script type="text/javascript">
