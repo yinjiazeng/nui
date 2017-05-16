@@ -8,6 +8,8 @@ Nui.define(['{cpns}/router'], function(router){
 
         router('options', {
             container:'.g-main',
+            delegate:Nui.doc,
+            level:2,
             //wrapper:true,
             onAfter:function(elem){
                 $('.m-menu-item a.s-crt').removeClass('s-crt');
@@ -39,7 +41,7 @@ Nui.define(['{cpns}/router'], function(router){
             target:'#seeVoucher',
             path:'{list}',
             wrapper:false,
-            splitLevel:2,
+            level:2,
             onRender:module.require('./modules/seeVoucher')
         })
 

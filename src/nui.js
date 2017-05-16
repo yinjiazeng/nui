@@ -106,21 +106,8 @@
 
     var noop = function(){}
 
-    //防止不支持该对象的浏览器报错
-    window.console = window.console || {
-        log:noop,
-        debug:noop,
-        error:noop,
-        info:noop
-    }
-
     Nui.bsie6 = Nui.browser.msie && Nui.browser.version <= 6;
     Nui.bsie7 = Nui.browser.msie && Nui.browser.version <= 7;
-
-    //防止IE6-IE7鼠标hover以及position:fixed时背景图片闪烁
-    if(Nui.bsie7){
-        document.execCommand('BackgroundImageCache', false, true);
-    }
 
     // unique(['1', '2', '1']) => ['1', '2']
     var unique = function(arr){
@@ -231,6 +218,8 @@
         maps:{}
     }
 
+    //------- 修复个别浏览器兼容性问题 begin --------
+
     //讲道理说，文件在被加载完毕后会立即执行define方法，在onload(onreadystatechange IE9-)事件中得到moduleData，这个过程是同步的
     //但是在IE9-中，高概率出现不同步情况，就是在onreadystatechange事件中得到moduleData值不是当前文件数据，原因在于执行onload时，其它模块刚好被加载，被重新赋值了
     //IE9-中文件被加载会有5个状态 uninitialized > loading > loaded > interactive > complete
@@ -255,6 +244,37 @@
             return interactiveScript
         }
     }
+
+    //防止不支持该对象的浏览器报错
+    window.console = window.console || {
+        log:noop,
+        debug:noop,
+        error:noop,
+        info:noop
+    }
+
+    //防止IE6-IE7鼠标hover以及position:fixed时背景图片闪烁
+    if(Nui.bsie7){
+        document.execCommand('BackgroundImageCache', false, true);
+    }
+
+    //修复firefox获取不到event对象问题
+    if(Nui.browser.mozilla){
+        var evt = function(){
+            var func = evt.caller;
+            while(func != null){
+                var arg0 = func.arguments[0];
+                if(arg0 instanceof Event){
+                    return arg0
+                }
+                func = func.caller;
+            }
+            return null
+        }
+        window.__defineGetter__('event', evt)
+    }
+
+    //------- 修复end -------
 
     var Module = function(attrs, deps){
         var mod = this;

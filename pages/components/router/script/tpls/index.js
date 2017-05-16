@@ -15,7 +15,7 @@ Nui.define(function(){
                 <% each $list %>
                 <% if $value.index %>
                 <li>
-                    <a href="<% $value.path %>" id="<% $value.id %>Index">
+                    <a href="javascript:void(0)" rel="<% $value.path %>" id="<% $value.id %>Index">
                         <em><i class="iconfont ui-animate">&#xe62a;</i></em>
                         <span class="ui-animate"><% $value.name %></span>
                     </a>

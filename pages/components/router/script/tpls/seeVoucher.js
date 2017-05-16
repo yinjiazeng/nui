@@ -8,6 +8,6 @@ Nui.define(function(){
         <% $index %>=<% $value %>，
         <% /each %>
         <% /if %>
-        <a id="aaa">aaaaaaaaaaa</a> 
+        <a id="aaa" class="nui-router-back">返回</a> 
     })
 })

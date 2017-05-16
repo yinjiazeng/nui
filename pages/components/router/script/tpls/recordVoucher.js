@@ -5,7 +5,7 @@ Nui.define(function(){
         var a = 1;
         var b = 2;
         </script> 
-        <div class="box">a1</div>
+        <div class="box nui-router-back">返回</div>
         <a id="aaa">aaaaaaaaaaa</a>
     })
 })
