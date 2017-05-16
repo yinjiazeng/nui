@@ -9,11 +9,11 @@
     if(typeof jQuery === undefined){
         return
     }
-    Nui.define('component', ['template'], function(tpl){
+    Nui.define('component', ['template', 'delegate'], function(tpl, events){
         var module = this;
 
-        Nui.win = $(window);
-        Nui.doc = $(document);
+        Nui.win = jQuery(window);
+        Nui.doc = jQuery(document);
 
         var getOptions = function(name, elem){
             var options = elem.data(name+'Options');
@@ -35,7 +35,7 @@
                 if(elem instanceof jQuery){
                     return elem
                 }
-                return $(elem)
+                return jQuery(elem)
             },
             _getSize:function(selector, dir, attr){
                 var size = 0;
@@ -76,11 +76,11 @@
                 });
                 return size
             },
-            $fn:function(name, module){
-                if($.fn[name]){
+            $fn:function(name, mod){
+                if(jQuery.fn[name]){
                     return
                 }
-                $.fn[name] = function(){
+                jQuery.fn[name] = function(){
                     var args = arguments;
                     var options = args[0];
                     return this.each(function(){
@@ -93,7 +93,7 @@
                                     target:this
                                 }
                             }
-                            module(options);
+                            mod(options);
                         }
                         else if(options){
                             var object = this.nui[name];
@@ -112,22 +112,22 @@
                     })
                 }
             },
-            $ready:function(name, module){
-                var $fn = $.fn[name];
+            $ready:function(name, mod){
+                var $fn = jQuery.fn[name];
                 Nui.doc.find('[data-'+name+'-options]').each(function(index, item){
-                    var ele = $(item);
+                    var ele = jQuery(item);
                     options = getOptions(name, ele);
                     if($fn){
                         ele[name](options)
                     }
                     else{
-                        module(options)
+                        mod(options)
                     }
                 })
             },
             options:function(key, value){
                 if(Nui.type(key, 'Object')){
-                    $.extend(true, this._options, key)
+                    jQuery.extend(true, this._options, key)
                 }
                 else if(Nui.type(key, 'String')){
                     this._options[key] = value
@@ -142,7 +142,7 @@
                     if(container && container instanceof jQuery){
                         if(method === 'init'){
                             container.find('[data-'+name+'-options]').each(function(){
-                                var ele = $(this);
+                                var ele = jQuery(this);
                                 if(ele[name]){
                                     ele[name](getOptions(name, ele))
                                 }
@@ -189,8 +189,8 @@
                 id:null,
                 skin:''
             },
-            _init:$.noop,
-            _exec:$.noop,
+            _init:jQuery.noop,
+            _exec:jQuery.noop,
             _getTarget:function(){
                 var that = this;
                 if(!that.target){
@@ -210,6 +210,16 @@
                 }
                 return that.target
             },
+            _event:function(){
+                var _events = this._events;
+                if(typeof _events === 'function'){
+                    _events = _events.call(this);
+                    if(!_events || _events instanceof this.constructor){
+                        return this
+                    }
+                }
+                return events.call(this, _events)
+            },
             _on:function(type, dalegate, selector, callback, trigger){
                 var that = this;
                 if(typeof selector === 'function'){
@@ -221,7 +231,7 @@
                 }
 
                 var _callback = function(e){
-                    return callback.call(this, e, $(this))
+                    return callback.call(this, e, jQuery(this))
                 }
 
                 if(dalegate){
@@ -240,7 +250,7 @@
                     }
                 }
 
-                that._events.push({
+                that._eventList.push({
                     dalegate:dalegate,
                     selector:selector,
                     type:type,
@@ -250,18 +260,18 @@
                 return that
             },
             _off:function(){
-                var that = this, _events = that._events;
-                Nui.each(_events, function(val, key){
+                var that = this, _eventList = that._eventList;
+                Nui.each(_eventList, function(val, key){
                     if(val.dalegate){
                         val.dalegate.off(val.type, val.selector, val.callback)
                     }
                     else{
                         val.selector.off(val.type, val.callback)
                     }
-                    _events[key] = null;
-                    delete _events[key]
+                    _eventList[key] = null;
+                    delete _eventList[key]
                 });
-                that._events = [];
+                that._eventList = [];
                 return that
             },
             _delete:function(){
@@ -292,8 +302,8 @@
             set:function(name, value){
                 this._reset();
                 if(name || value){
-                    if($.isPlainObject(name)){
-                        this.options = $.extend(true, this.options, name)
+                    if(jQuery.isPlainObject(name)){
+                        this.options = jQuery.extend(true, this.options, name)
                     }
                     else{
                         this.options[name] = value

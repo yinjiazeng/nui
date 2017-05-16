@@ -125,7 +125,7 @@ Nui.define(['util'], function(util){
                 catch(e){}
             })
         },
-        _event:function(){
+        _events:function(){
             var that = this, opts = that.options, self = that.constructor;
             var pleft = self._getSize(that.target, 'l', 'padding') + self._getSize(that.target, 'l');
             that._on('click', that.element, function(){

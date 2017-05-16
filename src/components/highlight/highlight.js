@@ -120,12 +120,20 @@ Nui.define(function(){
             }
             return that.code.split('\n')
         },
-        _event:function(){
+        _events:function(){
             var that = this;
-            that._on('click', that.element, 'tr', function(e, elem){
-                that.constructor._active = that._active = true;
-                elem.addClass('s-crt').siblings().removeClass('s-crt');
-                e.stopPropagation()
+            return ({
+                elem:that.element,
+                maps:{
+                    'click tr':'active'
+                },
+                calls:{
+                    active:function(e, elem){
+                        that.constructor._active = that._active = true;
+                        elem.addClass('s-crt').siblings().removeClass('s-crt');
+                        e.stopPropagation()
+                    }
+                }
             })
         }
     })

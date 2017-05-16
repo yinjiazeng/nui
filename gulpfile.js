@@ -11,6 +11,7 @@ gulp.task('concat', function() {
     return gulp.src(['./src/nui.js',
             './src/util.js',
             './src/template.js',
+            './src/delegate.js',
             './src/component.js'
         ])
         .pipe(concat('nui-debug.js'))

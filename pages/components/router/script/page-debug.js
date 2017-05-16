@@ -175,7 +175,7 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
                 catch(e){}
             })
         },
-        _event:function(){
+        _events:function(){
             var that = this, opts = that.options, self = that.constructor;
             var pleft = self._getSize(that.target, 'l', 'padding') + self._getSize(that.target, 'l');
             that._on('click', that.element, function(){
@@ -342,12 +342,20 @@ Nui.define('highlight',function(){
             }
             return that.code.split('\n')
         },
-        _event:function(){
+        _events:function(){
             var that = this;
-            that._on('click', that.element, 'tr', function(e, elem){
-                that.constructor._active = that._active = true;
-                elem.addClass('s-crt').siblings().removeClass('s-crt');
-                e.stopPropagation()
+            return ({
+                elem:that.element,
+                maps:{
+                    'click tr':'active'
+                },
+                calls:{
+                    active:function(e, elem){
+                        that.constructor._active = that._active = true;
+                        elem.addClass('s-crt').siblings().removeClass('s-crt');
+                        e.stopPropagation()
+                    }
+                }
             })
         }
     })
@@ -419,25 +427,34 @@ Nui.define('pages/components/router/script/tpls/recordVoucher',function(){
 })
 Nui.define('pages/components/router/script/modules/recordVoucher',['component', 'pages/components/router/script/tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js){
     var module = this;
+    var delegate = module.require('delegate');
     return function(target, wrapper, request){
 
         wrapper.html(tpl.render(tmpl, request))
-       
-        wrapper.on('click', 'b', function(){
-            alert()
-        })
-
-         wrapper.find('a').click(function(){
-             alert()
-            js('destroy', wrapper, 'b')
-            //component.static.trigger(null, 'destroy');
-            setTimeout(function(){
-                js('init', wrapper)
-                js('set', wrapper, {
-                    isLine:true
-                }) 
-            }, 2000)
-            //js('trigger', container, 'destroy')
+        delegate({
+            elem:wrapper,
+            maps:{
+                'click b':'b',
+                'click a':'c a'
+            },
+            calls:{
+                a:function(){
+                    js('destroy', wrapper, 'b')
+                    //component.static.trigger(null, 'destroy');
+                    setTimeout(function(){
+                        js('init', wrapper)
+                        js('set', wrapper, {
+                            isLine:true
+                        }) 
+                    }, 2000)
+                },
+                b:function(){
+                    alert()
+                },
+                c:function(){
+                    return confirm('哈哈')
+                }
+            }
         })
     }
 })

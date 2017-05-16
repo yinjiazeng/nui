@@ -2,7 +2,7 @@
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
  * @version 1.0.1
- * @description 工具类
+ * @description 实用工具集
  */
 
 Nui.define('util', {
@@ -117,14 +117,14 @@ Nui.define('util', {
         return attr in document.createElement(element);
     },
     /**
-     * @func 模拟location.href跳转，前者IE下有问题
+     * @func 模拟location.href跳转
      * @return <Undefined>
      * @param url <String> 跳转的url
      * @param target <String> 跳转类型，默认为_self
      */
-    jumpUrl:function(url, target){
+    location:function(url, target){
         if(url){
-            $('<a href="'+ url +'"'+ (target ? 'target="'+ (target||'_self') +'"' : '' ) +'><span></span></a>')
+            jQuery('<a href="'+ url +'"'+ (target ? 'target="'+ (target||'_self') +'"' : '' ) +'><span></span></a>')
                 .appendTo('body').children().click().end().remove();
         }
     },
