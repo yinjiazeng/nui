@@ -8,11 +8,11 @@ Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
         delegate({
             elem:wrapper,
             maps:{
-                'click a':'jump'
+                'click a':'seturl'
             },
             calls:{
-                jump:function(e, elem){
-                    router('jump', elem.attr('rel'))
+                seturl:function(e, elem){
+                    router('url', elem.attr('rel'))
                 }
             }
         })

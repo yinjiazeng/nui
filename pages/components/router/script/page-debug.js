@@ -597,24 +597,22 @@ Nui.define('{cpns}/router',['component'], function(component){
         },
         $ready:null,
         $fn:null,
-        jump:function(path){
-            if(path){
-                var hash, temp;
-                path = this._replace(path);
+        url:function(url){
+            var that = this;
+            if(url){
+                var _url, temp, index, _router;
+                url = this._replace(url);
                 Nui.each(this._paths, function(val, rule){
-                    if(rule === path){
-                        hash = path;
+                    if(rule === url || (url.indexOf(val.path) === 0 &&
+                                        (temp = url.replace(val.path+'/', '')) && 
+                                        temp.split('/').length === val.params.length)){
+                        _url = url;
+                        _router = that._instances[val.index];
                         return false
                     }
-                    else if(path.indexOf(val.path) === 0 && (temp = path.replace(val.path+'/', ''))){
-                        if(temp.split('/').length === val.params.length){
-                            hash = path;
-                            return false
-                        }
-                    }
                 })
-                if(hash){
-                    location.hash = '#!'+hash
+                if(_url && _router){
+                    _router._render(_router.target, _url)
                 }
             }
         },
@@ -748,8 +746,8 @@ Nui.define('{cpns}/router',['component'], function(component){
             }
             return paths
         },
-        _render:function(elem){
-            var that = this, opts = that.options, href = elem.attr('href');
+        _render:function(elem, url){
+            var that = this, opts = that.options, href = url || elem.attr('href');
             if(href){
                 var trigger = false;
                 var render = function(){
@@ -855,11 +853,11 @@ Nui.define('pages/components/router/script/modules/index',['pages/components/rou
         delegate({
             elem:wrapper,
             maps:{
-                'click a':'jump'
+                'click a':'seturl'
             },
             calls:{
-                jump:function(e, elem){
-                    router('jump', elem.attr('rel'))
+                seturl:function(e, elem){
+                    router('url', elem.attr('rel'))
                 }
             }
         })

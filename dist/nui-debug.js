@@ -1351,12 +1351,13 @@ Nui.define('delegate', function(){
                 }
             }) 
         }
+        var isComponent = that.constructor && that.constructor._component_name_;
         Nui.each(maps, function(cbs, arrs){
             cbs = Nui.trim(cbs).split(/\s+/);
             arrs = Nui.trim(arrs).split(/\s+/);
             evt = arrs.shift().replace(/:/g, ' ');
             ele = arrs.join(' ');
-            if(that._init && that._on){
+            if(isComponent){
                 that._on(evt, elem, ele, function(e){
                     callback.call(this, e, cbs)
                 })
