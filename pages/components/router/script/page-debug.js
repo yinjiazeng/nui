@@ -785,21 +785,20 @@ Nui.define('pages/components/router/script/router',['{cpns}/router'], function(r
         })
 
         router({
-            target:'#recordVoucher, #recordVoucherIndex',
+            target:'#recordVoucher',
             path:'/voucher/record',
             wrapper:false,
             onBefore:function(target, render){
-                console.log(target.attr('href'))
-                /*if(confirm('点击取消不会切换页面')){
+                if(confirm('点击取消不会切换页面')){
                     render()
                 }
-                return false;*/
+                return false;
             },
             onRender:module.require('pages/components/router/script/modules/recordVoucher')
         })
 
         router({
-            target:'#seeVoucher, #seeVoucherIndex',
+            target:'#seeVoucher',
             path:'{list}',
             wrapper:false,
             splitLevel:2,

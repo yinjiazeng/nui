@@ -1,7 +1,7 @@
 Nui.define('delegate', function(){
     return function(opts){
         var that = this, elem = opts.elem, maps = opts.maps, calls = opts.calls;
-        if(!opts || !maps || !calls){
+        if(!opts || !elem || !maps || !calls){
             return
         }
         if(!(elem instanceof jQuery)){
