@@ -7,7 +7,7 @@
 
 Nui.define(['./javascript', './style'],function(js, css){
     return this.extend('highlight', {
-        _type:'xml',
+        _title:'xml',
         _getCode:function(){
             var that = this;
             var code = that.code;

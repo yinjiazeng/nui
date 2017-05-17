@@ -7,7 +7,7 @@
 
 Nui.define(function(){
     return this.extend('highlight', {
-        _type:'js',
+        _title:'js',
         _getCode:function(){
             var that = this;
             var code = that.code;

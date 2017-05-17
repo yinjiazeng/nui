@@ -55,12 +55,17 @@ Nui.define(function(){
             }
         },
         options:{
-            //是否显示title
-            isTitle:false,
+            //工具栏
+            tools:{
+                //复制
+                copy:true
+            },
             //点击代码那一行高亮
             isLight:true,
             //是否显示行号
-            isLine:false
+            isLine:false,
+            //是否显示语法标题
+            isTitle:true
         },
         _init:function(){
             this._exec();
@@ -84,14 +89,16 @@ Nui.define(function(){
                 }
             }
         },
-        _type:'',
+        _title:'',
         _tpl:'<div class="<% className %>">'
-                +'<%if isTitle%>'
-                +'<div class="title">'
-                    +'<em class="type"><%type%></em>'
+                +'<%if tools%>'
+                +'<div class="tools">'
+                    +'<%if tools.copy%>'
+                    +'<em class="copy">复制</em>'
+                    +'<%/if%>'
                 +'</div>'
                 +'<%/if%>'
-                +'<div class="inner">'
+                +'<div class="body">'
                     +'<table>'
                         +'<%each list val key%>'
                             +'<tr>'
@@ -100,7 +107,10 @@ Nui.define(function(){
                             +'</tr>'
                         +'<%/each%>'
                     +'</table>'
-                +'<div>'
+                +'</div>'
+                +'<%if isTitle%>'
+                +'<em class="title"><%title%></em>'
+                +'<%/if%>'
             +'</div>',
         _create:function(){
             var that = this;
@@ -108,8 +118,9 @@ Nui.define(function(){
             var data = $.extend({
                 bsie7:Nui.bsie7,
                 list:that._list(),
-                type:that._type,
+                title:that._title,
                 isLine:opts.isLine,
+                tools:opts.tools,
                 isTitle:opts.isTitle
             }, that._tplData())
             var html = that._tpl2html.call(that, that._tpl, data);
@@ -126,13 +137,17 @@ Nui.define(function(){
             return ({
                 elem:that.element,
                 maps:{
-                    'click tr':'active'
+                    'click tr':'active',
+                    'click .copy':'copy'
                 },
                 calls:{
                     active:function(e, elem){
                         that.constructor._active = that._active = true;
                         elem.addClass('s-crt').siblings().removeClass('s-crt');
                         e.stopPropagation()
+                    },
+                    copy:function(){
+                        alert('傻帽！逗你玩呢。')
                     }
                 }
             })
