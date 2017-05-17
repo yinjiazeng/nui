@@ -62,7 +62,6 @@ Nui.define('highlight',function(){
             //是否显示行号
             isLine:false
         },
-        _type:'',
         _init:function(){
             this._exec();
         },
@@ -85,7 +84,8 @@ Nui.define('highlight',function(){
                 }
             }
         },
-        _tpl:'<div class="nui-highlight<%if type%> nui-highlight-<%type%><%/if%><%if skin%> highlight-<%skin%><%/if%>">'
+        _type:'',
+        _tpl:'<div class="<% className %>">'
                 +'<%if isTitle%>'
                 +'<div class="title">'
                     +'<em class="type"><%type%></em>'
@@ -108,17 +108,18 @@ Nui.define('highlight',function(){
             var data = $.extend({
                 bsie7:Nui.bsie7,
                 list:that._list(),
-                type:that._type
-            }, that.options||{})
+                type:that._type,
+                isLine:opts.isLine,
+                isTitle:opts.isTitle
+            }, that._tplData())
             var html = that._tpl2html.call(that, that._tpl, data);
             that.element = $(html).insertAfter(that.target);
         },
+        _getCode:function(){
+            return this.code
+        },
         _list:function(){
-            var that = this;
-            if(that._type){
-                return that['_'+that._type](that.code).split('\n')
-            }
-            return that.code.split('\n')
+            return this._getCode().split('\n')
         },
         _events:function(){
             var that = this;
@@ -149,8 +150,9 @@ Nui.define('highlight',function(){
 Nui.define('src/components/highlight/style',function(){
     return this.extend('highlight', {
         _type:'css',
-        _css:function(code){
+        _getCode:function(){
             var that = this;
+            var code = that.code;
             var self = that.constructor;
             var str = '';
             var match = code.match(/(\/\*(.|\s)*?\*\/)|(\{[^\{\}\/]*\})/g);
@@ -191,8 +193,9 @@ Nui.define('src/components/highlight/style',function(){
 Nui.define('src/components/highlight/javascript',function(){
     return this.extend('highlight', {
         _type:'js',
-        _js:function(code){
+        _getCode:function(){
             var that = this;
+            var code = that.code;
             var self = that.constructor;
             var str = '';
             var kws = 'abstract|arguments|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|elseif|each|enum|eval|export|'+
@@ -244,8 +247,9 @@ Nui.define('src/components/highlight/javascript',function(){
 Nui.define('{light}/xml',['src/components/highlight/javascript', 'src/components/highlight/style'],function(js, css){
     return this.extend('highlight', {
         _type:'xml',
-        _xml:function(code){
+        _getCode:function(){
             var that = this;
+            var code = that.code;
             var self = that.constructor;
             var str = '';
             code = code.replace(/&lt;\s*![^!]+-\s*&gt;/g, function(res){
@@ -288,10 +292,10 @@ Nui.define('{light}/xml',['src/components/highlight/javascript', 'src/components
                             else{
                                 var tagname = $.trim(v1[0]).toLowerCase();
                                 if(tagname == 'style'){
-                                    v2 = css.exports._css.call(that, v2)
+                                    v2 = css.exports._getCode.call(that, v2)
                                 }
                                 else if(tagname == 'script'){
-                                    v2 = js.exports._js.call(that, v2)
+                                    v2 = js.exports._getCode.call(that, v2)
                                 }
                                 else{
                                     v2 = v2.replace(/(.+)/g, self._getcode('text', '$1'))

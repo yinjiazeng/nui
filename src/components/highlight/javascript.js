@@ -8,8 +8,9 @@
 Nui.define(function(){
     return this.extend('highlight', {
         _type:'js',
-        _js:function(code){
+        _getCode:function(){
             var that = this;
+            var code = that.code;
             var self = that.constructor;
             var str = '';
             var kws = 'abstract|arguments|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|elseif|each|enum|eval|export|'+

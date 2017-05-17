@@ -62,7 +62,6 @@ Nui.define(function(){
             //是否显示行号
             isLine:false
         },
-        _type:'',
         _init:function(){
             this._exec();
         },
@@ -85,7 +84,8 @@ Nui.define(function(){
                 }
             }
         },
-        _tpl:'<div class="nui-highlight<%if type%> nui-highlight-<%type%><%/if%><%if skin%> highlight-<%skin%><%/if%>">'
+        _type:'',
+        _tpl:'<div class="<% className %>">'
                 +'<%if isTitle%>'
                 +'<div class="title">'
                     +'<em class="type"><%type%></em>'
@@ -108,17 +108,18 @@ Nui.define(function(){
             var data = $.extend({
                 bsie7:Nui.bsie7,
                 list:that._list(),
-                type:that._type
-            }, that.options||{})
+                type:that._type,
+                isLine:opts.isLine,
+                isTitle:opts.isTitle
+            }, that._tplData())
             var html = that._tpl2html.call(that, that._tpl, data);
             that.element = $(html).insertAfter(that.target);
         },
+        _getCode:function(){
+            return this.code
+        },
         _list:function(){
-            var that = this;
-            if(that._type){
-                return that['_'+that._type](that.code).split('\n')
-            }
-            return that.code.split('\n')
+            return this._getCode().split('\n')
         },
         _events:function(){
             var that = this;

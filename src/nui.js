@@ -450,7 +450,11 @@
             }
             else if(Nui.type(module, 'Function')){
                 if(module.exports){
-                    exports = extend(true, {}, module.exports, members)
+                    exports = extend(true, {}, module.exports, members);
+                    if(!exports.static._ancestry_names_){
+                        exports.static._ancestry_names_ = [];
+                    }
+                    exports.static._ancestry_names_.push(module.exports.static._component_name_)
                 }
                 else{
                     exports = extend(true, noop, module, members)
@@ -543,7 +547,6 @@
                 }
                 else{
                     obj.static._component_name_ = name;
-                    obj.static._component_attr_name_ = 'nui_component_'+name;
                     mod.module = components[name] = Module.createClass(mod, obj);
                     mod.module.exports = exports;
                     Nui.each(['$fn', '$ready'], function(v){

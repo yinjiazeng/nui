@@ -81,7 +81,7 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
             color:'#ccc'
         },
         _tpllist:'<%each style%><%$index%>:<%$value%>;<%/each%>',
-        _tplwrap:'<strong class="nui-placeholder<%if skin%> placeholder-<%skin%><%/if%>" style="<%include \'_tpllist\'%>" />',
+        _tplwrap:'<strong class="<% className %>" style="<%include \'_tpllist\'%>" />',
         _tplelem:'<b style="<%include \'_tpllist\'%>"><%text%></b>',
         _init:function(){
             this._exec();
@@ -105,16 +105,15 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
                 if(opts.animate){
                     that.target.removeAttr('placeholder')
                 }
-                that.target.wrap(that._tpl2html(that._tplwrap, {
-                        skin:opts.skin,
-                        style:{
-                            'position':'relative',
-                            'display':'inline-block',
-                            'width':that.target.outerWidth()+'px',
-                            'overflow':'hidden',
-                            'cursor':'text'
-                        }
-                    }))
+                var data = that._tplData();
+                data.style = {
+                    'position':'relative',
+                    'display':'inline-block',
+                    'width':that.target.outerWidth()+'px',
+                    'overflow':'hidden',
+                    'cursor':'text'
+                }
+                that.target.wrap(that._tpl2html(that._tplwrap, data))
                 that.element = $(that._tpl2html(that._tplelem, {
                         text:that.text,
                         style:(function(){
@@ -284,7 +283,6 @@ Nui.define('highlight',function(){
             //是否显示行号
             isLine:false
         },
-        _type:'',
         _init:function(){
             this._exec();
         },
@@ -307,7 +305,8 @@ Nui.define('highlight',function(){
                 }
             }
         },
-        _tpl:'<div class="nui-highlight<%if type%> nui-highlight-<%type%><%/if%><%if skin%> highlight-<%skin%><%/if%>">'
+        _type:'',
+        _tpl:'<div class="<% className %>">'
                 +'<%if isTitle%>'
                 +'<div class="title">'
                     +'<em class="type"><%type%></em>'
@@ -330,17 +329,18 @@ Nui.define('highlight',function(){
             var data = $.extend({
                 bsie7:Nui.bsie7,
                 list:that._list(),
-                type:that._type
-            }, that.options||{})
+                type:that._type,
+                isLine:opts.isLine,
+                isTitle:opts.isTitle
+            }, that._tplData())
             var html = that._tpl2html.call(that, that._tpl, data);
             that.element = $(html).insertAfter(that.target);
         },
+        _getCode:function(){
+            return this.code
+        },
         _list:function(){
-            var that = this;
-            if(that._type){
-                return that['_'+that._type](that.code).split('\n')
-            }
-            return that.code.split('\n')
+            return this._getCode().split('\n')
         },
         _events:function(){
             var that = this;
@@ -371,8 +371,9 @@ Nui.define('highlight',function(){
 Nui.define('{light}/javascript',function(){
     return this.extend('highlight', {
         _type:'js',
-        _js:function(code){
+        _getCode:function(){
             var that = this;
+            var code = that.code;
             var self = that.constructor;
             var str = '';
             var kws = 'abstract|arguments|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|elseif|each|enum|eval|export|'+
@@ -600,19 +601,18 @@ Nui.define('{cpns}/router',['component'], function(component){
         url:function(url){
             var that = this;
             if(url){
-                var _url, temp, index, _router;
+                var temp, index, _router;
                 url = this._replace(url);
                 Nui.each(this._paths, function(val, rule){
                     if(rule === url || (url.indexOf(val.path) === 0 &&
                                         (temp = url.replace(val.path+'/', '')) && 
                                         temp.split('/').length === val.params.length)){
-                        _url = url;
                         _router = that._instances[val.index];
                         return false
                     }
                 })
-                if(_url && _router){
-                    _router._render(_router.target, _url)
+                if(_router){
+                    _router._render(_router.target, url)
                 }
             }
         },

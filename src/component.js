@@ -186,7 +186,7 @@
             static:statics,
             options:{
                 target:null,
-                id:null,
+                id:'',
                 skin:''
             },
             _init:jQuery.noop,
@@ -200,7 +200,8 @@
                         return null
                     }
                     target = self._jquery(target);
-                    that.target = target.attr(self._component_attr_name_, '');
+                    var attr = 'nui_component_'+self._component_name_;
+                    that.target = target.attr(attr, '');
                     that.target.each(function(){
                         if(!this.nui){
                             this.nui = {};
@@ -209,6 +210,28 @@
                     })
                 }
                 return that.target
+            },
+            _tplData:function(){
+                var opts = this.options, 
+                    self = this.constructor,
+                    name = 'nui-' + self._component_name_, 
+                    skin = Nui.trim(opts.skin),
+                    className = [];
+                if(self._ancestry_names_){
+                    Nui.each(self._ancestry_names_, function(val){
+                        className.push('nui-'+val);
+                        if(skin){
+                            className.push('nui-'+val+'-'+skin)
+                        }
+                    })
+                }
+                className.push(name);
+                if(skin){
+                    className.push(name+'-'+skin)
+                }
+                return ({
+                    className:className.join(' ')
+                })
             },
             _event:function(){
                 var _events = this._events;
@@ -277,7 +300,8 @@
             _delete:function(){
                 var that = this;
                 var self = that.constructor;
-                that.target.removeAttr(self._component_attr_name_).each(function(){
+                var attr = 'nui_component_'+self._component_name_;
+                that.target.removeAttr(attr).each(function(){
                     if(this.nui){
                         this.nui[self._component_name_] = null;
                         delete this.nui[self._component_name_];

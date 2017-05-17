@@ -450,7 +450,11 @@
             }
             else if(Nui.type(module, 'Function')){
                 if(module.exports){
-                    exports = extend(true, {}, module.exports, members)
+                    exports = extend(true, {}, module.exports, members);
+                    if(!exports.static._ancestry_names_){
+                        exports.static._ancestry_names_ = [];
+                    }
+                    exports.static._ancestry_names_.push(module.exports.static._component_name_)
                 }
                 else{
                     exports = extend(true, noop, module, members)
@@ -543,7 +547,6 @@
                 }
                 else{
                     obj.static._component_name_ = name;
-                    obj.static._component_attr_name_ = 'nui_component_'+name;
                     mod.module = components[name] = Module.createClass(mod, obj);
                     mod.module.exports = exports;
                     Nui.each(['$fn', '$ready'], function(v){
@@ -1185,7 +1188,7 @@ Nui.define('template', ['util'], function(util){
                     }
                 }
                 var code = isstr ? '' : [];
-                //tpl = tpl.replace(/[\r\n]+/g, '');
+                tpl = tpl.replace(/\s+/g, ' ');
                 Nui.each(tpl.split(openTag), function(val, key){
                     val = val.split(closeTag);
                     if(key >= 1){
@@ -1559,7 +1562,7 @@ Nui.define('delegate', function(){
             static:statics,
             options:{
                 target:null,
-                id:null,
+                id:'',
                 skin:''
             },
             _init:jQuery.noop,
@@ -1573,7 +1576,8 @@ Nui.define('delegate', function(){
                         return null
                     }
                     target = self._jquery(target);
-                    that.target = target.attr(self._component_attr_name_, '');
+                    var attr = 'nui_component_'+self._component_name_;
+                    that.target = target.attr(attr, '');
                     that.target.each(function(){
                         if(!this.nui){
                             this.nui = {};
@@ -1582,6 +1586,28 @@ Nui.define('delegate', function(){
                     })
                 }
                 return that.target
+            },
+            _tplData:function(){
+                var opts = this.options, 
+                    self = this.constructor,
+                    name = 'nui-' + self._component_name_, 
+                    skin = Nui.trim(opts.skin),
+                    className = [];
+                if(self._ancestry_names_){
+                    Nui.each(self._ancestry_names_, function(val){
+                        className.push('nui-'+val);
+                        if(skin){
+                            className.push('nui-'+val+'-'+skin)
+                        }
+                    })
+                }
+                className.push(name);
+                if(skin){
+                    className.push(name+'-'+skin)
+                }
+                return ({
+                    className:className.join(' ')
+                })
             },
             _event:function(){
                 var _events = this._events;
@@ -1650,7 +1676,8 @@ Nui.define('delegate', function(){
             _delete:function(){
                 var that = this;
                 var self = that.constructor;
-                that.target.removeAttr(self._component_attr_name_).each(function(){
+                var attr = 'nui_component_'+self._component_name_;
+                that.target.removeAttr(attr).each(function(){
                     if(this.nui){
                         this.nui[self._component_name_] = null;
                         delete this.nui[self._component_name_];

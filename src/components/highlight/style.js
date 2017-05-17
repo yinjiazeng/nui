@@ -8,8 +8,9 @@
 Nui.define(function(){
     return this.extend('highlight', {
         _type:'css',
-        _css:function(code){
+        _getCode:function(){
             var that = this;
+            var code = that.code;
             var self = that.constructor;
             var str = '';
             var match = code.match(/(\/\*(.|\s)*?\*\/)|(\{[^\{\}\/]*\})/g);

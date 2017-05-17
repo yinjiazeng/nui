@@ -5,9 +5,9 @@
  * @description xml语法高亮组件
  */
 
-Nui.define(['./javascript', './style'],function(js, css){
-    return this.extend('highlight', {
-        _type:'xml',
+Nui.define(function(){
+    return this.extend('./xml.js', {
+        _type:'xml2',
         _getCode:function(){
             var that = this;
             var code = that.code;

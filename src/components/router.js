@@ -140,19 +140,18 @@ Nui.define(['component'], function(component){
         url:function(url){
             var that = this;
             if(url){
-                var _url, temp, index, _router;
+                var temp, index, _router;
                 url = this._replace(url);
                 Nui.each(this._paths, function(val, rule){
                     if(rule === url || (url.indexOf(val.path) === 0 &&
                                         (temp = url.replace(val.path+'/', '')) && 
                                         temp.split('/').length === val.params.length)){
-                        _url = url;
                         _router = that._instances[val.index];
                         return false
                     }
                 })
-                if(_url && _router){
-                    _router._render(_router.target, _url)
+                if(_router){
+                    _router._render(_router.target, url)
                 }
             }
         },

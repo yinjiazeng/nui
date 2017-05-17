@@ -31,7 +31,7 @@ Nui.define(['util'], function(util){
             color:'#ccc'
         },
         _tpllist:'<%each style%><%$index%>:<%$value%>;<%/each%>',
-        _tplwrap:'<strong class="nui-placeholder<%if skin%> placeholder-<%skin%><%/if%>" style="<%include \'_tpllist\'%>" />',
+        _tplwrap:'<strong class="<% className %>" style="<%include \'_tpllist\'%>" />',
         _tplelem:'<b style="<%include \'_tpllist\'%>"><%text%></b>',
         _init:function(){
             this._exec();
@@ -55,16 +55,15 @@ Nui.define(['util'], function(util){
                 if(opts.animate){
                     that.target.removeAttr('placeholder')
                 }
-                that.target.wrap(that._tpl2html(that._tplwrap, {
-                        skin:opts.skin,
-                        style:{
-                            'position':'relative',
-                            'display':'inline-block',
-                            'width':that.target.outerWidth()+'px',
-                            'overflow':'hidden',
-                            'cursor':'text'
-                        }
-                    }))
+                var data = that._tplData();
+                data.style = {
+                    'position':'relative',
+                    'display':'inline-block',
+                    'width':that.target.outerWidth()+'px',
+                    'overflow':'hidden',
+                    'cursor':'text'
+                }
+                that.target.wrap(that._tpl2html(that._tplwrap, data))
                 that.element = $(that._tpl2html(that._tplelem, {
                         text:that.text,
                         style:(function(){
