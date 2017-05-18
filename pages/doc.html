@@ -184,8 +184,11 @@ Nui.define(id?, deps?, fectory)
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 //a.js
 Nui.define(['yinjiazeng', 'liumengmei'])
+
 //b.js
 Nui.define('hello world!')
+
+//c.js
 Nui.define(['./a', './b'], function(a, b){
 	console.log(a[0]) //yinjiazeng
 	console.log(b) //hello world!
@@ -198,7 +201,7 @@ Nui.define(['./a', './b'], function(a, b){
 					<a href="#imports" class="f-corange">imports</a> /
 					<a href="#renders" class="f-corange">renders</a> /
 					<a href="#extend" class="f-corange">extend</a></p>
-				<p>若要暴漏接口给其他模块使用，return或者exports即可，其中return会覆盖掉exports中的接口。</p>
+				<p>若要暴漏接口给其他模块使用，可使用return或者exports，return会覆盖exports的值，若没有导出接口，默认会返回一个空对象。</p>
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 //a.js
@@ -239,7 +242,7 @@ Nui.define(['./a', './b', './c'], function(a, b, c){
 	c() //hello world
 })
 </script>
-			<p class="e-mt15 f-lh22">内部四个方法如要赋值使用时，名称不可变更，因为代码解析时会通过正则匹配提取依赖</p>
+			<p class="e-mt15 f-lh22">内部四个方法如要赋值使用时，方法名称不可变更，因为代码解析时会通过正则匹配提取依赖</p>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
 	var req = this.require, req('./a') //错误
@@ -247,7 +250,7 @@ Nui.define(function(){
 	//其它方法同理
 })
 </script>
-			<p class="e-mt15 f-lh22">配合打包工具使用时，可无需定义模块，合并时脚本会自动用Nui.define包装起来，内部4个方法也可以直接调用</p>
+			<p class="e-mt15 f-lh22">配合构建工具使用时，可无需在外部用Nui.define包装，内部方法和属性也无需通过 this. 使用，提供一个 module 变量指向 this</p>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 //a.js
 module.exports = function(){
@@ -258,7 +261,7 @@ module.exports = function(){
 var a = require('./a');
 a('hello '); //hello world
 
-//打包后将变为
+//合并后将变为
 //b-debug.js
 Nui.define('./a', function(){
 	var module = this, require = module.require, ...
@@ -289,7 +292,7 @@ Nui.define(function(){
 			<p class="e-mt15 f-lh22">导入js模块</p>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){
-	this.require(id)
+	var mod = this.require(id)
 })
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -302,7 +305,7 @@ Nui.define(function(){
 				<tr>
 					<td>id</td>
 					<td>String</td>
-					<td>模块id</td>
+					<td>模块id，文件后缀.js可省略</td>
 				</tr>
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="imports">imports</h2>
@@ -322,7 +325,7 @@ Nui.define(function(){
 				<tr>
 					<td>id</td>
 					<td>String</td>
-					<td>模块id，文件后缀.css可忽略</td>
+					<td>模块id，文件后缀.css可省略</td>
 				</tr>
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="renders">renders</h2>
@@ -346,7 +349,7 @@ Nui.define(function(){
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">该方法需要配合打包工具使用，会自动转换为字符串拼接方式，书写时模版外部包含大括号</p>
+			<p class="e-mt15 f-lh22">该方法需要配合构建工具使用，会自动转换为字符串拼接方式，书写时模版外部包含大括号</p>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 Nui.define(function(){						
 	var tpl = this.renders({
