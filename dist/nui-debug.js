@@ -1385,11 +1385,10 @@ Nui.define('delegate', function(){
     if(typeof jQuery === undefined){
         return
     }
+    Nui.win = jQuery(window);
+    Nui.doc = jQuery(document);
     Nui.define('component', ['template', 'delegate'], function(tpl, events){
         var module = this;
-
-        Nui.win = jQuery(window);
-        Nui.doc = jQuery(document);
 
         var getOptions = function(name, elem){
             var options = elem.data(name+'Options');
