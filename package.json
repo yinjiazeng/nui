@@ -2,7 +2,7 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
-    "gulp-nui": "^1.4.6",
+    "gulp-nui": "^1.4.7",
     "gulp-nuiwatch": "^1.0.5",
     "gulp-nunjucks-render": "^2.0.0",
     "gulp-rename": "^1.2.2",

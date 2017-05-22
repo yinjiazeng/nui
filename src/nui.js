@@ -258,20 +258,10 @@
         document.execCommand('BackgroundImageCache', false, true);
     }
 
-    //修复firefox获取不到event对象问题
-    if(Nui.browser.mozilla){
-        var evt = function(){
-            var func = evt.caller;
-            while(func != null){
-                var arg0 = func.arguments[0];
-                if(arg0 instanceof Event){
-                    return arg0
-                }
-                func = func.caller;
-            }
-            return null
-        }
-        window.__defineGetter__('event', evt)
+    //常用jq对象
+    if(typeof jQuery !== undefined){
+        Nui.win = jQuery(window);
+        Nui.doc = jQuery(document);
     }
 
     //------- 修复end -------
