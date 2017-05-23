@@ -456,7 +456,7 @@ Nui.define('pages/components/router/script/modules/recordVoucher',['component', 
             calls:{
                 a:function(){
                     js('destroy', wrapper, 'b')
-                    component.static.destroy();
+                    component.static.destroy(wrapper);
                     setTimeout(function(){
                         js('init', wrapper)
                         js('set', wrapper, {
