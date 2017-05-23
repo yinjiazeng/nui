@@ -193,7 +193,8 @@
     var dirname = getPath();
 
     var getModuleid = function(){
-        return '_module_'+mid++
+        ++mid;
+        return '_module_'+mid
     }
 
     var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
@@ -208,7 +209,7 @@
 
     var cacheStyles = {};
 
-    var roots = [];
+    var rootModules = {};
 
     var components = {};
 
@@ -259,7 +260,7 @@
     }
 
     //常用jq对象
-    if(typeof jQuery !== undefined){
+    if(typeof jQuery !== 'undefined'){
         Nui.win = jQuery(window);
         Nui.doc = jQuery(document);
     }
@@ -288,7 +289,7 @@
 
     Module.prototype.load = function(){
         var mod = this;
-        if(!mod.loaded && !/_module_\d+$/.test(mod.id)){
+        if(!mod.loaded && mod.name !== '_module_'+mid){
             var node = document.createElement('script');
             var version = config.maps[mod.name]||'';
             if(version && !/^\?/.test(version)){
@@ -343,62 +344,43 @@
                         val && (mod[key] = val)
                     })
                     moduleData = null;
-                    return mod.resolve().runcallback()
                 }
+                return mod.resolve().execCallback()
             })
         }
         else{
             mod.loaded = true;
-            return mod.resolve().runcallback()
+            return mod.resolve().execCallback()
         }
     }
 
-    Module.prototype.runcallback = function(){
-        var mod = this;
-        var loadedModule = mod.getloaded();
-        if(loadedModule && loadedModule.length){
-            Nui.each(loadedModule, function(val){
-                if(val.root.callback){
-                    val.root.callback(val.modules)
+    Module.prototype.execCallback = function(){
+        Nui.each(rootModules, function(root, name){
+            var ids = unique(root.getIds()), loaded = true;
+            Nui.each(ids, function(id){
+                if(!cacheModules[id].loaded){
+                    return loaded = false
                 }
             })
-        }
-        return mod
+            if(loaded && root.callback){
+                root.callback(ids)
+            }
+        })
+        return this
     }
 
-    Module.prototype.getModules = function(modules){
+    Module.prototype.getIds = function(ids){
         var mod = this;
-        if(!modules){
-            modules = [];
+        if(!ids){
+            ids = [];
         }
-        modules.unshift(mod.id);
+        ids.unshift(mod.id);
         if(mod.alldeps.length){
             Nui.each(mod.depmodules, function(val){
-                modules = val.getModules(modules)
+                ids = val.getIds(ids)
             })
         }
-        return modules
-    }
-
-    Module.prototype.getloaded = function(){
-        var loadedModule = [];
-        var allmodules = [];
-        Nui.each(roots, function(root){
-            var modules = unique(root.getModules());
-            allmodules = allmodules.concat(modules);
-            loadedModule.push({
-                root:root,
-                modules:modules
-            })
-        })
-        allmodules = unique(allmodules);
-        var module;
-        while(module = allmodules.shift()){
-            if(!cacheModules[module].loaded){
-                return false
-            }
-        }
-        return loadedModule
+        return ids
     }
 
     Module.prototype.setFactory = function(){
@@ -685,8 +667,10 @@
             if(match){
                 mod.version = match[0]
             }
-            roots.push(mod);
-            mod.callback = function(modules){
+
+            rootModules[_module_] = mod;
+
+            mod.callback = function(ids){
                 var _module = mod;
                 var suffix = mod.suffix;
                 if(mod.name === _module_){
@@ -695,8 +679,8 @@
                         suffix = val.suffix;
                     })
                 }
-                Nui.each(modules, function(val){
-                    var _mod = cacheModules[val].exec();
+                Nui.each(ids, function(id){
+                    var _mod = cacheModules[id].exec();
                     if(!suffix){
                         _mod.loadcss()
                     }
@@ -704,6 +688,7 @@
                 if(Nui.type(callback, 'Function')){
                     callback.call(Nui, _module.module)
                 }
+                delete rootModules[_module_];
                 delete mod.callback
             }
             mod.load()
