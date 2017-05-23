@@ -67,7 +67,7 @@ Nui.define(['../src/components/router'], function(router){
 
 	router({
 		target:'#home',
-		enter:true,
+		entry:true,
 		path:'/home/'
 	})
 
@@ -102,7 +102,7 @@ router({
 	container:$('#main')
 })
 </script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> enter</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> entry</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Boolean}</p>
 				<p>默认值：false</p>
@@ -110,7 +110,7 @@ router({
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 router({
-	enter:true
+	entry:true
 })
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> wrapper</h3>
@@ -198,15 +198,15 @@ router({
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> init</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> load</h3>
 			<div class="e-mt15 f-lh22">
-				<p>页面刚加载时，如果url不符合规则就跳转到入口页面，若符合规则就显示当前页面内容</p>
+				<p>路由跳转</p>
 			</div>
 <script type="text/highlight" data-javascript-options='{"isLine":false}'>
 router({
 	target:'#home',
 	path:'/home/',
-	enter:true
+	entry:true
 })
 
 router({
@@ -214,7 +214,7 @@ router({
 	path:'/news/'
 })
 
-router('init')
+router('load')
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> alias</h3>
 			<div class="e-mt15 f-lh22">
@@ -307,8 +307,8 @@ router({
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=1422794"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=a1e90ef"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=996ef87"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=f42a658"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-debug", function(page){

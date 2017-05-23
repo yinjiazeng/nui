@@ -99,8 +99,8 @@ Nui.define(['component'], function(component){
 
                 if(!that._initialize){
                     Nui.each(that._instances, function(v){
-                        if(!that._hasEnter && v.options.enter === true){
-                            that._hasEnter = true;
+                        if(!that._hasEntry && v.options.entry === true){
+                            that._hasEntry= true;
                             if(v.target){
                                 v._render(v.target.eq(0));
                             }
@@ -135,9 +135,9 @@ Nui.define(['component'], function(component){
                 })
             }
         },
-        $ready:null,
-        $fn:null,
-        url:function(url){
+        _$ready:null,
+        _$fn:null,
+        load:function(url){
             var that = this;
             if(url){
                 var temp, index, _router;
@@ -154,14 +154,12 @@ Nui.define(['component'], function(component){
                     _router._render(_router.target, url)
                 }
             }
+            else if(!that._initialize){
+                that._change();
+            }
         },
         alias:function(val){
             return $.extend(this._alias, val||{})
-        },
-        init:function(){
-            if(!this._initialize){
-                this._change();
-            }
         },
         forward:function(){
             history.forward();
@@ -220,7 +218,7 @@ Nui.define(['component'], function(component){
             path:'',
             delegate:null,
             container:null,
-            enter:false,
+            entry:false,
             wrapper:false,
             level:1,
             onBefore:null,

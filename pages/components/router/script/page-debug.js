@@ -456,7 +456,7 @@ Nui.define('pages/components/router/script/modules/recordVoucher',['component', 
             calls:{
                 a:function(){
                     js('destroy', wrapper, 'b')
-                    //component.static.trigger(null, 'destroy');
+                    component.static.destroy();
                     setTimeout(function(){
                         js('init', wrapper)
                         js('set', wrapper, {
@@ -575,8 +575,8 @@ Nui.define('{cpns}/router',['component'], function(component){
 
                 if(!that._initialize){
                     Nui.each(that._instances, function(v){
-                        if(!that._hasEnter && v.options.enter === true){
-                            that._hasEnter = true;
+                        if(!that._hasEntry && v.options.entry === true){
+                            that._hasEntry= true;
                             if(v.target){
                                 v._render(v.target.eq(0));
                             }
@@ -611,9 +611,9 @@ Nui.define('{cpns}/router',['component'], function(component){
                 })
             }
         },
-        $ready:null,
-        $fn:null,
-        url:function(url){
+        _$ready:null,
+        _$fn:null,
+        load:function(url){
             var that = this;
             if(url){
                 var temp, index, _router;
@@ -630,14 +630,12 @@ Nui.define('{cpns}/router',['component'], function(component){
                     _router._render(_router.target, url)
                 }
             }
+            else if(!that._initialize){
+                that._change();
+            }
         },
         alias:function(val){
             return $.extend(this._alias, val||{})
-        },
-        init:function(){
-            if(!this._initialize){
-                this._change();
-            }
         },
         forward:function(){
             history.forward();
@@ -696,7 +694,7 @@ Nui.define('{cpns}/router',['component'], function(component){
             path:'',
             delegate:null,
             container:null,
-            enter:false,
+            entry:false,
             wrapper:false,
             level:1,
             onBefore:null,
@@ -872,7 +870,7 @@ Nui.define('pages/components/router/script/modules/index',['pages/components/rou
             },
             calls:{
                 seturl:function(e, elem){
-                    router('url', elem.attr('rel'))
+                    router('load', elem.attr('rel'))
                 }
             }
         })
@@ -899,7 +897,7 @@ Nui.define('pages/components/router/script/router',['{cpns}/router'], function(r
 
         router({
             target:'#index',
-            enter:true,
+            entry:true,
             path:'/index',
             onRender:module.require('pages/components/router/script/modules/index')
         })
@@ -925,7 +923,7 @@ Nui.define('pages/components/router/script/router',['{cpns}/router'], function(r
             onRender:module.require('pages/components/router/script/modules/seeVoucher')
         })
 
-        router('init')
+        router('load')
     }
 })
 Nui.define('pages/components/router/script/tpls/layout',function(){

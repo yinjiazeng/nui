@@ -12,7 +12,7 @@ Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
             },
             calls:{
                 seturl:function(e, elem){
-                    router('url', elem.attr('rel'))
+                    router('load', elem.attr('rel'))
                 }
             }
         })

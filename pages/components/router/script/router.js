@@ -19,7 +19,7 @@ Nui.define(['{cpns}/router'], function(router){
 
         router({
             target:'#index',
-            enter:true,
+            entry:true,
             path:'/index',
             onRender:module.require('./modules/index')
         })
@@ -45,6 +45,6 @@ Nui.define(['{cpns}/router'], function(router){
             onRender:module.require('./modules/seeVoucher')
         })
 
-        router('init')
+        router('load')
     }
 })

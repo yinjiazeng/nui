@@ -492,7 +492,10 @@
         factory.exports = {};
 
         if(mod.name === 'component'){
-            factory.components = function(){
+            factory.components = function(name){
+                if(name){
+                    return components[name]
+                }
                 return components
             }
         }
@@ -539,8 +542,8 @@
                     obj.static._component_name_ = name;
                     mod.module = components[name] = Module.createClass(mod, obj);
                     mod.module.exports = exports;
-                    Nui.each(['$fn', '$ready'], function(v){
-                        mod.module(v, name, mod.module)
+                    Nui.each(['_$fn', '_$ready'], function(v){
+                        mod.module.call(mod, v, name, mod.module)
                     })
                 }
             }
@@ -620,12 +623,9 @@
             var len = args.length;
             var options = args[0];
             if(typeof options === 'string'){
-                if(options.indexOf('_') !== 0){
+                if(!/^_/.test(options) || (this instanceof Module)){
                     var attr = Class[options];
                     if(typeof attr === 'function'){
-                        if((options === '$ready' || options === '$fn') && len === 1){
-                            return attr
-                        }
                         return attr.apply(Class, Array.prototype.slice.call(args, 1))
                     }
                     else if(len > 1){
@@ -1374,17 +1374,6 @@ Nui.define('delegate', function(){
 Nui.define('component', ['template', 'delegate'], function(tpl, events){
     var module = this;
 
-    var getOptions = function(name, elem){
-        var options = elem.data(name+'Options');
-        if(!options){
-            return
-        }
-        if(typeof options === 'string'){
-            options = eval('('+ options +')')
-        }
-        return options
-    }
-
     var statics = {
         _index:0,
         _instances:{},
@@ -1435,8 +1424,8 @@ Nui.define('component', ['template', 'delegate'], function(tpl, events){
             });
             return size
         },
-        $fn:function(name, mod){
-            if(jQuery.fn[name]){
+        _$fn:function(name, mod){
+            if(module.components(name)){
                 return
             }
             jQuery.fn[name] = function(){
@@ -1471,18 +1460,8 @@ Nui.define('component', ['template', 'delegate'], function(tpl, events){
                 })
             }
         },
-        $ready:function(name, mod){
-            var $fn = jQuery.fn[name];
-            Nui.doc.find('[data-'+name+'-options]').each(function(index, item){
-                var ele = jQuery(item);
-                options = getOptions(name, ele);
-                if($fn){
-                    ele[name](options)
-                }
-                else{
-                    mod(options)
-                }
-            })
+        _$ready:function(name, mod){
+            mod('init', Nui.doc)
         },
         options:function(key, value){
             if(Nui.type(key, 'Object')){
@@ -1500,12 +1479,22 @@ Nui.define('component', ['template', 'delegate'], function(tpl, events){
             if(name){
                 if(container && container instanceof jQuery){
                     if(method === 'init'){
-                        container.find('[data-'+name+'-options]').each(function(){
-                            var ele = jQuery(this);
-                            if(ele[name]){
-                                ele[name](getOptions(name, ele))
-                            }
-                        })
+                        var mod = module.components(name);
+                        if(mod){
+                            container.find('[data-'+name+'-options]').each(function(){
+                                //不能重复调用
+                                if(this.nui && this.nui[name]){
+                                    return
+                                }
+                                var elem = jQuery(this);
+                                var options = elem.data(name+'Options') || {};
+                                if(typeof options === 'string'){
+                                    options = eval('('+ options +')')
+                                }
+                                options.target = elem;
+                                mod(options)
+                            })
+                        }
                     }
                     else{
                         container.find('[nui_component_'+ name +']').each(function(){
@@ -1518,25 +1507,17 @@ Nui.define('component', ['template', 'delegate'], function(tpl, events){
                 }
                 else{
                     Nui.each(that._instances, function(val){
-                        val[method].apply(val, args)
+                        if(typeof val[method] === 'function'){
+                            val[method].apply(val, args)
+                        }
                     })
                 }
             }
             else{
                 Array.prototype.unshift.call(args, method);
-                var components = module.components();
-                if(method !== 'init'){
-                    Nui.each(components, function(v){
-                        v.apply(v, args)
-                    })
-                }
-                else{
-                    Nui.each(components, function(v){
-                        if(typeof v('$ready') === 'function'){
-                            v.apply(v, args)
-                        }
-                    })
-                }
+                Nui.each(module.components(), function(v){
+                    v.apply(v, args)
+                })
             }
         }
     })

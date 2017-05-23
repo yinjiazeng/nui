@@ -492,7 +492,10 @@
         factory.exports = {};
 
         if(mod.name === 'component'){
-            factory.components = function(){
+            factory.components = function(name){
+                if(name){
+                    return components[name]
+                }
                 return components
             }
         }
@@ -539,8 +542,8 @@
                     obj.static._component_name_ = name;
                     mod.module = components[name] = Module.createClass(mod, obj);
                     mod.module.exports = exports;
-                    Nui.each(['$fn', '$ready'], function(v){
-                        mod.module(v, name, mod.module)
+                    Nui.each(['_$fn', '_$ready'], function(v){
+                        mod.module.call(mod, v, name, mod.module)
                     })
                 }
             }
@@ -620,12 +623,9 @@
             var len = args.length;
             var options = args[0];
             if(typeof options === 'string'){
-                if(options.indexOf('_') !== 0){
+                if(!/^_/.test(options) || (this instanceof Module)){
                     var attr = Class[options];
                     if(typeof attr === 'function'){
-                        if((options === '$ready' || options === '$fn') && len === 1){
-                            return attr
-                        }
                         return attr.apply(Class, Array.prototype.slice.call(args, 1))
                     }
                     else if(len > 1){
