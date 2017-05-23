@@ -356,7 +356,7 @@
     Module.prototype.runcallback = function(){
         var mod = this;
         var loadedModule = mod.getloaded();
-        if(loadedModule){
+        if(loadedModule && loadedModule.length){
             Nui.each(loadedModule, function(val){
                 if(val.root.callback){
                     val.root.callback(val.modules)
