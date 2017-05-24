@@ -80,9 +80,11 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
              */
             color:'#ccc'
         },
-        _tpllist:'<%each style%><%$index%>:<%$value%>;<%/each%>',
-        _tplwrap:'<strong class="<% className %>" style="<%include \'_tpllist\'%>" />',
-        _tplelem:'<b style="<%include \'_tpllist\'%>"><%text%></b>',
+        _template:{
+            list:'<%each style%><%$index%>:<%$value%>;<%/each%>',
+            wrap:'<strong class="<% className %>" style="<%include \'list\'%>" />',
+            elem:'<b style="<%include \'list\'%>"><%text%></b>',
+        },
         _init:function(){
             this._exec();
         },
@@ -113,8 +115,8 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
                     'overflow':'hidden',
                     'cursor':'text'
                 }
-                that.target.wrap(that._tpl2html(that._tplwrap, data))
-                that.element = $(that._tpl2html(that._tplelem, {
+                that.target.wrap(that._tpl2html('wrap', data))
+                that.element = $(that._tpl2html('elem', {
                         text:that.text,
                         style:(function(){
                             var height = that.target.outerHeight();
@@ -311,7 +313,8 @@ Nui.define('highlight',function(){
             }
         },
         _title:'',
-        _tpl:'<div class="<% className %>">'
+        _template:{
+            tmpl:'<div class="<% className %>">'
                 +'<%if tools%>'
                 +'<div class="tools">'
                     +'<%if tools.copy%>'
@@ -332,7 +335,8 @@ Nui.define('highlight',function(){
                 +'<%if isTitle%>'
                 +'<em class="title"><%title%></em>'
                 +'<%/if%>'
-            +'</div>',
+            +'</div>'
+        },
         _create:function(){
             var that = this;
             var opts = that.options;
@@ -344,8 +348,7 @@ Nui.define('highlight',function(){
                 tools:opts.tools,
                 isTitle:opts.isTitle
             }, that._tplData())
-            var html = that._tpl2html.call(that, that._tpl, data);
-            that.element = $(html).insertAfter(that.target);
+            that.element = $(that._tpl2html('tmpl', data)).insertAfter(that.target);
         },
         _getCode:function(){
             return this.code

@@ -30,9 +30,11 @@ Nui.define(['util'], function(util){
              */
             color:'#ccc'
         },
-        _tpllist:'<%each style%><%$index%>:<%$value%>;<%/each%>',
-        _tplwrap:'<strong class="<% className %>" style="<%include \'_tpllist\'%>" />',
-        _tplelem:'<b style="<%include \'_tpllist\'%>"><%text%></b>',
+        _template:{
+            list:'<%each style%><%$index%>:<%$value%>;<%/each%>',
+            wrap:'<strong class="<% className %>" style="<%include \'list\'%>" />',
+            elem:'<b style="<%include \'list\'%>"><%text%></b>',
+        },
         _init:function(){
             this._exec();
         },
@@ -63,8 +65,8 @@ Nui.define(['util'], function(util){
                     'overflow':'hidden',
                     'cursor':'text'
                 }
-                that.target.wrap(that._tpl2html(that._tplwrap, data))
-                that.element = $(that._tpl2html(that._tplelem, {
+                that.target.wrap(that._tpl2html('wrap', data))
+                that.element = $(that._tpl2html('elem', {
                         text:that.text,
                         style:(function(){
                             var height = that.target.outerHeight();

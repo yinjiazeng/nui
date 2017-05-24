@@ -1548,6 +1548,7 @@ Nui.define('delegate', function(){
                 id:'',
                 skin:''
             },
+            _template:{},
             _init:jQuery.noop,
             _exec:jQuery.noop,
             _getTarget:function(){
@@ -1679,8 +1680,8 @@ Nui.define('delegate', function(){
                 }
                 return this
             },
-            _tpl2html:function(tpls, data){
-                return tpl.render.call(this, tpls, data, {
+            _tpl2html:function(name, data){
+                return tpl.render.call(this._template, this._template[name], data, {
                     openTag:'<%',
                     closeTag:'%>'
                 })
