@@ -22,12 +22,12 @@
 				<p>在页面中创建一个元素建议a标签，并包含href属性</p>
 				<p><a href="/nui/src/components/router.js" class="f-corange" target="_blank">下载</a>最新版作为依赖项引入到模块中，并创建实例</p>
 			</div>
-<script type="text/highlight" data-xml-options='{"isLine":false}'>
+<script type="text/highlight" data-xml-options>
 <a href="/home/" id="home">首页</a>
 <a href="/news/1/" class="news">体育新闻</a>
 <a href="/news/2/" class="news">国际新闻</a>
 </script>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 Nui.define(['../src/components/router'], function(router){
 
 	router({
@@ -47,7 +47,7 @@ Nui.define(['../src/components/router'], function(router){
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
 				<p>说明：路径匹配规则，冒号为参数名，url匹配上该规则才会触发onRender回调</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router({
 	path:'/news/:type/:id/'
 })
@@ -59,7 +59,7 @@ router({
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
 				<p>说明：实例创建后会生成wrapper（&lt;div class="wrapper"&gt;&lt;/div&gt;）作为container子元素，该元素就是路由渲染容器</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router({
 	container:'#main'
 })
@@ -73,7 +73,7 @@ router({
 				<p>默认值：false</p>
 				<p>说明：是否设置为入口页面，页面中只能设置一个入口；当url不满足path规则时，会自动跳转到入口页面</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router({
 	entry:true
 })
@@ -84,7 +84,7 @@ router({
 				<p>默认值：false</p>
 				<p>说明：值为false时，所有设置该值的路由实例都将共享一个wrapper，每次加载都会触发onRender；当值为true是，实例会独享一个wrapper，仅在第一次加载时时会触发onRender。</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router({
 	wrapper:true
 })
@@ -95,7 +95,7 @@ router({
 				<p>默认值：1</p>
 				<p>说明：当匹配规则path中包含参数时才会启用，取值分别为0、1、2。当值为0时url必须满足匹配条件，参数不能少；当值为1时允许url少参数，但不能无参数；当值为2时允许url不传参数</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router({
 	level:2
 })
@@ -108,7 +108,7 @@ router({
 				<p>参数：elem {jQuery Object} 点击元素的jQuery对象</p>
 				<p>参数：render {Function} 强制触发执行onRender</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router({
 	onBefore:function(elem, render){
 		if(elem.attr('id') === 'admin'){
@@ -130,7 +130,7 @@ router({
 				<p>参数：wrapper {jQuery Object} 模板渲染容器jQuery对象</p>
 				<p>参数：data {JSON Object} 包含4个属性，url：完整路径，path：url中参数除外的路径，param：路径中的参数，cache：wrapper内容缓存</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router({
 	path:'/news/:type/:id',
 	onRender:function(target, wrapper, data){
@@ -151,7 +151,7 @@ router({
 				<p>参数：target {jQuery Object} 调用组件的jQuery对象</p>
 				<p>参数：wrapper {jQuery Object} 模板渲染容器jQuery对象</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router({
 	path:'/news/:type/:id',
 	onRender:function(target, wrapper, data){
@@ -167,7 +167,7 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>路由跳转</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router({
 	target:'#home',
 	path:'/home/',
@@ -185,7 +185,7 @@ router('load')
 			<div class="e-mt15 f-lh22">
 				<p>设置路径匹配别名，用于简化path参数，在path中用大括号使用该别名</p>
 			</div>
-<script type="text/highlight" data-javascript-options='{"isLine":false}'>
+<script type="text/highlight" data-javascript-options>
 router('alias', {
 	'news':'/a/b/news/'
 })
