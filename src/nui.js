@@ -287,27 +287,27 @@
         mod.uri = mod.id.substr(0, mod.id.lastIndexOf('/')+1);
     }
 
+    //动态加载模块
     Module.prototype.load = function(){
         var mod = this;
         if(!mod.loaded && mod.name !== '_module_'+mid){
-            var node = document.createElement('script');
-            var version = config.maps[mod.name]||'';
-            if(version && !/^\?/.test(version)){
-                version = '?v='+version
-            }
-            mod.url = mod.id+mod.suffix+'.js'+(version ? version : mod.version);
-            node.src = mod.url;
-            node.id = mod.id;
-            currentlyAddingScript = node;
-            head.appendChild(node);
-            currentlyAddingScript = null;
-            if(support){
-                node.onload = node.onerror = mod.onload(node)
-            }
-            else{
-                node.onreadystatechange = function(){
-                    if(/loaded|complete/.test(node.readyState)){
-                        mod.onload(node)()
+            if(!mod.url){
+                var node = document.createElement('script');
+                mod.url = mod.id+mod.suffix+'.js'+mod.version;
+                node.src = mod.url;
+                node.id = mod.id;
+                currentlyAddingScript = node;
+                head.appendChild(node);
+                currentlyAddingScript = null;
+                if(support){
+                    node.onload = node.onerror = mod.onload(node)
+                }
+                else{
+                    //ie6/7/8
+                    node.onreadystatechange = function(){
+                        if(/loaded|complete/.test(node.readyState)){
+                            mod.onload(node)()
+                        }
                     }
                 }
             }
@@ -318,6 +318,26 @@
         }
     }
 
+    //动态加载css
+    Module.prototype.loadcss = function(){
+        var mod = this;
+        if(mod.styles && mod.styles.length){
+            Nui.each(mod.styles, function(val){
+                var path = Module.getAttrs(val, mod.uri)[0];
+                if(!cacheStyles[path]){
+                    cacheStyles[path] = true;
+                    var node = document.createElement('link');
+                    path = path+'.css'+mod.version;
+                    node.rel = 'stylesheet';
+                    node.href = path;
+                    head.appendChild(node);
+                }
+            })
+        }
+        return mod;
+    }
+
+    //加载模块依赖
     Module.prototype.resolve = function(){
         var mod = this;
         if(mod.alldeps.length && isEmptyObject(mod.depmodules)){
@@ -330,6 +350,7 @@
         return mod
     }
 
+    //因为无法知晓最后一个依赖模块，所以只要任意模块被加载完毕，就会从入口模块遍历所有依赖，当全部依赖都被加载时执行回调
     Module.prototype.onload = function(node){
         var mod = this;
         if(node){
@@ -345,48 +366,53 @@
                     })
                     moduleData = null;
                 }
-                return mod.resolve().execCallback()
+                return mod.resolve().rootCallback()
             })
         }
         else{
             mod.loaded = true;
-            return mod.resolve().execCallback()
+            return mod.resolve().rootCallback()
         }
     }
 
-    Module.prototype.execCallback = function(){
+    //获取入口模块的所有依赖模块id，若依赖全部被加载则执行回调
+    Module.prototype.rootCallback = function(){
         Nui.each(rootModules, function(root, name){
-            var ids = unique(root.getIds()), loaded = true;
-            Nui.each(ids, function(id){
-                if(!cacheModules[id].loaded){
-                    return loaded = false
-                }
-            })
-            if(loaded && root.callback){
+            var data = root.getData();
+            var ids = unique(data.ids);
+            if(data.loaded && root.callback){
                 root.callback(ids)
             }
         })
         return this
     }
 
-    Module.prototype.getIds = function(ids){
-        var mod = this;
-        if(!ids){
-            ids = [];
+    //获取模块所有依赖的id，以及依赖是否被加载完毕
+    Module.prototype.getData = function(data){
+        if(!data){
+            data = {
+                ids:[],
+                loaded:true
+            }
         }
-        ids.unshift(mod.id);
-        if(mod.alldeps.length){
-            Nui.each(mod.depmodules, function(val){
-                ids = val.getIds(ids)
+        data.ids.unshift(this.id);
+        if(!this.loaded){
+            data.loaded = false
+        }
+        if(this.alldeps.length){
+            Nui.each(this.depmodules, function(val){
+                data = val.getData(data)
             })
         }
-        return ids
+        return data
     }
 
+    //设置工厂函数内部方法
     Module.prototype.setFactory = function(){
         var mod = this;
         var factory = mod.factory;
 
+        //导入模块
         factory.require = function(id){
             var _mod = mod.depmodules[id];
             if(_mod){
@@ -394,6 +420,7 @@
             }
         }
 
+        //继承模块
         factory.extend = function(module, members, inserts){
             var exports;
 
@@ -465,15 +492,19 @@
             return exports
         }
 
+        //导入样式
         factory.imports = noop;
 
+        //渲染字符串
         factory.renders = function(tpl){
             return tpl
         }
 
+        //导出接口
         factory.exports = {};
 
         if(mod.name === 'component'){
+            //只有在组件基类模块中才能使用，用来获取组件集合
             factory.components = function(name){
                 if(name){
                     return components[name]
@@ -485,16 +516,19 @@
         return factory
     }
 
+    //调用工厂函数，获取模块导出接口
     Module.prototype.exec = function(){
         var mod = this;
         if(!mod.module && Nui.type(mod.factory, 'Function')){
             var factory = mod.setFactory();
             var modules = [];
+            //设置工厂函数形参，也就是依赖模块的引用
             Nui.each(mod.deps, function(val){
                 modules.push(factory.require(val))
             })
-            var exports = factory.apply(factory, modules);
 
+            var exports = factory.apply(factory, modules);
+            //优先使用return接口
             if(typeof exports === 'undefined'){
                 exports = factory.exports
             }
@@ -506,16 +540,20 @@
                     proto:{}
                 }
                 Nui.each(exports, function(val, key){
+                    //静态属性以及方法
                     if(key === 'static'){
                         obj[key] = val
                     }
+                    //实例方法
                     else if(Nui.type(val, 'Function')){
                         obj.proto[key] = val
                     }
+                    //实例属性
                     else{
                         obj.attr[key] = val
                     }
                 })
+                //文件名作为组件名
                 var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\W/g, '');
                 if(components[name]){
                     mod.module = components[name]
@@ -536,24 +574,7 @@
         return mod
     }
 
-    Module.prototype.loadcss = function(){
-        var mod = this;
-        if(mod.styles && mod.styles.length){
-            Nui.each(mod.styles, function(val){
-                var path = Module.getAttrs(val, mod.uri)[0];
-                if(!cacheStyles[path]){
-                    cacheStyles[path] = true;
-                    path = path+'.css'+mod.version;
-                    var node = document.createElement('link');
-                    node.rel = 'stylesheet';
-                    node.href = path;
-                    head.appendChild(node);
-                }
-            })
-        }
-        return mod;
-    }
-
+    //获取正确规范的路径
     Module.replacePath = function(path){
         // a///b///c => a/b/c
         path = path.replace(/([^:])\/{2,}/g, '$1/');
@@ -582,6 +603,7 @@
         return path.replace(/([\w]+)\/?(\.\/)+/g, '$1/')
     }
 
+    //创建组件类
     Module.createClass = function(mod, object){
         var Class = function(options){
             var that = this;
@@ -663,26 +685,28 @@
         if(Nui.type(id, 'String') && Nui.trim(id)){
             //截取入口文件参数，依赖的文件加载时都会带上该参数
             var match = id.match(/(\?[\s\S]+)$/);
-            var mod = cacheModules[Module.getAttrs(id)[0]] || Module.getModule(_module_, [id]);
+            var mod = Module.getModule(_module_, [id]);
+
             if(match){
                 mod.version = match[0]
             }
-
-            rootModules[_module_] = mod;
+            
+            var depname = mod.alldeps[0];
+            var version = config.maps[depname.replace(/-(debug|min)$/, '')]||'';
+            if(version){
+                if(!/^\?/.test(version)){
+                    version = '?v='+version
+                }
+                mod.version = version
+            }
 
             mod.callback = function(ids){
-                var _module = mod;
-                var suffix = mod.suffix;
-                if(mod.name === _module_){
-                    Nui.each(mod.depmodules, function(val){
-                        _module = val;
-                        suffix = val.suffix;
-                    })
-                }
+                var _module = mod.depmodules[depname];
+                var suffix = _module.suffix;
                 Nui.each(ids, function(id){
-                    var _mod = cacheModules[id].exec();
+                    var module = cacheModules[id].exec();
                     if(!suffix){
-                        _mod.loadcss()
+                        module.loadcss()
                     }
                 })
                 if(Nui.type(callback, 'Function')){
@@ -691,10 +715,14 @@
                 delete rootModules[_module_];
                 delete mod.callback
             }
+
+            rootModules[_module_] = mod;
+
             mod.load()
         }
     }
 
+    //获取工厂函数中模块的依赖
     Module.getdeps = function(str){
         var deps = [];
         var styles = [];
@@ -763,7 +791,9 @@
     }
 
     Nui.load = function(id, callback){
-        Module.load(id, callback, getModuleid())
+        if(id && typeof id === 'string'){
+            Module.load(id, callback, getModuleid())
+        }
         return Nui
     }
 
