@@ -176,6 +176,9 @@
                     <li>
                         <a href="/nui/pages/element/footer/">页脚</a>
                     </li>
+                    <li>
+                        <a href="/nui/pages/element/skin/">皮肤</a>
+                    </li>
                 </ul>
                 {% endif %}
             </li>
