@@ -249,7 +249,7 @@
                         <a{%if page == 'copy' %} class="s-crt"{% endif %} href="/nui/pages/components/copy/">拷贝</a>
                     </li>
                     <li>
-                        <a{%if page == 'accordion' %} class="s-crt"{% endif %} href="/nui/pages/components/accordion/">手风琴</a>
+                        <a{%if page == 'collapse' %} class="s-crt"{% endif %} href="/nui/pages/components/collapse/">折叠面板</a>
                     </li>
                     <li>
                         <a{%if page == 'timer' %} class="s-crt"{% endif %} href="/nui/pages/components/timer/">定时器</a>
