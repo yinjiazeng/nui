@@ -451,10 +451,7 @@
             else if(Nui.type(module, 'Function')){
                 if(module.exports){
                     exports = extend(true, {}, module.exports, members);
-                    if(!exports.static._ancestry_names_){
-                        exports.static._ancestry_names_ = [];
-                    }
-                    exports.static._ancestry_names_.push(module.exports.static._component_name_)
+                    exports.static._parent = module
                 }
                 else{
                     exports = extend(true, noop, module, members)
@@ -534,7 +531,7 @@
                 exports = factory.exports
             }
 
-            if(mod.name !== 'component' && Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
+            if(Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
                 var obj = {
                     static:{},
                     attr:{},
@@ -566,11 +563,14 @@
                 }
                 else{
                     obj.static._component_name_ = name;
-                    mod.module = components[name] = Module.createClass(mod, obj);
+                    mod.module = Module.createClass(mod, obj);
                     mod.module.exports = exports;
-                    Nui.each(['_$fn', '_$ready'], function(v){
-                        mod.module.call(mod, v, name, mod.module)
-                    })
+                    if(mod.name !== 'component'){
+                        components[name] = mod.module;
+                        Nui.each(['_$fn', '_$ready'], function(v){
+                            mod.module.call(mod, v, name, mod.module)
+                        })
+                    }
                 }
             }
             else{
@@ -633,6 +633,9 @@
             var len = args.length;
             var options = args[0];
             if(typeof options === 'string'){
+                if(options === 'class'){
+                    return Class
+                }
                 if(!/^_/.test(options) || (this instanceof Module)){
                     var attr = Class[options];
                     if(typeof attr === 'function'){

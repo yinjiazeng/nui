@@ -1,6 +1,7 @@
 Nui.define(function(){
     return this.renders({
         <input type="text" placeholder="aaaaaaaaaaa" data-placeholder-options='{"color":"#f60", "animate":true}' />
+        <div class="empty">还原</div>
         <script type="text/highlight" data-javascript-options="{id:'b'}">
         var a = 1;
         var b = 2;

@@ -63,9 +63,6 @@
                 return size
             },
             _$fn:function(name, mod){
-                if(module.components(name)){
-                    return
-                }
                 jQuery.fn[name] = function(){
                     var args = arguments;
                     var options = args[0];
@@ -82,8 +79,8 @@
                             mod(options);
                         }
                         else if(options){
-                            var object = this.nui[name];
-                            if(options.indexOf('_') !== 0){
+                            var object;
+                            if(this.nui && (object=this.nui[name]) && options.indexOf('_') !== 0){
                                 if(options === 'options'){
                                     object.set(args[1], args[2])
                                 }
@@ -111,10 +108,16 @@
             }
         }
 
-        Nui.each(['init', 'set', 'reset', 'destroy'], function(method){
-            statics[method] = function(){
+        statics.setMethod = function(method, object){
+            if(!object){
+                object = {}
+            }
+            if(!method){
+                return object
+            }
+            object[method] = function(){
                 var that = this, args = arguments, container = args[0], name = that._component_name_;
-                if(name){
+                if(name && name !== 'component'){
                     if(container && container instanceof jQuery){
                         if(method === 'init'){
                             var mod = module.components(name);
@@ -153,11 +156,16 @@
                 }
                 else{
                     Array.prototype.unshift.call(args, method);
-                    Nui.each(module.components(), function(v){
+                    Nui.each(module.components(), function(v, k){
                         v.apply(v, args)
                     })
                 }
             }
+            return object
+        }
+
+        Nui.each(['init', 'set', 'reset', 'destroy'], function(method){
+            statics.setMethod(method, statics)
         })
 
         return ({
@@ -195,15 +203,21 @@
                     self = this.constructor,
                     name = 'nui-' + self._component_name_, 
                     skin = Nui.trim(opts.skin),
-                    className = [];
-                if(self._ancestry_names_){
-                    Nui.each(self._ancestry_names_, function(val){
-                        className.push('nui-'+val);
-                        if(skin){
-                            className.push('nui-'+val+'-'+skin)
+                    getName = function(_class, arrs){
+                        if(_class._parent){
+                            var _pclass = _class._parent('class');
+                            var _name = _pclass._component_name_;
+                            if(_name !== 'component'){
+                                if(skin){
+                                    arrs.unshift('nui-'+_name+'-'+skin);
+                                }
+                                arrs.unshift('nui-'+_name);
+                                return getName(_pclass, arrs)
+                            }
                         }
-                    })
-                }
+                        return arrs
+                    }, className = getName(self, []);
+
                 className.push(name);
                 if(skin){
                     className.push(name+'-'+skin)

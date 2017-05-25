@@ -70,7 +70,7 @@ Nui.define(['component'], function(component){
                                     that._wrapper = that._getWrapper(object.container)
                                 }
                                 if(!object._wrapper){
-                                    component.static.destroy(that._wrapper.off());
+                                    component('destroy', that._wrapper.off());
                                     that._cacheContent[_hash] = true;
                                 }
                                 var wrapper = object._wrapper || that._wrapper;
@@ -81,7 +81,7 @@ Nui.define(['component'], function(component){
                                     param:param,
                                     cache:cache
                                 })
-                                component.static.init(wrapper);
+                                component('init', wrapper);
                             }
                             var wrapper = object._wrapper || that._wrapper;
                             wrapper.show().siblings('.wrapper').hide();

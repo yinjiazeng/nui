@@ -55,9 +55,9 @@ Nui.define('pages/components/router/script/modules/seeVoucher',['pages/component
  * @description 输入框占位符
  */
 
-Nui.define('{cpns}/placeholder',['util'], function(util){
+Nui.define('{cpns}/placeholder',['util', 'component'], function(util, component){
     var support = util.supportHtml5('placeholder', 'input');
-    return this.extend('component', {
+    return this.extend(component, {
         options:{
             /**
              * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
@@ -83,7 +83,7 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
         _template:{
             list:'<%each style%><%$index%>:<%$value%>;<%/each%>',
             wrap:'<strong class="<% className %>" style="<%include \'list\'%>" />',
-            elem:'<b style="<%include \'list\'%>"><%text%></b>',
+            elem:'<b style="<%include \'list\'%>"><%text%></b>'
         },
         _init:function(){
             this._exec();
@@ -190,9 +190,7 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
             that._on('blur change', that.target, function(e, elem){
                 var val = Nui.trim(elem.val());
                 if((!opts.equal && val === that.text) || !val){
-                    elem.val('');
-                    that.element.show();
-                    opts.animate && that.element.stop(true, false).animate({left:pleft, opacity:'1'})
+                    that.empty()
                 }
                 else{
                     that.element.hide()
@@ -216,6 +214,15 @@ Nui.define('{cpns}/placeholder',['util'], function(util){
             }
             else{
                 that.target.removeAttr('placeholder')
+            }
+        },
+        empty:function(){
+            var self = this.constructor, target = this.target;
+            var pleft = self._getSize(target, 'l', 'padding') + self._getSize(target, 'l');
+            target.val('');
+            this.element.show();
+            if(this.options.animate){
+                this.element.stop(true, false).animate({left:pleft, opacity:'1'})
             }
         }
     })
@@ -436,6 +443,7 @@ Nui.define('{light}/javascript',function(){
 Nui.define('pages/components/router/script/tpls/recordVoucher',function(){
     return this.renders(''+''
         +'<input type="text" placeholder="aaaaaaaaaaa" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
+        +'<div class="empty">还原</div>'+''
         +'<script type="text/highlight" data-javascript-options="{id:\'b\'}">'+''
         +'var a = 1;'+''
         +'var b = 2;'+''
@@ -444,7 +452,7 @@ Nui.define('pages/components/router/script/tpls/recordVoucher',function(){
         +'<a id="aaa">aaaaaaaaaaa</a>'+''
     +'')
 })
-Nui.define('pages/components/router/script/modules/recordVoucher',['component', 'pages/components/router/script/tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js){
+Nui.define('pages/components/router/script/modules/recordVoucher',['component', 'pages/components/router/script/tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js, ph){
     var module = this;
     var delegate = module.require('delegate');
     return function(target, wrapper, request){
@@ -453,8 +461,9 @@ Nui.define('pages/components/router/script/modules/recordVoucher',['component', 
         delegate({
             elem:wrapper,
             maps:{
-                'click b':'b',
-                'click a':'c a'
+                //'click b':'b',
+                'click .empty':'empty'
+                //'click a':'c a'
             },
             calls:{
                 a:function(){
@@ -472,6 +481,10 @@ Nui.define('pages/components/router/script/modules/recordVoucher',['component', 
                 },
                 c:function(){
                     return confirm('哈哈')
+                },
+                empty:function(){
+                    ph('empty', wrapper)
+                    //$('input').placeholder('empty')
                 }
             }
         })
@@ -549,7 +562,7 @@ Nui.define('{cpns}/router',['component'], function(component){
                                     that._wrapper = that._getWrapper(object.container)
                                 }
                                 if(!object._wrapper){
-                                    component.static.destroy(that._wrapper.off());
+                                    component('destroy', that._wrapper.off());
                                     that._cacheContent[_hash] = true;
                                 }
                                 var wrapper = object._wrapper || that._wrapper;
@@ -560,7 +573,7 @@ Nui.define('{cpns}/router',['component'], function(component){
                                     param:param,
                                     cache:cache
                                 })
-                                component.static.init(wrapper);
+                                component('init', wrapper);
                             }
                             var wrapper = object._wrapper || that._wrapper;
                             wrapper.show().siblings('.wrapper').hide();
@@ -878,7 +891,7 @@ Nui.define('pages/components/router/script/modules/index',['pages/components/rou
             },
             calls:{
                 seturl:function(e, elem){
-                    router('load', elem.attr('rel'))
+                    router('href', elem.attr('rel'))
                 }
             }
         })

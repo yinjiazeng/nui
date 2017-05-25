@@ -1,4 +1,4 @@
-Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js){
+Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js, ph){
     var module = this;
     var delegate = module.require('delegate');
     return function(target, wrapper, request){
@@ -7,8 +7,9 @@ Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascrip
         delegate({
             elem:wrapper,
             maps:{
-                'click b':'b',
-                'click a':'c a'
+                //'click b':'b',
+                'click .empty':'empty'
+                //'click a':'c a'
             },
             calls:{
                 a:function(){
@@ -26,6 +27,10 @@ Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascrip
                 },
                 c:function(){
                     return confirm('哈哈')
+                },
+                empty:function(){
+                    ph('empty', wrapper)
+                    //$('input').placeholder('empty')
                 }
             }
         })

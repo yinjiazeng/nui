@@ -451,10 +451,7 @@
             else if(Nui.type(module, 'Function')){
                 if(module.exports){
                     exports = extend(true, {}, module.exports, members);
-                    if(!exports.static._ancestry_names_){
-                        exports.static._ancestry_names_ = [];
-                    }
-                    exports.static._ancestry_names_.push(module.exports.static._component_name_)
+                    exports.static._parent = module
                 }
                 else{
                     exports = extend(true, noop, module, members)
@@ -534,7 +531,7 @@
                 exports = factory.exports
             }
 
-            if(mod.name !== 'component' && Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
+            if(Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
                 var obj = {
                     static:{},
                     attr:{},
@@ -566,11 +563,14 @@
                 }
                 else{
                     obj.static._component_name_ = name;
-                    mod.module = components[name] = Module.createClass(mod, obj);
+                    mod.module = Module.createClass(mod, obj);
                     mod.module.exports = exports;
-                    Nui.each(['_$fn', '_$ready'], function(v){
-                        mod.module.call(mod, v, name, mod.module)
-                    })
+                    if(mod.name !== 'component'){
+                        components[name] = mod.module;
+                        Nui.each(['_$fn', '_$ready'], function(v){
+                            mod.module.call(mod, v, name, mod.module)
+                        })
+                    }
                 }
             }
             else{
@@ -633,6 +633,9 @@
             var len = args.length;
             var options = args[0];
             if(typeof options === 'string'){
+                if(options === 'class'){
+                    return Class
+                }
                 if(!/^_/.test(options) || (this instanceof Module)){
                     var attr = Class[options];
                     if(typeof attr === 'function'){
@@ -1450,9 +1453,6 @@ Nui.define('delegate', function(){
                 return size
             },
             _$fn:function(name, mod){
-                if(module.components(name)){
-                    return
-                }
                 jQuery.fn[name] = function(){
                     var args = arguments;
                     var options = args[0];
@@ -1469,8 +1469,8 @@ Nui.define('delegate', function(){
                             mod(options);
                         }
                         else if(options){
-                            var object = this.nui[name];
-                            if(options.indexOf('_') !== 0){
+                            var object;
+                            if(this.nui && (object=this.nui[name]) && options.indexOf('_') !== 0){
                                 if(options === 'options'){
                                     object.set(args[1], args[2])
                                 }
@@ -1498,10 +1498,16 @@ Nui.define('delegate', function(){
             }
         }
 
-        Nui.each(['init', 'set', 'reset', 'destroy'], function(method){
-            statics[method] = function(){
+        statics.setMethod = function(method, object){
+            if(!object){
+                object = {}
+            }
+            if(!method){
+                return object
+            }
+            object[method] = function(){
                 var that = this, args = arguments, container = args[0], name = that._component_name_;
-                if(name){
+                if(name && name !== 'component'){
                     if(container && container instanceof jQuery){
                         if(method === 'init'){
                             var mod = module.components(name);
@@ -1540,11 +1546,16 @@ Nui.define('delegate', function(){
                 }
                 else{
                     Array.prototype.unshift.call(args, method);
-                    Nui.each(module.components(), function(v){
+                    Nui.each(module.components(), function(v, k){
                         v.apply(v, args)
                     })
                 }
             }
+            return object
+        }
+
+        Nui.each(['init', 'set', 'reset', 'destroy'], function(method){
+            statics.setMethod(method, statics)
         })
 
         return ({
@@ -1582,15 +1593,21 @@ Nui.define('delegate', function(){
                     self = this.constructor,
                     name = 'nui-' + self._component_name_, 
                     skin = Nui.trim(opts.skin),
-                    className = [];
-                if(self._ancestry_names_){
-                    Nui.each(self._ancestry_names_, function(val){
-                        className.push('nui-'+val);
-                        if(skin){
-                            className.push('nui-'+val+'-'+skin)
+                    getName = function(_class, arrs){
+                        if(_class._parent){
+                            var _pclass = _class._parent('class');
+                            var _name = _pclass._component_name_;
+                            if(_name !== 'component'){
+                                if(skin){
+                                    arrs.unshift('nui-'+_name+'-'+skin);
+                                }
+                                arrs.unshift('nui-'+_name);
+                                return getName(_pclass, arrs)
+                            }
                         }
-                    })
-                }
+                        return arrs
+                    }, className = getName(self, []);
+
                 className.push(name);
                 if(skin){
                     className.push(name+'-'+skin)
