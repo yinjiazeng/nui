@@ -214,6 +214,7 @@
     var components = {};
 
     var config = {
+        skin:null,
         paths:{},
         alias:{},
         maps:{}
@@ -539,6 +540,11 @@
                     attr:{},
                     proto:{}
                 }
+
+                if(config.skin && typeof config.skin === 'string'){
+                    exports.options.skin = config.skin
+                }
+
                 Nui.each(exports, function(val, key){
                     //静态属性以及方法
                     if(key === 'static'){
