@@ -108,66 +108,6 @@
             }
         }
 
-        statics.setMethod = function(method, object){
-            if(!object){
-                object = {}
-            }
-            if(!method){
-                return object
-            }
-            object[method] = function(){
-                var that = this, args = arguments, container = args[0], name = that._component_name_;
-                if(name && name !== 'component'){
-                    if(container && container instanceof jQuery){
-                        if(method === 'init'){
-                            var mod = module.components(name);
-                            if(mod){
-                                container.find('[data-'+name+'-options]').each(function(){
-                                    //不能重复调用
-                                    if(this.nui && this.nui[name]){
-                                        return
-                                    }
-                                    var elem = jQuery(this);
-                                    var options = elem.data(name+'Options') || {};
-                                    if(typeof options === 'string'){
-                                        options = eval('('+ options +')')
-                                    }
-                                    options.target = elem;
-                                    mod(options)
-                                })
-                            }
-                        }
-                        else{
-                            container.find('[nui_component_'+ name +']').each(function(){
-                                var object;
-                                if(this.nui && (object = this.nui[name]) && object[method]){
-                                    object[method].apply(object, Array.prototype.slice.call(args, 1))
-                                }
-                            })
-                        }
-                    }
-                    else{
-                        Nui.each(that._instances, function(val){
-                            if(typeof val[method] === 'function'){
-                                val[method].apply(val, args)
-                            }
-                        })
-                    }
-                }
-                else{
-                    Array.prototype.unshift.call(args, method);
-                    Nui.each(module.components(), function(v, k){
-                        v.apply(v, args)
-                    })
-                }
-            }
-            return object
-        }
-
-        Nui.each(['init', 'set', 'reset', 'destroy'], function(method){
-            statics.setMethod(method, statics)
-        })
-
         return ({
             static:statics,
             options:{

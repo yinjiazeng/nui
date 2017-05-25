@@ -46,6 +46,9 @@ Nui.define(['util', 'component'], function(util, component){
                     target.attr('placeholder', text = that.options.text)
                 }
                 that.text = Nui.trim(text);
+                if(that.val === undefined){
+                    that.val = Nui.trim(target.val());
+                }
                 if(that.text){
                     that._create()
                 }
@@ -138,13 +141,7 @@ Nui.define(['util', 'component'], function(util, component){
             })
 
             that._on('blur change', that.target, function(e, elem){
-                var val = Nui.trim(elem.val());
-                if((!opts.equal && val === that.text) || !val){
-                    that.empty()
-                }
-                else{
-                    that.element.hide()
-                }
+                that.value();
             })
 
             that._on('keyup keydown', that.target, function(e, elem){
@@ -166,13 +163,19 @@ Nui.define(['util', 'component'], function(util, component){
                 that.target.removeAttr('placeholder')
             }
         },
-        empty:function(){
+        value:function(val){
             var self = this.constructor, target = this.target;
             var pleft = self._getSize(target, 'l', 'padding') + self._getSize(target, 'l');
-            target.val('');
-            this.element.show();
-            if(this.options.animate){
-                this.element.stop(true, false).animate({left:pleft, opacity:'1'})
+            var v = Nui.trim(!arguments.length ? target.val() : target.val(val === null ? this.val : val).val());
+            if((!this.options.equal && v === this.text) || !v){
+                target.val('');
+                this.element.show();
+                if(this.options.animate){
+                    this.element.stop(true, false).animate({left:pleft, opacity:'1'})
+                }
+            }
+            else{
+                this.element.hide()
             }
         }
     })

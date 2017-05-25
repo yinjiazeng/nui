@@ -96,6 +96,9 @@ Nui.define('{cpns}/placeholder',['util', 'component'], function(util, component)
                     target.attr('placeholder', text = that.options.text)
                 }
                 that.text = Nui.trim(text);
+                if(that.val === undefined){
+                    that.val = Nui.trim(target.val());
+                }
                 if(that.text){
                     that._create()
                 }
@@ -188,13 +191,7 @@ Nui.define('{cpns}/placeholder',['util', 'component'], function(util, component)
             })
 
             that._on('blur change', that.target, function(e, elem){
-                var val = Nui.trim(elem.val());
-                if((!opts.equal && val === that.text) || !val){
-                    that.empty()
-                }
-                else{
-                    that.element.hide()
-                }
+                that.value();
             })
 
             that._on('keyup keydown', that.target, function(e, elem){
@@ -216,13 +213,19 @@ Nui.define('{cpns}/placeholder',['util', 'component'], function(util, component)
                 that.target.removeAttr('placeholder')
             }
         },
-        empty:function(){
+        value:function(val){
             var self = this.constructor, target = this.target;
             var pleft = self._getSize(target, 'l', 'padding') + self._getSize(target, 'l');
-            target.val('');
-            this.element.show();
-            if(this.options.animate){
-                this.element.stop(true, false).animate({left:pleft, opacity:'1'})
+            var v = Nui.trim(!arguments.length ? target.val() : target.val(val === null ? this.val : val).val());
+            if((!this.options.equal && v === this.text) || !v){
+                target.val('');
+                this.element.show();
+                if(this.options.animate){
+                    this.element.stop(true, false).animate({left:pleft, opacity:'1'})
+                }
+            }
+            else{
+                this.element.hide()
             }
         }
     })
@@ -442,7 +445,10 @@ Nui.define('{light}/javascript',function(){
 
 Nui.define('pages/components/router/script/tpls/recordVoucher',function(){
     return this.renders(''+''
-        +'<input type="text" placeholder="aaaaaaaaaaa" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
+        +'<input type="text" placeholder="aaaaaaaaaaa" value="11" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
+        +'<input type="text" placeholder="111" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
+        +'<input type="text" placeholder="222" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
+        +'<input type="text" placeholder="333" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
         +'<div class="empty">还原</div>'+''
         +'<script type="text/highlight" data-javascript-options="{id:\'b\'}">'+''
         +'var a = 1;'+''
@@ -483,8 +489,8 @@ Nui.define('pages/components/router/script/modules/recordVoucher',['component', 
                     return confirm('哈哈')
                 },
                 empty:function(){
-                    ph('empty', wrapper)
-                    //$('input').placeholder('empty')
+                   ph('value', wrapper, null)
+                    //$('input').placeholder('value', null)
                 }
             }
         })

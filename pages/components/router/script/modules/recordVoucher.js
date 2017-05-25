@@ -29,8 +29,8 @@ Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascrip
                     return confirm('哈哈')
                 },
                 empty:function(){
-                    ph('empty', wrapper)
-                    //$('input').placeholder('empty')
+                   ph('value', wrapper, null)
+                    //$('input').placeholder('value', null)
                 }
             }
         })

@@ -201,6 +201,8 @@
 
     var support = 'onload' in document.createElement('script');
 
+    var array = Array.prototype;
+
     var mid = 0;
 
     var moduleData;
@@ -501,23 +503,13 @@
         //导出接口
         factory.exports = {};
 
-        if(mod.name === 'component'){
-            //只有在组件基类模块中才能使用，用来获取组件集合
-            factory.components = function(name){
-                if(name){
-                    return components[name]
-                }
-                return components
-            }
-        }
-
         return factory
     }
 
     //调用工厂函数，获取模块导出接口
     Module.prototype.exec = function(){
         var mod = this;
-        if(!mod.module && Nui.type(mod.factory, 'Function')){
+        if(!mod.module && typeof mod.factory === 'function'){
             var factory = mod.setFactory();
             var modules = [];
             //设置工厂函数形参，也就是依赖模块的引用
@@ -531,11 +523,12 @@
                 exports = factory.exports
             }
 
-            if(Nui.type(exports, 'Object') && Nui.type(exports._init, 'Function')){
+            if(mod.name === 'component' || (exports.static && exports.static._parent)){
                 var obj = {
                     static:{},
                     attr:{},
-                    proto:{}
+                    proto:{},
+                    api:{init:true}
                 }
 
                 if(config.skin && typeof config.skin === 'string'){
@@ -548,8 +541,11 @@
                         obj[key] = val
                     }
                     //实例方法
-                    else if(Nui.type(val, 'Function')){
-                        obj.proto[key] = val
+                    else if(typeof val === 'function'){
+                        obj.proto[key] = val;
+                        if(!/^_/.test(key)){
+                            obj.api[key] = true
+                        }
                     }
                     //实例属性
                     else{
@@ -563,7 +559,7 @@
                 }
                 else{
                     obj.static._component_name_ = name;
-                    mod.module = Module.createClass(mod, obj);
+                    mod.module = Module.createClass(mod, Module.setMethod(obj));
                     mod.module.exports = exports;
                     if(mod.name !== 'component'){
                         components[name] = mod.module;
@@ -609,6 +605,61 @@
         return path.replace(/([\w]+)\/?(\.\/)+/g, '$1/')
     }
 
+    Module.setMethod = function(obj){
+        Nui.each(obj.api, function(val, method){
+            if(!obj.static[method]){
+                obj.static[method] = function(){
+                    var that = this, args = arguments, container = args[0], name = that._component_name_;
+                    if(name && name !== 'component'){
+                        if(container && container instanceof jQuery){
+                            if(method === 'init'){
+                                var mod = components[name];
+                                if(mod){
+                                    container.find('[data-'+name+'-options]').each(function(){
+                                        //不能重复调用
+                                        if(this.nui && this.nui[name]){
+                                            return
+                                        }
+                                        var elem = jQuery(this);
+                                        var options = elem.data(name+'Options') || {};
+                                        if(typeof options === 'string'){
+                                            options = eval('('+ options +')')
+                                        }
+                                        options.target = elem;
+                                        mod(options)
+                                    })
+                                }
+                            }
+                            else{
+                                container.find('[nui_component_'+ name +']').each(function(){
+                                    var object;
+                                    if(this.nui && (object = this.nui[name]) && object[method]){
+                                        object[method].apply(object, array.slice.call(args, 1))
+                                    }
+                                })
+                            }
+                        }
+                        else{
+                            Nui.each(that._instances, function(val){
+                                if(typeof val[method] === 'function'){
+                                    val[method].apply(val, args)
+                                }
+                            })
+                        }
+                    }
+                    else{
+                        array.unshift.call(args, method);
+                        Nui.each(components, function(v, k){
+                            v.apply(v, args)
+                        })
+                    }
+                }
+            }
+        })
+        delete obj.api;
+        return obj
+    }
+
     //创建组件类
     Module.createClass = function(mod, object){
         var Class = function(options){
@@ -639,7 +690,7 @@
                 if(!/^_/.test(options) || (this instanceof Module)){
                     var attr = Class[options];
                     if(typeof attr === 'function'){
-                        return attr.apply(Class, Array.prototype.slice.call(args, 1))
+                        return attr.apply(Class, array.slice.call(args, 1))
                     }
                     else if(len > 1){
                         return Class[options] = args[1]
@@ -1497,66 +1548,6 @@ Nui.define('delegate', function(){
                 }
             }
         }
-
-        statics.setMethod = function(method, object){
-            if(!object){
-                object = {}
-            }
-            if(!method){
-                return object
-            }
-            object[method] = function(){
-                var that = this, args = arguments, container = args[0], name = that._component_name_;
-                if(name && name !== 'component'){
-                    if(container && container instanceof jQuery){
-                        if(method === 'init'){
-                            var mod = module.components(name);
-                            if(mod){
-                                container.find('[data-'+name+'-options]').each(function(){
-                                    //不能重复调用
-                                    if(this.nui && this.nui[name]){
-                                        return
-                                    }
-                                    var elem = jQuery(this);
-                                    var options = elem.data(name+'Options') || {};
-                                    if(typeof options === 'string'){
-                                        options = eval('('+ options +')')
-                                    }
-                                    options.target = elem;
-                                    mod(options)
-                                })
-                            }
-                        }
-                        else{
-                            container.find('[nui_component_'+ name +']').each(function(){
-                                var object;
-                                if(this.nui && (object = this.nui[name]) && object[method]){
-                                    object[method].apply(object, Array.prototype.slice.call(args, 1))
-                                }
-                            })
-                        }
-                    }
-                    else{
-                        Nui.each(that._instances, function(val){
-                            if(typeof val[method] === 'function'){
-                                val[method].apply(val, args)
-                            }
-                        })
-                    }
-                }
-                else{
-                    Array.prototype.unshift.call(args, method);
-                    Nui.each(module.components(), function(v, k){
-                        v.apply(v, args)
-                    })
-                }
-            }
-            return object
-        }
-
-        Nui.each(['init', 'set', 'reset', 'destroy'], function(method){
-            statics.setMethod(method, statics)
-        })
 
         return ({
             static:statics,
