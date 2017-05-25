@@ -1722,7 +1722,7 @@ Nui.define('delegate', function(){
                 }
             },
             reset:function(){
-                return this.set(that.optionsCache)
+                return this.set(this.optionsCache)
             },
             destroy:function(id){
                 if(id && this.options.id !== id){

@@ -155,7 +155,7 @@ Nui.define(['util', 'component'], function(util, component){
                 that.element.remove();
                 that.target.unwrap();
             }
-            that.target.removeClass(that.className);
+            that.target.val(that.val).removeClass(that.className);
             if(that.deftext){
                 that.target.attr('placeholder', that.deftext)
             }
@@ -166,7 +166,7 @@ Nui.define(['util', 'component'], function(util, component){
         value:function(val){
             var self = this.constructor, target = this.target;
             var pleft = self._getSize(target, 'l', 'padding') + self._getSize(target, 'l');
-            var v = Nui.trim(!arguments.length ? target.val() : target.val(val === null ? this.val : val).val());
+            var v = Nui.trim(!arguments.length ? target.val() : target.val(val).val());
             if((!this.options.equal && v === this.text) || !v){
                 target.val('');
                 this.element.show();
