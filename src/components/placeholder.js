@@ -5,9 +5,9 @@
  * @description 输入框占位符
  */
 
-Nui.define(['util'], function(util){
+Nui.define(['util', 'component'], function(util, component){
     var support = util.supportHtml5('placeholder', 'input');
-    return this.extend('component', {
+    return this.extend(component, {
         options:{
             /**
              * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
@@ -33,7 +33,7 @@ Nui.define(['util'], function(util){
         _template:{
             list:'<%each style%><%$index%>:<%$value%>;<%/each%>',
             wrap:'<strong class="<% className %>" style="<%include \'list\'%>" />',
-            elem:'<b style="<%include \'list\'%>"><%text%></b>',
+            elem:'<b style="<%include \'list\'%>"><%text%></b>'
         },
         _init:function(){
             this._exec();
@@ -140,9 +140,7 @@ Nui.define(['util'], function(util){
             that._on('blur change', that.target, function(e, elem){
                 var val = Nui.trim(elem.val());
                 if((!opts.equal && val === that.text) || !val){
-                    elem.val('');
-                    that.element.show();
-                    opts.animate && that.element.stop(true, false).animate({left:pleft, opacity:'1'})
+                    that.empty()
                 }
                 else{
                     that.element.hide()
@@ -166,6 +164,15 @@ Nui.define(['util'], function(util){
             }
             else{
                 that.target.removeAttr('placeholder')
+            }
+        },
+        empty:function(){
+            var self = this.constructor, target = this.target;
+            var pleft = self._getSize(target, 'l', 'padding') + self._getSize(target, 'l');
+            target.val('');
+            this.element.show();
+            if(this.options.animate){
+                this.element.stop(true, false).animate({left:pleft, opacity:'1'})
             }
         }
     })
