@@ -578,8 +578,8 @@ Nui.define('{cpns}/router',['component'], function(component){
 
                 if(!that._initialize){
                     Nui.each(that._instances, function(v){
-                        if(!that._hasEntry && v.options.entry === true){
-                            that._hasEntry= true;
+                        if(!that._isEntry && v.options.entry === true){
+                            that._isEntry= true;
                             if(v.target){
                                 v._render(v.target.eq(0));
                             }
@@ -616,7 +616,12 @@ Nui.define('{cpns}/router',['component'], function(component){
         },
         _$ready:null,
         _$fn:null,
-        load:function(url){
+        start:function(){
+            if(!this._initialize){
+                this._change();
+            }
+        },
+        href:function(url){
             var that = this;
             if(url){
                 var temp, index, _router;
@@ -633,8 +638,8 @@ Nui.define('{cpns}/router',['component'], function(component){
                     _router._render(_router.target, url)
                 }
             }
-            else if(!that._initialize){
-                that._change();
+            else{
+                that.start()
             }
         },
         alias:function(val){
@@ -926,7 +931,7 @@ Nui.define('pages/components/router/script/router',['{cpns}/router'], function(r
             onRender:module.require('pages/components/router/script/modules/seeVoucher')
         })
 
-        router('load')
+        router('start')
     }
 })
 Nui.define('pages/components/router/script/tpls/layout',function(){

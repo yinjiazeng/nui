@@ -163,9 +163,9 @@ router({
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> load</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> start</h3>
 			<div class="e-mt15 f-lh22">
-				<p>路由跳转</p>
+				<p>页面加载时，当url不满足匹配规则跳转到入口页面</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -179,7 +179,7 @@ router({
 	path:'/news/'
 })
 
-router('load')
+router('start')
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> alias</h3>
 			<div class="e-mt15 f-lh22">

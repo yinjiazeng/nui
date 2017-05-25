@@ -45,6 +45,6 @@ Nui.define(['{cpns}/router'], function(router){
             onRender:module.require('./modules/seeVoucher')
         })
 
-        router('load')
+        router('start')
     }
 })
