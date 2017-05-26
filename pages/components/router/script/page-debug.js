@@ -490,7 +490,7 @@ Nui.define('pages/components/router/script/modules/recordVoucher',['component', 
                 },
                 empty:function(){
                    ph('value', wrapper, '');
-                   console.log(ph.exports)
+                   console.log(ph)
                    //ph('destroy', wrapper)
                    //ph('reset', wrapper)
                     //$('input').placeholder('value', null)

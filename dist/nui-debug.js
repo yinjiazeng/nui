@@ -523,7 +523,8 @@
                 exports = factory.exports
             }
 
-            if(mod.name === 'component' || (exports.static && typeof exports.static._parent === 'function')){
+            var _sta = exports.static;
+            if(mod.name === 'component' || (_sta && _sta._parent && _sta._parent.constructor === Module.exports)){
                 var obj = {
                     static:{},
                     attr:{},
@@ -660,27 +661,8 @@
         return Class
     }
 
-    //创建组件类
-    Module.createClass = function(mod, object){
-        var Class = function(options){
-            var that = this;
-            extend(true, that, object.attr, {
-                _index:Class._index++,
-                _eventList:[]
-            });
-            that.options = extend(true, {}, that.options, Class._options, options||{})
-            that.optionsCache = extend(that.options);
-            Class._instances[that._index] = that;
-            that.static = null;
-            that._init()
-        }
-        extend(true, Class, object.static);
-        extend(true, Class.prototype, object.proto);
-        Module.setMethod(object, Class);
-        if(typeof Class._init === 'function'){
-            Class._init()
-        }
-        return (function(){
+    Module.exports = function(Class){
+        this.init = function(){
             var args = arguments;
             var len = args.length;
             var options = args[0];
@@ -702,7 +684,31 @@
             else{
                 return new Class(options)
             }
-        })
+        }
+        this.init.constructor = Module.exports
+    }
+
+    //创建组件类
+    Module.createClass = function(mod, object){
+        var Class = function(options){
+            var that = this;
+            extend(true, that, object.attr, {
+                _index:Class._index++,
+                _eventList:[]
+            });
+            that.options = extend(true, {}, that.options, Class._options, options||{})
+            that.optionsCache = extend(that.options);
+            Class._instances[that._index] = that;
+            that.static = null;
+            that._init()
+        }
+        extend(true, Class, object.static);
+        extend(true, Class.prototype, object.proto);
+        Module.setMethod(object, Class);
+        if(typeof Class._init === 'function'){
+            Class._init()
+        }
+        return new Module.exports(Class).init
     }
 
     Module.setPath = function(id){

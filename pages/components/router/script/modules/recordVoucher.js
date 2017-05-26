@@ -30,7 +30,7 @@ Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascrip
                 },
                 empty:function(){
                    ph('value', wrapper, '');
-                   console.log(ph.exports)
+                   console.log(ph)
                    //ph('destroy', wrapper)
                    //ph('reset', wrapper)
                     //$('input').placeholder('value', null)
