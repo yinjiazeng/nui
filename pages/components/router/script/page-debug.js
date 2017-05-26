@@ -489,7 +489,8 @@ Nui.define('pages/components/router/script/modules/recordVoucher',['component', 
                     return confirm('哈哈')
                 },
                 empty:function(){
-                   ph('value', wrapper, '')
+                   ph('value', wrapper, '');
+                   console.log(ph.exports)
                    //ph('destroy', wrapper)
                    //ph('reset', wrapper)
                     //$('input').placeholder('value', null)

@@ -523,12 +523,12 @@
                 exports = factory.exports
             }
 
-            if(mod.name === 'component' || (exports.static && exports.static._parent)){
+            if(mod.name === 'component' || (exports.static && typeof exports.static._parent === 'function')){
                 var obj = {
                     static:{},
                     attr:{},
                     proto:{},
-                    api:{init:true}
+                    method:{init:true}
                 }
 
                 if(config.skin && typeof config.skin === 'string'){
@@ -544,7 +544,7 @@
                     else if(typeof val === 'function'){
                         obj.proto[key] = val;
                         if(!/^_/.test(key)){
-                            obj.api[key] = true
+                            obj.method[key] = true
                         }
                     }
                     //实例属性
@@ -559,7 +559,7 @@
                 }
                 else{
                     obj.static._component_name_ = name;
-                    mod.module = Module.createClass(mod, Module.setMethod(obj));
+                    mod.module = Module.createClass(mod, obj);
                     mod.module.exports = exports;
                     if(mod.name !== 'component'){
                         components[name] = mod.module;
@@ -605,10 +605,10 @@
         return path.replace(/([\w]+)\/?(\.\/)+/g, '$1/')
     }
 
-    Module.setMethod = function(obj){
-        Nui.each(obj.api, function(val, method){
-            if(!obj.static[method]){
-                obj.static[method] = function(){
+    Module.setMethod = function(obj, Class){
+        Nui.each(obj.method, function(val, method){
+            if(!Class[method]){
+                Class[method] = function(){
                     var that = this, args = arguments, container = args[0], name = that._component_name_;
                     if(name && name !== 'component'){
                         if(container && container instanceof jQuery){
@@ -656,8 +656,8 @@
                 }
             }
         })
-        delete obj.api;
-        return obj
+        delete obj.method;
+        return Class
     }
 
     //创建组件类
@@ -676,6 +676,7 @@
         }
         extend(true, Class, object.static);
         extend(true, Class.prototype, object.proto);
+        Module.setMethod(object, Class);
         if(typeof Class._init === 'function'){
             Class._init()
         }
