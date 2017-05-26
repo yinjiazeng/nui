@@ -889,7 +889,9 @@ Nui.define('pages/components/router/script/tpls/index',function(){
 Nui.define('pages/components/router/script/modules/index',['pages/components/router/script/tpls/index', 'template', 'pages/components/router/script/menu'], function(tmpl, tpl, menu){
     var module = this;
     var router = module.require('{cpns}/router');
-    var delegate = module.require('delegate');
+    var delegate = module.require('delegate', function(d){
+        
+    });
     module.imports('../../style/index')
     return function(target, wrapper, request){
         wrapper.html(tpl.render(tmpl, menu));

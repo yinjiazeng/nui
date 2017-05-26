@@ -54,7 +54,7 @@
 
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="load">load</h2>
-			<p class="e-mt15 f-lh22">入口模块调用方法</p>
+			<p class="e-mt15 f-lh22">加载入口模块</p>
 <script type="text/highlight" data-javascript-options>
 Nui.load(id, callback?)
 </script>
@@ -76,6 +76,33 @@ Nui.load(id, callback?)
 					<td>模块加在完毕后（包括内部依赖）回调函数，该函数接收一个参数为模块返回值的引用</td>
 				</tr>
 			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">当配合打包工具使用时，会在入口模块目录生成后缀为-min.js或者-debug.js的合并文件；如果模块中使用imports加载了样式文件，会在入口模块目录同级style目录中（不存在就创建）生成-min.css或者-debug.css。</p>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="use">use</h2>
+			<p class="e-mt15 f-lh22">加载模块</p>
+<script type="text/highlight" data-javascript-options>
+Nui.use(id, callback?)
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
+			<table class="data e-mt15">
+				<tr>
+					<th width="100">参数名</th>
+					<th width="150">参数类型</th>
+					<th>参数说明</th>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>String</td>
+					<td>模块id，后缀.js可以省略</td>
+				</tr>
+				<tr>
+					<td>callback</td>
+					<td>Function</td>
+					<td>模块加在完毕后（包括内部依赖）回调函数，该函数接收一个参数为模块返回值的引用</td>
+				</tr>
+			</table>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
+			<p class="e-mt15 f-lh22">该方法功能和Nui.load相同，只不过在配合打包工具时不会生成合并压缩文件。</p>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="config">config</h2>
 			<p class="e-mt15 f-lh22">配置模块和目录别名，以及模块版本映射</p>
 <script type="text/highlight" data-javascript-options>
@@ -688,8 +715,8 @@ Nui.doc
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=ece85f8"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=1ab3d36"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=ff45099"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=2a6f605"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-debug", function(page){

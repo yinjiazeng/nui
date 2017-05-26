@@ -1,7 +1,9 @@
 Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
     var module = this;
     var router = module.require('{cpns}/router');
-    var delegate = module.require('delegate');
+    var delegate = module.require('delegate', function(d){
+        
+    });
     module.imports('../../style/index')
     return function(target, wrapper, request){
         wrapper.html(tpl.render(tmpl, menu));

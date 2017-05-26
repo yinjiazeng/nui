@@ -416,9 +416,12 @@
         var factory = mod.factory;
 
         //导入模块
-        factory.require = function(id){
+        factory.require = function(id, callback){
             var _mod = mod.depmodules[id];
             if(_mod){
+                if(typeof callback === 'function'){
+                    callback(_mod.module)
+                }
                 return _mod.module
             }
         }
@@ -857,7 +860,7 @@
         }
     }
 
-    Nui.load = function(id, callback){
+    Nui.load = Nui.use = function(id, callback){
         if(id && typeof id === 'string'){
             Module.load(id, callback, getModuleid())
         }
