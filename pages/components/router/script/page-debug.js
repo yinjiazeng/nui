@@ -219,12 +219,12 @@ Nui.define('{cpns}/placeholder',['util', 'component'], function(util, component)
             var v = Nui.trim(!arguments.length ? target.val() : target.val(val).val());
             if((!this.options.equal && v === this.text) || !v){
                 target.val('');
-                this.element.show();
+                this.element && this.element.show();
                 if(this.options.animate){
                     this.element.stop(true, false).animate({left:pleft, opacity:'1'})
                 }
             }
-            else{
+            else if(this.element){
                 this.element.hide()
             }
         }
