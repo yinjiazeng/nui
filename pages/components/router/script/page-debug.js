@@ -144,7 +144,7 @@ Nui.define('{cpns}/placeholder',['util', 'component'], function(util, component)
         },
         _setStyle:function(){
             var that = this, opts = that.options;
-            that.className = '_placeholder-'+that._index;
+            that.className = '_placeholder-'+that.__id;
             that.target.addClass(that.className);
             if(!that.constructor.style){
                 that._createStyle()
@@ -160,9 +160,9 @@ Nui.define('{cpns}/placeholder',['util', 'component'], function(util, component)
         _createRules:function(){
             var that = this;
             var sheet = that.constructor.style;
-            var index = that._index;
+            var id = that.__id;
             try{
-                sheet.deleteRule(index)
+                sheet.deleteRule(id)
             }
             catch(e){}
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
@@ -170,10 +170,10 @@ Nui.define('{cpns}/placeholder',['util', 'component'], function(util, component)
                 var rules = 'opacity:1; color:'+(that.options.color||'');
                 try{
                     if('addRule' in sheet){
-                        sheet.addRule(selector, rules, index)
+                        sheet.addRule(selector, rules, id)
                     }
                     else if('insertRule' in sheet){
-                        sheet.insertRule(selector + '{' + rules + '}', index)
+                        sheet.insertRule(selector + '{' + rules + '}', id)
                     }
                 }
                 catch(e){}
@@ -245,7 +245,7 @@ Nui.define('highlight',function(){
                 var that = this;
                 Nui.doc.on('click', function(){
                     if(that._active){
-                        Nui.each(that._instances, function(val){
+                        Nui.each(that.__instances, function(val){
                             if(val._active){
                                 val.element.find('tr.s-crt').removeClass('s-crt');
                                 val._active = false;
@@ -446,9 +446,9 @@ Nui.define('{light}/javascript',function(){
 Nui.define('pages/components/router/script/tpls/recordVoucher',function(){
     return this.renders(''+''
         +'<input type="text" placeholder="aaaaaaaaaaa" value="11" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
-        +'<input type="text" placeholder="111" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
+        +'<input type="text" placeholder="111" data-placeholder-options=\'{"color":"#f60", "animate":true, "id":"aaa"}\' />'+''
         +'<input type="text" placeholder="222" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
-        +'<input type="text" placeholder="333" data-placeholder-options=\'{"color":"#f60", "animate":true}\' />'+''
+        +'<input type="text" placeholder="333" data-placeholder-options=\'{"color":"#f60", "animate":true, "id":"aaa"}\' />'+''
         +'<div class="empty">还原</div>'+''
         +'<script type="text/highlight" data-javascript-options="{id:\'b\'}">'+''
         +'var a = 1;'+''
@@ -489,8 +489,7 @@ Nui.define('pages/components/router/script/modules/recordVoucher',['component', 
                     return confirm('哈哈')
                 },
                 empty:function(){
-                   ph('value', wrapper, '');
-                   console.log(ph)
+                   ph('value', wrapper, '', 'aaa');
                    //ph('destroy', wrapper)
                    //ph('reset', wrapper)
                     //$('input').placeholder('value', null)
@@ -553,7 +552,7 @@ Nui.define('{cpns}/router',['component'], function(component){
                 Nui.each(that._paths, function(v){
                     if(hash === v.path || hash.indexOf(v.path) === 0){
                         var params = hash.replace(v.path, '').replace(/^\//, '');
-                        var object = that._instances[v.index], opts = object.options, param;
+                        var object = that.__instances[v.id], opts = object.options, param;
                         params = params ? params.split('/') : [];
                         if(typeof opts.onRender === 'function' && params.length === v.params.length){
                             Nui.each(v.params, function(val, key){
@@ -599,7 +598,7 @@ Nui.define('{cpns}/router',['component'], function(component){
                 })
 
                 if(!that._initialize){
-                    Nui.each(that._instances, function(v){
+                    Nui.each(that.__instances, function(v){
                         if(!that._isEntry && v.options.entry === true){
                             that._isEntry= true;
                             if(v.target){
@@ -646,13 +645,13 @@ Nui.define('{cpns}/router',['component'], function(component){
         href:function(url){
             var that = this;
             if(url){
-                var temp, index, _router;
+                var temp, _router;
                 url = this._replace(url);
                 Nui.each(this._paths, function(val, rule){
                     if(rule === url || (url.indexOf(val.path) === 0 &&
                                         (temp = url.replace(val.path+'/', '')) && 
                                         temp.split('/').length === val.params.length)){
-                        _router = that._instances[val.index];
+                        _router = that.__instances[val.id];
                         return false
                     }
                 })
@@ -775,7 +774,7 @@ Nui.define('{cpns}/router',['component'], function(component){
         _getpath:function(){
             var that = this, path = that.path, opts = that.options, index = path.indexOf('/:');
             var paths = {
-                index:that._index,
+                id:that.__id,
                 params:[],
                 rule:path,
                 path:path
@@ -817,7 +816,7 @@ Nui.define('{cpns}/router',['component'], function(component){
             var that = this, router = that.constructor;
             that._off();
             Nui.each(router._paths, function(val, i){
-                if(val.index === that.index){
+                if(val.id === that.__id){
                     delete router._paths[i];
                 }
             })

@@ -94,7 +94,7 @@ Nui.define(['util', 'component'], function(util, component){
         },
         _setStyle:function(){
             var that = this, opts = that.options;
-            that.className = '_placeholder-'+that._index;
+            that.className = '_placeholder-'+that.__id;
             that.target.addClass(that.className);
             if(!that.constructor.style){
                 that._createStyle()
@@ -110,9 +110,9 @@ Nui.define(['util', 'component'], function(util, component){
         _createRules:function(){
             var that = this;
             var sheet = that.constructor.style;
-            var index = that._index;
+            var id = that.__id;
             try{
-                sheet.deleteRule(index)
+                sheet.deleteRule(id)
             }
             catch(e){}
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
@@ -120,10 +120,10 @@ Nui.define(['util', 'component'], function(util, component){
                 var rules = 'opacity:1; color:'+(that.options.color||'');
                 try{
                     if('addRule' in sheet){
-                        sheet.addRule(selector, rules, index)
+                        sheet.addRule(selector, rules, id)
                     }
                     else if('insertRule' in sheet){
-                        sheet.insertRule(selector + '{' + rules + '}', index)
+                        sheet.insertRule(selector + '{' + rules + '}', id)
                     }
                 }
                 catch(e){}

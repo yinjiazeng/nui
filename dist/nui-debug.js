@@ -201,8 +201,6 @@
 
     var support = 'onload' in document.createElement('script');
 
-    var array = Array.prototype;
-
     var mid = 0;
 
     var moduleData;
@@ -456,7 +454,7 @@
             else if(Nui.type(module, 'Function')){
                 if(module.exports){
                     exports = extend(true, {}, module.exports, members);
-                    exports.static._parent = module
+                    exports.static.__parent = new Module.Class.parent(module)
                 }
                 else{
                     exports = extend(true, noop, module, members)
@@ -525,14 +523,13 @@
             if(typeof exports === 'undefined'){
                 exports = factory.exports
             }
-
-            var _sta = exports.static;
-            if(mod.name === 'component' || (_sta && _sta._parent && _sta._parent.constructor === Module.exports)){
+            
+            if(mod.name === 'component' || (exports.static && exports.static.__parent instanceof Module.Class.parent)){
                 var obj = {
-                    static:{},
-                    attr:{},
-                    proto:{},
-                    method:{init:true}
+                    statics:{},
+                    propertys:{},
+                    methods:{},
+                    apis:{init:true}
                 }
 
                 if(config.skin && typeof config.skin === 'string'){
@@ -542,18 +539,18 @@
                 Nui.each(exports, function(val, key){
                     //静态属性以及方法
                     if(key === 'static'){
-                        obj[key] = val
+                        obj['statics'] = val
                     }
                     //实例方法
                     else if(typeof val === 'function'){
-                        obj.proto[key] = val;
+                        obj.methods[key] = val;
                         if(!/^_/.test(key)){
-                            obj.method[key] = true
+                            obj.apis[key] = true
                         }
                     }
                     //实例属性
                     else{
-                        obj.attr[key] = val
+                        obj.propertys[key] = val
                     }
                 })
                 //文件名作为组件名
@@ -562,13 +559,17 @@
                     mod.module = components[name]
                 }
                 else{
-                    obj.static._component_name_ = name;
-                    mod.module = Module.createClass(mod, obj);
+                    obj.statics.__component_name = name;
+                    mod.module = components[name] = Module.Class(mod, obj);
+                    delete exports.static.__parent;
                     mod.module.exports = exports;
                     if(mod.name !== 'component'){
-                        components[name] = mod.module;
+                        var Class = mod.module('Class'), method;
                         Nui.each(['_$fn', '_$ready'], function(v){
-                            mod.module.call(mod, v, name, mod.module)
+                            method = Class[v];
+                            if(typeof method === 'function'){
+                                method.call(Class, name, mod.module)
+                            }
                         })
                     }
                 }
@@ -609,74 +610,37 @@
         return path.replace(/([\w]+)\/?(\.\/)+/g, '$1/')
     }
 
-    Module.setMethod = function(obj, Class){
-        Nui.each(obj.method, function(val, method){
-            if(!Class[method]){
-                Class[method] = function(){
-                    var that = this, args = arguments, container = args[0], name = that._component_name_;
-                    if(name && name !== 'component'){
-                        if(container && container instanceof jQuery){
-                            if(method === 'init'){
-                                var mod = components[name];
-                                if(mod){
-                                    container.find('[data-'+name+'-options]').each(function(){
-                                        //不能重复调用
-                                        if(this.nui && this.nui[name]){
-                                            return
-                                        }
-                                        var elem = jQuery(this);
-                                        var options = elem.data(name+'Options') || {};
-                                        if(typeof options === 'string'){
-                                            options = eval('('+ options +')')
-                                        }
-                                        options.target = elem;
-                                        mod(options)
-                                    })
-                                }
-                            }
-                            else{
-                                container.find('[nui_component_'+ name +']').each(function(){
-                                    var object;
-                                    if(this.nui && (object = this.nui[name]) && object[method]){
-                                        object[method].apply(object, array.slice.call(args, 1))
-                                    }
-                                })
-                            }
-                        }
-                        else{
-                            Nui.each(that._instances, function(val){
-                                if(typeof val[method] === 'function'){
-                                    val[method].apply(val, args)
-                                }
-                            })
-                        }
-                    }
-                    else{
-                        array.unshift.call(args, method);
-                        Nui.each(components, function(v, k){
-                            v.apply(v, args)
-                        })
-                    }
-                }
-            }
-        })
-        delete obj.method;
-        return Class
-    }
-
-    Module.exports = function(Class){
-        this.init = function(){
+    //创建组件类
+    Module.Class = function(mod, object){
+        var Class = function(options){
+            var that = this;
+            extend(true, that, object.propertys, {
+                __id:Class.__id++,
+                _eventList:[]
+            });
+            that.options = extend(true, {}, that.options, Class._options, options||{})
+            that.optionsCache = extend(that.options);
+            Class.__instances[that.__id] = that;
+            that._init()
+        }
+        extend(true, Class, object.statics);
+        extend(true, Class.prototype, object.methods);
+        Class.__setMethod(object.apis, components);
+        if(typeof Class._init === 'function'){
+            Class._init()
+        }
+        return function(){
             var args = arguments;
             var len = args.length;
             var options = args[0];
             if(typeof options === 'string'){
-                if(options === 'class'){
+                if(options === 'Class'){
                     return Class
                 }
-                if(!/^_/.test(options) || (this instanceof Module)){
+                if(!/^_/.test(options)){
                     var attr = Class[options];
                     if(typeof attr === 'function'){
-                        return attr.apply(Class, array.slice.call(args, 1))
+                        return attr.apply(Class, Array.prototype.slice.call(args, 1))
                     }
                     else if(len > 1){
                         return Class[options] = args[1]
@@ -688,30 +652,11 @@
                 return new Class(options)
             }
         }
-        this.init.constructor = Module.exports
     }
 
-    //创建组件类
-    Module.createClass = function(mod, object){
-        var Class = function(options){
-            var that = this;
-            extend(true, that, object.attr, {
-                _index:Class._index++,
-                _eventList:[]
-            });
-            that.options = extend(true, {}, that.options, Class._options, options||{})
-            that.optionsCache = extend(that.options);
-            Class._instances[that._index] = that;
-            that.static = null;
-            that._init()
-        }
-        extend(true, Class, object.static);
-        extend(true, Class.prototype, object.proto);
-        Module.setMethod(object, Class);
-        if(typeof Class._init === 'function'){
-            Class._init()
-        }
-        return new Module.exports(Class).init
+    Module.Class.parent = function(module){
+        this.exports = module.exports;
+        this.Class = module('Class');
     }
 
     Module.setPath = function(id){
@@ -1462,12 +1407,92 @@ Nui.define('delegate', function(){
     }
     Nui.define('component', ['template', 'delegate'], function(tpl, events){
         var module = this;
-
+        var callMethod = function(method, args, obj){
+            //实参大于形参，最后一个实参表示id
+            if(args.length > method.length){
+                var id = args[method.length];
+                if(id && obj.options.id !== id && obj.__id !== id){
+                    return
+                }
+            }
+            method.apply(obj, args)
+        }
+        /**
+         * 单和双下划线开头表示私有方法或者属性，只能在内部使用，
+         * 单下划线继承后可重写或修改，双下划线为系统预置无法修改
+         * 系统预置属性方法：__id, __instances, __parent, __component_name, __setMethod
+         */
         var statics = {
-            _index:0,
-            _instances:{},
+            //实例对象唯一标记
+            __id:0,
+            //实例对象容器
+            __instances:{},
+            /*
+            * 将实例方法接口设置为静态方法，这样可以操作多个实例，
+            * 默认有 init, set, get, reset, destroy
+            * init表示初始化组件，会查询容器内包含属性为 data-组件名-options的dom元素，并调用组件
+            */
+            __setMethod:function(apis, components){
+                var that = this;
+                Nui.each(apis, function(val, methodName){
+                    if(!that[methodName]){
+                        that[methodName] = function(){
+                            var that = this, args = arguments, container = args[0], name = that.__component_name;
+                            if(name && name !== 'component'){
+                                if(container && container instanceof jQuery){
+                                    if(methodName === 'init'){
+                                        var mod = components[name];
+                                        if(mod){
+                                            container.find('[data-'+name+'-options]').each(function(){
+                                                //不能重复调用
+                                                if(this.nui && this.nui[name]){
+                                                    return
+                                                }
+                                                var elem = jQuery(this);
+                                                var options = elem.data(name+'Options') || {};
+                                                if(typeof options === 'string'){
+                                                    options = eval('('+ options +')')
+                                                }
+                                                options.target = elem;
+                                                mod(options)
+                                            })
+                                        }
+                                    }
+                                    else{
+                                        container.find('[nui_component_'+ name +']').each(function(){
+                                            var obj, method;
+                                            if(this.nui && (obj = this.nui[name]) && typeof (method = obj[methodName]) === 'function'){
+                                                callMethod(method, Array.prototype.slice.call(args, 1), obj)
+                                            }
+                                        })
+                                    }
+                                }
+                                else{
+                                    Nui.each(that.__instances, function(obj){
+                                        var method = obj[methodName];
+                                        if(typeof method === 'function'){
+                                            callMethod(method, args, obj)
+                                        }
+                                    })
+                                }
+                            }
+                            else{
+                                Array.prototype.unshift.call(args, methodName);
+                                Nui.each(components, function(v, k){
+                                    if(k !== 'component'){
+                                        v.apply(v, args)
+                                    }
+                                })
+                            }
+                        }
+                    }
+                })
+                return that
+            },
+            //对所有实例设置默认选项
             _options:{},
-            _init:null,
+            //创建组件模块时会调用一次，可用于在document上绑定事件操作实例
+            _init:jQuery.noop,
             _jquery:function(elem){
                 if(elem instanceof jQuery){
                     return elem
@@ -1547,7 +1572,9 @@ Nui.define('delegate', function(){
                 }
             },
             _$ready:function(name, mod){
-                mod('init', Nui.doc)
+                if(typeof this.init === 'function'){
+                    this.init(Nui.doc)
+                }
             },
             options:function(key, value){
                 if(Nui.type(key, 'Object')){
@@ -1578,13 +1605,13 @@ Nui.define('delegate', function(){
                         return null
                     }
                     target = self._jquery(target);
-                    var attr = 'nui_component_'+self._component_name_;
+                    var attr = 'nui_component_'+self.__component_name;
                     that.target = target.attr(attr, '');
                     that.target.each(function(){
                         if(!this.nui){
                             this.nui = {};
                         }
-                        this.nui[self._component_name_] = that
+                        this.nui[self.__component_name] = that
                     })
                 }
                 return that.target
@@ -1592,12 +1619,12 @@ Nui.define('delegate', function(){
             _tplData:function(){
                 var opts = this.options, 
                     self = this.constructor,
-                    name = 'nui-' + self._component_name_, 
+                    name = 'nui-' + self.__component_name, 
                     skin = Nui.trim(opts.skin),
                     getName = function(_class, arrs){
-                        if(_class._parent){
-                            var _pclass = _class._parent('class');
-                            var _name = _pclass._component_name_;
+                        if(_class.__parent){
+                            var _pclass = _class.__parent.Class;
+                            var _name = _pclass.__component_name;
                             if(_name !== 'component'){
                                 if(skin){
                                     arrs.unshift('nui-'+_name+'-'+skin);
@@ -1687,15 +1714,15 @@ Nui.define('delegate', function(){
             _delete:function(){
                 var that = this;
                 var self = that.constructor;
-                var attr = 'nui_component_'+self._component_name_;
+                var attr = 'nui_component_'+self.__component_name;
                 that.target.removeAttr(attr).each(function(){
                     if(this.nui){
-                        this.nui[self._component_name_] = null;
-                        delete this.nui[self._component_name_];
+                        this.nui[self.__component_name] = null;
+                        delete this.nui[self.__component_name];
                     }
                 })
-                self._instances[that.index] = null;
-                delete self._instances[that.index]
+                self.__instances[that.__id] = null;
+                delete self.__instances[that.__id]
             },
             _reset:function(){
                 this._off();
@@ -1704,8 +1731,8 @@ Nui.define('delegate', function(){
                 }
                 return this
             },
-            _tpl2html:function(name, data){
-                return tpl.render.call(this._template, this._template[name], data, {
+            _tpl2html:function(id, data){
+                return tpl.render.call(this._template, this._template[id], data, {
                     openTag:'<%',
                     closeTag:'%>'
                 })
@@ -1734,10 +1761,7 @@ Nui.define('delegate', function(){
             reset:function(){
                 return this.set(this.optionsCache)
             },
-            destroy:function(id){
-                if(id && this.options.id !== id){
-                    return
-                }
+            destroy:function(){
                 this._reset();
                 this._delete();
             }

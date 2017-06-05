@@ -12,7 +12,7 @@ Nui.define(function(){
                 var that = this;
                 Nui.doc.on('click', function(){
                     if(that._active){
-                        Nui.each(that._instances, function(val){
+                        Nui.each(that.__instances, function(val){
                             if(val._active){
                                 val.element.find('tr.s-crt').removeClass('s-crt');
                                 val._active = false;
