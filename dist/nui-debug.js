@@ -168,7 +168,7 @@
     }
 
     var isObject = function(obj){
-        if(!obj || !Nui.type(obj, 'Object') || obj.nodeType){
+        if(!obj || !Nui.type(obj, 'Object') || obj.nodeType || (obj[0] && obj[0].nodeType)){
             return false;
         }
         return true
@@ -1441,7 +1441,7 @@ Nui.define('delegate', function(){
             __setMethod:function(apis, components){
                 var that = this;
                 Nui.each(apis, function(val, methodName){
-                    if(!that[methodName]){
+                    if(that[methodName] === undefined){
                         that[methodName] = function(){
                             var that = this, args = arguments, container = args[0], name = that.__component_name;
                             if(name && name !== 'component'){
@@ -1622,7 +1622,7 @@ Nui.define('delegate', function(){
                 }
                 return that.target
             },
-            _tplData:function(){
+            _tplData:function(data){
                 var opts = this.options, 
                     self = this.constructor,
                     name = 'nui-' + self.__component_name, 
@@ -1646,9 +1646,11 @@ Nui.define('delegate', function(){
                 if(skin){
                     className.push(name+'-'+skin)
                 }
-                return ({
-                    className:className.join(' ')
-                })
+                if(!data){
+                    data = {}
+                }
+                data.className = className.join(' ');
+                return data
             },
             _event:function(){
                 var _events = this._events;
@@ -1738,10 +1740,14 @@ Nui.define('delegate', function(){
                 return this
             },
             _tpl2html:function(id, data){
-                return tpl.render.call(this._template, this._template[id], data, {
+                var opts = {
                     openTag:'<%',
                     closeTag:'%>'
-                })
+                }
+                if(arguments.length === 1){
+                    return tpl.render(this._template, id, opts)
+                }
+                return tpl.render.call(this._template, this._template[id], data, opts)
             },
             set:function(name, value){
                 this._reset();

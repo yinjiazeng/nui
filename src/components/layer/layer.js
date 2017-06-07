@@ -5,8 +5,9 @@
  * @description layer弹出层
  */
 
-Nui.define(['component'], function(component){
+Nui.define(['component', 'dalegate'], function(component, dalegate){
     var module = this;
+
     var statics = {
         _maskzIndex:10000,
         _zIndex:10000,
@@ -16,13 +17,7 @@ Nui.define(['component'], function(component){
         },
         $fn:null,
         $ready:null,
-        init:null,
-        resize:function(){
-
-        },
-        hide:function(){
-
-        }
+        init:null
     }
 
     var options = {
@@ -33,7 +28,6 @@ Nui.define(['component'], function(component){
         padding:20,
         timer:0,
         container:'body',
-        title:'温馨提示',
         animate:'',
         isMove:true,
         isMask:true,
@@ -41,29 +35,47 @@ Nui.define(['component'], function(component){
         isMoveMask:false,
         isClose:true,
         isCenter:true,
-        isMaxSize:false,
+        isFull:false,
         isTop:false,
         isFixed:true,
         scrollbar:true,
-        tips:null,
-        iframe:null,
-        offset:null,
+        bubble:{
+            enable:false,
+            dir:'top'
+        },
+        iframe:{
+            enable:false,
+            cache:false,
+            src:''
+        },
+        offset:{
+            top:'center',
+            left:'center'
+        },
+        title:{
+            enable:true,
+            text:'温馨提示'
+        },
         close:{
-            text:'×',
-            callback:null
+            enable:true,
+            text:'×'
         },
         confirm:{
+            enable:false,
             text:'确定',
-            callback:null
+            callback:function(){
+                return true
+            }
         },
         cancel:{
-            text:'取消',
-            callback:null
+            enable:true,
+            text:'取消'
         },
-        bottoms:null,
-        buttons:null,
+        bottom:null,
+        button:null,
         onShow:null,
         onHide:null,
+        onMove:null,
         onResize:null,
         onScroll:null,
         onMaskClick:null
@@ -72,54 +84,85 @@ Nui.define(['component'], function(component){
     return this.extend(component, {
         static:statics,
         options:options,
+        _template:
+            '<div class="<% className %>">'+
+                '<div class="layer-box">'+
+                    '<div class="layer-head">'+
+                    
+                    '</div>'+
+                    '<div class="layer-body"><% content %></div>'+
+                    '<div class="layer-foot">'+
+
+                    '</div>'+
+                '</div>'+
+            '</div>',
+        _confirm:{
+            
+        },
         _init:function(){
-            var that = this, layer = that.constructor;
-            that.zIndex = ++layer.zIndex;
+            var self = this.constructor;
+            this._zIndex = ++self._zIndex;
             this._exec()
         },
         _exec:function(){
-            var that = this, opts = that.options, layer = that.constructor;
-            that.container = layer._jquery(opts.container);
-            if(opts.content && that.container){
-                if(that.container.get(0).tagName !== 'BODY'){
+            var that = this, opts = that.options, self = that.constructor;
+            that._container = self._jquery(opts.container);
+            if(that._container.length){
+                if(that._container.get(0).tagName !== 'BODY'){
                     opts.isFixed = false;
-                    if(' absolute relative'.indexOf(that.container.css('position')) <= 0){
-                        that.container.css('position', 'relative')
+                    var pos = that._container.css('position');
+                    if(pos !== 'absolute' && pos !== 'relative'){
+                        that._container.css('position', 'relative')
                     }
                 }
                 that._create();
-                if(that.buttons){
-                    that._event()
-                }
-                if(opts.isMove === true && that.title){
-                    that._move();
-                }
             }
         },
-        _tpls:module.renders({
-            <div class="ui-layer" style="">
-                <div class="ui-layer-box">
-                    <div class="ui-layer-title">
-                    
-                    </div>
-                    <div class="ui-layer-main">
-                    
-                    </div>
-                    <div class="ui-layer-foot">
-
-                    </div>
-                </div>
-            </div>
-        }),
         _create:function(){
+            var that = this, opts = that.options;
             that._createButton();
-            that.element = $(that._tpl2html(that._tpls, that)).appendTo(that.container);
-
+            var data = that._tplData({
+                content:that._getContent(),
+                button:[]
+            });
+            that.element = $(that._tpl2html(data)).appendTo(that._container);
+            if(opts.isMove === true && opts.title){
+                that._move();
+            }
+            if(that._button.length){
+                that._event();
+            }
+        },
+        _getContent:function(){
+            var that = this, opts = that.options, str = '';
+            if(typeof opts.content === 'string'){
+                str = opts.content
+            }
+            else if(opts.content instanceof jQuery){
+                str = opts.content.prop('outerHTML')
+            }
+            return str
         },
         _createButton:function(){
-            var that = this, opts = that.options;
-            if(opts.close){
+            var that = this, opts = that.options, button = ['confirm', 'cancel', 'close'];
+            that._button = {};
+            if(!opts.button){
+                
+            }
+            Nui.each(button, function(type){
+                var btn = opts[type];
+                
+            });
+            if(opts.button){
+                Nui.each(opts.button, function(val, key){
+                    that._button.push({
+                        type:key,
+                        text:val.text
+                    })
+                })
+                if(!opts.button.confirm){
 
+                }
             }
         },
         _createIframe:function(){

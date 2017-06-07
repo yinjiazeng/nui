@@ -90,8 +90,8 @@ Nui.define(function(){
             }
         },
         _title:'',
-        _template:{
-            tmpl:'<div class="<% className %>">'
+        _template:
+            '<div class="<% className %>">'
                 +'<%if tools%>'
                 +'<div class="tools">'
                     +'<%if tools.copy%>'
@@ -112,8 +112,7 @@ Nui.define(function(){
                 +'<%if isTitle%>'
                 +'<em class="title"><%title%></em>'
                 +'<%/if%>'
-            +'</div>'
-        },
+            +'</div>',
         _create:function(){
             var that = this;
             var opts = that.options;
@@ -125,7 +124,7 @@ Nui.define(function(){
                 tools:opts.tools,
                 isTitle:opts.isTitle
             }, that._tplData())
-            that.element = $(that._tpl2html('tmpl', data)).insertAfter(that.target);
+            that.element = $(that._tpl2html(data)).insertAfter(that.target);
         },
         _getCode:function(){
             return this.code

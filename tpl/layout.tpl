@@ -37,7 +37,7 @@
     {% include 'script.tpl' %}
     
     <script type="text/javascript">
-	Nui.load('{script}/base-debug', function(page){
+	Nui.load('{script}/base-min', function(page){
         page.init()
     })
     </script>

@@ -168,7 +168,7 @@
     }
 
     var isObject = function(obj){
-        if(!obj || !Nui.type(obj, 'Object') || obj.nodeType){
+        if(!obj || !Nui.type(obj, 'Object') || obj.nodeType || (obj[0] && obj[0].nodeType)){
             return false;
         }
         return true
