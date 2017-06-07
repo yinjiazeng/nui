@@ -296,6 +296,7 @@
                 var node = document.createElement('script');
                 mod.url = mod.id+mod.suffix+'.js'+mod.version;
                 node.src = mod.url;
+                node.async = true;
                 node.id = mod.id;
                 currentlyAddingScript = node;
                 head.appendChild(node);
@@ -511,13 +512,17 @@
     Module.prototype.exec = function(){
         var mod = this;
         if(!mod.module && typeof mod.factory === 'function'){
-            var factory = mod.setFactory();
-            var modules = [];
+            var factory = mod.setFactory(), modules;
             //设置工厂函数形参，也就是依赖模块的引用
-            Nui.each(mod.deps, function(val){
-                modules.push(factory.require(val))
-            })
-
+            if(mod.deps.length){
+                modules = [];
+                Nui.each(mod.deps, function(val){
+                    modules.push(factory.require(val))
+                })
+            }
+            else{
+                modules = [factory.require, factory.imports, factory.renders, factory.extend]
+            }
             var exports = factory.apply(factory, modules);
             //优先使用return接口
             if(typeof exports === 'undefined'){

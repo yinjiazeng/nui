@@ -998,8 +998,8 @@ Nui.define('pages/components/router/script/render',['pages/components/router/scr
         $('.m-menu').html(tpl.render(layout.menu, data))
     }
 })
-Nui.define('./script/page',function(){
-	var module=this,require=module.require,imports=module.imports,renders=module.renders,extend=module.extend;
+Nui.define('./script/page',function(require,imports,renders,extend){
+	var module=this;
 	var render = require('pages/components/router/script/render');
 	var router = require('pages/components/router/script/router');
 	var ajax = require('pages/components/router/script/ajax');
