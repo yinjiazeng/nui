@@ -513,14 +513,15 @@
         var mod = this;
         if(!mod.module && typeof mod.factory === 'function'){
             var factory = mod.setFactory(), modules;
-            //设置工厂函数形参，也就是依赖模块的引用
             if(mod.deps.length){
+                //设置工厂函数形参，也就是依赖模块的引用
                 modules = [];
                 Nui.each(mod.deps, function(val){
                     modules.push(factory.require(val))
                 })
             }
             else{
+                //将工厂函数的内部方法作为参数传递，方便调用
                 modules = [factory.require, factory.imports, factory.renders, factory.extend]
             }
             var exports = factory.apply(factory, modules);
