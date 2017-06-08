@@ -338,6 +338,7 @@
                 this._off();
                 if(this.element){
                     this.element.remove();
+                    this.element = null;
                 }
                 return this
             },
