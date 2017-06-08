@@ -625,7 +625,7 @@
                 _eventList:[]
             });
             that.options = extend(true, {}, that.options, Class._options, options||{})
-            that.optionsCache = extend(that.options);
+            that._defaults = extend(that.options);
             Class.__instances[that.__id] = that;
             that._init()
         }
@@ -1754,7 +1754,7 @@ Nui.define('delegate', function(){
                 }
                 return tpl.render.call(this._template, this._template[id], data, opts)
             },
-            set:function(name, value){
+            option:function(name, value){
                 this._reset();
                 if(name || value){
                     if(jQuery.isPlainObject(name)){
@@ -1767,16 +1767,8 @@ Nui.define('delegate', function(){
                 }
                 return this
             },
-            get:function(key){
-                if(!key){
-                    return this.options
-                }
-                else{
-                    return this.options[key]
-                }
-            },
             reset:function(){
-                this.set(this.optionsCache);
+                this.option(this._defaults);
                 if(typeof this.options.onReset === 'function'){
                     this.options.onReset.call(this)
                 }

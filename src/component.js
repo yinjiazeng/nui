@@ -352,7 +352,7 @@
                 }
                 return tpl.render.call(this._template, this._template[id], data, opts)
             },
-            set:function(name, value){
+            option:function(name, value){
                 this._reset();
                 if(name || value){
                     if(jQuery.isPlainObject(name)){
@@ -365,16 +365,8 @@
                 }
                 return this
             },
-            get:function(key){
-                if(!key){
-                    return this.options
-                }
-                else{
-                    return this.options[key]
-                }
-            },
             reset:function(){
-                this.set(this.optionsCache);
+                this.option(this._defaults);
                 if(typeof this.options.onReset === 'function'){
                     this.options.onReset.call(this)
                 }

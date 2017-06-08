@@ -625,7 +625,7 @@
                 _eventList:[]
             });
             that.options = extend(true, {}, that.options, Class._options, options||{})
-            that.optionsCache = extend(that.options);
+            that._defaults = extend(that.options);
             Class.__instances[that.__id] = that;
             that._init()
         }
