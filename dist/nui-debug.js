@@ -1597,7 +1597,10 @@ Nui.define('delegate', function(){
             options:{
                 target:null,
                 id:'',
-                skin:''
+                skin:'',
+                onInit:null,
+                onReset:null,
+                onDestroy:null
             },
             _template:{},
             _init:jQuery.noop,
@@ -1720,15 +1723,16 @@ Nui.define('delegate', function(){
                 return that
             },
             _delete:function(){
-                var that = this;
-                var self = that.constructor;
-                var attr = 'nui_component_'+self.__component_name;
-                that.target.removeAttr(attr).each(function(){
-                    if(this.nui){
-                        this.nui[self.__component_name] = null;
-                        delete this.nui[self.__component_name];
-                    }
-                })
+                var that = this, self = that.constructor;
+                if(that.target){
+                    var attr = 'nui_component_'+self.__component_name;
+                    that.target.removeAttr(attr).each(function(){
+                        if(this.nui){
+                            this.nui[self.__component_name] = null;
+                            delete this.nui[self.__component_name];
+                        }
+                    })
+                }
                 self.__instances[that.__id] = null;
                 delete self.__instances[that.__id]
             },
@@ -1771,11 +1775,18 @@ Nui.define('delegate', function(){
                 }
             },
             reset:function(){
-                return this.set(this.optionsCache)
+                this.set(this.optionsCache);
+                if(typeof this.options.onReset === 'function'){
+                    this.options.onReset.call(this)
+                }
+                return this;
             },
             destroy:function(){
                 this._reset();
                 this._delete();
+                if(typeof this.options.onDestroy === 'function'){
+                    this.options.onDestroy.call(this)
+                }
             }
         })
     })

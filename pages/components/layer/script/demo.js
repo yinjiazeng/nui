@@ -1,4 +1,17 @@
 var layer = require('{cpns}/layer/layer');
-layer({
-    content:$('<a>aaa</a>')
+var a = layer({
+    content:'<a>aaa</a>',
+    confirm:{
+        enable:true
+    },
+    cancel:{
+        enable:true
+    },
+    button:[{
+        id:'cancel'
+    }, {
+        id:'confirm'
+    }]
 })
+
+//a.destroy()
