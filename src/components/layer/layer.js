@@ -350,6 +350,26 @@ Nui.define(['component', 'util'], function(component, util){
             }
             return that
         },
+        _reset:function(){
+            var self = this.constructor, hasMask = true;
+            component.exports._reset.call(this);
+            component('destroy', that.element.main);
+            Nui.each(self.__instances, function(val){
+                if(val && val.options.isMask == true && val._container.eq(0).tagName === 'BODY'){
+                    return (hasMask = false);
+                }   
+            });
+            if(hasMask && self._mask){
+                self._mask.remove();
+                self._mask = null;
+            }
+            if(this._mask){
+                this._mask.remove();
+            }
+            if(this.options.timer > 0){
+                clearTimeout(this._timer);
+            }
+        },
         resize:function(){
             var that = this, opts = that.options, element = that.element, main = that.element.main;
             that._resize();
@@ -362,26 +382,10 @@ Nui.define(['component', 'util'], function(component, util){
             this.destroy()
         },
         destroy:function(){
-            var that = this, self = that.constructor, opts = that.options, hasMask = true, main = that.element.main;
-            component('destroy', main);
+            var that = this, self = that.constructor, opts = that.options, main = that.element.main;
             that._reset();
             that._delete();
             self._zIndex--;
-            Nui.each(self.__instances, function(val){
-                if(val && val.options.isMask == true && val._container.eq(0).tagName === 'BODY'){
-                    return (hasMask = false);
-                }   
-            });
-            if(hasMask && self._mask){
-                self._mask.remove();
-                self._mask = null;
-            }
-            if(that._mask){
-                that._mask.remove();
-            }
-            if(options.timer > 0){
-                clearTimeout(that._timer);
-            }
             if(typeof opts.onDestroy === 'function'){
                 opts.onDestroy.call(this, main, that.__index)
             }
