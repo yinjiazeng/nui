@@ -290,7 +290,7 @@ Nui.define(['component', 'util'], function(component, util){
                 e.stopPropagation();
             });
             that._on('mousemove', Nui.doc, function(e){
-                var width = $(this).width(), height = $(this).height();
+                var width = Nui.doc.width(), height = Nui.doc.height();
                 if(isMove){
                     _x = e.pageX - x;
                     _y = e.pageY - y;
