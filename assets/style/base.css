@@ -204,6 +204,7 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .nui-layer .layer-body:before, .nui-layer .layer-body:after { content:''; display:table;}
 .nui-layer .layer-body:after { clear:both;}
 .nui-layer .layer-body { position:relative; *zoom:1; overflow:auto;}
+.nui-layer .layer-main { overflow: hidden; word-wrap:break-word;}
 .nui-layer .layer-foot { padding:15px 10px 20px; height:28px; text-align:center; overflow:hidden;}
 .nui-layer .layer-foot .layer-button { margin:0 6px; padding:0 10px; min-width:70px; height:26px; text-align:center; line-height:26px; border:1px solid #FF9C00; color:#FF9C00; border-radius:4px;}
 .nui-layer .layer-button { display:inline-block; overflow:hidden; cursor:pointer;}

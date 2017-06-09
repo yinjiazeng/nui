@@ -86,7 +86,7 @@ Nui.define(['component', 'util'], function(component, util){
         options:options,
         _template:{
             layout:
-                '<div class="<% className %> ui-animate ui-animate-bounceIn">'+
+                '<div class="<% className %>" style="<% each style %><% $index %>:<% $value %>;<% /each %>">'+
                     '<div class="layer-box">'+
                         '<% if close %>'+
                             '<% var btn = close %>'+
@@ -112,7 +112,7 @@ Nui.define(['component', 'util'], function(component, util){
                     '</div>'+
                 '</div>',
             button:
-                '<span class="nui-button layer-button layer-button-<% btn.id %>"><% btn.text || "匿名按钮" %></span>',
+                '<span class="nui-button layer-button layer-button-<% btn.id %>"><% btn.text || "按钮" %></span>',
             iframe:
                 '<iframe<% each attr %> <% $index %>="<% $value %>"<% /each %>></iframe>',
             mask:
@@ -150,8 +150,13 @@ Nui.define(['component', 'util'], function(component, util){
                 content:that._getContent(),
                 close:buttons.close,
                 button:buttons.button,
-                title:opts.title
+                title:opts.title,
+                style:{
+                    'z-index':that._zIndex,
+                    'display':'block'
+                }
             });
+            that._setTop();
             that.element = $(that._tpl2html('layout', data)).appendTo(that._container);
             that._box = that.element.children('.layer-box');
 			that._head = that._box.children('.layer-head');
@@ -163,13 +168,13 @@ Nui.define(['component', 'util'], function(component, util){
                 that._iframeOnload()
             }
             if(opts.isMove === true && opts.title){
-                that._move();
+                that._bindMove();
             }
             if(that._button.length){
                 that._buttonEvent();
             }
             if(opts.isTop){
-                that._setTop();
+                that._bindTop();
             }
             that._show()
         },
@@ -272,13 +277,13 @@ Nui.define(['component', 'util'], function(component, util){
                 })
             })
         },
-        _setTop:function(){
+        _bindTop:function(){
             var that = this;
             that._on('click', that.element, function(){
                 that.setzIndex();
             });
         },
-        _move:function(){
+        _bindMove:function(){
             var that = this, opts = that.options, element = that.element;
             var self = that.constructor, elem = element, isMove = false, x, y, _x, _y;
             that._on('mousedown', that._head, function(e, ele){
@@ -341,16 +346,20 @@ Nui.define(['component', 'util'], function(component, util){
         //鼠标点击弹出层将弹出层层级设置最大
         _setzIndex:function(){
             var that = this, self = that.constructor;
-            if(!that._downing){
-                that._downing = true;
+            if(that._isTop){
+                that._isTop = false;
                 that._zIndex = ++self._zIndex;
                 that.element.css('zIndex', that._zIndex);
-                Nui.each(self.__instances, function(val){
-                    if(val && val !== that){
-                        val._downing = false;
-                    }
-                });
+                that._setTop();
             }
+        },
+        _setTop:function(){
+            var that = this, self = that.constructor;
+            Nui.each(self.__instances, function(val){
+                if(val && val !== that && val.options.isTop === true){
+                    val._isTop = true;
+                }
+            });
         },
         _resize:function(type){
             var that = this, self = that.constructor, opts = that.options, element = that.element;
@@ -361,6 +370,8 @@ Nui.define(['component', 'util'], function(component, util){
                          self._getSize(that._head, 'tb', 'margin') + 
                          that._foot.outerHeight() + 
                          self._getSize(that._foot, 'tb', 'margin');
+            
+            that._setSize();
 
             if(type === 'load'){
                 var iframe = that._iframe.contents();
@@ -412,6 +423,10 @@ Nui.define(['component', 'util'], function(component, util){
                     if(height > wHeight){
                         height = wHeight
                     }
+                    that._body.css('overflow', 'auto')
+                }
+                else{
+                    that._body.css('overflow', 'visible')
                 }
             }
             that._data.width = width - oWidth;
@@ -423,9 +438,8 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _show:function(){
             var that = this, opts = that.options, element = that.element;
-            that._setSize();
-            that._resize('init');
             component('init', that._main);
+            that._resize('init');
             if(typeof opts.onInit === 'function'){
                 opts.onInit.call(this, that._main, that.__index)
             }

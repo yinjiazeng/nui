@@ -1,6 +1,7 @@
 var layer = require('{cpns}/layer/layer');
+var placeholder = require('{cpns}/placeholder');
 layer({
-    content:'<a>aaa</a>',
+    content:'<input type="text" data-placeholder-options="{animate:true}" placeholder="默认文本">',
     confirm:{
         enable:true
     },
