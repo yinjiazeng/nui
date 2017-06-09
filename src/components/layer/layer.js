@@ -281,7 +281,7 @@ Nui.define(['component', 'util'], function(component, util){
         _move:function(){
             var that = this, opts = that.options, element = that.element;
             var self = that.constructor, elem = element, isMove = false, x, y, _x, _y;
-            that._on('mousedown', element.head, function(e, ele){
+            that._on('mousedown', that._head, function(e, ele){
                 isMove = true;
                 that._setzIndex();
                 if(opts.isMoveMask === true){
@@ -323,7 +323,7 @@ Nui.define(['component', 'util'], function(component, util){
             that._on('mouseup', Nui.doc, function(e){
                 if(isMove){
                     isMove = false;
-                    element.head.css('cursor','default');
+                    that._head.css('cursor','default');
                     if(opts.isMoveMask === true){
                         element.css(that._data);  
                         that._moveMask.remove();
