@@ -13,7 +13,14 @@ Nui.define(['component', 'util'], function(component, util){
         _zIndex:10000,
         _mask:null,
         _init:function(){
-
+            var self = this;
+            Nui.win.on('resize', function(){
+                Nui.each(self.__instances, function(val){
+                    if(val.options.position || val.options.isCenter === true){
+                        val.resize();
+                    }
+                })
+            })
         },
         $fn:null,
         $ready:null,
@@ -26,8 +33,8 @@ Nui.define(['component', 'util'], function(component, util){
         height:'auto',
         maxWidth:0,
         maxHeight:0,
-        edge:10,
         timer:0,
+        edge:0,
         container:'body',
         title:'温馨提示',
         animate:'',
@@ -50,12 +57,6 @@ Nui.define(['component', 'util'], function(component, util){
             cache:false,
             src:''
         },
-        offset:{
-            top:null,
-            right:null,
-            bottom:null,
-            left:null
-        },
         close:{
             enable:true,
             text:'×'
@@ -71,6 +72,7 @@ Nui.define(['component', 'util'], function(component, util){
             enable:false,
             text:'取消'
         },
+        position:null,
         bottom:null,
         button:null,
         onMove:null,
@@ -84,7 +86,7 @@ Nui.define(['component', 'util'], function(component, util){
         options:options,
         _template:{
             layout:
-                '<div class="<% className %>">'+
+                '<div class="<% className %> ui-animate ui-animate-bounceIn">'+
                     '<div class="layer-box">'+
                         '<% if close %>'+
                             '<% var btn = close %>'+
@@ -115,7 +117,8 @@ Nui.define(['component', 'util'], function(component, util){
                 '<iframe<% each attr %> <% $index %>="<% $value %>"<% /each %>></iframe>',
             mask:
                 '<div class="nui-<% name %><% if skin %> nui-<% name+'-'+skin %><% /if %>" style="z-index:<% zindex %>"><div></div></div>'
-        },    
+        },
+        _data:{}, 
         _init:function(){
             var self = this.constructor;
             this._zIndex = ++self._zIndex;
@@ -126,11 +129,16 @@ Nui.define(['component', 'util'], function(component, util){
             that._container = self._jquery(opts.container);
             if(that._container.length){
                 if(that._container.get(0).tagName !== 'BODY'){
-                    opts.isFixed = false;
+                    that._window = that._container;
+                    that._isWindow = false;
                     var pos = that._container.css('position');
                     if(pos !== 'absolute' && pos !== 'relative'){
                         that._container.css('position', 'relative')
                     }
+                }
+                else{
+                    that._window = Nui.win;
+                    that._isWindow = true;
                 }
                 that._create();
             }
@@ -145,13 +153,13 @@ Nui.define(['component', 'util'], function(component, util){
                 title:opts.title
             });
             that.element = $(that._tpl2html('layout', data)).appendTo(that._container);
-            var box = that.element.box = that.element.children('.layer-box');
-			that.element.head = box.children('.layer-head');
-			that.element.body = box.children('.layer-body');
-			that.element.main = that.element.body.children('.layer-main');
-			that.element.foot = box.children('.layer-foot');
-            if(that._iframe){
-                that.element.iframe = that.element.main.children('iframe');
+            that._box = that.element.children('.layer-box');
+			that._head = that._box.children('.layer-head');
+			that._body = that._box.children('.layer-body');
+			that._main = that._body.children('.layer-main');
+			that._foot = that._box.children('.layer-foot');
+            if(opts.iframe.enable === true){
+                that._iframe = that._main.children('iframe');
                 that._iframeOnload()
             }
             if(opts.isMove === true && opts.title){
@@ -167,8 +175,8 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _getContent:function(){
             var that = this, opts = that.options, content = '';
-            if(opts.iframe && opts.iframe.enable === true && opts.iframe.src){
-                that._iframe = content = that._createIframe();
+            if(opts.iframe.enable === true){
+                content = that._createIframe();
             }
             else{
                 if(typeof opts.content === 'string'){
@@ -196,7 +204,7 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _iframeOnload:function(){
             var that = this;
-            that.element.iframe.load(function(){
+            that._iframe.load(function(){
                 that._resize()
             })
         },
@@ -219,6 +227,14 @@ Nui.define(['component', 'util'], function(component, util){
                     if(!caches[id]){
                         caches[id] = true;
                         if(defaults[id]){
+                            if(!val.text){
+                                if(id === 'cancel'){
+                                    val.text = '取消'
+                                }
+                                else if(id === 'confirm'){
+                                    val.text = '确定'
+                                }
+                            }
                             delete defaults[id]
                         }
                         that._button[id === 'close' ? 'unshift' : 'push'](val)
@@ -247,7 +263,7 @@ Nui.define(['component', 'util'], function(component, util){
         _buttonEvent:function(){
             var that = this;
             Nui.each(that._button, function(val){
-                that._on('click', that.element, 'nui-button-'+val.id, function(e, elem){
+                that._on('click', that.element, '.layer-button-'+val.id, function(e, elem){
                     var id = val.id, callback = val.callback;
                     var isCall = typeof callback === 'function' ? callback.call(that, e, elem) : null;
                     if((id === 'confirm' && isCall === true) || (id !== 'confirm' && isCall !== false)){
@@ -278,8 +294,8 @@ Nui.define(['component', 'util'], function(component, util){
                         elem.css('position', 'fixed');
                     }
                     elem.css({
-                        width:that._data.width - self.getSize(elem, 'lr'),
-                        height:that._data.height - self.getSize(elem),
+                        width:that._data.width - self._getSize(elem, 'lr'),
+                        height:that._data.height - self._getSize(elem),
                         top:that._data.top,
                         left:that._data.left
                     });
@@ -308,10 +324,8 @@ Nui.define(['component', 'util'], function(component, util){
                 if(isMove){
                     isMove = false;
                     element.head.css('cursor','default');
-                    _x = _x || that._data.left;
-                    _y = _y || that._data.top;
                     if(opts.isMoveMask === true){
-                        !element.is(':animated') && element.animate({top:_y, left:_x}, 300);  
+                        element.css(that._data);  
                         that._moveMask.remove();
                     }
                     if(Nui.bsie6 && opts.isFixed === true){
@@ -338,22 +352,76 @@ Nui.define(['component', 'util'], function(component, util){
                 });
             }
         },
-        _resize:function(){
+        _resize:function(init){
             var that = this, opts = that.options, element = that.element;
+            var wWidth = that._window.outerWidth();
+            var wHeight = that._window.outerHeight();
+            if(opts.position){
+                var pos = opts.position;
+                that._position = {
+                    top:pos.top,
+                    right:pos.right,
+                    bottom:pos.bottom,
+                    left:pos.left
+                }
+                var _pos = element.css(that._position).position();
+                that._data.left = _pos.left;
+                that._data.top = _pos.top;
+            }
+            else if(init || opts.isCenter === true){
+                that._data.left = (wWidth - that._data.width) / 2;
+                that._data.top = (wHeight - that._data.height) / 2;
+                element.css(that._data);
+            }
+        },
+        _setSize:function(){
+            var that = this, self = that.constructor, opts = that.options, element = that.element;
+            var oWidth = self._getSize(element, 'lr', 'all');
+            var oHeight = self._getSize(element, 'tb', 'all');
+            var edge = opts.edge > 0 ? opts.edge*2 : 0;
+            var wWidth = that._window.outerWidth() - edge;
+            var wHeight = that._window.outerHeight() - edge;
+            var width = wWidth;
+            var height = wHeight;
+            if(opts.isFull !== true){
+                width = opts.width > 0 ? opts.width : 'auto';
+                height = opts.height > 0 ? opts.height : 'auto';
+                if(opts.maxWidth > 0 && element.outerWidth() > opts.maxWidth){
+                    width = opts.maxWidth
+                }
+                if(opts.maxHeight > 0 && element.outerHeight() > opts.maxWidth){
+                    height = opts.maxHeight
+                }
+                if(opts.scrollbar === true){
+                    if(width > wWidth){
+                        width = wWidth
+                    }
+                    if(height > wHeight){
+                        height = wHeight
+                    }
+                }
+            }
+            that._data.width = width - oWidth;
+            that._data.height = height - oHeight;
+            element.css(that._data);
+            //如果宽高设置为auto，需要获取真实的宽高
+            that._data.width = element.outerWidth();
+            that._data.height = element.outerHeight();
         },
         _show:function(){
-            var that = this, opts = that.options, element = that.element, main = that.element.main;
-            that._resize();
-            component('init', main);
+            var that = this, opts = that.options, element = that.element;
+            that._setSize();
+            that._resize(true);
+            component('init', that._main);
             if(typeof opts.onInit === 'function'){
-                opts.onInit.call(this, main, that.__index)
+                opts.onInit.call(this, that._main, that.__index)
             }
             return that
         },
         _reset:function(){
             var self = this.constructor, hasMask = true;
             component.exports._reset.call(this);
-            component('destroy', that.element.main);
+            component('destroy', this._main);
             Nui.each(self.__instances, function(val){
                 if(val && val.options.isMask == true && val._container.eq(0).tagName === 'BODY'){
                     return (hasMask = false);
@@ -371,10 +439,10 @@ Nui.define(['component', 'util'], function(component, util){
             }
         },
         resize:function(){
-            var that = this, opts = that.options, element = that.element, main = that.element.main;
+            var that = this, opts = that.options, element = that.element;
             that._resize();
             if(typeof opts.onResize === 'function'){
-                opts.onResize.call(this, main, that.__index)
+                opts.onResize.call(this, that._main, that.__index)
             }
             return that
         },
@@ -382,12 +450,12 @@ Nui.define(['component', 'util'], function(component, util){
             this.destroy()
         },
         destroy:function(){
-            var that = this, self = that.constructor, opts = that.options, main = that.element.main;
+            var that = this, self = that.constructor, opts = that.options;
             that._reset();
             that._delete();
             self._zIndex--;
             if(typeof opts.onDestroy === 'function'){
-                opts.onDestroy.call(this, main, that.__index)
+                opts.onDestroy.call(this, that._main, that.__index)
             }
         }
     })

@@ -7,6 +7,7 @@ var a = layer({
     cancel:{
         enable:true
     },
+    position:null,
     button:[{
         id:'cancel'
     }, {
