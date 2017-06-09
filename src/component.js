@@ -108,7 +108,9 @@
                 attr = attr || 'border';
                 dir = dir || 'tb';
                 if(attr === 'all'){
-                    return this._getSize(selector, dir) + this._getSize(selector, dir, 'padding')
+                    return (this._getSize(selector, dir) + 
+                           this._getSize(selector, dir, 'padding') +
+                           this._getSize(selector, dir, 'margin'))
                 }
                 var group = {
                     l:['Left'],

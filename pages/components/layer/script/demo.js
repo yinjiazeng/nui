@@ -1,5 +1,5 @@
 var layer = require('{cpns}/layer/layer');
-var a = layer({
+layer({
     content:'<a>aaa</a>',
     confirm:{
         enable:true

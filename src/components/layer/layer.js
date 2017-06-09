@@ -205,7 +205,7 @@ Nui.define(['component', 'util'], function(component, util){
         _iframeOnload:function(){
             var that = this;
             that._iframe.load(function(){
-                that._resize()
+                that._resize('load')
             })
         },
         _createButton:function(){
@@ -352,10 +352,22 @@ Nui.define(['component', 'util'], function(component, util){
                 });
             }
         },
-        _resize:function(init){
-            var that = this, opts = that.options, element = that.element;
+        _resize:function(type){
+            var that = this, self = that.constructor, opts = that.options, element = that.element;
             var wWidth = that._window.outerWidth();
             var wHeight = that._window.outerHeight();
+            var height = self._getSize(that._box, 'tb', 'all') +
+                         that._head.outerHeight() + 
+                         self._getSize(that._head, 'tb', 'margin') + 
+                         that._foot.outerHeight() + 
+                         self._getSize(that._foot, 'tb', 'margin');
+
+            if(type === 'load'){
+                var iframe = that._iframe.contents();
+                iframe[0].layer = that;
+                height = iframe.find('body').outerHeight();
+            }
+            
             if(opts.position){
                 var pos = opts.position;
                 that._position = {
@@ -368,11 +380,12 @@ Nui.define(['component', 'util'], function(component, util){
                 that._data.left = _pos.left;
                 that._data.top = _pos.top;
             }
-            else if(init || opts.isCenter === true){
+            else if(type === 'init' || opts.isCenter === true){
                 that._data.left = (wWidth - that._data.width) / 2;
                 that._data.top = (wHeight - that._data.height) / 2;
                 element.css(that._data);
             }
+            that._body.height(that._data.height - height)
         },
         _setSize:function(){
             var that = this, self = that.constructor, opts = that.options, element = that.element;
@@ -411,7 +424,7 @@ Nui.define(['component', 'util'], function(component, util){
         _show:function(){
             var that = this, opts = that.options, element = that.element;
             that._setSize();
-            that._resize(true);
+            that._resize('init');
             component('init', that._main);
             if(typeof opts.onInit === 'function'){
                 opts.onInit.call(this, that._main, that.__index)
