@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="renderer" content="webkit" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+</head>
+
+<body id="body">
+    正在打印..
+    <script>
+    body.onclick = function(){
+        window.win = window.open('http://127.0.0.1:8801/?url=http://cloud.jss.com.cn/jsonFile/20170610/JSON_20170610225440350967338.json&print=false&papertype=5&callback=jQuery18309592535357864638_1497106485475&_=1497106485484')
+        setTimeout(function(){
+            window.win.close()
+        }, 300)
+    }
+    </script>
+</body>
+</html>

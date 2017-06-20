@@ -201,10 +201,10 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .nui-layer { overflow:visible !important; overflow:hidden; position:absolute; padding:0px; font-size:14px;}
 .nui-layer .layer-box { position:relative; background-color:#fff; zoom:1; border:1px solid #B7B7B7; border-radius:5px;}
 .nui-layer .layer-head { padding-left:15px; height:33px; line-height:33px; color:#333; border-bottom:1px solid #DBDBDB;}
-.nui-layer .layer-body:before, .nui-layer .layer-body:after { content:''; display:table;}
-.nui-layer .layer-body:after { clear:both;}
-.nui-layer .layer-body { position:relative; *zoom:1; overflow:auto;}
-.nui-layer .layer-main { overflow: hidden; word-wrap:break-word;}
+.nui-layer .layer-body { overflow:auto;}
+.nui-layer .layer-main:before, .nui-layer .layer-main:after { content:''; display:table;}
+.nui-layer .layer-main:after { clear:both;}
+.nui-layer .layer-main { position:relative; *zoom:1; overflow: hidden; word-wrap:break-word;}
 .nui-layer .layer-foot { padding:15px 10px 20px; height:28px; text-align:center; overflow:hidden;}
 .nui-layer .layer-foot .layer-button { margin:0 6px; padding:0 10px; min-width:70px; height:26px; text-align:center; line-height:26px; border:1px solid #FF9C00; color:#FF9C00; border-radius:4px;}
 .nui-layer .layer-button { display:inline-block; overflow:hidden; cursor:pointer;}
