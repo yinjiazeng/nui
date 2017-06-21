@@ -9,7 +9,7 @@
     if(typeof jQuery === 'undefined'){
         return
     }
-    Nui.define('component', ['template', 'delegate'], function(tpl, events){
+    Nui.define('component', ['template', 'delegate'], function(tpl, delegate){
         var module = this;
         var callMethod = function(method, args, obj){
             //实参大于形参，最后一个实参表示id
@@ -263,7 +263,7 @@
                         return this
                     }
                 }
-                return events.call(this, _events)
+                return delegate.call(this, _events)
             },
             _on:function(type, dalegate, selector, callback, trigger){
                 var that = this;

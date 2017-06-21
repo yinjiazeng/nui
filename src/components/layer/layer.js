@@ -18,7 +18,9 @@ Nui.define(['component', 'util'], function(component, util){
                 Nui.each(self.__instances, function(val){
                     var opts = val.options;
                     if(opts.position || opts.isCenter === true){
-                        val.resize();
+                        setTimeout(function(){
+                            val.resize();
+                        })
                     }
                 })
             })
@@ -120,11 +122,7 @@ Nui.define(['component', 'util'], function(component, util){
             mask:
                 '<div class="nui-<% name %><% if skin %> nui-<% name+'-'+skin %><% /if %>" style="z-index:<% zindex %>"><div></div></div>'
         },
-        _size:{}, 
-        _data:{
-            scrolltop:0,
-            scrollleft:0
-        },
+        _data:{},
         _init:function(){
             var self = this.constructor;
             this._zIndex = ++self._zIndex;
@@ -178,14 +176,17 @@ Nui.define(['component', 'util'], function(component, util){
                 that._iframe = that._main.children('iframe');
                 that._iframeOnload()
             }
-            if(opts.isMove === true && opts.title){
+            if(opts.isMove === true && opts.title !== null){
                 that._bindMove();
             }
             if(that._button.length){
                 that._buttonEvent();
             }
-            if(opts.isTop){
+            if(opts.isTop === true){
                 that._bindTop();
+            }
+            if(opts.isFixed === true && !that._isFixed === true){
+                that._bindScroll()
             }
             that._show()
         },
@@ -349,10 +350,6 @@ Nui.define(['component', 'util'], function(component, util){
                         element.css(that._size);
                         that._moveMask.remove();
                     }
-                    if(!that._isFixed){
-                        that._data.scrolltop = _y - Nui._window.scrollTop();
-                        that._data.scrollleft = _y - Nui._window.scrollLeft();
-                    }
                     if(typeof opts.onMove === 'function'){
                         opts.onMove.call(this)
                     }
@@ -362,7 +359,7 @@ Nui.define(['component', 'util'], function(component, util){
         _bindScroll:function(){
             var that = this;
             that._on('scroll', that._window, function(){
-
+                
             })
         },
         //鼠标点击弹出层将弹出层层级设置最大
@@ -387,7 +384,12 @@ Nui.define(['component', 'util'], function(component, util){
             var that = this, self = that.constructor, opts = that.options, element = that.element;
             var wWidth = that._window.outerWidth();
             var wHeight = that._window.outerHeight();
-            
+            var stop = 0;
+            var sleft = 0;
+            if(!that._isFixed){
+                sleft = that._window.scrollLeft();
+                stop = that._window.scrollTop();
+            }
             that._setSize();
             
             if(opts.position){
@@ -399,19 +401,23 @@ Nui.define(['component', 'util'], function(component, util){
                     left:pos.left
                 }
                 var _pos = element.css(that._position).position();
-                that._size.left = _pos.left;
-                that._size.top = _pos.top;
+                if(Nui.bsie6){
+                    sleft = 0;
+                    stop = 0;
+                }
+                that._size.left = _pos.left + sleft;
+                that._size.top = _pos.top + stop;
             }
             else{
                 if(type === 'init' || opts.isCenter === true){
-                    var left = (wWidth - that._data.width) / 2 + that._data.scrollleft;
-                    var top = (wHeight - that._data.height) / 2 + that._data.scrolltop;
+                    var left = (wWidth - that._data.width) / 2 + sleft;
+                    var top = (wHeight - that._data.height) / 2 + stop;
                     var edge = opts.edge > 0 ? opts.edge : 0;
                     that._size.left = left > 0 ? left : edge;
                     that._size.top = top > 0 ? top : edge;
                 }
-                element.css(that._size);
             }
+            element.css(that._size);
             var height = that._size.height - that._data.edgeSize;
             if(that._iframe){
                 that._iframe.height(height);
@@ -423,11 +429,9 @@ Nui.define(['component', 'util'], function(component, util){
             var edge = opts.edge > 0 ? opts.edge*2 : 0;
             var wWidth = that._window.outerWidth() - edge;
             var wHeight = that._window.outerHeight() - edge;
-            var width = wWidth;
-            var height = wHeight;
 
             that._body.css({height:'auto'});
-            element.css({width:'auto', height:'auto'});
+            element.css({top:'auto', left:'auto', width:'auto', height:'auto'});
             that._data.edgeSize = self._getSize(that._box, 'tb', 'all') +
                 that._head.outerHeight() + 
                 self._getSize(that._head, 'tb', 'margin') + 
@@ -435,34 +439,39 @@ Nui.define(['component', 'util'], function(component, util){
                 that._foot.outerHeight() + 
                 self._getSize(that._foot, 'tb', 'margin');
 
-            var _width = element.outerWidth();
-            var _height = element.outerHeight();
+            var width = element.outerWidth();
+            var height = element.outerHeight();
             
             if(that._iframeDocument){
                 that._iframeDocument[0].layer = that;
-                _height = that._data.edgeSize + that._iframeDocument.find('body').outerHeight();
+                height = that._data.edgeSize + that._iframeDocument.find('body').outerHeight();
             }
 
             if(opts.isFull !== true){
-                width = opts.width > 0 ? opts.width : _width;
-                height = opts.height > 0 ? opts.height : _height;
-                if(opts.maxWidth > 0 && _width > opts.maxWidth){
+                width = opts.width > 0 ? opts.width : width;
+                height = opts.height > 0 ? opts.height : height;
+                if(opts.maxWidth > 0 && width >= opts.maxWidth){
                     width = opts.maxWidth
                 }
-                if(opts.maxHeight > 0 && _height > opts.maxHeight){
+                if(opts.maxHeight > 0 && height >= opts.maxHeight){
                     height = opts.maxHeight
                 }
                 if(opts.scrollbar === true || that._iframeDocument){
-                    if(_width > wWidth){
+                    if(width > wWidth){
                         width = wWidth
                     }
-                    if(_height > wHeight){
+                    if(height > wHeight){
                         height = wHeight
                     }
                 }
             }
+            else{
+                width = wWidth;
+                height = wHeight
+            }
             that._data.width = width;
             that._data.height = height;
+            that._size = {};
             that._size.width = width - self._getSize(element, 'lr', 'all');
             that._size.height = height - self._getSize(element, 'tb', 'all');
             element.css(that._size);
