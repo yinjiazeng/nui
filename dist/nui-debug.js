@@ -1651,6 +1651,9 @@ Nui.define('delegate', function(){
                 if(skin){
                     className.push(name+'-'+skin)
                 }
+                if(opts.id){
+                    className.push(self.__component_name + '-' + opts.id)
+                }
                 if(!data){
                     data = {}
                 }
