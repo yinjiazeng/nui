@@ -1777,8 +1777,8 @@ Nui.define('delegate', function(){
                 return this;
             },
             destroy:function(){
-                this._reset();
                 this._delete();
+                this._reset();
                 if(typeof this.options.onDestroy === 'function'){
                     this.options.onDestroy.call(this)
                 }

@@ -11,7 +11,6 @@ Nui.define(['component', 'util'], function(component, util){
     var statics = {
         _maskzIndex:10000,
         _zIndex:10000,
-        _mask:null,
         _init:function(){
             var self = this;
             Nui.win.on('resize', function(){
@@ -46,7 +45,7 @@ Nui.define(['component', 'util'], function(component, util){
         isInnerMove:false,
         isClickMask:false,
         isMoveMask:false,
-        isClose:true,
+        isHide:true,
         isCenter:true,
         isFull:false,
         isTop:false,
@@ -77,12 +76,11 @@ Nui.define(['component', 'util'], function(component, util){
             text:'取消'
         },
         position:null,
-        bottom:null,
+        lower:null,
         button:null,
         onMove:null,
         onResize:null,
-        onScroll:null,
-        onClick:null
+        onScroll:null
     }
 
     return this.extend(component, {
@@ -90,7 +88,7 @@ Nui.define(['component', 'util'], function(component, util){
         options:options,
         _template:{
             layout:
-                '<div class="<% className %>" style="<% each style %><%$index%>:<%$value%>;<% /each %>">'+
+                '<div class="<% className %>" style="<% include \'style\' %>">'+
                     '<div class="layer-box">'+
                         '<% if close %>'+
                             '<% var btn = close %>'+
@@ -120,9 +118,25 @@ Nui.define(['component', 'util'], function(component, util){
             iframe:
                 '<iframe<% each attr %> <% $index %>="<% $value %>"<% /each %>></iframe>',
             mask:
-                '<div class="nui-<% name %><% if skin %> nui-<% name+'-'+skin %><% /if %>" style="z-index:<% zindex %>"><div></div></div>'
+                '<div class="nui-layer-mask'+
+                    '<% if skin %> nui-layer-mask-<% skin %><% /if %>" style="<% include \'style\' %>">'+
+                    '<div class="layer-mask"></div>'+
+                '</div>',
+            movemask:
+                '<div class="nui-layer-movemask'+
+                    '<% if skin %> nui-layer-movemask-<% skin %><% /if %>" style="<% include \'style\' %>">'+
+                '</div>',
+            style:
+                '<% each style %><%$index%>:<%$value%>;<% /each %>'
         },
-        _data:{},
+        /*
+        top:弹窗距离窗口顶部距离
+        left:弹窗距离窗口左边距离
+        width:弹窗宽度
+        height:弹窗高度
+        edgeSize:弹窗除了body之外的高度之和
+        */
+        _temp:{},
         _init:function(){
             var self = this.constructor;
             this._zIndex = ++self._zIndex;
@@ -132,7 +146,8 @@ Nui.define(['component', 'util'], function(component, util){
             var that = this, opts = that.options, self = that.constructor;
             that._container = self._jquery(opts.container);
             if(that._container.length){
-                if(that._container.get(0).tagName !== 'BODY'){
+                that._containerDOM = that._container.get(0);
+                if(that._containerDOM.tagName !== 'BODY'){
                     that._window = that._container;
                     that._isWindow = false;
                     var pos = that._container.css('position');
@@ -295,7 +310,7 @@ Nui.define(['component', 'util'], function(component, util){
         _bindTop:function(){
             var that = this;
             that._on('click', that.element, function(){
-                that.setzIndex();
+                that._setzIndex();
             });
         },
         _bindMove:function(){
@@ -305,24 +320,24 @@ Nui.define(['component', 'util'], function(component, util){
                 isMove = true;
                 that._setzIndex();
                 if(opts.isMoveMask === true){
-                    elem = that._moveMask = $(that._tpl2html('mask', {
-                        name:'movemask',
+                    elem = that._moveMask = $(that._tpl2html('movemask', {
                         skin:opts.skin,
-                        zindex:that._zIndex+1
-                    }));
-                    if(opts.isFixed === true && !Nui.bsie6){
-                        elem.css('position', 'fixed');
-                    }
+                        style:{
+                            'z-index':that._zIndex+1,
+                            'cursor':'move',
+                            'position':that._isFixed ? 'fixed' : 'absolute'
+                        }
+                    })).appendTo(that._container);
                     elem.css({
-                        width:that._data.width - self._getSize(elem, 'lr'),
-                        height:that._data.height - self._getSize(elem),
-                        top:that._size.top,
-                        left:that._size.left
+                        width:that._temp.width - self._getSize(elem, 'lr', 'all'),
+                        height:that._temp.height - self._getSize(elem, 'tb', 'all'),
+                        top:that._data.top,
+                        left:that._data.left
                     });
                 }
                 ele.css('cursor','move');
-                x = e.pageX - that._size.left;
-                y = e.pageY - that._size.top;
+                x = e.pageX - that._data.left;
+                y = e.pageY - that._data.top;
                 e.stopPropagation();
             });
             that._on('mousemove', Nui.doc, function(e){
@@ -333,11 +348,11 @@ Nui.define(['component', 'util'], function(component, util){
                     _x < 0 && (_x = 0);
                     _y < 0 && (_y = 0);
                     if(opts.isInnerMove === true){
-                        _x + that._data.width > width && (_x = width - that._data.width);
-                        _y + that._data.height > height && (_y = height - that._data.height);
+                        _x + that._temp.width > width && (_x = width - that._temp.width);
+                        _y + that._temp.height > height && (_y = height - that._temp.height);
                     }
-                    that._size.top = _y;
-                    that._size.left = _x;
+                    that._data.top = _y;
+                    that._data.left = _x;
                     elem.css({top:_y, left:_x});
                     return !isMove;
                 }
@@ -347,19 +362,29 @@ Nui.define(['component', 'util'], function(component, util){
                     isMove = false;
                     that._head.css('cursor','default');
                     if(opts.isMoveMask === true){
-                        element.css(that._size);
+                        element.css(that._data);
                         that._moveMask.remove();
+                        that._moveMask = null;
                     }
                     if(typeof opts.onMove === 'function'){
                         opts.onMove.call(this)
                     }
+                    that._temp.top = that._data.top - that._window.scrollTop();
+                    that._temp.left = that._data.left - that._window.scrollLeft();
                 }
             });
         },
         _bindScroll:function(){
-            var that = this;
+            var that = this, opts = that.options;
             that._on('scroll', that._window, function(){
-                
+                var top = that._temp.top + that._window.scrollTop();
+                var left = that._temp.left + that._window.scrollLeft();
+                that._data.top = top;
+                that._data.left = left;
+                that.element.css(that._data);
+                if(typeof opts.onScroll === 'function'){
+                    opts.onScroll.call(that)
+                }
             })
         },
         //鼠标点击弹出层将弹出层层级设置最大
@@ -370,6 +395,24 @@ Nui.define(['component', 'util'], function(component, util){
                 that._zIndex = ++self._zIndex;
                 that.element.css('zIndex', that._zIndex);
                 that._setTop();
+            }
+        },
+        _setLower:function(destroy){
+            var that = this, self = that.constructor, opts = that.options, lowers = [];
+            if(opts.lower){
+                if(Nui.type(opts.lower, 'Object')){
+                    lowers.push(opts.lower)
+                }
+                else if(Nui.isArray(opts.lower)){
+                    lowers = opts.lower
+                }
+                if(lowers.length){
+                    Nui.each(lowers, function(obj, k){
+                        if(obj && obj.element){
+                            obj.element.css('z-index', destroy ? obj._zIndex : self._maskzIndex-1)
+                        }
+                    })
+                }
             }
         },
         _setTop:function(){
@@ -405,20 +448,22 @@ Nui.define(['component', 'util'], function(component, util){
                     sleft = 0;
                     stop = 0;
                 }
-                that._size.left = _pos.left + sleft;
-                that._size.top = _pos.top + stop;
+                that._data.left = _pos.left + sleft;
+                that._data.top = _pos.top + stop;
             }
             else{
                 if(type === 'init' || opts.isCenter === true){
-                    var left = (wWidth - that._data.width) / 2 + sleft;
-                    var top = (wHeight - that._data.height) / 2 + stop;
+                    var left = (wWidth - that._temp.width) / 2 + sleft;
+                    var top = (wHeight - that._temp.height) / 2 + stop;
                     var edge = opts.edge > 0 ? opts.edge : 0;
-                    that._size.left = left > 0 ? left : edge;
-                    that._size.top = top > 0 ? top : edge;
+                    that._data.left = left > 0 ? left : edge;
+                    that._data.top = top > 0 ? top : edge;
                 }
             }
-            element.css(that._size);
-            var height = that._size.height - that._data.edgeSize;
+            that._temp.top = that._data.top - that._window.scrollTop();
+            that._temp.left = that._data.left - that._window.scrollLeft();
+            element.css(that._data);
+            var height = that._data.height - that._temp.edgeSize;
             if(that._iframe){
                 that._iframe.height(height);
             }
@@ -432,7 +477,7 @@ Nui.define(['component', 'util'], function(component, util){
 
             that._body.css({height:'auto'});
             element.css({top:'auto', left:'auto', width:'auto', height:'auto'});
-            that._data.edgeSize = self._getSize(that._box, 'tb', 'all') +
+            that._temp.edgeSize = self._getSize(that._box, 'tb', 'all') +
                 that._head.outerHeight() + 
                 self._getSize(that._head, 'tb', 'margin') + 
                 self._getSize(that._body, 'tb', 'all') + 
@@ -444,7 +489,7 @@ Nui.define(['component', 'util'], function(component, util){
             
             if(that._iframeDocument){
                 that._iframeDocument[0].layer = that;
-                height = that._data.edgeSize + that._iframeDocument.find('body').outerHeight();
+                height = that._temp.edgeSize + that._iframeDocument.find('body').outerHeight();
             }
 
             if(opts.isFull !== true){
@@ -469,12 +514,39 @@ Nui.define(['component', 'util'], function(component, util){
                 width = wWidth;
                 height = wHeight
             }
-            that._data.width = width;
-            that._data.height = height;
-            that._size = {};
-            that._size.width = width - self._getSize(element, 'lr', 'all');
-            that._size.height = height - self._getSize(element, 'tb', 'all');
-            element.css(that._size);
+            that._temp.width = width;
+            that._temp.height = height;
+            /*
+            top:弹窗距离顶部距离
+            left:弹窗距离左边距离
+            width:弹窗不包含边框内变局宽度
+            heigth:弹窗不包含边框内变局高度
+            */
+            that._data = {};
+            that._data.width = width - self._getSize(element, 'lr', 'all');
+            that._data.height = height - self._getSize(element, 'tb', 'all');
+            element.css(that._data);
+        },
+        _showMask:function(){
+            var that = this, self = that.constructor, opts = that.options;
+            if(!that._containerDOM.__layermask__){
+                that._containerDOM.__layermask__ = $(that._tpl2html('mask', {
+                    skin:opts.skin,
+                    style:{
+                        'z-index':self._maskzIndex,
+                        'position':that._isFixed ? 'fixed' : 'absolute',
+                        'top':'0px',
+                        'left':'0px',
+                        'width':'100%',
+                        'height':that._isFixed ? '100%' : that._container.outerHeight()+'px'
+                    }
+                })).appendTo(that._container);
+            }
+            if(opts.isClickMask === true){
+                that._on('click', that._containerDOM.__layermask__, function(){
+                    that.hide()
+                })
+            }
         },
         _show:function(){
             var that = this, opts = that.options;
@@ -483,29 +555,35 @@ Nui.define(['component', 'util'], function(component, util){
                 that._body.css('overflow', 'visible')
             }
             that._resize('init');
+            that._setLower();
+            if(opts.isMask === true){
+                that._showMask()
+            }
+            if(opts.timer > 0){
+                that._timer = setTimeout(function(){
+                    that.hide();
+                }, opts.timer);
+            }
             if(typeof opts.onInit === 'function'){
                 opts.onInit.call(this, that._main, that.__index)
             }
             return that
         },
         _reset:function(){
-            var self = this.constructor, hasMask = true;
+            var that = this, self = that.constructor, noMask = true;
             component.exports._reset.call(this);
-            component('destroy', this._main);
+            component('destroy', that._main);
             Nui.each(self.__instances, function(val){
-                if(val && val.options.isMask == true && val._container.eq(0).tagName === 'BODY'){
-                    return (hasMask = false);
+                if(val && val.options.isMask === true && val !== that && val._containerDOM === that._containerDOM){
+                    return (noMask = false);
                 }   
             });
-            if(hasMask && self._mask){
-                self._mask.remove();
-                self._mask = null;
+            if(noMask && that._containerDOM.__layermask__){
+                that._containerDOM.__layermask__.remove();
+                that._containerDOM.__layermask__  = null;
             }
-            if(this._mask){
-                this._mask.remove();
-            }
-            if(this.options.timer > 0){
-                clearTimeout(this._timer);
+            if(that.options.timer > 0){
+                clearTimeout(that._timer);
             }
         },
         resize:function(){
@@ -517,16 +595,19 @@ Nui.define(['component', 'util'], function(component, util){
             return that
         },
         hide:function(){
-            this.destroy()
+            if(this.options.isHide === true){
+                this.destroy()
+            }
         },
         destroy:function(){
             var that = this, self = that.constructor, opts = that.options;
-            that._reset();
             that._delete();
+            that._reset();
+            that._setLower(true);
             self._zIndex--;
             if(typeof opts.onDestroy === 'function'){
                 opts.onDestroy.call(this, that._main, that.__index)
             }
         }
     })
-})
+});

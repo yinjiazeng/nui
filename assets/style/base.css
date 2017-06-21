@@ -212,6 +212,5 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .nui-layer .layer-foot .layer-button-cancel { color:#FF9C00; background-color:#fff;}
 .nui-layer .layer-button-close { position:absolute; top:2px; right:5px; width:27px; height:27px; line-height:27px; text-align:center; font-size:27px; color:#666; border:none; z-index:1;}
 .nui-layer .layer-foot .layer-button.s-dis { background-color:#F2F2F2; border-color:#ccc; color:#c9c9c9; cursor:default;}
-.nui-layermask { display:none; position:fixed; top:0; left:0; z-index:10000; width:100%; height:100%;}
-.nui-layermask .layer-mask { position:relative; width:100%; height:100%; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000); background:rgba(0,0,0,.5); background:transparent\;}
-.nui-layermask-move { position:absolute; cursor:move; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000); background:rgba(0,0,0,0.5); background:transparent\;}
+.nui-layer-mask .layer-mask { position:relative; width:100%; height:100%; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000); background:rgba(0,0,0,.5); background:transparent\;}
+.nui-layer-movemask { filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000); background:rgba(0,0,0,0.5); background:transparent\;}
