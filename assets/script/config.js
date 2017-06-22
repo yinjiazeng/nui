@@ -13,7 +13,7 @@ Nui.config({
     "maps": {
         "{script}/base": "cc40549",
         "./script/template/page": "08863f7",
-        "./script/demo": "a6cb23f",
-        "./script/page": "3356384"
+        "./script/page": "3356384",
+        "./script/demo": "5a53020"
     }
 })

@@ -104,7 +104,7 @@ Nui.define(['component', 'util'], function(component, util){
                             '<span class="layer-title"><%title%></span>'+
                         '</div>'+
                         '<%/if%>'+
-                        '<div class="layer-body" style="overflow:auto;">'+
+                        '<div class="layer-body">'+
                             '<div class="layer-main">'+
                             '<%content%>'+
                             '</div>'+
@@ -143,7 +143,6 @@ Nui.define(['component', 'util'], function(component, util){
         left:弹窗距离窗口左边距离
         width:弹窗宽度
         height:弹窗高度
-        edgeSize:弹窗除了body之外的高度之和
         */
         _temp:{},
         _init:function(){
@@ -455,7 +454,6 @@ Nui.define(['component', 'util'], function(component, util){
                 stop = that._window.scrollTop();
             }
             that._setSize();
-            
             if(opts.position){
                 var pos = opts.position;
                 that._position = {
@@ -484,11 +482,6 @@ Nui.define(['component', 'util'], function(component, util){
             that._temp.top = that._data.top - that._window.scrollTop();
             that._temp.left = that._data.left - that._window.scrollLeft();
             element.css(that._data);
-            var height = that._data.height - that._temp.edgeSize;
-            if(that._iframe){
-                that._iframe.height(height);
-            }
-            that._body.height(height)
         },
         _setSize:function(){
             var that = this, self = that.constructor, opts = that.options, element = that.element;
@@ -503,9 +496,9 @@ Nui.define(['component', 'util'], function(component, util){
             */
             that._data = {};
 
-            that._body.css({height:'auto'});
+            that._body.css({height:'auto', overflow:'visible'});
             element.css({top:'auto', left:'auto', width:'auto', height:'auto'});
-            that._temp.edgeSize = self._getSize(that._box, 'tb', 'all') +
+            var edgeSize = self._getSize(that._box, 'tb', 'all') +
                 that._head.outerHeight() + 
                 self._getSize(that._head, 'tb', 'margin') + 
                 self._getSize(that._body, 'tb', 'all') + 
@@ -518,10 +511,8 @@ Nui.define(['component', 'util'], function(component, util){
                 if(opts.maxWidth > 0 && width >= opts.maxWidth){
                     width = opts.maxWidth
                 }
-                if(opts.scrollbar === true || that._iframeDocument){
-                    if(width > wWidth){
-                        width = wWidth
-                    }
+                if(opts.scrollbar === true && width > wWidth){
+                    width = wWidth
                 }
             }
             else{
@@ -534,7 +525,7 @@ Nui.define(['component', 'util'], function(component, util){
             var height = element.outerHeight();
             if(that._iframeDocument){
                 that._iframeDocument[0].layer = that;
-                height = that._temp.edgeSize + that._iframeDocument.find('body').outerHeight();
+                height = edgeSize + that._iframeDocument.find('body').outerHeight();
             }
 
             if(opts.isFull !== true){
@@ -551,10 +542,19 @@ Nui.define(['component', 'util'], function(component, util){
             else{
                 height = wHeight
             }
+
             that._temp.width = width;
             that._temp.height = height;
             that._data.height = height - self._getSize(element, 'tb', 'all');
             element.css(that._data);
+            var _height = that._data.height - edgeSize;
+            if(that._main.outerHeight() > _height && !that._iframe && opts.scrollbar === true){
+                that._body.css('overflow', 'auto')
+            }
+            if(that._iframe){
+                that._iframe.height(_height);
+            }
+            that._body.height(_height)
         },
         _showMask:function(){
             var that = this, self = that.constructor, opts = that.options;
@@ -580,9 +580,6 @@ Nui.define(['component', 'util'], function(component, util){
         _show:function(){
             var that = this, opts = that.options;
             component('init', that._main);
-            if(that._iframe || opts.scrollbar !== true){
-                that._body.css('overflow', 'visible')
-            }
             that._resize('init');
             that._setLower();
             if(opts.isMask === true){

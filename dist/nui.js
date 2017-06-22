@@ -1425,7 +1425,7 @@ Nui.define('delegate', function(){
         }
         //去除IE67按钮点击黑边
         if(Nui.bsie7){
-            Nui.doc.on('focus', 'button.nui-button', function(){
+            Nui.doc.on('focus', 'button, input[type="button"]', function(){
                 this.blur()
             })
         }
