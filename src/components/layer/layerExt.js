@@ -13,7 +13,7 @@ Nui.define(['./layer'], function(layer){
             width:width,
             height:height,
             cancel:{
-                text:'关闭'
+                text:'关 闭'
             }
         })
     }

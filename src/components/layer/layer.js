@@ -39,7 +39,6 @@ Nui.define(['component', 'util'], function(component, util){
         edge:0,
         container:'body',
         title:'温馨提示',
-        animate:'',
         isMove:false,
         isMask:true,
         isInnerMove:false,
@@ -68,6 +67,7 @@ Nui.define(['component', 'util'], function(component, util){
         },
         confirm:{
             enable:false,
+            name:'normal',
             text:'确定',
             callback:function(){
                 return true
@@ -119,7 +119,11 @@ Nui.define(['component', 'util'], function(component, util){
                     '</div>'+
                 '</div>',
             button:
-                '<span class="nui-button layer-button layer-button-<%btn.id%>"><%btn.text || "按钮"%></span>',
+                '<button class="ui-button'+
+                    '<%if btn.name%>'+
+                    '<%each [].concat(btn.name) name%> ui-button-<%name%><%/each%>'+
+                    '<%/if%>'+
+                    ' layer-button-<%btn.id%>"><%btn.text || "按钮"%></button>',
             iframe:
                 '<iframe<%each attr%> <%$index%>="<%$value%>"<%/each%>></iframe>',
             mask:
@@ -264,6 +268,7 @@ Nui.define(['component', 'util'], function(component, util){
                 if(btn && btn.enable === true){
                     defaults[id] = {
                         id:id,
+                        name:btn.name,
                         text:btn.text,
                         callback:btn.callback
                     }
@@ -295,6 +300,7 @@ Nui.define(['component', 'util'], function(component, util){
             if(!caches.close && opts.close && opts.close.enable === true){
                 that._button.unshift({
                     id:'close',
+                    name:opts.close.name,
                     text:opts.close.text,
                     callback:opts.close.callback
                 })
@@ -312,10 +318,12 @@ Nui.define(['component', 'util'], function(component, util){
             var that = this;
             Nui.each(that._button, function(val){
                 that._on('click', that.element, '.layer-button-'+val.id, function(e, elem){
-                    var id = val.id, callback = val.callback;
-                    var isCall = typeof callback === 'function' ? callback.call(that, that._main, that.__id, elem) : null;
-                    if((id === 'confirm' && isCall === true) || (id !== 'confirm' && isCall !== false)){
-                        that.destroy()
+                    if(!elem.hasClass('nui-button-disabled')){
+                        var id = val.id, callback = val.callback;
+                        var isCall = typeof callback === 'function' ? callback.call(that, that._main, that.__id, elem) : null;
+                        if((id === 'confirm' && isCall === true) || (id !== 'confirm' && isCall !== false)){
+                            that.destroy()
+                        }
                     }
                 })
             })

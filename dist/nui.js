@@ -1423,6 +1423,12 @@ Nui.define('delegate', function(){
             }
             method.apply(obj, args)
         }
+        //去除IE67按钮点击黑边
+        if(Nui.bsie7){
+            Nui.doc.on('focus', 'button.nui-button', function(){
+                this.blur()
+            })
+        }
         /**
          * 单和双下划线开头表示私有方法或者属性，只能在内部使用，
          * 单下划线继承后可重写或修改，双下划线为系统预置无法修改
