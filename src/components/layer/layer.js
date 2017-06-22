@@ -146,8 +146,7 @@ Nui.define(['component', 'util'], function(component, util){
         */
         _temp:{},
         _init:function(){
-            var self = this.constructor;
-            this._zIndex = ++self._zIndex;
+            this._zIndex = ++this.constructor._zIndex;
             this._exec()
         },
         _exec:function(){
