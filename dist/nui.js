@@ -1361,7 +1361,7 @@ Nui.define('template', ['util'], function(util){
     return template
 })
 
-Nui.define('delegate', function(){
+Nui.define('events', function(){
     return function(opts){
         var that = this, elem = opts.elem, maps = opts.maps, calls = opts.calls;
         if(!opts || !elem || !maps || !calls){
@@ -1370,7 +1370,7 @@ Nui.define('delegate', function(){
         if(!(elem instanceof jQuery)){
             elem = jQuery(elem)
         }
-        var evt, ele;
+        var evt, ele, self = that.constructor;
         var callback = function(e, cbs){
             var that = this, $elem = $(that);
             Nui.each(cbs, function(cb, i){
@@ -1380,13 +1380,14 @@ Nui.define('delegate', function(){
                 }
             }) 
         }
-        var isComponent = that.constructor && that.constructor._component_name_;
+
         Nui.each(maps, function(cbs, arrs){
             cbs = Nui.trim(cbs).split(/\s+/);
             arrs = Nui.trim(arrs).split(/\s+/);
+            // keyup:kupdown:focus a => elem.on('keyup kupdown focus', 'a', callback)
             evt = arrs.shift().replace(/:/g, ' ');
             ele = arrs.join(' ');
-            if(isComponent){
+            if(self && self.__component_name){
                 that._on(evt, elem, ele, function(e){
                     callback.call(this, e, cbs)
                 })
@@ -1411,7 +1412,7 @@ Nui.define('delegate', function(){
     if(typeof jQuery === 'undefined'){
         return
     }
-    Nui.define('component', ['template', 'delegate'], function(tpl, delegate){
+    Nui.define('component', ['template', 'events'], function(tpl, events){
         var module = this;
         var callMethod = function(method, args, obj){
             //实参大于形参，最后一个实参表示id
@@ -1674,7 +1675,7 @@ Nui.define('delegate', function(){
                         return this
                     }
                 }
-                return delegate.call(this, _events)
+                return events.call(this, _events)
             },
             _on:function(type, dalegate, selector, callback, trigger){
                 var that = this;

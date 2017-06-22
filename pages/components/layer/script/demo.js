@@ -3,7 +3,7 @@ var placeholder = require('{cpns}/placeholder');
 
 
 
-$('#btn').click(function(){
+$('#btn').click(function(){ 
     layer.loading('')
     // layer({
     //     content:'<input type="text" data-placeholder-options="{animate:true}" placeholder="默认文本"><a>aaa</a>',
