@@ -282,7 +282,7 @@
         mod.name = attrs[1];
         //文件参数
         mod.version = '';
-        //文件后缀 -debug和-min
+        //文件后缀 -min
         mod.suffix = attrs[2];
         //所在目录
         mod.uri = mod.id.substr(0, mod.id.lastIndexOf('/')+1);
@@ -680,11 +680,11 @@
         // xxx.js?v=1.1.1 => xxx
         // xxx.css?v=1.1.1 => xxx
         var name = id.replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '');
-        var match = name.match(/(-debug|-min)$/g);
+        var match = name.match(/-min$/g);
         var suffix = '';
         var dirid;
         if(match){
-            name = name.replace(/(-debug|-min)$/g, '');
+            name = name.replace(/-min$/g, '');
             suffix = match[0]
         }
         id = Module.setPath(config.alias[name] || name);
@@ -713,7 +713,7 @@
             }
             
             var depname = mod.alldeps[0];
-            var version = config.maps[depname.replace(/-(debug|min)$/, '')]||'';
+            var version = config.maps[depname.replace(/-min$/, '')]||'';
             if(version){
                 if(!/^\?/.test(version)){
                     version = '?v='+version

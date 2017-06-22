@@ -1,7 +1,7 @@
 var layer = require('{cpns}/layer/layerExt');
 var placeholder = require('{cpns}/placeholder');
 
-
+console.log(1) 
 $('#btn').click(function(){
     layer.loading()
     // layer({

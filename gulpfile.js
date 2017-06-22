@@ -8,13 +8,13 @@ var nui = require('gulp-nui');
 var nunjucks = require('gulp-nunjucks-render');
 
 gulp.task('concat', function() {
-    return gulp.src(['./src/nui.js',
+    return gulp.src(['./src/load.js',
             './src/util.js',
             './src/template.js',
             './src/delegate.js',
             './src/component.js'
         ])
-        .pipe(concat('nui-debug.js'))
+        .pipe(concat('nui.js'))
         .pipe(gulp.dest('./dist'))
         .pipe(uglify({
             mangle: true,
@@ -43,7 +43,7 @@ gulp.task('nunjucks', function() {
 });
 
 gulp.task('watch', function() {
-    watch(['./src/components/**/*.js', './pages/**/*', '!./pages/**/*.html', './dist/*.js', './assets/**/*', '!./assets/script/config.js', '!./**/*-{debug,min}.{js,css}'],
+    watch(['./src/components/**/*.js', './pages/**/*', '!./pages/**/*.html', './dist/*.js', './assets/**/*', '!./assets/script/config.js', , '!./**/*.map', '!./**/*-{debug,min}.{js,css}'],
         function(watcher) {
             options.watcher = watcher;
             gulp.src(['./pages/**/*.html'])
