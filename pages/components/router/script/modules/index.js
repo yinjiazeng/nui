@@ -8,11 +8,11 @@ Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
     return function(target, wrapper, request){
         wrapper.html(tpl.render(tmpl, menu));
         events({
-            elem:wrapper,
-            maps:{
+            element:wrapper,
+            mapping:{
                 'click a':'seturl'
             },
-            calls:{
+            callback:{
                 seturl:function(e, elem){
                     router('href', elem.attr('rel'))
                 }

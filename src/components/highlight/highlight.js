@@ -132,25 +132,19 @@ Nui.define(function(){
         _list:function(){
             return this._getCode().split('\n')
         },
-        _events:function(){
-            var that = this;
-            return ({
-                elem:that.element,
-                maps:{
-                    'click tr':'active',
-                    'click .copy':'copy'
-                },
-                calls:{
-                    active:function(e, elem){
-                        that.constructor._active = that._active = true;
-                        elem.addClass('s-crt').siblings().removeClass('s-crt');
-                        e.stopPropagation()
-                    },
-                    copy:function(){
-                        alert('傻帽！逗你玩呢。')
-                    }
-                }
-            })
+        mapping:{
+            'click tr':'active',
+            'click .copy':'copy'
+        },
+        callback:{
+            active:function(e, elem){
+                this.constructor._active = this._active = true;
+                elem.addClass('s-crt').siblings().removeClass('s-crt');
+                e.stopPropagation()
+            },
+            copy:function(){
+                alert('傻帽！逗你玩呢。')
+            }
         }
     })
 })

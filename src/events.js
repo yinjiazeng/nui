@@ -1,6 +1,9 @@
 Nui.define('events', function(){
     return function(opts){
-        var that = this, elem = opts.elem, maps = opts.maps, calls = opts.calls;
+        var that = this, opts = opts || {},
+            elem = opts.element || that.element, 
+            maps = opts.mapping || that.mapping, 
+            calls = opts.callback || that.callback;
         if(!opts || !elem || !maps || !calls){
             return
         }
@@ -8,12 +11,11 @@ Nui.define('events', function(){
             elem = jQuery(elem)
         }
         var evt, ele, self = that.constructor;
-        var callback = function(e, cbs){
-            var that = this, $elem = $(that);
+        var callback = function(e, elem, cbs){
             Nui.each(cbs, function(cb, i){
                 cb = calls[cb];
                 if(typeof cb === 'function'){
-                    return cb.call(that, e, $elem)
+                    return cb.call(that, e, elem)
                 }
             }) 
         }
@@ -26,12 +28,12 @@ Nui.define('events', function(){
             ele = arrs.join(' ');
             if(self && self.__component_name){
                 that._on(evt, elem, ele, function(e){
-                    callback.call(this, e, cbs)
+                    callback(e, $(this), cbs)
                 })
             }
             else{
                 elem.on(evt, ele, function(e){
-                    callback.call(this, e, cbs)
+                    callback(e, $(this), cbs)
                 })
             }
         })

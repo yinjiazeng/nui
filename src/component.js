@@ -265,14 +265,7 @@
                 return data
             },
             _event:function(){
-                var _events = this._events;
-                if(typeof _events === 'function'){
-                    _events = _events.call(this);
-                    if(!_events || _events instanceof this.constructor){
-                        return this
-                    }
-                }
-                return events.call(this, _events)
+                return events.call(this)
             },
             _on:function(type, dalegate, selector, callback, trigger){
                 var that = this;

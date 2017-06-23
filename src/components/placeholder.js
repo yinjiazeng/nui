@@ -86,7 +86,7 @@ Nui.define(['util', 'component'], function(util, component){
                         })()
                     })).insertAfter(that.target)
 
-                that._event()
+                that._events()
             }
             else{
                 that._setStyle()

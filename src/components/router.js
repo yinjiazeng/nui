@@ -54,7 +54,12 @@ Nui.define(['component'], function(component){
                         var params = hash.replace(v.path, '').replace(/^\//, '');
                         var object = that.__instances[v.id], opts = object.options, param;
                         params = params ? params.split('/') : [];
-                        if(typeof opts.onRender === 'function' && params.length === v.params.length){
+                        var render = opts.onRender;
+                        var func = render;
+                        if(typeof func === 'object' && typeof func.init === 'function'){
+                            func = func.init;
+                        }
+                        if(typeof func === 'function' && params.length === v.params.length){
                             Nui.each(v.params, function(val, key){
                                 if(!param){
                                     param = {};
@@ -75,7 +80,7 @@ Nui.define(['component'], function(component){
                                 }
                                 var wrapper = object._wrapper || that._wrapper;
                                 var cache = that._cache[_hash];
-                                opts.onRender(object.target, wrapper, {
+                                func.call(render, object.target, wrapper, {
                                     path:v.path,
                                     url:hash,
                                     param:param,

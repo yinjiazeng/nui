@@ -9,13 +9,13 @@ Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascrip
             },
             event:function(){
                 events.call(this, {
-                    elem:wrapper,
-                    maps:{
+                    element:wrapper,
+                    mapping:{
                         //'click b':'b',
                         'click .empty':'empty'
                         //'click a':'c a'
                     },
-                    calls:{
+                    callback:{
                         a:function(){
                             js('destroy', wrapper, 'b')
                             component.static.destroy(wrapper);
