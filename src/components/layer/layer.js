@@ -30,41 +30,67 @@ Nui.define(['component', 'util'], function(component, util){
     }
 
     var options = {
+        //主体内容
         content:'',
+        //高度
         width:320,
+        //宽度
         height:'auto',
+        //最大宽度
         maxWidth:0,
+        //最大高度
         maxHeight:0,
+        //定时器，N毫秒后自动关闭
         timer:0,
+        //弹窗四周距离窗口边缘距离
         edge:0,
+        //弹窗容器
         container:'body',
+        //弹窗标题
         title:'温馨提示',
+        //是否可以拖动
         isMove:false,
+        //是否有遮罩
         isMask:true,
+        //是否只能在窗口内拖动
         isInnerMove:false,
+        //点击遮罩是否关闭弹窗
         isClickMask:false,
+        //是否使用遮罩拖动
         isMoveMask:false,
+        //是否能用hide方法关闭遮罩
         isHide:true,
+        //弹窗是否浏览器改变大小时显示在窗口中央
         isCenter:false,
+        //是否全屏显示
         isFull:false,
+        //是否在点击弹窗时将其置顶
         isTop:false,
-        isTip:false,
+        //是否以提示框展示，没有标题，按钮
+        isTips:false,
+        //是否拖动滚动条固定位置
         isFixed:true,
+        //当内容超过弹出层容器，是否显示滚动条
         scrollbar:true,
+        //按钮对齐方式
         align:'center',
+        //是否以气泡形式展示，弹出层边缘会多出箭头
         bubble:{
             enable:false,
             dir:'top'
         },
+        //弹出层内容展示iframe，不建议跨域使用
         iframe:{
             enable:false,
             cache:false,
             src:''
         },
+        //关闭按钮
         close:{
             enable:true,
             text:'×'
         },
+        //确定按钮
         confirm:{
             enable:false,
             name:'normal',
@@ -73,15 +99,40 @@ Nui.define(['component', 'util'], function(component, util){
                 return true
             }
         },
+        //取消按钮
         cancel:{
             enable:true,
             text:'取消'
         },
+        /*弹出层定位 top/left/right/bottom
+        position:{
+            top:10,
+            left:10
+        }
+        */
         position:null,
+        /*将弹出层置于遮罩层底部
+        under:[layer1, layer2]
+        */
         under:null,
+        /*配置按钮，若id为confirm/cancel/close将会覆盖内置按钮参数
+        button:[{
+            id:'confirm',
+            text:'确定',
+            name:'normal',
+            callback:function(){
+
+            }
+        }]
+        */
         button:null,
+        //onInit：弹出层显示时回调
+        //onDestroy：弹出层注销时回调
+        //当拖动弹出层移动后回调
         onMove:null,
+        //窗口改变大小位置时回调
         onResize:null,
+        //容器滚动时回调
         onScroll:null
     }
 
@@ -144,7 +195,7 @@ Nui.define(['component', 'util'], function(component, util){
         width:弹窗宽度
         height:弹窗高度
         */
-        _temp:{},
+        data:{},
         _init:function(){
             this._zIndex = ++this.constructor._zIndex;
             this._exec()
@@ -172,9 +223,8 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _create:function(){
             var that = this, opts = that.options;
-            var buttons = {}, isTitle = false;
-            if(opts.isTip !== true){
-                buttons = that._createButton();
+            var buttons = that._createButton(), isTitle = false;
+            if(opts.isTips !== true){
                 isTitle = typeof opts.title === 'string';
             }
             var data = that._tplData({
@@ -200,7 +250,7 @@ Nui.define(['component', 'util'], function(component, util){
 			that._body = that._box.children('.layer-body');
 			that._main = that._body.children('.layer-main');
 			that._foot = that._box.children('.layer-foot');
-            if(opts.isTip !== true){
+            if(opts.isTips !== true){
                 if(opts.iframe.enable === true){
                     that._iframe = that._main.children('iframe');
                     that._iframeOnload()
@@ -222,7 +272,7 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _getContent:function(){
             var that = this, opts = that.options, content = '';
-            if(opts.isTip !== true && opts.iframe.enable === true){
+            if(opts.isTips !== true && opts.iframe.enable === true){
                 content = that._createIframe();
             }
             else{
@@ -261,40 +311,42 @@ Nui.define(['component', 'util'], function(component, util){
         _createButton:function(){
             var that = this, opts = that.options, defaults = {}, buttons = {}, caches = {};
             that._button = [];
-            Nui.each(['confirm', 'cancel'], function(id){
-                var btn = opts[id];
-                if(btn && btn.enable === true){
-                    defaults[id] = {
-                        id:id,
-                        name:btn.name,
-                        text:btn.text,
-                        callback:btn.callback
-                    }
-                }
-            });
-            if(opts.button && opts.button.length){
-                Nui.each(opts.button, function(val){
-                    var id = val.id;
-                    if(!caches[id]){
-                        caches[id] = true;
-                        if(defaults[id]){
-                            if(!val.text){
-                                if(id === 'cancel'){
-                                    val.text = '取消'
-                                }
-                                else if(id === 'confirm'){
-                                    val.text = '确定'
-                                }
-                            }
-                            delete defaults[id]
+            if(opts.isTips !== true){
+                Nui.each(['confirm', 'cancel'], function(id){
+                    var btn = opts[id];
+                    if(btn && btn.enable === true){
+                        defaults[id] = {
+                            id:id,
+                            name:btn.name,
+                            text:btn.text,
+                            callback:btn.callback
                         }
-                        that._button[id === 'close' ? 'unshift' : 'push'](val)
                     }
-                })
+                });
+                if(opts.button && opts.button.length){
+                    Nui.each(opts.button, function(val){
+                        var id = val.id;
+                        if(!caches[id]){
+                            caches[id] = true;
+                            if(defaults[id]){
+                                if(!val.text){
+                                    if(id === 'cancel'){
+                                        val.text = '取消'
+                                    }
+                                    else if(id === 'confirm'){
+                                        val.text = '确定'
+                                    }
+                                }
+                                delete defaults[id]
+                            }
+                            that._button[id === 'close' ? 'unshift' : 'push'](val)
+                        }
+                    })
+                }
+                Nui.each(defaults, function(val){
+                    that._button.push(val)
+                });
             }
-            Nui.each(defaults, function(val){
-                that._button.push(val)
-            });
             if(!caches.close && opts.close && opts.close.enable === true){
                 that._button.unshift({
                     id:'close',
@@ -348,15 +400,15 @@ Nui.define(['component', 'util'], function(component, util){
                         }
                     })).appendTo(that._container);
                     elem.css({
-                        width:that._temp.width - self._getSize(elem, 'lr', 'all'),
-                        height:that._temp.height - self._getSize(elem, 'tb', 'all'),
-                        top:that._data.top,
-                        left:that._data.left
+                        width:that.data.outerWidth - self._getSize(elem, 'lr', 'all'),
+                        height:that.data.outerHeight - self._getSize(elem, 'tb', 'all'),
+                        top:that.data.top,
+                        left:that.data.left
                     });
                 }
                 ele.css('cursor','move');
-                x = e.pageX - that._data.left;
-                y = e.pageY - that._data.top;
+                x = e.pageX - that.data.left;
+                y = e.pageY - that.data.top;
                 e.stopPropagation();
             });
             that._on('mousemove', Nui.doc, function(e){
@@ -367,11 +419,11 @@ Nui.define(['component', 'util'], function(component, util){
                     _x < 0 && (_x = 0);
                     _y < 0 && (_y = 0);
                     if(opts.isInnerMove === true){
-                        _x + that._temp.width > width && (_x = width - that._temp.width);
-                        _y + that._temp.height > height && (_y = height - that._temp.height);
+                        _x + that.data.outerWidth > width && (_x = width - that.data.outerWidth);
+                        _y + that.data.outerHeight > height && (_y = height - that.data.outerHeight);
                     }
-                    that._data.top = _y;
-                    that._data.left = _x;
+                    that.data.top = _y;
+                    that.data.left = _x;
                     elem.css({top:_y, left:_x});
                     return !isMove;
                 }
@@ -381,26 +433,26 @@ Nui.define(['component', 'util'], function(component, util){
                     isMove = false;
                     that._head.css('cursor','default');
                     if(opts.isMoveMask === true){
-                        element.css(that._data);
+                        element.css(that.data);
                         that._moveMask.remove();
                         that._moveMask = null;
                     }
                     if(typeof opts.onMove === 'function'){
                         opts.onMove.call(that, that._main, that.__id)
                     }
-                    that._temp.top = that._data.top - that._window.scrollTop();
-                    that._temp.left = that._data.left - that._window.scrollLeft();
+                    that.data.offsetTop = that.data.top - that._window.scrollTop();
+                    that.data.offsetLeft = that.data.left - that._window.scrollLeft();
                 }
             });
         },
         _bindScroll:function(){
             var that = this, opts = that.options;
             that._on('scroll', that._window, function(){
-                var top = that._temp.top + that._window.scrollTop();
-                var left = that._temp.left + that._window.scrollLeft();
-                that._data.top = top;
-                that._data.left = left;
-                that.element.css(that._data);
+                var top = that.data.offsetTop + that._window.scrollTop();
+                var left = that.data.offsetLeft + that._window.scrollLeft();
+                that.data.top = top;
+                that.data.left = left;
+                that.element.css(that.data);
                 if(typeof opts.onScroll === 'function'){
                     opts.onScroll.call(that, that._main, that.__id)
                 }
@@ -442,6 +494,57 @@ Nui.define(['component', 'util'], function(component, util){
                 }
             });
         },
+        _position:function(){
+            var that = this, data = that.data, pos = that.options.position;
+            var _pos = {
+                top:pos.top,
+                left:pos.left,
+                right:pos.right,
+                bottom:pos.bottom
+            }, _v;
+
+            if(_pos.top !== undefined && _pos.bottom !== undefined){
+                delete _pos.bottom
+            }
+
+            if(_pos.left !== undefined && _pos.right !== undefined){
+                delete _pos.right
+            }
+
+            Nui.each(_pos, function(v, k){
+                if(v === undefined){
+                    delete _pos[k];
+                    return true;
+                }
+                _v = v;
+                if(typeof v === 'string'){
+                    if(!v){
+                        _v = 0
+                    }
+                    else{
+                        if(k === 'top' || k === 'bottom'){
+                            if(v === 'self'){
+                                _v = data.outerHeight
+                            }
+                            else if(/[\+\-\*\/]/.test(v)){
+                                _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
+                            }
+                        }
+                        else{
+                            if(v === 'self'){
+                                _v = data.outerWidth
+                            }
+                            else if(/[\+\-\*\/]/.test(v)){
+                                _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
+                            }
+                        }
+                    }
+                }
+                _pos[k] = _v === 'auto' ? 'auto' : parseFloat(_v)+'px'
+            })
+
+            return _pos
+        },
         _resize:function(type){
             var that = this, self = that.constructor, opts = that.options, element = that.element;
             var wWidth = that._window.outerWidth();
@@ -454,59 +557,48 @@ Nui.define(['component', 'util'], function(component, util){
             }
             that._setSize();
             if(opts.position){
-                var pos = opts.position;
-                that._position = {
-                    top:pos.top,
-                    right:pos.right,
-                    bottom:pos.bottom,
-                    left:pos.left
-                }
-                var _pos = element.css(that._position).position();
+                var pos = element.css(that._position()).position();
                 if(Nui.bsie6){
                     sleft = 0;
                     stop = 0;
                 }
-                that._data.left = _pos.left + sleft;
-                that._data.top = _pos.top + stop;
+                that.data.left = pos.left + sleft;
+                that.data.top = pos.top + stop;
             }
             else{
                 if(type === 'init' || opts.isCenter === true){
-                    var left = (wWidth - that._temp.width) / 2 + sleft;
-                    var top = (wHeight - that._temp.height) / 2 + stop;
+                    var left = (wWidth - that.data.outerWidth) / 2 + sleft;
+                    var top = (wHeight - that.data.outerHeight) / 2 + stop;
                     var edge = opts.edge > 0 ? opts.edge : 0;
-                    that._data.left = left > 0 ? left : edge;
-                    that._data.top = top > 0 ? top : edge;
+                    that.data.left = left > 0 ? left : edge;
+                    that.data.top = top > 0 ? top : edge;
                 }
             }
-            that._temp.top = that._data.top - that._window.scrollTop();
-            that._temp.left = that._data.left - that._window.scrollLeft();
-            element.css(that._data);
+            that.data.offsetTop = that.data.top - that._window.scrollTop();
+            that.data.offsetLeft = that.data.left - that._window.scrollLeft();
+            element.css(that.data);
         },
         _setSize:function(){
             var that = this, self = that.constructor, opts = that.options, element = that.element;
             var edge = opts.edge > 0 ? opts.edge*2 : 0;
             var wWidth = that._window.outerWidth() - edge;
             var wHeight = that._window.outerHeight() - edge;
-            /*
-            top:弹窗距离顶部距离
-            left:弹窗距离左边距离
-            width:弹窗不包含边框内变局宽度
-            heigth:弹窗不包含边框内变局高度
-            */
-            that._data = {};
 
             that._body.css({height:'auto', overflow:'visible'});
             element.css({top:'auto', left:'auto', width:'auto', height:'auto'});
+            
             var edgeSize = self._getSize(that._box, 'tb', 'all') +
                 that._head.outerHeight() + 
                 self._getSize(that._head, 'tb', 'margin') + 
                 self._getSize(that._body, 'tb', 'all') + 
                 that._foot.outerHeight() + 
                 self._getSize(that._foot, 'tb', 'margin');
-            
+
             var width = element.outerWidth();
             if(opts.isFull !== true){
-                width = opts.width > 0 ? opts.width : width;
+                if(opts.width > 0){
+                    width = opts.width
+                }
                 if(opts.maxWidth > 0 && width >= opts.maxWidth){
                     width = opts.maxWidth
                 }
@@ -518,8 +610,14 @@ Nui.define(['component', 'util'], function(component, util){
                 width = wWidth;
             }
 
-            that._data.width = width - self._getSize(element, 'lr', 'all');
-            element.css(that._data);
+            var ws = 'nowrap';
+            if(opts.width > 0 || width == opts.maxWidth || width == wWidth){
+                ws = 'normal';
+            }
+
+            that.data.width = width - self._getSize(element, 'lr', 'all');
+            that._main.css('white-space', ws);
+            element.width(that.data.width);
 
             var height = element.outerHeight();
             if(that._iframeDocument){
@@ -542,11 +640,11 @@ Nui.define(['component', 'util'], function(component, util){
                 height = wHeight
             }
 
-            that._temp.width = width;
-            that._temp.height = height;
-            that._data.height = height - self._getSize(element, 'tb', 'all');
-            element.css(that._data);
-            var _height = that._data.height - edgeSize;
+            that.data.outerWidth = width;
+            that.data.outerHeight = height;
+            that.data.height = height - self._getSize(element, 'tb', 'all');
+            element.height(that.data.height);
+            var _height = that.data.height - edgeSize;
             if(that._main.outerHeight() > _height && !that._iframe && opts.scrollbar === true){
                 that._body.css('overflow', 'auto')
             }

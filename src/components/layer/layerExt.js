@@ -47,17 +47,18 @@ Nui.define(['./layer'], function(layer){
         })
     }
 
-    layer.tip = function(content, dir, position, width, height){
+    layer.tips = function(content, dir, position, width, height){
         return layer({
             content:content,
             id:'tip',
-            width:'auto',
-            height:'auto',
-            maxWidth:width,
-            maxHeight:height,
-            isTip:true,
+            width:width||'auto',
+            height:height||'auto',
+            isTips:true,
             isClose:false,
             position:position,
+            close:{
+                enable:false
+            },
             bubble:{
                 enable:true,
                 dir:dir||'top'
@@ -66,15 +67,20 @@ Nui.define(['./layer'], function(layer){
     }
 
     layer.loading = function(content, width, height){
+        if(Nui.type(content, 'Number')){
+            height = width;
+            width = content;
+            content = '';
+        }
         return layer({
-            content:'<div style="white-space:nowrap;">'+(content||'正在加载数据...')+'</div>',
+            content:'<div style="padding:10px;">'+(content||'正在加载数据...')+'</div>',
             id:'loading',
-            width:'auto',
-            height:'auto',
-            maxWidth:width,
-            maxHeight:height,
-            isTip:true,
-            isFull:false
+            width:width||'auto',
+            height:height||'auto',
+            isTips:true,
+            close:{
+                enable:false
+            }
         })
     }
 

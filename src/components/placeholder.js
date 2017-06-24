@@ -5,8 +5,7 @@
  * @description 输入框占位符
  */
 
-Nui.define(['util', 'component'], function(util, component){
-    var support = util.supportHtml5('placeholder', 'input');
+Nui.define(['component'], function(component){
     return this.extend(component, {
         options:{
             /**
@@ -56,7 +55,7 @@ Nui.define(['util', 'component'], function(util, component){
         },
         _create:function(){
             var that = this, opts = that.options, self = that.constructor;
-            if(opts.animate || (!opts.animate && !support)){
+            if(opts.animate || (!opts.animate && !('placeholder' in document.createElement('input')))){
                 if(opts.animate){
                     that.target.removeAttr('placeholder')
                 }
