@@ -10,18 +10,24 @@ Nui.define('events', function(){
         if(!(elem instanceof jQuery)){
             elem = jQuery(elem)
         }
-        var evt, ele, self = that.constructor;
+        var evt, ele, self = that.constructor, ret;
         var callback = function(e, elem, cbs){
+            if(typeof cbs === 'function'){
+                cbs.call(that, e, elem);
+                return
+            }
             Nui.each(cbs, function(cb, i){
                 cb = calls[cb];
                 if(typeof cb === 'function'){
-                    return cb.call(that, e, elem)
+                    return ret = cb.call(that, e, elem, ret);
                 }
             }) 
         }
 
         Nui.each(maps, function(cbs, arrs){
-            cbs = Nui.trim(cbs).split(/\s+/);
+            if(typeof cbs === 'string'){
+                cbs = Nui.trim(cbs).split(/\s+/);
+            }
             arrs = Nui.trim(arrs).split(/\s+/);
             // keyup:kupdown:focus a => elem.on('keyup kupdown focus', 'a', callback)
             evt = arrs.shift().replace(/:/g, ' ');

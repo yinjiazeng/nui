@@ -1,1 +1,1 @@
-{"version":3,"sources":["index-debug.js"],"names":["Nui","define","this","imports"],"mappings":"AAAAA,IAAIC,OAAO,iBAAiB,WACxBC,KAAKC,QAAQ","file":"index-min.js","sourcesContent":["Nui.define('{script}/index',function(){\r\n    this.imports('../style/index')\r\n})\r\n\n"]}
+{"version":3,"sources":["index-debug.js"],"names":["Nui","define","this","imports"],"mappings":"AAAAA,IAAIC,OAAO,iBAAiB,WACxBC,KAAKC,QAAQ","file":"index-min.js.map?v=1498411339398","sourcesContent":["Nui.define('{script}/index',function(){\r\n    this.imports('../style/index')\r\n})\r\n\n"]}
