@@ -258,12 +258,12 @@ Nui.define(['component', 'util'], function(component, util){
                 if(opts.isMove === true && isTitle){
                     that._bindMove();
                 }
-                if(that._button.length){
-                    that._buttonEvent();
-                }
                 if(opts.isTop === true){
                     that._bindTop();
                 }
+            }
+            if(that._button.length){
+                that._buttonEvent();
             }
             if(opts.isFixed === true && !that._isFixed === true){
                 that._bindScroll()
@@ -461,7 +461,7 @@ Nui.define(['component', 'util'], function(component, util){
         //鼠标点击弹出层将弹出层层级设置最大
         _setzIndex:function(){
             var that = this, self = that.constructor;
-            if(that._isTop){
+            if(that._isTop && that.element){
                 that._isTop = false;
                 that._zIndex = ++self._zIndex;
                 that.element.css('zIndex', that._zIndex);
@@ -469,7 +469,7 @@ Nui.define(['component', 'util'], function(component, util){
             }
         },
         _setLower:function(destroy){
-            var that = this, self = that.constructor, opts = that.options, lowers = [];
+            var that = this, self = that.constructor, opts = that.options, unders = [];
             if(opts.under){
                 if(Nui.type(opts.under, 'Object')){
                     unders.push(opts.under)

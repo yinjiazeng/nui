@@ -1,6 +1,8 @@
 var layer = require('{cpns}/layer/layerExt');
 var placeholder = require('{cpns}/placeholder');
 
+    
+
     var lay = layer({
         content:'<input type="text" data-placeholder-options="{animate:true}" placeholder="默认文本"><a>aaa</a>',
         width:300,
@@ -60,6 +62,13 @@ var placeholder = require('{cpns}/placeholder');
             })
         }
     })
+
+    /*layer.alert({
+        content:'1111',
+        under:lay
+    })*/
+    layer.message('')
+
 $('#btn').click(function(){
     lay.element.animate({
         top:lay.data.top - lay.data.outerHeight + 30,
