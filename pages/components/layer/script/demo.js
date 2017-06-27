@@ -47,7 +47,7 @@ var placeholder = require('{cpns}/placeholder');
             right:0
         },
         scrollbar:true,
-        onInit:function(main){ 
+        onInit:function(main){
             //var lay = this;
             
             main.on('click', 'a', function(){
