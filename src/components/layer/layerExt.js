@@ -153,26 +153,29 @@ Nui.define(['./layer'], function(layer){
     }
 
     layer.form = function(options){
+        var validatPlus = module.require('{plus}/validate');
         var onInit = options.onInit;
         delete options.onInit;
         var validator;
         var valid = options.valid;
-        var btns = $.extend({}, options.button || ({
-            cancel:{
-                text:'关闭'
-            },
-            confirm:{
-                text:'保存',
-                callback:function(main){
+        var btns = $.extend([], options.button || [{
+            id:'cancel',
+            text:'关闭'
+        }, {
+            id:'confirm',
+            name:'normal',
+            text:'保存'
+        }])
+
+        Nui.each(btns, function(val, i){
+            if(val.id === 'confirm' && !val.callback){
+                btns[i].callback = function(main){
                     main.find('form').submit()
                 }
+                return false
             }
-        }))
-        if(btns.confirm && !btns.confirm.callback){
-            btns.confirm.callback = function(main){
-                main.find('form').submit()
-            }
-        }
+        })
+
         delete options.button;
         var formLayer = layer($.extend(true, {button:btns}, {
             scrollbar:false,
@@ -206,11 +209,11 @@ Nui.define(['./layer'], function(layer){
 					focusInvalid:false,
 					focusCleanup:true,
                     ignore:'',
-                    success:function(error, element) {
+                    success:function(error, element){
 						error.remove();
 						$(element).addClass('s-succ');
 					},
-					errorPlacement:function(error, element) {
+					errorPlacement:function(error, element){
 						element.removeClass('s-succ');
 						if(error.text()){
 							element.closest(options.itemWrap||'.ui-item').find(options.errorWrap||'.ui-err').html(error);
@@ -234,7 +237,7 @@ Nui.define(['./layer'], function(layer){
                             }
                         }
                         var loading = layer.loading({
-                            content:options.ajaxloading||'正在保存数据...',
+                            content:options.loading||'正在保存数据...',
                             under:that
                         });
                         if(typeof options.onBeforeSubmit === 'function'){
