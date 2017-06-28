@@ -140,6 +140,7 @@ Nui.define(['./layer'], function(layer){
 
         return layer($.extend({
             content:'<div style="padding:10px; color:'+ color +';">'+content+'</div>',
+            id:'message',
             width:'auto',
             height:'auto',
             isTips:true,
