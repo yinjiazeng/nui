@@ -155,7 +155,6 @@ Nui.define(['./layer'], function(layer){
     }
 
     layer.form = function(options){
-        var validatPlus = module.require('{plus}/validate');
         var onInit = options.onInit;
         delete options.onInit;
         var validator;

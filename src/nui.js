@@ -167,10 +167,12 @@
         return target;
     }
 
+    //判断是不是纯粹的对象
     var isObject = function(obj){
-        if(!obj || !Nui.type(obj, 'Object') || obj.nodeType || (obj[0] && obj[0].nodeType)){
+        if(!Nui.type(obj, 'Object') || obj.constructor !== Object || obj.nodeType || (obj[0] && obj[0].nodeType)){
             return false;
         }
+        //实例对象
         return true
     }
 

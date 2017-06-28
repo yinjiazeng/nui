@@ -471,12 +471,7 @@ Nui.define(['component', 'util'], function(component, util){
         _setLower:function(destroy){
             var that = this, self = that.constructor, opts = that.options, unders = [];
             if(opts.under){
-                if(Nui.type(opts.under, 'Object')){
-                    unders.push(opts.under)
-                }
-                else if(Nui.isArray(opts.under)){
-                    unders = opts.under
-                }
+                unders = unders.concat(opts.under);
                 if(unders.length){
                     Nui.each(unders, function(obj, k){
                         if(obj && obj.element){
