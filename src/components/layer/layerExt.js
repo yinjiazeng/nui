@@ -124,6 +124,7 @@ Nui.define(['./layer'], function(layer){
         }
 
         if(type !== 'success' && type !== 'error'){
+            content = type;
             type = 'success';
         }
 
