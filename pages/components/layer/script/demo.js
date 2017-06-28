@@ -60,6 +60,9 @@ var placeholder = require('{cpns}/placeholder');
                 })*/
                // lay.hide()
             })
+        },
+        onBeforeDestroy:function(){
+            return false
         }
     })
 

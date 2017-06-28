@@ -133,7 +133,9 @@ Nui.define(['component', 'util'], function(component, util){
         //窗口改变大小位置时回调
         onResize:null,
         //容器滚动时回调
-        onScroll:null
+        onScroll:null,
+        //弹窗销毁前回调，若返回false则不能销毁
+        onBeforeDestroy:null
     }
 
     return this.extend(component, {
@@ -719,6 +721,10 @@ Nui.define(['component', 'util'], function(component, util){
         },
         destroy:function(){
             var that = this, self = that.constructor, opts = that.options;
+            if(typeof opts.onBeforeDestroy === 'function' && 
+                opts.onBeforeDestroy.call(this, that._main, that.__id) === false){
+                return
+            }
             that._delete();
             that._reset();
             that._setLower(true);
