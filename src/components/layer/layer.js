@@ -13,14 +13,16 @@ Nui.define(['component', 'util'], function(component, util){
         _zIndex:10000,
         _init:function(){
             var self = this;
+            var timer = null;
             Nui.win.on('resize', function(){
-                Nui.each(self.__instances, function(val){
-                    var opts = val.options;
-                    if(opts.position || opts.isCenter === true){
-                        setTimeout(function(){
-                            val.resize();
-                        })
-                    }
+                clearTimeout(timer);
+                timer = setTimeout(function(){
+                    Nui.each(self.__instances, function(val){
+                        var opts = val.options;
+                        if(opts.position || opts.isCenter === true){
+                            val.resize()
+                        }
+                    })
                 })
             })
         },
