@@ -63,7 +63,7 @@ Nui.define(['component', 'util'], function(component, util){
         //是否能用hide方法关闭遮罩
         isHide:true,
         //弹窗是否浏览器改变大小时显示在窗口中央
-        isCenter:false,
+        isCenter:true,
         //是否全屏显示
         isFull:false,
         //是否在点击弹窗时将其置顶
@@ -166,9 +166,11 @@ Nui.define(['component', 'util'], function(component, util){
                         '</div>'+
                         '<%if button && button.length%>'+
                         '<div class="layer-foot" style="text-align:<%align%>">'+
+                        '<div class="layer-inner">'+
                         '<%each button btn%>'+
                             '<%include "button"%>'+
                         '<%/each%>'+
+                        '</div>'+
                         '</div>'+
                         '<%/if%>'+
                     '</div>'+

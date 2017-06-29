@@ -234,7 +234,8 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .nui-layer .layer-main:after, .nui-layer .layer-foot:after { clear:both;}
 .nui-layer .layer-main, .nui-layer .layer-foot { *zoom:1;}
 .nui-layer .layer-main { overflow: visible; word-break:break-all;}
-.nui-layer .layer-foot { padding:15px 10px 20px; overflow:hidden;}
+.nui-layer .layer-foot { padding:15px 10px 20px;}
+.nui-layer .layer-foot .layer-inner { overflow:hidden;}
 .nui-layer .layer-foot .ui-button { margin:0 6px; height: 30px;}
 .nui-layer .layer-button-close { position:absolute; top:3px; right:5px; padding:0; width:25px; height:25px; line-height: 25px; font-size:25px; overflow: hidden; color:#666; border:none; z-index:1;}
 .nui-layer-mask { background-image:url(about:blank);}
