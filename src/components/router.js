@@ -90,6 +90,9 @@ Nui.define(['component'], function(component){
                                 })
                                 component('init', wrapper);
                             }
+                            else if(func !== render && typeof render.showWrapper === 'function'){
+                                render.showWrapper.call(render)
+                            }
                             var wrapper = object._wrapper || that._wrapper;
                             wrapper.show().siblings('.wrapper').hide();
                             if(typeof opts.onAfter === 'function'){
