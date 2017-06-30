@@ -192,6 +192,12 @@
         return url.substr(0, index+1);
     }
 
+    var isHttp = function(url){
+        if(/^(https?|file):\/\//i.test(url)){
+            return true
+        }
+    }
+
     var dirname = getPath();
 
     var getModuleid = function(){
@@ -690,7 +696,7 @@
             suffix = match[0]
         }
         id = Module.setPath(config.alias[name] || name);
-        if(!/^((https?|file):)?\/\//.test(id)){
+        if(!isHttp(id)){
             dirid = Module.replacePath(dirname + id);
             id = (uri || dirname) + id;
         }
@@ -878,11 +884,11 @@
             return
         }
         var base = config.base || config.paths.base || '';
-        if(!/^((https?|file):)?\/\//.test(base)){
+        if(!isHttp(base)){
             base = config.paths.base = domain+base
         }
         Nui.each(config.paths, function(v, k){
-            if(k !== 'base' && !/^((https?|file):)?\/\//.test(v)){
+            if(k !== 'base' && !isHttp(v)){
                 config.paths[k] = base+'/' + v
             }
         })
