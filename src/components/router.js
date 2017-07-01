@@ -55,11 +55,7 @@ Nui.define(['component'], function(component){
                         var object = that.__instances[v.id], opts = object.options, param;
                         params = params ? params.split('/') : [];
                         var render = opts.onRender;
-                        var func = render;
-                        if(typeof func === 'object' && typeof func.init === 'function'){
-                            func = func.init;
-                        }
-                        if(typeof func === 'function' && params.length === v.params.length){
+                        if(typeof render === 'function' && params.length === v.params.length){
                             Nui.each(v.params, function(val, key){
                                 if(!param){
                                     param = {};
@@ -67,36 +63,43 @@ Nui.define(['component'], function(component){
                                 param[val] = params[key]
                             })
 
-                            if(!object._wrapper){
+                            if(object._reload === true || !object._wrapper){
                                 if(opts.wrapper && !object._wrapper){
                                     object._wrapper = that._getWrapper(object.container)
                                 }
                                 else if(!that._wrapper){
                                     that._wrapper = that._getWrapper(object.container)
                                 }
-                                if(!object._wrapper){
-                                    component('destroy', that._wrapper.off());
+                                if(object._reload || !object._wrapper){
+                                    if(object._wrapper){
+                                        component('destroy', object._wrapper.off());
+                                    }
+                                    else{
+                                        component('destroy', that._wrapper.off());
+                                    }
                                     if(object.options.cache === true){
                                         that._cacheContent[_hash] = true;
                                     }
                                 }
                                 var wrapper = object._wrapper || that._wrapper;
                                 var cache = that._cache[_hash];
-                                func.call(render, object.target, wrapper, {
-                                    path:v.path,
-                                    url:hash,
+                                render.call(opts, object.target, wrapper, {
+                                    path:v.path+'/',
+                                    url:hash+'/',
                                     param:param,
                                     cache:cache
                                 })
                                 component('init', wrapper);
-                            }
-                            else if(func !== render && typeof render.showWrapper === 'function'){
-                                render.showWrapper.call(render)
+                                delete object._reload;
                             }
                             var wrapper = object._wrapper || that._wrapper;
                             wrapper.show().siblings('.wrapper').hide();
+                            if(object._send && object._send.data && typeof opts.onData === 'function'){
+                                opts.onData.call(opts, object._send.data, object.target, wrapper)
+                                delete object._send;
+                            }
                             if(typeof opts.onAfter === 'function'){
-                                opts.onAfter(object.target, wrapper)
+                                opts.onAfter.call(opts, object.target, wrapper)
                             }
                             that._initialize = match = true;
                             if(Nui.bsie7){
@@ -152,9 +155,13 @@ Nui.define(['component'], function(component){
                 this._change();
             }
         },
-        href:function(url){
+        href:function(url, data, reload){
             var that = this;
             if(url){
+                if(arguments.length <=2 && typeof data === 'boolean'){
+                    reload = data;
+                    data = null;
+                }
                 var temp, _router;
                 url = this._replace(url);
                 Nui.each(this._paths, function(val, rule){
@@ -166,6 +173,10 @@ Nui.define(['component'], function(component){
                     }
                 })
                 if(_router){
+                    _router._send = {
+                        data:data
+                    }
+                    _router._reload = reload;
                     _router._render(_router.target, url)
                 }
             }
@@ -239,7 +250,8 @@ Nui.define(['component'], function(component){
             level:1,
             onBefore:null,
             onRender:null,
-            onAfter:null
+            onAfter:null,
+            onData:null
         },
         _init:function(){
             var that = this, router = that.constructor;
