@@ -192,8 +192,11 @@
         return url.substr(0, index+1);
     }
 
+    // http://domdin
+    // https://domdin
+    // //domain
     var isHttp = function(url){
-        if(/^(https?|file):\/\//i.test(url)){
+        if(/^((https?|file):)?\/\//i.test(url)){
             return true
         }
     }
