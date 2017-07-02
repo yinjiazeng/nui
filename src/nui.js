@@ -269,6 +269,24 @@
         document.execCommand('BackgroundImageCache', false, true);
     }
 
+    /* 修复toFixed四舍五入bug */
+    var toFixed = Number.prototype.toFixed;
+    Number.prototype.toFixed = function(n){
+        var num = '1';
+        var total = n;
+        while(total){
+            num += '0'
+            total--;
+        }
+        return toFixed.call((Math.round(this*num)/num), n)
+    }
+
+    /* String增加toFixed，这样就不用将其转为Number类型了 */
+    String.prototype.toFixed = function(n){
+        var str = Nui.trim(this);
+        return str ? parseFloat(str).toFixed(n) : str
+    }
+
     //常用jq对象
     if(typeof jQuery !== 'undefined'){
         Nui.win = jQuery(window);

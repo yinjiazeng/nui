@@ -179,8 +179,10 @@ Nui.define(['component', 'util'], function(component, util){
                 '<button class="ui-button'+
                     '<%if btn.name%>'+
                     '<%each [].concat(btn.name) name%> ui-button-<%name%><%/each%>'+
-                    '<%/if%>'+
-                    ' layer-button-<%btn.id%>"><%btn.text || "按钮"%></button>',
+                    '<%/if%> layer-button-<%btn.id%>"'+
+                    '<%if btn.style%>'+
+                    ' style="<%each btn.style v n%><%n%>:<%v%>;<%/each%>"'+
+                    '<%/if%>><%btn.text || "按钮"%></button>',
             iframe:
                 '<iframe<%each attr%> <%$index%>="<%$value%>"<%/each%>></iframe>',
             mask:
@@ -193,7 +195,7 @@ Nui.define(['component', 'util'], function(component, util){
                     '<%if skin%> nui-layer-movemask-<%skin%><%/if%>" style="<%include \'style\'%>">'+
                 '</div>',
             style:
-                '<%each style%><%$index%>: <%$value%>; <%/each%>'
+                '<%each style%><%$index%>:<%$value%>;<%/each%>'
         },
         /*
         top:弹窗距离窗口顶部距离
@@ -324,6 +326,7 @@ Nui.define(['component', 'util'], function(component, util){
                         defaults[id] = {
                             id:id,
                             name:btn.name,
+                            style:btn.style,
                             text:btn.text,
                             callback:btn.callback
                         }
@@ -357,6 +360,7 @@ Nui.define(['component', 'util'], function(component, util){
                 that._button.unshift({
                     id:'close',
                     name:opts.close.name,
+                    style:opts.close.style,
                     text:opts.close.text,
                     callback:opts.close.callback
                 })

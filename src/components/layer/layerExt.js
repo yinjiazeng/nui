@@ -6,6 +6,7 @@
  */
 
 Nui.define(['./layer'], function(layer){
+    var module = this;
 
     layer.alert = function(content, title, width, height){
         var opts;
@@ -102,7 +103,7 @@ Nui.define(['./layer'], function(layer){
             content = '';
         }
         return layer($.extend({
-            content:'<div style="padding:10px;">'+(content||'正在加载数据...')+'</div>',
+            content:'<div>'+(content||'正在加载数据...')+'</div>',
             width:width||'auto',
             height:height||'auto',
         }, opts || {}, {
@@ -145,7 +146,7 @@ Nui.define(['./layer'], function(layer){
             width:'auto',
             height:'auto',
             isTips:true,
-            timer:1500,
+            timer:150000,
             close:{
                 enable:true
             }
@@ -199,6 +200,7 @@ Nui.define(['./layer'], function(layer){
                         if(typeof options.messageFilter === 'function'){
                             message[key] = options.messageFilter(name, msg)||''
                         }
+                        message[key] = '<b></b><s></s><i class="iconfont">&#xe605;</i>' + message[key];
                     })
                     messages[name] = message;
                 });
@@ -208,13 +210,14 @@ Nui.define(['./layer'], function(layer){
                     errorClass:'s-err',
 					onkeyup:false,
 					focusInvalid:false,
+                    onfocusout:false,
 					focusCleanup:true,
                     ignore:'',
-                    success:function(error, element){
+                    success:function(error, element) {
 						error.remove();
 						$(element).addClass('s-succ');
 					},
-					errorPlacement:function(error, element){
+					errorPlacement:function(error, element) {
 						element.removeClass('s-succ');
 						if(error.text()){
 							element.closest(options.itemWrap||'.ui-item').find(options.errorWrap||'.ui-err').html(error);
@@ -237,13 +240,19 @@ Nui.define(['./layer'], function(layer){
                                 param[i] = param[i].join(',')
                             }
                         }
+
+                        if(typeof options.onBeforeSubmit === 'function'){
+                        	param = options.onBeforeSubmit.call(that, main, id, param);
+                            if(param === false){
+                                return false
+                            }
+                        }
+
                         var loading = layer.loading({
                             content:options.loading||'正在保存数据...',
                             under:that
                         });
-                        if(typeof options.onBeforeSubmit === 'function'){
-                        	param = options.onBeforeSubmit.call(that, main, id, param) || param;
-                        }
+                        
                         $.ajax($.extend({
                             url:form.attr('action'),
                             dataType:'json',
