@@ -1118,7 +1118,7 @@ Nui.define('util', {
         var that = this;
     	var data = {
     		'result':{},
-    		'void':0, //字段中空值数量
+    		'voids':0, //字段中空值数量
             'total':0 //总计多少个字段
     	}, arr = element.serializeArray(), div = ',';
         if(item && typeof item === 'string'){
@@ -1128,7 +1128,7 @@ Nui.define('util', {
             var val = Nui.trim(v.value)
         	data.total++;
         	if(!val){
-        		data.void++
+        		data.voids++
         	}
         	var name = v.name;
         	if(!Nui.isArray(data.result[name])){
