@@ -146,7 +146,7 @@ Nui.define(['./layer'], function(layer){
             width:'auto',
             height:'auto',
             isTips:true,
-            timer:150000,
+            timer:1500,
             close:{
                 enable:true
             }

@@ -202,21 +202,45 @@ Nui.define('util', {
     },
     /**
      * @func 返回form数据对象
-     * @param form <Object> form 元素
      */
-    getData:function(form){
-        var data = {
-            result:{},
-            total:0,
-            voidTotal:0
-        }, arr = form.serializeArray(), len = arr.length, i = 0;
-        for(i; i<len; i++){
-            var val = Nui.trim(arr[i].value)
-            data.all++;
-            if(!val){
-                data.voidTotal++
+    getData:function(element, item, field){
+        var that = this;
+    	var data = {
+    		'result':{},
+    		'void':0, //字段中空值数量
+            'total':0 //总计多少个字段
+    	}, arr = element.serializeArray(), div = ',';
+        if(item && typeof item === 'string'){
+            div = item
+        }
+        Nui.each(arr, function(v, i){
+            var val = Nui.trim(v.value)
+        	data.total++;
+        	if(!val){
+        		data.void++
+        	}
+        	var name = v.name;
+        	if(!Nui.isArray(data.result[name])){
+                data.result[name] = [];
             }
-            data.result[arr[i].name] = val;
+            data.result[name].push(val)
+        })
+        Nui.each(data.result, function(v, k){
+            data.result[k] = v.join(div)
+        })
+        if(item && item instanceof jQuery && field){
+            var once = false;
+            data.result[field] = [];
+            item.each(function(){
+                var result = that.getData($(this).find('[name]')).result;
+                if(!once){
+                    Nui.each(result, function(v, k){
+                        delete data.result[k];
+                    });
+                    once = true
+                }
+                data.result[field].push(result)
+            })
         }
         return data;
     }
