@@ -1424,7 +1424,7 @@ Nui.define('events', function(){
         var that = this, opts = opts || {},
             elem = opts.element || that.element, 
             maps = opts.mapping || that.mapping, 
-            calls = opts.callback || that.callback;
+            calls = opts.callback || that.callback || {};
         if(!opts || !elem || !maps || !calls){
             return
         }
