@@ -80,11 +80,8 @@ Nui.define(['template'], function(tpl){
 		btn.hide();
 		run('nuiTemplate', function(){
 			tpl.render(renders({
-				<%each list val key%>
-					<%each val v k%>
-						<%k%>:<%v%>
-					<%/each%>
-				<%/each%>
+				<%a?? ? '1' : '2'%>
+				<%a1%>
 			}), list)
 		}, function(){
 			run('dot', function(){

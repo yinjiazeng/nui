@@ -1349,10 +1349,10 @@ Nui.define('template', ['util'], function(util){
         var code,res;
         if(logic){
             if((res = match(tpl, 'if')) !== undefined){
-                code = 'if('+res+'){'
+                code = 'if('+exists(res)+'){'
             }
             else if((res = match(tpl, 'elseif')) !== undefined){
-                code = '\n}\nelse if('+res+'){'
+                code = '\n}\nelse if('+exists(res)+'){'
             }
             else if(tpl === 'else'){
                 code = '\n}\nelse{'
@@ -1367,13 +1367,13 @@ Nui.define('template', ['util'], function(util){
                 code = '});'
             }
             else if((res = match(tpl, ' | ', /\s*,\s*/)) !== undefined){
-                code = joinCode('$that.methods.'+res[0]+'('+ res.slice(1).toString() +')')
+                code = joinCode('$that.methods.'+res[0]+'('+ exists(res.slice(1).toString()) +')')
             }
             else if(/^(var|let|const)\s+/.test(tpl)){
                 code = exists(tpl)+';'
             }
             else{
-                code = joinCode(exists(tpl))
+                code = joinCode(exists(tpl, true))
             }
         }
         else{
@@ -1383,13 +1383,13 @@ Nui.define('template', ['util'], function(util){
     }
 
     //判断变量是否存在
-    var exists = function(code){
-        return code.replace(/([$\w]+)\?\?\s*(\((.*)\))?/g, function(a, b, c, d){
-            if(c && c.replace(/\s/g, '') === '()'){
-                d = undefined
+    var exists = function(code, isVal){
+        return code.replace(/([\.\$\w]+(\[[^\[\]]+\])?)\?\?/g, function(a, b){
+            var rep = '(typeof '+ b + '!=="undefined"';
+            if(isVal){
+                rep += '?' + b + ':' + '""';
             }
-            var str = '?' + b + ':' + (d === undefined ? "''" : exists(d));
-            return "(typeof "+ b +"!=='undefined'"+ str +")"
+            return rep + ')'
         })
     }
 
@@ -1402,7 +1402,7 @@ Nui.define('template', ['util'], function(util){
             replace = ','
         }
         if(replace !== undefined){
-            str = exists(Nui.trimLeft(str.replace(syntax, replace)));
+            str = Nui.trimLeft(str.replace(syntax, replace));
             return regexp ? str.split(regexp) : str
         }
     }
