@@ -1370,7 +1370,7 @@ Nui.define('template', ['util'], function(util){
                 code = joinCode('$that.methods.'+res[0]+'('+ res.slice(1).toString() +')')
             }
             else if(/^(var|let|const)\s+/.test(tpl)){
-                code = tpl+';'
+                code = exists(tpl)+';'
             }
             else{
                 code = joinCode(exists(tpl))
