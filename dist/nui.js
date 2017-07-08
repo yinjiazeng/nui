@@ -1369,17 +1369,28 @@ Nui.define('template', ['util'], function(util){
             else if((res = match(tpl, ' | ', /\s*,\s*/)) !== undefined){
                 code = joinCode('$that.methods.'+res[0]+'('+ res.slice(1).toString() +')')
             }
-            else if(tpl.indexOf('var ') === 0){
+            else if(/^(var|let|const)\s+/.test(tpl)){
                 code = tpl+';'
             }
             else{
-                code = joinCode(tpl)
+                code = joinCode(exists(tpl))
             }
         }
         else{
             code = joinCode('\''+tpl+'\'')
         }
         return code + '\n' + '$that.line++;'
+    }
+
+    //判断变量是否存在
+    var exists = function(code){
+        return code.replace(/([$\w]+)\?\?\s*(\((.*)\))?/g, function(a, b, c, d){
+            if(c && c.replace(/\s/g, '') === '()'){
+                d = undefined
+            }
+            var str = '?' + b + ':' + (d === undefined ? "''" : exists(d));
+            return "(typeof "+ b +"!=='undefined'"+ str +")"
+        })
     }
 
     var match = function(str, syntax, regexp){
@@ -1391,7 +1402,7 @@ Nui.define('template', ['util'], function(util){
             replace = ','
         }
         if(replace !== undefined){
-            str = Nui.trimLeft(str.replace(syntax, replace));
+            str = exists(Nui.trimLeft(str.replace(syntax, replace)));
             return regexp ? str.split(regexp) : str
         }
     }
