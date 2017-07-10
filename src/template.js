@@ -224,8 +224,9 @@ Nui.define('template', ['util'], function(util){
     }
 
     //判断变量是否存在
+    //a.b??  a[b]??  a['b']??  a[b['c']]??
     var exists = function(code, isVal){
-        return code.replace(/([\.\$\w]+(\[[^\[\]]+\])?)\?\?/g, function(a, b){
+        return code.replace(/([\.\$\w]+\s*(\[[\'\"\[\]\w\.\$\s]+\])?)\?\?/g, function(a, b){
             var rep = '(typeof '+ b + '!=="undefined"';
             if(isVal){
                 rep += '?' + b + ':' + '""';
