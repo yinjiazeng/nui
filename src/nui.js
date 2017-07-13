@@ -169,10 +169,9 @@
 
     //判断是不是纯粹的对象
     var isObject = function(obj){
-        if(!Nui.type(obj, 'Object') || obj.constructor !== Object || obj.nodeType || (obj[0] && obj[0].nodeType)){
+        if(!Nui.type(obj, 'Object') || obj.constructor !== Object){
             return false;
         }
-        //实例对象
         return true
     }
 
@@ -431,12 +430,12 @@
     }
 
     //设置工厂函数内部方法
-    Module.prototype.setFactory = function(){
+    Module.prototype.methods = function(){
         var mod = this;
-        var factory = mod.factory;
+        var methods = {};
 
         //导入模块
-        factory.require = function(id, callback){
+        methods.require = function(id, callback){
             var _mod = mod.depmodules[id];
             if(_mod){
                 if(typeof callback === 'function'){
@@ -447,7 +446,7 @@
         }
 
         //继承模块
-        factory.extend = function(module, members, inserts){
+        methods.extend = function(module, members, inserts){
             var exports;
 
             if(!module){
@@ -455,7 +454,7 @@
             }
 
             if(typeof module === 'string'){
-                var _mod = factory.require(module);
+                var _mod = methods.require(module);
                 if(_mod === undefined){
                     return module
                 }
@@ -516,39 +515,39 @@
         }
 
         //导入样式
-        factory.imports = noop;
+        methods.imports = noop;
 
         //渲染字符串
-        factory.renders = function(tpl){
+        methods.renders = function(tpl){
             return tpl
         }
 
         //导出接口
-        factory.exports = {};
+        methods.exports = {};
 
-        return factory
+        return methods
     }
 
     //调用工厂函数，获取模块导出接口
     Module.prototype.exec = function(){
         var mod = this;
         if(!mod.module && typeof mod.factory === 'function'){
-            var factory = mod.setFactory(), modules;
+            var methods = mod.methods(), modules;
             if(mod.deps.length){
                 //设置工厂函数形参，也就是依赖模块的引用
                 modules = [];
                 Nui.each(mod.deps, function(val){
-                    modules.push(factory.require(val))
+                    modules.push(methods.require(val))
                 })
             }
             else{
                 //将工厂函数的内部方法作为参数传递，方便调用
-                modules = [factory.require, factory.imports, factory.renders, factory.extend]
+                modules = [methods.require, methods.imports, methods.renders, methods.extend]
             }
-            var exports = factory.apply(factory, modules);
+            var exports = mod.factory.apply(methods, modules);
             //优先使用return接口
             if(typeof exports === 'undefined'){
-                exports = factory.exports
+                exports = methods.exports
             }
             
             if(mod.name === 'component' || (exports.static && exports.static.__parent instanceof Module.Class.parent)){
@@ -559,7 +558,7 @@
                     apis:{init:true}
                 }
 
-                if(config.skin && typeof config.skin === 'string'){
+                if(config.skin && !exports.options.skin){
                     exports.options.skin = config.skin
                 }
 
@@ -609,7 +608,7 @@
     }
 
     //获取正确规范的路径
-    Module.replacePath = function(path){
+    Module.normalize = function(path){
         // a///b///c => a/b/c
         path = path.replace(/([^:])\/{2,}/g, '$1/');
 
@@ -710,10 +709,10 @@
         }
         id = Module.setPath(config.alias[name] || name);
         if(!isHttp(id)){
-            dirid = Module.replacePath(dirname + id);
+            dirid = Module.normalize(dirname + id);
             id = (uri || dirname) + id;
         }
-        id = Module.replacePath(id);
+        id = Module.normalize(id);
         return [id, name, suffix, dirid]
     }
 
