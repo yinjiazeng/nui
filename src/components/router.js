@@ -54,14 +54,19 @@ Nui.define(['component'], function(component){
                         var params = hash.replace(v.path, '').replace(/^\//, '');
                         var object = that.__instances[v.id], opts = object.options, param;
                         params = params ? params.split('/') : [];
-                        var render = opts.onRender;
-                        if(typeof render === 'function' && params.length === v.params.length){
+                        var change = opts.onChange;
+                        if(typeof change === 'function' && params.length === v.params.length){
                             Nui.each(v.params, function(val, key){
                                 if(!param){
                                     param = {};
                                 }
                                 param[val] = params[key]
                             })
+
+                            if(object._send && object._send.data && typeof opts.onData === 'function'){
+                                opts.onData.call(opts, object._send.data)
+                                delete object._send;
+                            }
 
                             if(object._reload === true || !object._wrapper){
                                 if(opts.wrapper && !object._wrapper){
@@ -83,7 +88,7 @@ Nui.define(['component'], function(component){
                                 }
                                 var wrapper = object._wrapper || that._wrapper;
                                 var cache = that._cache[_hash];
-                                render.call(opts, object.target, wrapper, {
+                                change.call(opts, object.target, wrapper, {
                                     path:v.path+'/',
                                     url:hash+'/',
                                     param:param,
@@ -94,10 +99,6 @@ Nui.define(['component'], function(component){
                             }
                             var wrapper = object._wrapper || that._wrapper;
                             wrapper.show().siblings('.wrapper').hide();
-                            if(object._send && object._send.data && typeof opts.onData === 'function'){
-                                opts.onData.call(opts, object._send.data, object.target, wrapper)
-                                delete object._send;
-                            }
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts, object.target, wrapper)
                             }
@@ -249,7 +250,7 @@ Nui.define(['component'], function(component){
             cache:false,
             level:1,
             onBefore:null,
-            onRender:null,
+            onChange:null,
             onAfter:null,
             onData:null
         },

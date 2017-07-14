@@ -80,7 +80,7 @@ Nui.define(['../src/components/router'], function(router){
 				<p>类型：{String}</p>
 				<p>默认值：null</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：路径匹配规则，冒号为参数名，url匹配上该规则才会触发onRender回调</p>
+				<p>说明：路径匹配规则，冒号为参数名，url匹配上该规则才会触发onChange回调</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -117,7 +117,7 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Boolean}</p>
 				<p>默认值：false</p>
-				<p>说明：值为false时，所有设置该值的路由实例都将共享一个wrapper，每次加载都会触发onRender；当值为true是，实例会独享一个wrapper，仅在第一次加载时时会触发onRender。</p>
+				<p>说明：值为false时，所有设置该值的路由实例都将共享一个wrapper，每次加载都会触发onChange；当值为true是，实例会独享一个wrapper，仅在第一次加载时时会触发onChange。</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -139,9 +139,9 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>默认值：null</p>
-				<p>说明：点击元素在onRender之前触发，若return false则不会触发onRender</p>
+				<p>说明：点击元素在onChange之前触发，若return false则不会触发onChange</p>
 				<p>参数：elem {jQuery Object} 点击元素的jQuery对象</p>
-				<p>参数：render {Function} 强制触发执行onRender</p>
+				<p>参数：render {Function} 强制触发执行onChange</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -155,12 +155,12 @@ router({
 	}
 })
 </script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onRender</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onChange</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>默认值：null</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：页面渲染处理</p>
+				<p>说明：路由地址改变时执行，用于页面渲染处理</p>
 				<p>参数：target {jQuery Object} 调用组件的jQuery对象</p>
 				<p>参数：wrapper {jQuery Object} 模板渲染容器jQuery对象</p>
 				<p>参数：data {JSON Object} 包含4个属性，url：完整路径，path：url中参数除外的路径，param：路径中的参数，cache：wrapper内容缓存</p>
@@ -168,7 +168,7 @@ router({
 <script type="text/highlight" data-javascript-options>
 router({
 	path:'/news/:type/:id',
-	onRender:function(target, wrapper, data){
+	onChange:function(target, wrapper, data){
 		if(data.param.type === '1'){
 			wrapper.html(data.cache || '<div>.....</div>')
 		}
@@ -189,7 +189,7 @@ router({
 <script type="text/highlight" data-javascript-options>
 router({
 	path:'/news/:type/:id',
-	onRender:function(target, wrapper, data){
+	onChange:function(target, wrapper, data){
 		//渲染操作
 	},
 	onAfter:function(target){
@@ -197,6 +197,11 @@ router({
 	}
 })
 </script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onData</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>默认值：null</p>
+			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> start</h3>
 			<div class="e-mt15 f-lh22">
@@ -362,7 +367,7 @@ router({
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
 <script type="text/javascript" src="/nui/dist/nui-min.js?v=f187ebf"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=6529122"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=9bb2fb0"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){

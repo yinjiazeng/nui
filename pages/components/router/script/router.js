@@ -21,7 +21,7 @@ Nui.define(['{cpns}/router'], function(router){
             target:'#index',
             entry:true,
             path:'/index',
-            onRender:module.require('./modules/index')
+            onChange:module.require('./modules/index')
         })
 
         router({
@@ -34,7 +34,7 @@ Nui.define(['{cpns}/router'], function(router){
                 }
                 return false;
             },
-            onRender:module.require('./modules/recordVoucher')
+            onChange:module.require('./modules/recordVoucher')
         })
 
         router({
@@ -42,7 +42,7 @@ Nui.define(['{cpns}/router'], function(router){
             path:'{list}',
             wrapper:false,
             level:2,
-            onRender:module.require('./modules/seeVoucher')
+            onChange:module.require('./modules/seeVoucher')
         })
 
         router('start')
