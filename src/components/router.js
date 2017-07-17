@@ -76,12 +76,7 @@ Nui.define(['component'], function(component){
                                     that._wrapper = that._getWrapper(object.container)
                                 }
                                 if(object._reload || !object._wrapper){
-                                    if(object._wrapper){
-                                        component('destroy', object._wrapper.off());
-                                    }
-                                    else{
-                                        component('destroy', that._wrapper.off());
-                                    }
+                                    component('destroy', (object._wrapper||that._wrapper).off());
                                     if(object.options.cache === true){
                                         that._cacheContent[_hash] = true;
                                     }
