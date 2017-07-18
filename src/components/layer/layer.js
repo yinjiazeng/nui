@@ -736,7 +736,10 @@ Nui.define(['component', 'util'], function(component, util){
             that._delete();
             that._reset();
             that._setLower(true);
-            self._zIndex--;
+            if(!that._isdestroy){
+                self._zIndex--;
+                that._isdestroy = true;
+            }
             if(typeof opts.onDestroy === 'function'){
                 opts.onDestroy.call(this, that._main, that.__id)
             }
