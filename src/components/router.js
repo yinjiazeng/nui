@@ -5,7 +5,7 @@
  * @description 路由
  */
 
-Nui.define(['component'], function(component){
+Nui.define(['component', 'template', 'events'], function(component, template, events){
     var statics = {
         _paths:{},
         _alias:{},
@@ -81,14 +81,25 @@ Nui.define(['component'], function(component){
                                         that._cacheContent[_hash] = true;
                                     }
                                 }
-                                var wrapper = object._wrapper || that._wrapper;
+                                var wrapper = opts.element = object._wrapper || that._wrapper;
                                 var cache = that._cache[_hash];
-                                change.call(opts, object.target, wrapper, {
+                                var tmpl = opts.template;
+                                var request = {
                                     path:v.path+'/',
                                     url:hash+'/',
                                     param:param,
                                     cache:cache
-                                });
+                                }
+                                change.call(opts, object.target, wrapper, request);
+                                if(tmpl){
+                                    if(typeof tmpl === 'string'){
+                                        wrapper.html(template.render(tmpl, request));
+                                    }
+                                    else{
+                                        wrapper.html(template.render.call(tmpl, tmpl.layout, request));
+                                    }
+                                }
+                                events.call(opts);
                                 component.init(wrapper);
                                 delete object._reload;
                             }
@@ -151,7 +162,16 @@ Nui.define(['component'], function(component){
                 this._change();
             }
         },
-        href:function(url, data, reload){
+        /*
+        router.location({
+            path:'',
+            param:{
+
+            }
+        })
+        
+        */
+        location:function(url, data, reload){
             var that = this;
             if(url){
                 if(arguments.length <=2 && typeof data === 'boolean'){
@@ -238,6 +258,7 @@ Nui.define(['component'], function(component){
         static:statics,
         options:{
             path:'',
+            template:'',
             delegate:null,
             container:null,
             entry:false,
