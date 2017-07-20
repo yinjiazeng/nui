@@ -590,7 +590,7 @@
                     delete exports.static.__parent;
                     mod.module.exports = exports;
                     if(mod.name !== 'component'){
-                        var Class = mod.module('Class'), method;
+                        var Class = mod.module.constructor, method;
                         Nui.each(['_$fn', '_$ready'], function(v){
                             method = Class[v];
                             if(typeof method === 'function'){
@@ -655,34 +655,25 @@
         if(typeof Class._init === 'function'){
             Class._init()
         }
-        return function(){
-            var args = arguments;
-            var len = args.length;
-            var options = args[0];
-            if(typeof options === 'string'){
-                if(options === 'Class'){
-                    return Class
-                }
-                if(!/^_/.test(options)){
-                    var attr = Class[options];
-                    if(typeof attr === 'function'){
-                        return attr.apply(Class, Array.prototype.slice.call(args, 1))
-                    }
-                    else if(len > 1){
-                        return Class[options] = args[1]
-                    }
-                    return attr
-                }
-            }
-            else{
-                return new Class(options)
-            }
+        var module = function(options){
+            return new Class(options)
         }
+        module.constructor = Class;
+        Nui.each(Class, function(v, k){
+            if(typeof v === 'function' && !/^_/.test(k) && k !== 'constructor'){
+                if(typeof v === 'function'){
+                    module[k] = function(){
+                        return Class[k].apply(Class, arguments)
+                    }
+                }
+            }
+        })
+        return module
     }
 
     Module.Class.parent = function(module){
         this.exports = module.exports;
-        this.Class = module('Class');
+        this.constructor = module.constructor;
     }
 
     Module.setPath = function(id){

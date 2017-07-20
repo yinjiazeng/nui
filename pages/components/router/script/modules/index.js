@@ -14,7 +14,7 @@ Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
             },
             callback:{
                 seturl:function(e, elem){
-                    router('href', elem.attr('rel'))
+                    router.href(elem.attr('rel'))
                 }
             }
         })

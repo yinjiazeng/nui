@@ -681,7 +681,7 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _show:function(){
             var that = this, opts = that.options;
-            component('init', that._main);
+            component.init(that._main);
             that._resize('init');
             that._setLower();
             if(opts.isMask === true){
@@ -700,7 +700,7 @@ Nui.define(['component', 'util'], function(component, util){
         _reset:function(){
             var that = this, self = that.constructor, noMask = true;
             component.exports._reset.call(this);
-            component('destroy', that._main);
+            component.destroy(that._main);
             Nui.each(self.__instances, function(val){
                 if(val && val.options.isMask === true && val !== that && val._containerDOM === that._containerDOM){
                     return (noMask = false);

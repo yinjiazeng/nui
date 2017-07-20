@@ -2,11 +2,11 @@ Nui.define(['{cpns}/router'], function(router){
     var module = this;
 
     return function(){
-        router('alias', {
+        router.alias({
             'list':'/voucher/list/:nickname/:career'
         })
 
-        router('options', {
+        router.config({
             container:'.g-main',
             delegate:Nui.doc,
             level:2,
@@ -45,6 +45,6 @@ Nui.define(['{cpns}/router'], function(router){
             onChange:module.require('./modules/seeVoucher')
         })
 
-        router('start')
+        router.start()
     }
 })

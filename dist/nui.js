@@ -590,7 +590,7 @@
                     delete exports.static.__parent;
                     mod.module.exports = exports;
                     if(mod.name !== 'component'){
-                        var Class = mod.module('Class'), method;
+                        var Class = mod.module.constructor, method;
                         Nui.each(['_$fn', '_$ready'], function(v){
                             method = Class[v];
                             if(typeof method === 'function'){
@@ -655,34 +655,25 @@
         if(typeof Class._init === 'function'){
             Class._init()
         }
-        return function(){
-            var args = arguments;
-            var len = args.length;
-            var options = args[0];
-            if(typeof options === 'string'){
-                if(options === 'Class'){
-                    return Class
-                }
-                if(!/^_/.test(options)){
-                    var attr = Class[options];
-                    if(typeof attr === 'function'){
-                        return attr.apply(Class, Array.prototype.slice.call(args, 1))
-                    }
-                    else if(len > 1){
-                        return Class[options] = args[1]
-                    }
-                    return attr
-                }
-            }
-            else{
-                return new Class(options)
-            }
+        var module = function(options){
+            return new Class(options)
         }
+        module.constructor = Class;
+        Nui.each(Class, function(v, k){
+            if(typeof v === 'function' && !/^_/.test(k) && k !== 'constructor'){
+                if(typeof v === 'function'){
+                    module[k] = function(){
+                        return Class[k].apply(Class, arguments)
+                    }
+                }
+            }
+        })
+        return module
     }
 
     Module.Class.parent = function(module){
         this.exports = module.exports;
-        this.Class = module('Class');
+        this.constructor = module.constructor;
     }
 
     Module.setPath = function(id){
@@ -1519,7 +1510,7 @@ Nui.define('events', function(){
             __instances:{},
             /*
             * 将实例方法接口设置为静态方法，这样可以操作多个实例，
-            * 默认有 init, set, get, reset, destroy
+            * 默认有 init, option, reset, destroy
             * init表示初始化组件，会查询容器内包含属性为 data-组件名-options的dom元素，并调用组件
             */
             __setMethod:function(apis, components){
@@ -1567,10 +1558,9 @@ Nui.define('events', function(){
                                 }
                             }
                             else{
-                                Array.prototype.unshift.call(args, methodName);
                                 Nui.each(components, function(v, k){
-                                    if(k !== 'component'){
-                                        v.apply(v, args)
+                                    if(k !== 'component' && typeof v[methodName] === 'function'){
+                                        v[methodName].apply(v, args)
                                     }
                                 })
                             }
@@ -1668,7 +1658,7 @@ Nui.define('events', function(){
                     this.init(Nui.doc)
                 }
             },
-            options:function(key, value){
+            config:function(key, value){
                 if(Nui.type(key, 'Object')){
                     jQuery.extend(true, this._options, key)
                 }
@@ -1718,7 +1708,7 @@ Nui.define('events', function(){
                     skin = Nui.trim(opts.skin),
                     getName = function(_class, arrs){
                         if(_class.__parent){
-                            var _pclass = _class.__parent.Class;
+                            var _pclass = _class.__parent.constructor;
                             var _name = _pclass.__component_name;
                             if(_name !== 'component'){
                                 if(skin){

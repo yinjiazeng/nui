@@ -39,7 +39,7 @@
             __instances:{},
             /*
             * 将实例方法接口设置为静态方法，这样可以操作多个实例，
-            * 默认有 init, set, get, reset, destroy
+            * 默认有 init, option, reset, destroy
             * init表示初始化组件，会查询容器内包含属性为 data-组件名-options的dom元素，并调用组件
             */
             __setMethod:function(apis, components){
@@ -87,10 +87,9 @@
                                 }
                             }
                             else{
-                                Array.prototype.unshift.call(args, methodName);
                                 Nui.each(components, function(v, k){
-                                    if(k !== 'component'){
-                                        v.apply(v, args)
+                                    if(k !== 'component' && typeof v[methodName] === 'function'){
+                                        v[methodName].apply(v, args)
                                     }
                                 })
                             }
@@ -188,7 +187,7 @@
                     this.init(Nui.doc)
                 }
             },
-            options:function(key, value){
+            config:function(key, value){
                 if(Nui.type(key, 'Object')){
                     jQuery.extend(true, this._options, key)
                 }
@@ -238,7 +237,7 @@
                     skin = Nui.trim(opts.skin),
                     getName = function(_class, arrs){
                         if(_class.__parent){
-                            var _pclass = _class.__parent.Class;
+                            var _pclass = _class.__parent.constructor;
                             var _name = _pclass.__component_name;
                             if(_name !== 'component'){
                                 if(skin){
