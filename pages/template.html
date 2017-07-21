@@ -48,12 +48,13 @@
 	<div class="g-main f-fr">
 		<div class="mainbox">
 			<h1 class="e-pt20 e-pb20 f-fs28">模版引擎</h1>
-			<div class="e-mt15 f-lh22">
-				<p>template为Nui.js内置模块，使用时需作为依赖引入</p>
-				
-
-			</div>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="快速上手">快速上手</h2>
+			<p class="e-mt15 f-lh22">使用时需先作为依赖引入</p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(['template'], function(template){
+	//do something
+})
+</script>
 			<p class="e-mt15 f-lh22">模版引擎渲染有2种方式，一种是通过script标签渲染，另一种是直接渲染</p>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> script标签渲染模版</h3>
 			<p class="e-mt15 f-lh22">在页面body中创建type="text/html"的script标签，并且包含id属性</p>
@@ -68,10 +69,14 @@
 <% /if %>
 </ul>
 &lt;/script&gt;
-&lt;script src="nui.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-//加载内置template模块
-Nui.load('template', function(template){
+&lt;script type="text/javascript" src="nui.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+Nui.load('./demo')
+&lt;/script&gt;
+</script>
+<script type="text/highlight" data-javascript-options>
+//demo.js
+Nui.define(['template'], function(template){
 	var data = {result:'success', list:[{
 		name:'yinjiazeng',
 		career:'jser'
@@ -85,7 +90,8 @@ Nui.load('template', function(template){
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 直接渲染模板</h3>
 <script type="text/highlight" data-javascript-options>
-Nui.load('template', function(tpl){
+//demo.js
+Nui.define(['template'], function(template){
 	var str = '<ul>\
 				<% if result === "success" %>\
 					<% each list val key %>\
@@ -133,6 +139,18 @@ Nui.load('template', function(tpl){
 %>
 //使用函数
 <% func(2) %> //3
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 双问号</h3>
+			<div class="e-mt15 f-lh22">
+				<p>在渲染模版时，一些属性在某些情况下是不存在的，如果直接在模版中使用会报未定义错误，用typeof判断会导致模版可读性变差，因此可以在变量后面加双问号“??”替代typeof</p>
+				<p>输出值时使用双问号，若变量不存在则输出空字符串，其它情况均作为布尔值返回</p>
+			</div>
+<script type="text/highlight" data-javascript-options>
+<% if name?? %>
+	<%name%>
+<% /if %>
+
+<%name??%>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 遍历</h3>
 			<div class="e-mt15 f-lh22">
@@ -295,6 +313,10 @@ mobile:<% filter | $value.mobile %>
 <script type="text/highlight" data-javascript-options>
 <% setParam | name, value, url? %>
 </script>
+			<p class="e-mt15 f-lh22">保留数字位数<a class="f-corange" href="util.html#setParam">toFixed</a></p>
+<script type="text/highlight" data-javascript-options>
+<% toFixed | price %>
+</script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="config">config</h2>
 			<p class="e-mt15 f-lh22">配置全局参数</p>
 <script type="text/highlight" data-javascript-options>
@@ -406,6 +428,9 @@ template.config(key, value?)
                 
             </li>
             <li>
+                <a class="f-fs16" href="/nui/pages/events.html">事件映射</a>
+            </li>
+            <li>
                 <a class="f-fs16" href="/nui/pages/element.html">页面元素</a>
                 
             </li>
@@ -429,7 +454,7 @@ template.config(key, value?)
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
 <script type="text/javascript" src="/nui/dist/nui-min.js?v=ee0e98e"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=46b0287"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=9bb2fb0"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){
@@ -446,7 +471,7 @@ template.config(key, value?)
 
     <script type="text/javascript">
     
-Nui.load("./script/template/page-min")
+Nui.load('./script/template/page-min')
 
     </script>
 </body>

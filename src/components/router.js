@@ -8,9 +8,6 @@
 Nui.define(['component', 'template', 'events'], function(component, template, events){
     var statics = {
         _paths:{},
-        _alias:{},
-        _cache:{},
-        _cacheContent:{},
         _init:function(){
             var that = this;
             Nui.doc.on('click', '.nui-router-back', function(){
@@ -36,31 +33,42 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                        //移除末尾斜杠
                        .replace(/\/$/, '');
         },
-        _setCache:function(){
-            var that = this, hash = that._oldhash;
-            if(hash && that._wrapper && that._cacheContent[hash]){
-                that._cache[hash] = that._wrapper.html()
-            }
-        },
         _getWrapper:function(container){
             return $('<div class="wrapper"></div>').appendTo(container)
         },
+        _split:function(url){
+            var ret = {
+                url:url,
+                params:{}
+            }
+            var match = url.match(/\?[^\/\s]+/);
+            if(match){
+                var params = match[0];
+                ret.url = url.replace(params, '');
+                params = params.replace('?', '').split('&');
+                Nui.each(params, function(v, k){
+                    var arr = v.split('=');
+                    ret.params[arr[0]] = arr[1]
+                })
+            }
+            return ret;
+        },
         _change:function(){
-            var that = this, _hash = location.hash, hash = that._replace(_hash);
+            var that = this;
             if(!$.isEmptyObject(that._paths)){
-                that._setCache();
+                var _hash = location.hash, ret = this._split(_hash), hash = that._replace(ret.url), query = ret.params;
                 Nui.each(that._paths, function(v){
                     if(hash === v.path || hash.indexOf(v.path) === 0){
                         var params = hash.replace(v.path, '').replace(/^\//, '');
-                        var object = that.__instances[v.id], opts = object.options, param;
+                        var object = that.__instances[v.id], opts = object.options, param = {};
                         params = params ? params.split('/') : [];
-                        var change = opts.onChange;
-                        if(typeof change === 'function' && params.length === v.params.length){
+                        if(typeof opts.onChange === 'function' && params.length === v.params.length){
                             Nui.each(v.params, function(val, key){
-                                if(!param){
-                                    param = {};
-                                }
                                 param[val] = params[key]
+                            })
+
+                            Nui.each(query, function(val, key){
+                                param[val] = query[key]
                             })
 
                             if(object._send && object._send.data && typeof opts.onData === 'function'){
@@ -68,45 +76,42 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 delete object._send;
                             }
 
-                            if(object._reload === true || !object._wrapper){
+                            opts.data.path = v.path+'/';
+                            opts.data.url = hash+'/';
+                            opts.data.params = param;
+                            opts.data.query = query;
+
+                            if(object._isRrender === true || !object._wrapper){
                                 if(opts.wrapper && !object._wrapper){
                                     object._wrapper = that._getWrapper(object.container)
                                 }
                                 else if(!that._wrapper){
                                     that._wrapper = that._getWrapper(object.container)
                                 }
-                                if(object._reload || !object._wrapper){
+                                if(object._isRrender || !object._wrapper){
                                     component.destroy((object._wrapper||that._wrapper).off());
-                                    if(object.options.cache === true){
-                                        that._cacheContent[_hash] = true;
-                                    }
                                 }
                                 var wrapper = opts.element = object._wrapper || that._wrapper;
-                                var cache = that._cache[_hash];
                                 var tmpl = opts.template;
-                                var request = {
-                                    path:v.path+'/',
-                                    url:hash+'/',
-                                    param:param,
-                                    cache:cache
-                                }
-                                change.call(opts, object.target, wrapper, request);
+                                
                                 if(tmpl){
                                     if(typeof tmpl === 'string'){
-                                        wrapper.html(template.render(tmpl, request));
+                                        wrapper.html(template.render(tmpl, opts.data));
                                     }
                                     else{
-                                        wrapper.html(template.render.call(tmpl, tmpl.layout, request));
+                                        wrapper.html(template.render.call(tmpl, tmpl.layout, opts.data));
                                     }
                                 }
+
+                                opts.onChange.call(opts);
                                 events.call(opts);
                                 component.init(wrapper);
-                                delete object._reload;
+                                delete object._isRrender;
                             }
                             var wrapper = object._wrapper || that._wrapper;
                             wrapper.show().siblings('.wrapper').hide();
                             if(typeof opts.onAfter === 'function'){
-                                opts.onAfter.call(opts, object.target, wrapper)
+                                opts.onAfter.call(opts)
                             }
                             that._initialize = match = true;
                             if(Nui.bsie7){
@@ -162,20 +167,11 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                 this._change();
             }
         },
-        /*
-        router.location({
-            path:'',
-            param:{
-
-            }
-        })
-        
-        */
-        location:function(url, data, reload){
+        location:function(url, data, render){
             var that = this;
             if(url){
                 if(arguments.length <=2 && typeof data === 'boolean'){
-                    reload = data;
+                    render = data;
                     data = null;
                 }
                 var temp, _router;
@@ -192,23 +188,20 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                     _router._send = {
                         data:data
                     }
-                    _router._reload = reload;
-                    _router._render(_router.target, url)
+                    _router._isRrender = render;
+                    _router._render(url)
                 }
             }
             else{
                 that.start()
             }
         },
-        alias:function(val){
-            return $.extend(this._alias, val||{})
-        },
-        forward:function(){
-            history.forward();
+        forward:function(index){
+            history.forward(index);
             return false
         },
-        back:function(){
-            history.back();
+        back:function(index){
+            history.back(index);
             return false
         }
     }
@@ -259,11 +252,10 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
         options:{
             path:'',
             template:'',
-            delegate:null,
             container:null,
+            data:{},
             entry:false,
             wrapper:false,
-            cache:false,
             level:1,
             onBefore:null,
             onChange:null,
@@ -281,7 +273,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             var that = this, opts = that.options, router = that.constructor, target = that._getTarget();
             that.container = router._jquery(opts.container);
             if(opts.path && that.container){
-                that.path = that._setpath(opts.path);
+                that.path = router._replace(opts.path);
                 var paths = that._getpath();
                 var len = paths.params.length;
                 if((!len && opts.level === 1) || opts.level !== 1){
@@ -302,15 +294,6 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                 }
             }
         },
-        _setpath:function(path){
-            var router = this.constructor;
-            if(path = Nui.trim(path)){
-                Nui.each(router._alias, function(val, key){
-                    path = path.replace(new RegExp('{'+ key +'}', 'g'), val)
-                })
-            }
-            return router._replace(path)
-        },
         _getpath:function(){
             var that = this, path = that.path, opts = that.options, index = path.indexOf('/:');
             var paths = {
@@ -328,25 +311,25 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             }
             return paths
         },
-        _render:function(elem, url){
-            var that = this, opts = that.options, href = url || elem.attr('href');
+        _render:function(url){
+            var that = this, opts = that.options, href = url instanceof jQuery ? url.attr('href') : url;
             if(href){
                 var trigger = false;
-                var render = function(){
+                var change = function(){
                     trigger = true;
                     location.hash = '#!'+that.constructor._replace(href)
                 }
-                if(typeof opts.onBefore === 'function' && opts.onBefore(elem, render) === false){
+                if(typeof opts.onBefore === 'function' && opts.onBefore.call(opts, change) === false){
                     return false
                 }
                 if(!trigger){
-                    render()
+                    change()
                 }
             }
         },
         _event:function(){
             var that = this, opts = that.options;
-            that._on('click', opts.delegate, that.target, function(e, elem){
+            that._on('click', Nui.doc, that.target, function(e, elem){
                 that._render(elem);
                 return false
             })

@@ -12,10 +12,10 @@ Nui.define(function(){
                 <em class="ui-animate ui-animate-fadeInDown ui-animate-fadeInDown-run8">！</em>
             </h3>
             <ul>
-                <% each $list %>
+                <% each menu %>
                 <% if $value.index %>
                 <li>
-                    <a href="javascript:void(0)" rel="<% $value.path %>" id="<% $value.id %>Index">
+                    <a href="javascript:void(0)" rel="<% $value.path %>">
                         <em><i class="iconfont ui-animate">&#xe62a;</i></em>
                         <span class="ui-animate"><% $value.name %></span>
                     </a>

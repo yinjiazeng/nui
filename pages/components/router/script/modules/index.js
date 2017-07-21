@@ -1,22 +1,40 @@
 Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
     var module = this;
     var router = module.require('{cpns}/router');
-    var events = module.require('events', function(d){
-        
-    });
-    module.imports('../../style/index')
-    return function(target, wrapper, request){
-        wrapper.html(tpl.render(tmpl, menu));
-        events({
-            element:wrapper,
-            mapping:{
-                'click a':'seturl'
+    var layer = module.require('{cpns}/layer/layerExt');
+    module.imports('../../style/index');
+
+    return {
+        target:'#index',
+        entry:true,
+        path:'/index/',
+        template:tmpl,
+        data:{
+            menu:menu
+        },
+        onChange:function(){
+            console.log(this.data)
+        },
+        mapping:{
+            'click a':function(e, elem){
+                router.location(elem.attr('rel'), {
+                    a:1
+                })
             },
-            callback:{
-                seturl:function(e, elem){
-                    router.location(elem.attr('rel'))
-                }
+            'click h3':function(){
+                var recordVoucher = module.require('./recordVoucher');
+                var events = module.require('events');
+                var _layer = layer({
+                    content:tpl.render.call(recordVoucher.template, recordVoucher.template.layout, {
+                        params:{
+                            a:1
+                        }
+                    }),
+                    isFull:true
+                });
+                recordVoucher.element = _layer._main; 
+                events.call(recordVoucher)
             }
-        })
+        }
     }
 })

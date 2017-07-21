@@ -47,8 +47,41 @@
     
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28">工具集</h1>
-		</div>	
+			<h1 class="e-pt20 e-pb20 f-fs28">事件映射</h1>
+			<p class="e-mt15 f-lh22">事件映射模块是为了解决jQuery绑定事件时重复代码过多，缺少复用性等问题。</p>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb">使用方法</h2>
+			<p class="e-mt15 f-lh22">使用前需先作为依赖引入</p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(['events'], function(events){
+	events({
+		element:$(selector),
+		mapping:{
+
+		},
+		callback:{
+
+		}
+	})
+})
+</script>
+			<p class="e-mt15 f-lh22">模块通过jQuery中的on来代理绑定事件，只接收一个参数，该参数为对象，提供了3个属性</p>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb">属性</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> element</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{jQuery Object}</p>
+				<p>说明：事件代理元素</p>
+			</div>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> mapping</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Object}</p>
+				<p>说明：设置事件映射</p>
+			</div>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> callback</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Object}</p>
+				<p>说明：设置事件回调</p>
+			</div>
+		</div>
 	</div>
 	
 	
@@ -64,37 +97,7 @@
                 
             </li>
             <li>
-                <a class="f-fs16 s-crt" href="/nui/pages/util.html">实用工具</a>
-                
-                <ul>
-                    <li>
-                        <a href="#regex">regex</a>
-                    </li>
-                    <li>
-                        <a href="#getParam">getParam</a>
-                    </li>
-                    <li>
-                        <a href="#setParam">setParam</a>
-                    </li>
-                    <li>
-                        <a href="#supportCss3">supportCss3</a>
-                    </li>
-                    <li>
-                        <a href="#supportHtml5">supportHtml5</a>
-                    </li>
-                    <li>
-                        <a href="#jumpUrl">jumpUrl</a>
-                    </li>
-                    <li>
-                        <a href="#formatDate">formatDate</a>
-                    </li>
-                    <li>
-                        <a href="#getJSON">getJSON</a>
-                    </li>
-                    <li>
-                        <a href="#getData">getData</a>
-                    </li>
-                </ul>
+                <a class="f-fs16" href="/nui/pages/util.html">实用工具</a>
                 
             </li>
             <li>
@@ -102,7 +105,7 @@
                 
             </li>
             <li>
-                <a class="f-fs16" href="/nui/pages/events.html">事件映射</a>
+                <a class="f-fs16 s-crt" href="/nui/pages/events.html">事件映射</a>
             </li>
             <li>
                 <a class="f-fs16" href="/nui/pages/element.html">页面元素</a>

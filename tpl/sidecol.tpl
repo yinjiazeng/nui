@@ -140,6 +140,9 @@
                 {% endif %}
             </li>
             <li>
+                <a class="f-fs16{%if current == 'events' %} s-crt{% endif %}" href="/nui/pages/events.html">事件映射</a>
+            </li>
+            <li>
                 <a class="f-fs16{%if current == 'element' %} s-crt{% endif %}" href="/nui/pages/element.html">页面元素</a>
                 {%if current == 'element' %}
                 <ul>
