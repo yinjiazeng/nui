@@ -48,39 +48,86 @@
 	<div class="g-main f-fr">
 		<div class="mainbox">
 			<h1 class="e-pt20 e-pb20 f-fs28">事件映射</h1>
-			<p class="e-mt15 f-lh22">事件映射模块是为了解决jQuery绑定事件时重复代码过多，缺少复用性等问题。</p>
+			<div class="e-mt15 f-lh22">
+				<p>传统事件回调绑定只能是一对一或者多对一，所有业务都在一个回调中处理，当功能复杂时可能导致代码冗余、可读性差，最终导致代码难以维护。</p>
+				<p>事件映射模块通过事件委托，可对事件与回调进行一对多或者多对多绑定，可将重复性的功能提取出来单独作为一个回调，大大提升代码可读性与复用率。</p>
+			</div>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb">使用方法</h2>
 			<p class="e-mt15 f-lh22">使用前需先作为依赖引入</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(['events'], function(events){
-	events({
-		element:$(selector),
-		mapping:{
-
-		},
-		callback:{
-
-		}
-	})
+	events(参数)
 })
 </script>
-			<p class="e-mt15 f-lh22">模块通过jQuery中的on来代理绑定事件，只接收一个参数，该参数为对象，提供了3个属性</p>
-			<h2 class="e-pt20 e-pb10 f-fs22 f-bb">属性</h2>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb">选项参数</h2>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> element</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{jQuery Object}</p>
-				<p>说明：事件代理元素</p>
+				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
+				<p>说明：事件委托元素</p>
 			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> mapping</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Object}</p>
-				<p>说明：设置事件映射</p>
+				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
+				<p>说明：设置事件映射，多事件用冒号分隔；事件与触发事件选择器用空格分隔，若想element触发事件，那么无需设置选择器；回调可以为字符串也可以是函数，当为字符串时，可设置多个回调用空格分隔</p>
 			</div>
+<script type="text/highlight" data-javascript-options>
+events({
+	mapping:{
+		'click':'callback',
+		'click:focus input':'callback1 callback2 .....',
+		'keyup:keydown:keypress #elem > input':function(e, elem){
+
+		}
+	}
+})
+</script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> callback</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Object}</p>
-				<p>说明：设置事件回调</p>
+				<p>说明：设置事件回调，回调接收三个参数，若回调中return false则不会触发后续的回调，回调中this指向events模块本身，而不是jQuery事件回调中的DOM元素。</p>
+				<p style="text-indent:3em;">event {Event}</p>
+				<p style="text-indent:3em;">elem {jQuery Object} 触发事件元素</p>
+				<p style="text-indent:3em;">data {Anything} 前一个回调传递的数据</p>
 			</div>
+<script type="text/highlight" data-javascript-options>
+events({
+	mapping:{
+		'click button1':'disabled checked update',
+		'click button2':'disabled checked delete',
+	},
+	callback:{
+		'disabled':function(e, elem){
+			if(elem.hasClass('disabled')){
+				return false
+			}
+		},
+		'checked':function(e, elem){
+			var elems = $(':checked'), arr = [];
+			if(!elems.length){
+				return false
+			}
+			elems.each(function(){
+				arr.push($(this).val())
+			})
+			return {
+				ids:arr.join(',')
+			}
+		},
+		'update':function(e, elem, data){
+			$.post(url, data, function(){
+
+			})
+		},
+		'delete':function(e, elem, data){
+			$.post(url, data, function(){
+
+			})
+		}
+	}
+})
+</script>
 		</div>
 	</div>
 	
@@ -130,7 +177,7 @@ Nui.define(['events'], function(events){
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=ee0e98e"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=b7fd2b4"></script>
 <script type="text/javascript" src="/nui/assets/script/config.js?v=9bb2fb0"></script>
     
     <script type="text/javascript">

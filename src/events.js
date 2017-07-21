@@ -1,11 +1,11 @@
 Nui.define('events', function(){
     return function(opts){
-        var that = this, opts = opts || {},
-            elem = opts.element || that.element, 
-            maps = opts.mapping || that.mapping, 
-            calls = opts.callback || that.callback || {};
-        if(!opts || !elem || !maps || !calls){
-            return
+        var that = opts || this,
+            elem = that.element, 
+            maps = that.mapping, 
+            calls = that.callback || {};
+        if(!elem || !maps){
+            return that
         }
         if(!(elem instanceof jQuery)){
             elem = jQuery(elem)
