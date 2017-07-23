@@ -62,7 +62,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                         var params = hash.replace(v.path, '').replace(/^\//, '');
                         var object = that.__instances[v.id], opts = object.options, param = {};
                         params = params ? params.split('/') : [];
-                        if(typeof opts.onChange === 'function' && params.length === v.params.length){
+                        if(params.length === v.params.length){
                             Nui.each(v.params, function(val, key){
                                 param[val] = params[key]
                             })
@@ -102,8 +102,9 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                         wrapper.html(template.render.call(tmpl, tmpl.layout, opts.data));
                                     }
                                 }
-
-                                opts.onChange.call(opts);
+                                if(typeof opts.onAfter === 'function'){
+                                    opts.onChange.call(opts);
+                                }
                                 events.call(opts);
                                 component.init(wrapper);
                                 delete object._isRrender;

@@ -18,13 +18,13 @@
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">使用模块</h2>
 			<div class="e-mt15 f-lh22">
-				<p>在页面中创建一个元素建议a标签，并包含href属性</p>
-				<p><a href="/nui/src/components/router.js" class="f-corange" target="_blank">下载</a>最新版作为依赖项引入到模块中，并创建实例</p>
+				<p>在页面中创建元素，并包含href属性，并且创建一个空元素作为渲染容器</p>
+				<p><a href="/nui/src/components/router.js" class="f-corange" target="_blank">下载</a>最新版作为依赖项引入到模块中，并创建路由实例，查看<a href="./demo.html" class="f-corange" target="_blank">demo</a></p>
 			</div>
 <script type="text/highlight" data-xml-options>
 <a href="/home/" id="home">首页</a>
-<a href="/news/1/" class="news">体育新闻</a>
-<a href="/news/2/" class="news">国际新闻</a>
+<a href="/news/" id="news">资讯</a>
+<div id="main"></div>
 </script>
 <script type="text/highlight" data-javascript-options>
 Nui.define(['../src/components/router'], function(router){
@@ -32,7 +32,16 @@ Nui.define(['../src/components/router'], function(router){
 	router({
 		target:'#home',
 		entry:true,
-		path:'/home/'
+		path:'/home/',
+		container:'#main',
+		template:'<div>这是首页</div>'
+	})
+
+	router({
+		target:'#news',
+		path:'/news/',
+		container:'#main',
+		template:'<div>这是资讯页</div>'
 	})
 
 	router.start()
@@ -201,8 +210,8 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>默认值：null</p>
-				<p>参数：data {Anything} 接收参数</p>
-				<p>说明：用于接收路由跳转时传递的参数</p>
+				<p>参数：data {Anything} 接收数据</p>
+				<p>说明：用于接收路由跳转时传递的数据</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router.location('/index/', 'hello world')
@@ -269,7 +278,7 @@ router.start()
 				<p>参数：url {String} 跳转地址</p>
 				<p>参数：data {Anything} 跳转传递数据，跳转后的页面通过onData函数可接收</p>
 				<p>参数：render {Boolean} 是否重新渲染目标页面</p>
-				<p>说明：路由跳转，跳转的地址必须配置路由，否则不会跳转</p>
+				<p>说明：路由跳转，跳转的地址必须匹配已设置的路由规则，否则不会跳转</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router.location('/index/', {});
@@ -298,8 +307,6 @@ selector.on('click', function(){
 
 <a class="nui-router-back">后退</a>
 </script>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例方法</h2>
-			<p class="e-mt15 f-lh22">继承组件基类 <a href="" class="f-corange">实例方法</a></p>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">案例</h2>
 			<p class="e-mt15 f-lh22">
 				<a href="./cloud.html" target="_blank" class="f-corange f-tdu">诺诺云记账单页版</a>
