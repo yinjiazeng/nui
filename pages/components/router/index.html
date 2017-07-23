@@ -88,10 +88,10 @@ router({
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> container</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{String, jQuery Object}</p>
+				<p>类型：{Selector}</p>
 				<p>默认值：null</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：实例创建后会生成（&lt;div class="wrapper"&gt;&lt;/div&gt;）作为container子元素，该元素就是路由渲染容器</p>
+				<p>说明：设置渲染容器，实例创建后会生成（&lt;div class="nui-router-wrapper"&gt;&lt;/div&gt;）作为container子元素，该元素就是路由模版填充容器</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -99,6 +99,17 @@ router({
 })
 router({
 	container:$('#main')
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> target</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Selector}</p>
+				<p>默认值：null</p>
+				<p>说明：给元素绑定路由，元素必须包含href属性，点击该元素触发路由跳转</p>
+			</div>
+<script type="text/highlight" data-javascript-options>
+router({
+	target:'#home'
 })
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> template</h3>
@@ -240,9 +251,9 @@ router({
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<div class="e-mt15 f-lh22">
-				<p>实例化路由组件后，会创建一个element属性，该属性就是页面容器的jquery实例，在函数中通过this.element访问</p>
-				<p>可以通过<a class="f-corange" href="/nui/pages/events.html">事件映射</a>模块中的mapping和callback属性绑定事件，代理元素就是element</p>
-				<p>可以自定义属性以及方法扩展业务</p>
+				<p>在函数中可以通过this.element访问页面容器的jquery实例</p>
+				<p>选项参数中可以使用mapping和callback绑定事件，事件委托对象就是this.element，使用方法参考<a class="f-corange" href="/nui/pages/events.html">事件映射</a></p>
+				<p>可以自定义选项参数，包括函数以及属性</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -457,7 +468,7 @@ selector.on('click', function(){
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=b7fd2b4"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=9af6dbf"></script>
 <script type="text/javascript" src="/nui/assets/script/config.js?v=9bb2fb0"></script>
     
     <script type="text/javascript">

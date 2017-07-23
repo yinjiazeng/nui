@@ -50,7 +50,7 @@
 			<h1 class="e-pt20 e-pb20 f-fs28">事件映射</h1>
 			<div class="e-mt15 f-lh22">
 				<p>传统事件回调绑定只能是一对一或者多对一，所有业务都在一个回调中处理，当功能复杂时可能导致代码冗余、可读性差，最终导致代码难以维护。</p>
-				<p>事件映射模块通过事件委托，可对事件与回调进行一对多或者多对多绑定，可将重复性的功能提取出来单独作为一个回调，大大提升代码可读性与复用率。</p>
+				<p>事件映射模块允许事件与回调进行一对多或者多对多绑定，可将重复性的功能提取出来单独作为一个回调，从而提升代码可读性与复用率。</p>
 			</div>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb">使用方法</h2>
 			<p class="e-mt15 f-lh22">使用前需先作为依赖引入</p>
@@ -62,18 +62,19 @@ Nui.define(['events'], function(events){
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb">选项参数</h2>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> element</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{jQuery Object}</p>
+				<p>类型：{Selector, jQuery Object}</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：事件委托元素</p>
+				<p>说明：设置委托对象，模块内部通过事件委托给元素绑定事件</p>
 			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> mapping</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Object}</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：设置事件映射，多事件用冒号分隔；事件与触发事件选择器用空格分隔，若想element触发事件，那么无需设置选择器；回调可以为字符串也可以是函数，当为字符串时，可设置多个回调用空格分隔</p>
+				<p>说明：设置事件映射，多事件用冒号分隔；事件与触发事件选择器用空格分隔，若想element自身触发事件，那么无需设置选择器；回调可以为字符串也可以是函数，当为字符串时，可设置多个回调用空格分隔</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 events({
+	element:$('body'),
 	mapping:{
 		'click':'callback',
 		'click:focus input':'callback1 callback2 .....',
@@ -93,6 +94,7 @@ events({
 			</div>
 <script type="text/highlight" data-javascript-options>
 events({
+	element:document,
 	mapping:{
 		'click button1':'disabled checked update',
 		'click button2':'disabled checked delete',
@@ -177,7 +179,7 @@ events({
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=b7fd2b4"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=9af6dbf"></script>
 <script type="text/javascript" src="/nui/assets/script/config.js?v=9bb2fb0"></script>
     
     <script type="text/javascript">

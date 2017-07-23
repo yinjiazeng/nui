@@ -34,7 +34,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                        .replace(/\/$/, '');
         },
         _getWrapper:function(container){
-            return $('<div class="wrapper"></div>').appendTo(container)
+            return $('<div class="nui-router-wrapper"></div>').appendTo(container)
         },
         _split:function(url){
             var ret = {
@@ -109,7 +109,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 delete object._isRrender;
                             }
                             var wrapper = object._wrapper || that._wrapper;
-                            wrapper.show().siblings('.wrapper').hide();
+                            wrapper.show().siblings('.nui-router-wrapper').hide();
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts)
                             }
@@ -270,7 +270,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             }
         },
         _exec:function(){
-            var that = this, opts = that.options, router = that.constructor, target = that._getTarget();
+            var that = this, opts = that.options, router = that.constructor;
             that.container = router._jquery(opts.container);
             if(opts.path && that.container){
                 that.path = router._replace(opts.path);
@@ -289,7 +289,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                         }))
                     }
                 }
-                if(target){
+                if(that._getTarget()){
                     return that._event()
                 }
             }
