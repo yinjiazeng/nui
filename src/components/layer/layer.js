@@ -137,7 +137,9 @@ Nui.define(['component', 'util'], function(component, util){
         //容器滚动时回调
         onScroll:null,
         //弹窗销毁前回调，若返回false则不能销毁
-        onBeforeDestroy:null
+        onBeforeDestroy:null,
+        //定时关闭弹窗回调
+        onTimer:null
     }
 
     return this.extend(component, {
@@ -253,14 +255,14 @@ Nui.define(['component', 'util'], function(component, util){
             }
             that._setTop();
             that.element = $(that._tpl2html('layout', data)).appendTo(that._container);
-            that._box = that.element.children('.layer-box');
-			that._head = that._box.children('.layer-head');
-			that._body = that._box.children('.layer-body');
-			that._main = that._body.children('.layer-main');
-			that._foot = that._box.children('.layer-foot');
+            that.box = that.element.children('.layer-box');
+			that.head = that.box.children('.layer-head');
+			that.body = that.box.children('.layer-body');
+			that.main = that.body.children('.layer-main');
+			that.foot = that.box.children('.layer-foot');
             if(opts.isTips !== true){
                 if(opts.iframe.enable === true){
-                    that._iframe = that._main.children('iframe');
+                    that._iframe = that.main.children('iframe');
                     that._iframeOnload()
                 }
                 if(opts.isMove === true && isTitle){
@@ -380,7 +382,7 @@ Nui.define(['component', 'util'], function(component, util){
                 that._on('click', that.element, '.layer-button-'+val.id, function(e, elem){
                     if(!elem.hasClass('nui-button-disabled')){
                         var id = val.id, callback = val.callback;
-                        var isCall = typeof callback === 'function' ? callback.call(that, that._main, that.__id, elem) : null;
+                        var isCall = typeof callback === 'function' ? callback.call(that, that.main, that.__id, elem) : null;
                         if((id === 'confirm' && isCall === true) || (id !== 'confirm' && isCall !== false)){
                             that.destroy()
                         }
@@ -397,7 +399,7 @@ Nui.define(['component', 'util'], function(component, util){
         _bindMove:function(){
             var that = this, opts = that.options, element = that.element;
             var self = that.constructor, elem = element, isMove = false, x, y, _x, _y;
-            that._on('mousedown', that._head, function(e, ele){
+            that._on('mousedown', that.head, function(e, ele){
                 isMove = true;
                 that._setzIndex();
                 if(opts.isMoveMask === true){
@@ -441,14 +443,14 @@ Nui.define(['component', 'util'], function(component, util){
             that._on('mouseup', Nui.doc, function(e){
                 if(isMove){
                     isMove = false;
-                    that._head.css('cursor','default');
+                    that.head.css('cursor','default');
                     if(opts.isMoveMask === true){
                         element.css(that.data);
                         that._moveMask.remove();
                         that._moveMask = null;
                     }
                     if(typeof opts.onMove === 'function'){
-                        opts.onMove.call(that, that._main, that.__id)
+                        opts.onMove.call(that, that.main, that.__id)
                     }
                     that.data.offsetTop = that.data.top - that._window.scrollTop();
                     that.data.offsetLeft = that.data.left - that._window.scrollLeft();
@@ -464,7 +466,7 @@ Nui.define(['component', 'util'], function(component, util){
                 that.data.left = left;
                 that.element.css(that.data);
                 if(typeof opts.onScroll === 'function'){
-                    opts.onScroll.call(that, that._main, that.__id)
+                    opts.onScroll.call(that, that.main, that.__id)
                 }
             })
         },
@@ -589,15 +591,15 @@ Nui.define(['component', 'util'], function(component, util){
             var wWidth = that._window.outerWidth() - edge;
             var wHeight = that._window.outerHeight() - edge;
 
-            that._body.css({height:'auto', overflow:'visible'});
+            that.body.css({height:'auto', overflow:'visible'});
             element.css({top:'auto', left:'auto', width:'auto', height:'auto'});
             
-            var edgeSize = self._getSize(that._box, 'tb', 'all') +
-                that._head.outerHeight() + 
-                self._getSize(that._head, 'tb', 'margin') + 
-                self._getSize(that._body, 'tb', 'all') + 
-                that._foot.outerHeight() + 
-                self._getSize(that._foot, 'tb', 'margin');
+            var edgeSize = self._getSize(that.box, 'tb', 'all') +
+                that.head.outerHeight() + 
+                self._getSize(that.head, 'tb', 'margin') + 
+                self._getSize(that.body, 'tb', 'all') + 
+                that.foot.outerHeight() + 
+                self._getSize(that.foot, 'tb', 'margin');
 
             var width = element.outerWidth();
             if(opts.isFull !== true){
@@ -621,7 +623,7 @@ Nui.define(['component', 'util'], function(component, util){
             }
 
             that.data.width = width - self._getSize(element, 'lr', 'all');
-            that._main.css('white-space', ws);
+            that.main.css('white-space', ws);
             element.width(that.data.width);
 
             var height = element.outerHeight();
@@ -650,13 +652,13 @@ Nui.define(['component', 'util'], function(component, util){
             that.data.height = height - self._getSize(element, 'tb', 'all');
             element.height(that.data.height);
             var _height = that.data.height - edgeSize;
-            if(that._main.outerHeight() > _height && !that._iframe && opts.scrollbar === true){
-                that._body.css('overflow', 'auto')
+            if(that.main.outerHeight() > _height && !that._iframe && opts.scrollbar === true){
+                that.body.css('overflow', 'auto')
             }
             if(that._iframe){
                 that._iframe.height(_height);
             }
-            that._body.height(_height)
+            that.body.height(_height)
         },
         _showMask:function(){
             var that = this, self = that.constructor, opts = that.options;
@@ -681,26 +683,40 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _show:function(){
             var that = this, opts = that.options;
-            component('init', that._main);
+            component('init', that.main);
             that._resize('init');
             that._setLower();
             if(opts.isMask === true){
                 that._showMask()
             }
             if(opts.timer > 0){
-                that._timer = setTimeout(function(){
-                    that.hide();
-                }, opts.timer);
+                that.timer = opts.timer;
+                that._timer();
             }
             if(typeof opts.onInit === 'function'){
-                opts.onInit.call(this, that._main, that.__id)
+                opts.onInit.call(that, that.main, that.__id)
             }
             return that
+        },
+        _timer:function(){
+            var that = this, opts = that.options;
+            if(that.timer > 0){
+                if(typeof opts.onTimer === 'function'){
+                    opts.onTimer.call(that, that.main, that.timer, that.__id)
+                }
+                that._timerid = setTimeout(function(){
+                    that.timer -= 1000;
+                    that._timer();
+                }, that.timer > 1000 ? 1000 : that.timer)
+            }
+            else{
+                that.hide()
+            }
         },
         _reset:function(){
             var that = this, self = that.constructor, noMask = true;
             component.exports._reset.call(this);
-            component('destroy', that._main);
+            component('destroy', that.main);
             Nui.each(self.__instances, function(val){
                 if(val && val.options.isMask === true && val !== that && val._containerDOM === that._containerDOM){
                     return (noMask = false);
@@ -711,14 +727,15 @@ Nui.define(['component', 'util'], function(component, util){
                 that._containerDOM.__layermask__  = null;
             }
             if(that.options.timer > 0){
-                clearTimeout(that._timer);
+                that.timer = 0;
+                clearTimeout(that._timerid);
             }
         },
         resize:function(){
             var that = this, opts = that.options, element = that.element;
             that._resize();
             if(typeof opts.onResize === 'function'){
-                opts.onResize.call(this, that._main, that.__id)
+                opts.onResize.call(this, that.main, that.__id)
             }
             return that
         },
@@ -730,7 +747,7 @@ Nui.define(['component', 'util'], function(component, util){
         destroy:function(){
             var that = this, self = that.constructor, opts = that.options;
             if(typeof opts.onBeforeDestroy === 'function' && 
-                opts.onBeforeDestroy.call(this, that._main, that.__id) === false){
+                opts.onBeforeDestroy.call(this, that.main, that.__id) === false){
                 return
             }
             that._delete();
@@ -741,7 +758,7 @@ Nui.define(['component', 'util'], function(component, util){
                 that._isdestroy = true;
             }
             if(typeof opts.onDestroy === 'function'){
-                opts.onDestroy.call(this, that._main, that.__id)
+                opts.onDestroy.call(this, that.main, that.__id)
             }
         }
     })

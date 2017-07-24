@@ -1,4 +1,4 @@
-Nui.define(['{cpns}/router'], function(router){
+Nui.define(['{com}/router'], function(router){
     
 	router({
 		target:'#home',

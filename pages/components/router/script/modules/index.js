@@ -1,7 +1,7 @@
 Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
     var module = this;
-    var router = module.require('{cpns}/router');
-    var layer = module.require('{cpns}/layer/layerExt');
+    var router = module.require('{com}/router');
+    var layer = module.require('{com}/layer/layerExt');
     module.imports('../../style/index');
 
     return {

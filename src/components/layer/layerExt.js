@@ -17,6 +17,7 @@ Nui.define(['./layer'], function(layer){
         }
         return layer($.extend({
             content:'<div style="padding:10px; line-height:20px;">'+(content||'')+'</div>',
+            title:title,
             width:width,
             height:height,
             cancel:{
@@ -34,6 +35,7 @@ Nui.define(['./layer'], function(layer){
         }
         return layer($.extend(true, {
             content:'<div style="padding:10px; line-height:20px;">'+(content||'')+'</div>',
+            title:title,
             width:width,
             height:height,
             align:'right',
@@ -55,6 +57,7 @@ Nui.define(['./layer'], function(layer){
                 enable:true,
                 src:src
             },
+            title:title,
             width:width,
             height:height,
             cancel:{

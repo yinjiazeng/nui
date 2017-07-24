@@ -1,4 +1,4 @@
-Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascript', '{cpns}/placeholder'], function(component, tmpl, tpl, js, ph){
+Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascript', '{com}/placeholder'], function(component, tmpl, tpl, js, ph){
     var module = this;
     return {
         target:'#recordVoucher',
