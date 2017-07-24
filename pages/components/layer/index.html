@@ -109,14 +109,14 @@ Nui.define(['../src/components/layer'], function(layer){
 			<div class="e-mt15 f-lh22">
 				<p>类型：{String}</p>
 				<p>默认值：''</p>
-				<p>说明：标识符名称</p>
+				<p>说明：标识符名称，弹出层最外层元素会增加layer-标识符名称的类名，</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> skin</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{String}</p>
 				<p>默认值：''</p>
-				<p>说明：皮肤名称</p>
+				<p>说明：皮肤名称，弹出层最外层元素会增加nui-layer-皮肤名称的类名</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> timer</h3>
@@ -302,7 +302,32 @@ Nui.define(['../src/components/layer'], function(layer){
 				<p>属性：left {Number, String} 0 距离容器左侧距离</p>
 				<p>说明：弹出层定位，top/bottom或者left/right不可同时设置，只能设置top/left、top/right...以此类推。属性值中可使用运算符计算距离，其中self表示定位方向弹窗大小，例如top中的self表示弹出层自身高度，left中的self表示弹出层自身宽度。</p>
 			</div>
-
+<script type="text/highlight" data-javascript-options>
+layer({
+	content:renders({
+		<div style="padding:15px 20px; line-height:20px;">
+			<p>消息标题1</p>
+			<p>消息标题2</p>
+			<p>消息标题3</p>
+		</div>
+	}),
+	title:'系统消息',
+	width:280,
+	isMask:false,
+	cancel:{
+		enable:false
+	},
+	position:{
+		bottom:'self*-1',
+		right:0
+	},
+	onInit:function(){
+		this.options.position.bottom = 0;
+		this.element.animate({top:this.data.top - this.data.outerHeight})
+	}
+})
+</script>
+			<button class="ui-button e-mt10 j-position">右下角弹出</button>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> under</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Array, Layer Object}</p>
@@ -376,46 +401,7 @@ Nui.define(['../src/components/layer'], function(layer){
 			</div>
 
 			<div class="e-mt15 f-lh22 f-cred">
-				<p>说明：选项参数函数中this指向当前layer实例</p>
-			</div>
-
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> config</h3>
-			<div class="e-mt15 f-lh22">
-				<p>参数：</p>
-				<p>参数：</p>
-				<p>说明：全局设置默认选项参数</p>
-			</div>
-
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> option</h3>
-			<div class="e-mt15 f-lh22">
-				<p>参数：</p>
-				<p>参数：</p>
-				<p>说明：全局设置或者指定实例的选项参数</p>
-			</div>
-
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> reset</h3>
-			<div class="e-mt15 f-lh22">
-				<p>参数：</p>
-				<p>说明：还原全部或者指定实例为初始化时状态</p>
-			</div>
-
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> resize</h3>
-			<div class="e-mt15 f-lh22">
-				<p>参数：</p>
-				<p>说明：改变全部或者指定实例大小位置为正常状态</p>
-			</div>
-
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> hide</h3>
-			<div class="e-mt15 f-lh22">
-				<p>参数：</p>
-				<p>说明：销毁全部或者指定实例，所实例选项参数中的isHide为false，则无法销毁</p>
-			</div>
-
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> destroy</h3>
-			<div class="e-mt15 f-lh22">
-				<p>参数：</p>
-				<p>说明：销毁全部或者指定实例</p>
+				<p>选项参数函数中this指向当前layer实例</p>
 			</div>
 
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例属性与方法</h2>
@@ -457,11 +443,81 @@ Nui.define(['../src/components/layer'], function(layer){
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> option</h3>
 			<div class="e-mt15 f-lh22">
-				<p>参数：</p>
-				<p>参数：</p>
+				<p>类型：{Function}</p>
+				<p>参数：option {String, Object} 选项参数集合或者参数名</p>
+				<p>参数：value {Anything} 参数值，option为string类型时才会使用</p>
 				<p>说明：设置选项参数</p>
 			</div>
 
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> reset</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>说明：将实例还原为初始状态</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> resize</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>说明：改变实例大小位置为正常状态</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> hide</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>说明：销毁实例，当实例选项参数中的isHide为false，则无法销毁</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> destroy</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>说明：销毁实例</p>
+			</div>
+
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> config</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：option {String, Object} 选项参数集合或者参数名</p>
+				<p>参数：value {Anything} 参数值，option为string类型时才会使用</p>
+				<p>说明：全局设置默认选项参数，需在调用组件前设置方可生效</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> option</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：option {String, Object} 选项参数集合或者参数名</p>
+				<p>参数：value {Anything} 参数值，option为string类型时才会使用</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：设置选项参数，不传id则对所有实例操作</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> reset</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：将实例还原为初始状态，不传id则对所有实例操作</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> resize</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：改变实例大小位置为正常状态，不传id则对所有实例操作</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> hide</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：销毁实例，当实例选项参数中的isHide为false，则无法销毁，不传id则对所有实例操作</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> destroy</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：销毁实例，不传id则对所有实例操作</p>
+			</div>
 		</div>	
 	</div>
 	
@@ -591,8 +647,8 @@ Nui.define(['../src/components/layer'], function(layer){
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=9af6dbf"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=e3ec2b9"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=f7730dd"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=3c4e289"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){
@@ -602,7 +658,7 @@ Nui.define(['../src/components/layer'], function(layer){
     
     <script type="text/javascript">
     
-Nui.load("./script/page-min")
+Nui.load('./script/page-min')
 
     </script>
 </body>

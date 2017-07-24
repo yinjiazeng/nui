@@ -187,12 +187,12 @@
                     this.init(Nui.doc)
                 }
             },
-            config:function(key, value){
-                if(Nui.type(key, 'Object')){
-                    jQuery.extend(true, this._options, key)
+            config:function(option, value){
+                if(jQuery.isPlainObject(option)){
+                    jQuery.extend(true, this._options, option)
                 }
-                else if(Nui.type(key, 'String')){
-                    this._options[key] = value
+                else if(option && Nui.type(option, 'String')){
+                    this._options[option] = value
                 }
             }
         }
@@ -355,16 +355,19 @@
                 }
                 return tpl.render.call(this._template, this._template[id], data, opts)
             },
-            option:function(name, value){
-                this._reset();
-                if(name || value){
-                    if(jQuery.isPlainObject(name)){
-                        this.options = jQuery.extend(true, this.options, name)
-                    }
-                    else{
-                        this.options[name] = value
-                    }
-                    this._exec()
+            option:function(option, value){
+                var flag = false;
+                if(jQuery.isPlainObject(option)){
+                    jQuery.extend(true, this.options, option);
+                    flag = true
+                }
+                else if(option && typeof option === 'string'){
+                    this.options[option] = value;
+                    flag = true
+                }
+                if(flag){
+                    this._reset();
+                    this._exec();
                 }
                 return this
             },

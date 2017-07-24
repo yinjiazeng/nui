@@ -294,8 +294,16 @@ router({
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> config</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：option {String, Object} 选项参数集合或者参数名</p>
+				<p>参数：value {Anything} 参数值，option为string类型时才会使用</p>
+				<p>说明：全局设置默认选项参数，需在调用组件前设置方可生效</p>
+			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> start</h3>
 			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
 				<p>说明：初始化了路由跳转到主入口页面</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
@@ -314,6 +322,7 @@ router.start()
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> location</h3>
 			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
 				<p>参数：url {String} 跳转地址</p>
 				<p>参数：data {Anything} 跳转传递数据，跳转后的页面通过onData函数可接收</p>
 				<p>参数：render {Boolean} 是否重新渲染目标页面</p>
@@ -324,6 +333,7 @@ router.location('/index/', {});
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> forward</h3>
 			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
 				<p>参数：index {Number} 要访问的url在历史记录的位置</p>
 				<p>说明：前进，等同history.forward，可无需手动调用该方法，在元素添加类属性nui-router-forward即可</p>
 			</div>
@@ -336,6 +346,7 @@ selector.on('click', function(){
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> back</h3>
 			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
 				<p>参数：index {Number} 要访问的url在历史记录的位置</p>
 				<p>说明：返回，等同history.back，可无需手动调用该方法，在元素添加类属性nui-router-back即可</p>
 			</div>
@@ -479,8 +490,8 @@ selector.on('click', function(){
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=9af6dbf"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=e8107f7"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=f7730dd"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=3c4e289"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){
