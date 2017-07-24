@@ -604,11 +604,11 @@ Nui.define(['component', 'util'], function(component, util){
                 if(opts.width > 0){
                     width = opts.width
                 }
+                else if(opts.width === '100%' || (opts.scrollbar === true && width > wWidth)){
+                    width = wWidth;
+                }
                 if(opts.maxWidth > 0 && width >= opts.maxWidth){
                     width = opts.maxWidth
-                }
-                if(opts.scrollbar === true && width > wWidth){
-                    width = wWidth
                 }
             }
             else{
@@ -631,14 +631,14 @@ Nui.define(['component', 'util'], function(component, util){
             }
 
             if(opts.isFull !== true){
-                height = opts.height > 0 ? opts.height : height;
+                if(opts.height > 0){
+                    height = opts.height
+                }
+                else if(opts.height === '100%' || ((opts.scrollbar === true || that._iframeDocument) && height > wHeight)){
+                    height = wHeight
+                }
                 if(opts.maxHeight > 0 && height >= opts.maxHeight){
                     height = opts.maxHeight
-                }
-                if(opts.scrollbar === true || that._iframeDocument){
-                    if(height > wHeight){
-                        height = wHeight
-                    }
                 }
             }
             else{
@@ -681,7 +681,7 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _show:function(){
             var that = this, opts = that.options;
-            component.init(that._main);
+            component('init', that._main);
             that._resize('init');
             that._setLower();
             if(opts.isMask === true){
@@ -700,7 +700,7 @@ Nui.define(['component', 'util'], function(component, util){
         _reset:function(){
             var that = this, self = that.constructor, noMask = true;
             component.exports._reset.call(this);
-            component.destroy(that._main);
+            component('destroy', that._main);
             Nui.each(self.__instances, function(val){
                 if(val && val.options.isMask === true && val !== that && val._containerDOM === that._containerDOM){
                     return (noMask = false);
