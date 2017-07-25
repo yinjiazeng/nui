@@ -102,8 +102,8 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                         wrapper.html(template.render.call(tmpl, tmpl.layout, opts.data));
                                     }
                                 }
-                                if(typeof opts.onAfter === 'function'){
-                                    opts.onChange.call(opts);
+                                if(typeof opts.onInit === 'function'){
+                                    opts.onInit.call(opts);
                                 }
                                 events.call(opts);
                                 component.init(wrapper);
@@ -259,7 +259,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             wrapper:false,
             level:1,
             onBefore:null,
-            onChange:null,
+            onInit:null,
             onAfter:null,
             onData:null
         },
@@ -345,6 +345,8 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                 }
             })
             return that
-        }
+        },
+        option:null,
+        reset:null
     })
 })

@@ -650,7 +650,7 @@
                 _eventList:[]
             });
             that.options = extend(true, {}, that.options, Class._options, options||{})
-            that._defaults = extend(that.options);
+            that._defaultOptions = extend(that.options);
             Class.__instances[that.__id] = that;
             that._init()
         }
@@ -1867,7 +1867,7 @@ Nui.define('events', function(){
                 return this
             },
             reset:function(){
-                this.option(this._defaults);
+                this.option(this._defaultOptions);
                 if(typeof this.options.onReset === 'function'){
                     this.options.onReset.call(this)
                 }

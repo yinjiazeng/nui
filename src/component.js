@@ -372,7 +372,7 @@
                 return this
             },
             reset:function(){
-                this.option(this._defaults);
+                this.option(this._defaultOptions);
                 if(typeof this.options.onReset === 'function'){
                     this.options.onReset.call(this)
                 }

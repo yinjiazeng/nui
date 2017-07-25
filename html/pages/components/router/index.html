@@ -57,7 +57,7 @@ Nui.define(['../src/components/router'], function(router){
 				<p>类型：{String}</p>
 				<p>默认值：null</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：路径匹配规则，冒号为动态参数名，url匹配上该规则才会触发onChange回调</p>
+				<p>说明：路径匹配规则，冒号为动态参数名，url匹配上该规则才会触发onInit回调</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -136,7 +136,7 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Boolean}</p>
 				<p>默认值：false</p>
-				<p>说明：值为false时，所有设置该值的路由实例都将共享一个容器，每次加载都会触发onChange；当值为true是，实例会独享一个容器，仅在第一次加载时时会触发onChange。</p>
+				<p>说明：值为false时，所有设置该值的路由实例都将共享一个容器，每次加载都会触发onInit；当值为true是，实例会独享一个容器，仅在第一次加载时时会触发onInit。</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -173,7 +173,7 @@ router({
 	}
 })
 </script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onChange</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onInit</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>默认值：null</p>
@@ -183,7 +183,7 @@ router({
 <script type="text/highlight" data-javascript-options>
 router({
 	path:'/news/:type/:id',
-	onChange:function(){
+	onInit:function(){
 		if(data.param.type === '1'){
 			this.element.html(data.cache || '<div>.....</div>')
 		}
@@ -197,12 +197,12 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>默认值：null</p>
-				<p>说明：路由地址改变后触发</p>
+				<p>说明：路由地址改变后触发，在onInit后执行</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
 	path:'/news/:type/:id',
-	onChange:function(){
+	onInit:function(){
 		//渲染操作
 	},
 	onAfter:function(){
@@ -235,7 +235,7 @@ router({
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
-	onChange:function(){
+	onInit:function(){
 		this.element.find('select').hide();
 		this.show()
 	},
@@ -322,6 +322,12 @@ selector.on('click', function(){
 
 <a class="nui-router-back">后退</a>
 </script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> destroy</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：销毁实例，不传id则对所有实例操作</p>
+			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">案例</h2>
 			<p class="e-mt15 f-lh22">
 				<a href="./cloud.html" target="_blank" class="f-corange f-tdu">诺诺云记账单页版</a>

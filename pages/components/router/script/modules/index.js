@@ -33,8 +33,8 @@ Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
                 events.call(recordVoucher)
             }
         },
-        onChange:function(){
-            console.log(this.data)
+        onInit:function(){
+            
         }
     }
 })

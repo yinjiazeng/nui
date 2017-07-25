@@ -11,7 +11,7 @@ Nui.define(['{com}/router'], function(router){
             }
         })
 
-        router(module.require('./modules/index'))
+        router(module.require('./modules/index'));
 
         router(module.require('./modules/recordVoucher'))
 
