@@ -1,23 +1,31 @@
 Nui.define('events', function(){
     return function(opts){
         var that = opts || this,
-            elem = that.element, 
-            maps = that.mapping, 
-            calls = that.callback || {};
-        if(!elem || !maps){
+            self = that.constructor,
+            isComponent = self && self.__component_name,
+            elem = that.element || Nui.doc, 
+            events = isComponent ? that._events : that.events;
+            
+        if(!elem || !events){
             return that
         }
+
+        if(typeof events === 'function'){
+            events = events.call(that)
+        }
+
         if(!(elem instanceof jQuery)){
             elem = jQuery(elem)
         }
-        var evt, ele, self = that.constructor, ret;
+
+        var evt, ele, ret;
         var callback = function(e, elem, cbs){
             if(typeof cbs === 'function'){
                 cbs.call(that, e, elem);
             }
             else{
                 Nui.each(cbs, function(cb, i){
-                    cb = calls[cb];
+                    cb = that[cb];
                     if(typeof cb === 'function'){
                         return ret = cb.call(that, e, elem, ret);
                     }
@@ -25,7 +33,7 @@ Nui.define('events', function(){
             }
         }
 
-        Nui.each(maps, function(cbs, evts){
+        Nui.each(events, function(cbs, evts){
             if(cbs && (typeof cbs === 'string' || typeof cbs === 'function')){
                 if(typeof cbs === 'string'){
                     cbs = Nui.trim(cbs).split(/\s+/);
@@ -35,7 +43,7 @@ Nui.define('events', function(){
                 evt = evts.shift().replace(/:/g, ' ');
                 ele = evts.join(' ');
                 //组件内部处理
-                if(self && self.__component_name){
+                if(isComponent){
                     that._on(evt, elem, ele, function(e){
                         callback(e, $(this), cbs)
                     })

@@ -205,6 +205,10 @@
         return '_module_'+mid
     }
 
+    var replaceSuffix = function(str){
+        return str.replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '')
+    }
+
     var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
 
     var support = 'onload' in document.createElement('script');
@@ -223,6 +227,7 @@
 
     var config = {
         skin:null,
+        min:true,
         paths:{},
         alias:{},
         maps:{}
@@ -690,7 +695,7 @@
     Module.getAttrs = function(id, uri){
         // xxx.js?v=1.1.1 => xxx
         // xxx.css?v=1.1.1 => xxx
-        var name = id.replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '');
+        var name = replaceSuffix(id);
         var match = name.match(/-min$/g);
         var suffix = '';
         var dirid;
@@ -716,15 +721,22 @@
     Module.load = function(id, callback, _module_){
         if(Nui.type(id, 'String') && Nui.trim(id)){
             //截取入口文件参数，依赖的文件加载时都会带上该参数
-            var match = id.match(/(\?[\s\S]+)$/);
+            var match = id.match(/(\?[\s\S]*)$/);
+
+            if(config.min === true){
+                id = replaceSuffix(id);
+                if(!/-min$/.test(id)){
+                    id += '-min'
+                }
+            }
+
             var mod = Module.getModule(_module_, [id]);
 
             if(match){
                 mod.version = match[0]
             }
-            
             var depname = mod.alldeps[0];
-            var version = config.maps[depname.replace(/-min$/, '')]||'';
+            var version = config.maps[depname.replace(/(-min)?(\.js)?$/, '')];
             if(version){
                 if(!/^\?/.test(version)){
                     version = '?v='+version
@@ -1424,23 +1436,31 @@ Nui.define('template', ['util'], function(util){
 Nui.define('events', function(){
     return function(opts){
         var that = opts || this,
-            elem = that.element, 
-            maps = that.mapping, 
-            calls = that.callback || {};
-        if(!elem || !maps){
+            self = that.constructor,
+            isComponent = self && self.__component_name,
+            elem = that.element || Nui.doc, 
+            events = isComponent ? that._events : that.events;
+            
+        if(!elem || !events){
             return that
         }
+
+        if(typeof events === 'function'){
+            events = events.call(that)
+        }
+
         if(!(elem instanceof jQuery)){
             elem = jQuery(elem)
         }
-        var evt, ele, self = that.constructor, ret;
+
+        var evt, ele, ret;
         var callback = function(e, elem, cbs){
             if(typeof cbs === 'function'){
                 cbs.call(that, e, elem);
             }
             else{
                 Nui.each(cbs, function(cb, i){
-                    cb = calls[cb];
+                    cb = that[cb];
                     if(typeof cb === 'function'){
                         return ret = cb.call(that, e, elem, ret);
                     }
@@ -1448,7 +1468,7 @@ Nui.define('events', function(){
             }
         }
 
-        Nui.each(maps, function(cbs, evts){
+        Nui.each(events, function(cbs, evts){
             if(cbs && (typeof cbs === 'string' || typeof cbs === 'function')){
                 if(typeof cbs === 'string'){
                     cbs = Nui.trim(cbs).split(/\s+/);
@@ -1458,7 +1478,7 @@ Nui.define('events', function(){
                 evt = evts.shift().replace(/:/g, ' ');
                 ele = evts.join(' ');
                 //组件内部处理
-                if(self && self.__component_name){
+                if(isComponent){
                     that._on(evt, elem, ele, function(e){
                         callback(e, $(this), cbs)
                     })

@@ -10,29 +10,27 @@ Nui.define(['component', '../tpls/recordVoucher', 'template', '{light}/javascrip
         onData:function(data){
             this.data.a = data.a;
         },
-        mapping:{
+        events:{
             //'click b':'b',
             'click .empty':'empty',
             'click a':'c a'
         },
-        callback:{
-            a:function(){
-                var that = this;
-                component.destroy(that.element);
-                setTimeout(function(){
-                    js.init(that.element)
-                    ph.init(that.element)
-                }, 1000)
-            },
-            b:function(){
-                //alert()
-            },
-            c:function(){
-                //return confirm('哈哈')
-            },
-            empty:function(){
-                ph.value(this.element, '');
-            }
+        a:function(){
+            var that = this;
+            component.destroy(that.element);
+            setTimeout(function(){
+                js.init(that.element)
+                ph.init(that.element)
+            }, 1000)
+        },
+        b:function(){
+            //alert()
+        },
+        c:function(){
+            //return confirm('哈哈')
+        },
+        empty:function(){
+            ph.value(this.element, '');
         }
     }
 })

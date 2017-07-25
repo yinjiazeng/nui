@@ -113,6 +113,16 @@ Nui.define(function(){
                 +'<em class="title"><%title%></em>'
                 +'<%/if%>'
             +'</div>',
+        _events:{
+            'click tr':function(e, elem){
+                this.constructor._active = this._active = true;
+                elem.addClass('s-crt').siblings().removeClass('s-crt');
+                e.stopPropagation()
+            },
+            'click .copy':function(){
+                alert('傻帽！逗你玩呢。')
+            }
+        },
         _create:function(){
             var that = this;
             var opts = that.options;
@@ -131,20 +141,6 @@ Nui.define(function(){
         },
         _list:function(){
             return this._getCode().split('\n')
-        },
-        mapping:{
-            'click tr':'active',
-            'click .copy':'copy'
-        },
-        callback:{
-            active:function(e, elem){
-                this.constructor._active = this._active = true;
-                elem.addClass('s-crt').siblings().removeClass('s-crt');
-                e.stopPropagation()
-            },
-            copy:function(){
-                alert('傻帽！逗你玩呢。')
-            }
         }
     })
 })

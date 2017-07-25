@@ -12,10 +12,7 @@ Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
         data:{
             menu:menu
         },
-        onChange:function(){
-            console.log(this.data)
-        },
-        mapping:{
+        events:{
             'click a':function(e, elem){
                 router.location(elem.attr('rel'), {
                     a:1
@@ -35,6 +32,9 @@ Nui.define(['../tpls/index', 'template', '../menu'], function(tmpl, tpl, menu){
                 recordVoucher.element = _layer._main; 
                 events.call(recordVoucher)
             }
+        },
+        onChange:function(){
+            console.log(this.data)
         }
     }
 })

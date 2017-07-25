@@ -12,10 +12,10 @@
 {% block content %}
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28">事件映射</h1>
+			<h1 class="e-pt20 e-pb20 f-fs28">代理事件</h1>
 			<div class="e-mt15 f-lh22">
 				<p>传统事件回调绑定只能是一对一或者多对一，所有业务都在一个回调中处理，当功能复杂时可能导致代码冗余、可读性差，最终导致代码难以维护。</p>
-				<p>事件映射模块允许事件与回调进行一对多或者多对多绑定，可将重复性的功能提取出来单独作为一个回调，从而提升代码可读性与复用率。</p>
+				<p>代理事件模块允许事件与回调进行一对多或者多对多绑定，可将重复性的功能提取出来单独作为一个回调，从而提升代码可读性与复用率。</p>
 			</div>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb">使用方法</h2>
 			<p class="e-mt15 f-lh22">使用前需先作为依赖引入</p>
@@ -28,75 +28,111 @@ Nui.define(['events'], function(events){
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> element</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Selector, jQuery Object}</p>
+				<p>默认值：document</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：设置委托对象，模块内部通过事件委托给元素绑定事件</p>
+				<p>说明：设置代理对象，模块内部通过事件代理给元素绑定事件</p>
 			</div>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> mapping</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> events</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Object}</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：设置事件映射，多事件用冒号分隔；事件与触发事件选择器用空格分隔，若想element自身触发事件，那么无需设置选择器；回调可以为字符串也可以是函数，当为字符串时，可设置多个回调用空格分隔</p>
+				<p>说明：设置事件与回调，回调可以是函数，也可以是字符串，多事件之间用冒号“:”分隔，事件与选择器之间用空格分隔，多回调用空格分隔。</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
-events({
-	element:$('body'),
-	mapping:{
-		'click':'callback',
-		'click:focus input':'callback1 callback2 .....',
-		'keyup:keydown:keypress #elem > input':function(e, elem){
+{
+	'event selector':'callback1 callback2 ...',
+	'event:event selector':'callback1 callback2 ...',
+	'event selector':function(){
 
-		}
-	}
-})
-</script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> callback</h3>
-			<div class="e-mt15 f-lh22">
-				<p>类型：{Object}</p>
-				<p>说明：设置事件回调，回调接收三个参数，若回调中return false则不会触发后续的回调，回调中this指向events模块本身，而不是jQuery事件回调中的DOM元素。</p>
-				<p style="text-indent:3em;">event {Event}</p>
-				<p style="text-indent:3em;">elem {jQuery Object} 触发事件元素</p>
-				<p style="text-indent:3em;">data {Anything} 前一个回调传递的数据</p>
-			</div>
-<script type="text/highlight" data-javascript-options>
-events({
-	element:document,
-	mapping:{
-		'click button1':'disabled checked update',
-		'click button2':'disabled checked delete',
 	},
-	callback:{
-		'disabled':function(e, elem){
-			if(elem.hasClass('disabled')){
-				return false
-			}
-		},
-		'checked':function(e, elem){
-			var elems = $(':checked'), arr = [];
-			if(!elems.length){
-				return false
-			}
-			elems.each(function(){
-				arr.push($(this).val())
-			})
-			return {
-				ids:arr.join(',')
-			}
-		},
-		'update':function(e, elem, data){
-			$.post(url, data, function(){
+	'event:event selector':function(){
 
-			})
-		},
-		'delete':function(e, elem, data){
-			$.post(url, data, function(){
-
-			})
-		}
 	}
+}
+</script>
+			<h2 class="e-pt20 e-pb10 f-fs22 f-bb">案例</h2>
+			<ul id="data" class="e-mt10 e-mb10"></ul>
+			<button class="ui-button j-add e-mr10">新增</button>
+			<button class="ui-button j-del e-mr10">删除</button>
+			<button class="ui-button j-update e-mr10">修改</button>
+<script type="text/highlight" data-javascript-options>
+Nui.define(['template', 'events', '{com}/layer/layerExt'], function(template, events, layer){
+
+    var evt = events({
+        elem:$('#data'),
+        data:['蔬菜', '水果', '苹果'],
+        template:this.renders({
+            <%each $list%>
+            <li class="e-mt5">
+                <label>
+                    <input type="checkbox" value="<%$index%>">
+                    <span><%$value%></span>
+                </label>
+            </li>
+            <%/each%>
+        }),
+        events:{
+            'click .j-add':'add render',
+            'click .j-del':'checks del remove render',
+            'click .j-update':'checks update'
+        },
+        checks:function(){
+            var arr = [], elems = this.elem.find(':checked');
+            if(!this.elem.find(':checked').length){
+                return false
+            }
+            this.elem.find(':checked').each(function(){
+                arr.push($(this).val())
+            })
+            return arr
+        },
+        render:function(){
+            this.elem.html(template.render(this.template, this.data))
+        },
+        add:function(e, elem, data){
+            this.data.push('自定义');
+        },
+        remove:function(){
+            var data = [];
+            Nui.each(this.data, function(v){
+                if(typeof v !== 'undefined'){
+                    data.push(v)
+                }
+            });
+            this.data = data;
+        },
+        del:function(e, elem, data){
+            var that = this;
+            Nui.each(data, function(v){
+                delete that.data[v]
+            });
+        },
+        update:function(e, elem, data){
+            var that = this;
+            layer.confirm('<input type="text" style="border:1px solid #ccc; width:180px; height:24px;" />', function(main){
+                var val = Nui.trim(main.find('input').val());
+                if(val){
+                    Nui.each(data, function(v){
+                        that.data[v] = val;
+                    })
+                    that.render();
+                    return true
+                }
+            }, '', 210)
+        }
+    })
+
+    evt.render()
 })
 </script>
 		</div>
 	</div>
 	{% import 'sidecol.tpl' as side %}
 	{{side.active('events')}}
+{% endblock %}
+
+{% block script %}
+Nui.load('./script/events/page', function(page){
+	
+})
 {% endblock %}

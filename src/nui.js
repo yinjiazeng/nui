@@ -205,6 +205,10 @@
         return '_module_'+mid
     }
 
+    var replaceSuffix = function(str){
+        return str.replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '')
+    }
+
     var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
 
     var support = 'onload' in document.createElement('script');
@@ -223,6 +227,7 @@
 
     var config = {
         skin:null,
+        min:true,
         paths:{},
         alias:{},
         maps:{}
@@ -690,7 +695,7 @@
     Module.getAttrs = function(id, uri){
         // xxx.js?v=1.1.1 => xxx
         // xxx.css?v=1.1.1 => xxx
-        var name = id.replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '');
+        var name = replaceSuffix(id);
         var match = name.match(/-min$/g);
         var suffix = '';
         var dirid;
@@ -716,15 +721,22 @@
     Module.load = function(id, callback, _module_){
         if(Nui.type(id, 'String') && Nui.trim(id)){
             //截取入口文件参数，依赖的文件加载时都会带上该参数
-            var match = id.match(/(\?[\s\S]+)$/);
+            var match = id.match(/(\?[\s\S]*)$/);
+
+            if(config.min === true){
+                id = replaceSuffix(id);
+                if(!/-min$/.test(id)){
+                    id += '-min'
+                }
+            }
+
             var mod = Module.getModule(_module_, [id]);
 
             if(match){
                 mod.version = match[0]
             }
-            
             var depname = mod.alldeps[0];
-            var version = config.maps[depname.replace(/-min$/, '')]||'';
+            var version = config.maps[depname.replace(/(-min)?(\.js)?$/, '')];
             if(version){
                 if(!/^\?/.test(version)){
                     version = '?v='+version
