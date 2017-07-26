@@ -683,7 +683,7 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _show:function(){
             var self = this, opts = self.options;
-            component('init', self.main);
+            component.init(self.main);
             self._resize('init');
             self._setLower();
             if(opts.isMask === true){
