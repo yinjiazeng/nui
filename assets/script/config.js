@@ -12,9 +12,6 @@ Nui.config({
     },
     "maps": {
         "{script}/base": "624466a",
-        "./script/events/page": "2d7be38",
-        "./script/template/page": "c7f3c81",
-        "./script/page": "524251d",
-        "./script/demo": "b179815"
+        "{script}/index": "1a8b999"
     }
 })
