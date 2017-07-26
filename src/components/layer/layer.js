@@ -382,7 +382,7 @@ Nui.define(['component', 'util'], function(component, util){
                 self._on('click', self.element, '.layer-button-'+val.id, function(e, button){
                     if(!button.hasClass('nui-button-disabled')){
                         var id = val.id, callback = val.callback;
-                        var isCall = typeof callback === 'function' ? callback.call(opts, self, button) : null;
+                        var isCall = typeof callback === 'function' ? callback.call(opts, e, self, button) : null;
                         if((id === 'confirm' && isCall === true) || (id !== 'confirm' && isCall !== false)){
                             self.destroy()
                         }
