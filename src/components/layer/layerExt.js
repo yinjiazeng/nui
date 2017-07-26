@@ -173,8 +173,8 @@ Nui.define(['./layer', 'util'], function(layer, util){
 
         Nui.each(btns, function(val, i){
             if(val.id === 'confirm' && !val.callback){
-                btns[i].callback = function(main){
-                    main.find('form').submit()
+                btns[i].callback = function(e, self){
+                    self.main.find('form').submit()
                 }
                 return false
             }
