@@ -718,12 +718,12 @@
         return cacheModules[attrs[1]] || cacheModules[id] || cacheModules[attrs[3]] || (cacheModules[id] = new Module(attrs, deps))
     }
 
-    Module.load = function(id, callback, _module_){
+    Module.load = function(id, callback, _module_, isMin){
         if(Nui.type(id, 'String') && Nui.trim(id)){
             //截取入口文件参数，依赖的文件加载时都会带上该参数
             var match = id.match(/(\?[\s\S]*)$/);
 
-            if(config.min === true){
+            if(config.min === true && isMin === true){
                 id = replaceSuffix(id);
                 if(!/-min$/.test(id)){
                     id += '-min'
@@ -834,7 +834,14 @@
         }
     }
 
-    Nui.load = Nui.use = function(id, callback){
+    Nui.load = function(id, callback){
+        if(id && typeof id === 'string'){
+            Module.load(id, callback, getModuleid(), true)
+        }
+        return Nui
+    }
+
+    Nui.use = function(id, callback){
         if(id && typeof id === 'string'){
             Module.load(id, callback, getModuleid())
         }
