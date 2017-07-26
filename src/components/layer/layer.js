@@ -26,8 +26,8 @@ Nui.define(['component', 'util'], function(component, util){
                 })
             })
         },
-        $fn:null,
-        $ready:null,
+        _$fn:null,
+        _$ready:null,
         init:null
     }
 

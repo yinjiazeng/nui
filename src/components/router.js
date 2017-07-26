@@ -167,6 +167,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
         },
         _$ready:null,
         _$fn:null,
+        init:null,
         start:function(){
             if(!this._initialize){
                 this._change();
