@@ -257,8 +257,8 @@ Nui.define(['component', 'util'], function(component, util){
             self.element = $(self._tpl2html('layout', data)).appendTo(self._container);
             self._box = self.element.children('.layer-box');
 			self.head = self._box.children('.layer-head');
-			self.body = self._box.children('.layer-body');
-			self.main = self.body.children('.layer-main');
+			self._body = self._box.children('.layer-body');
+			self.main = self._body.children('.layer-main');
 			self.foot = self._box.children('.layer-foot');
             if(opts.isTips !== true){
                 if(opts.iframe.enable === true){
@@ -377,12 +377,12 @@ Nui.define(['component', 'util'], function(component, util){
             return buttons
         },
         _buttonEvent:function(){
-            var self = this;
+            var self = this, opts = self.options;
             Nui.each(self._button, function(val){
-                self._on('click', self.element, '.layer-button-'+val.id, function(e, elem){
-                    if(!elem.hasClass('nui-button-disabled')){
+                self._on('click', self.element, '.layer-button-'+val.id, function(e, button){
+                    if(!button.hasClass('nui-button-disabled')){
                         var id = val.id, callback = val.callback;
-                        var isCall = typeof callback === 'function' ? callback.call(self, self.main, self.__id, elem) : null;
+                        var isCall = typeof callback === 'function' ? callback.call(opts, self, button) : null;
                         if((id === 'confirm' && isCall === true) || (id !== 'confirm' && isCall !== false)){
                             self.destroy()
                         }
@@ -591,13 +591,13 @@ Nui.define(['component', 'util'], function(component, util){
             var wWidth = self._window.outerWidth() - edge;
             var wHeight = self._window.outerHeight() - edge;
 
-            self.body.css({height:'auto', overflow:'visible'});
+            self._body.css({height:'auto', overflow:'visible'});
             element.css({top:'auto', left:'auto', width:'auto', height:'auto'});
             
             var edgeSize = _class._getSize(self._box, 'tb', 'all') +
                 self.head.outerHeight() + 
                 _class._getSize(self.head, 'tb', 'margin') + 
-                _class._getSize(self.body, 'tb', 'all') + 
+                _class._getSize(self._body, 'tb', 'all') + 
                 self.foot.outerHeight() + 
                 _class._getSize(self.foot, 'tb', 'margin');
 
@@ -653,12 +653,12 @@ Nui.define(['component', 'util'], function(component, util){
             element.height(self.data.height);
             var _height = self.data.height - edgeSize;
             if(self.main.outerHeight() > _height && !self._iframe && opts.scrollbar === true){
-                self.body.css('overflow', 'auto')
+                self._body.css('overflow', 'auto')
             }
             if(self._iframe){
                 self._iframe.height(_height);
             }
-            self.body.height(_height)
+            self._body.height(_height)
         },
         _showMask:function(){
             var self = this, _class = self.constructor, opts = self.options;
@@ -690,7 +690,7 @@ Nui.define(['component', 'util'], function(component, util){
                 self._showMask()
             }
             if(opts.timer > 0){
-                self.timer = opts.timer;
+                self._time = opts.timer;
                 self._timer();
             }
             if(typeof opts.onInit === 'function'){
@@ -700,14 +700,14 @@ Nui.define(['component', 'util'], function(component, util){
         },
         _timer:function(){
             var self = this, opts = self.options;
-            if(self.timer > 0){
+            if(self._time > 0){
                 if(typeof opts.onTimer === 'function'){
-                    opts.onTimer.call(opts, self, self.timer)
+                    opts.onTimer.call(opts, self, self._time)
                 }
                 self._timerid = setTimeout(function(){
-                    self.timer -= 1000;
+                    self._time -= 1000;
                     self._timer();
-                }, self.timer > 1000 ? 1000 : self.timer)
+                }, self._time > 1000 ? 1000 : self._time)
             }
             else{
                 self.hide()

@@ -8,10 +8,11 @@ Nui.define(['{com}/layer/layerExt', 'events'], function(layer, events){
                     content:'<p style="padding:10px; text-align:center;">hello world</p>',
                     width:280,
                     height:140,
-                    skin:'aaa',
-                    id:'aa',
                     cancel:{
-                        text:'关闭'
+                        text:'关闭',
+                        callback:function(){
+                            console.log(this)
+                        }
                     }
                 })
             },
