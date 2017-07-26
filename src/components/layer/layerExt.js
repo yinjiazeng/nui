@@ -228,7 +228,7 @@ Nui.define(['./layer', 'util'], function(layer, util){
                     submitHandler:function(){
                         var param = {};
                         if(typeof options.getData === 'function'){
-                        	param = options.getData.call(self.options, form)
+                        	param = options.getData.call(self.options, self, form)
                         }
                         else{
                             param = util.getData(form).result;
