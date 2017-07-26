@@ -71,10 +71,6 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 param[val] = query[key]
                             })
 
-                            if(typeof opts.onChange === 'function'){
-                                opts.onChange.call(opts);
-                            }
-
                             if(object._send && object._send.data && typeof opts.onData === 'function'){
                                 opts.onData.call(opts, object._send.data)
                                 delete object._send;
@@ -84,6 +80,10 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                             opts.data.url = hash+'/';
                             opts.data.params = param;
                             opts.data.query = query;
+
+                            if(typeof opts.onChange === 'function'){
+                                opts.onChange.call(opts);
+                            }
 
                             if(object._isRrender === true || !object._wrapper){
                                 if(opts.wrapper && !object._wrapper){
