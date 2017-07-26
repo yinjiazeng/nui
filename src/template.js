@@ -227,7 +227,8 @@ Nui.define('template', ['util'], function(util){
     //a.b??  a[b]??  a['b']??  a[b['c']]??
     var exists = function(code, isVal){
         return code.replace(/([\.\$\w]+\s*(\[[\'\"\[\]\w\.\$\s]+\])?)\?\?/g, function(a, b){
-            var rep = '(typeof '+ b + '!=="undefined"';
+            //IE中表单对象设置name值，当直接访问name这个变量时，会返回dom
+            var rep = '(typeof '+ b + '!=="undefined"&&typeof '+ b + '!=="object"';
             if(isVal){
                 rep += '?' + b + ':' + '""';
             }
