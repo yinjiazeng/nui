@@ -9,28 +9,28 @@ Nui.define(function(){
     return this.extend('highlight', {
         _title:'css',
         _getCode:function(){
-            var that = this;
-            var code = that.code;
-            var self = that.constructor;
+            var self = this;
+            var code = self.code;
+            var _class = self.constructor;
             var str = '';
             var match = code.match(/(\/\*(.|\s)*?\*\/)|(\{[^\{\}\/]*\})/g);
-            var array = self._getarr(match, code);
+            var array = _class._getarr(match, code);
             Nui.each(array, function(v){
                 if(Nui.trim(v)){
                     //多行注释
                     if(/^\s*\/\*/.test(v)){
-                        v = v.replace(/(.+)/g, self._getcode('comment', '$1'))
+                        v = v.replace(/(.+)/g, _class._getcode('comment', '$1'))
                     }
                     else{
                         //匹配属性
                         if(/\}\s*$/.test(v)){
-                            v = v.replace(/(\s*)([^:;\{\}\/\*]+)(:)([^:;\{\}\/\*]+)/g, '$1'+self._getcode('attr', '$2')+'$3'+self._getcode('string', '$4'))
-                                .replace(/([\:\;\{\}])/g, self._getcode('symbol', '$1'));
+                            v = v.replace(/(\s*)([^:;\{\}\/\*]+)(:)([^:;\{\}\/\*]+)/g, '$1'+_class._getcode('attr', '$2')+'$3'+_class._getcode('string', '$4'))
+                                .replace(/([\:\;\{\}])/g, _class._getcode('symbol', '$1'));
                         }
                         //选择器
                         else{
-                            v = v.replace(/([^\:\{\}\@\#\s\.]+)/g, self._getcode('selector', '$1'))
-                                .replace(/([\:\{\}\@\#\.])/g, self._getcode('symbol', '$1'));
+                            v = v.replace(/([^\:\{\}\@\#\s\.]+)/g, _class._getcode('selector', '$1'))
+                                .replace(/([\:\{\}\@\#\.])/g, _class._getcode('symbol', '$1'));
                         }
                     }
                 }

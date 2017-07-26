@@ -5,7 +5,7 @@
  * @description layer扩展
  */
 
-Nui.define(['./layer'], function(layer){
+Nui.define(['./layer', 'util'], function(layer, util){
     var module = this;
 
     layer.alert = function(content, title, width, height){
@@ -161,7 +161,6 @@ Nui.define(['./layer'], function(layer){
     layer.form = function(options){
         var onInit = options.onInit;
         delete options.onInit;
-        var validator;
         var valid = options.valid;
         var btns = $.extend([], options.button || [{
             id:'cancel',
@@ -186,7 +185,8 @@ Nui.define(['./layer'], function(layer){
             scrollbar:false,
             id:'form',
             onInit:function(main, id){
-                var that = this;
+                var self = this;
+                var main = self.main;
                 var elems = main.find('[name!=""][data-rule]');
                 var form = main.find('form');
                 var rules = {};
@@ -201,7 +201,7 @@ Nui.define(['./layer'], function(layer){
                     rules[name] = rule;
                     $.each(message, function(key, msg){
                         if(typeof options.messageFilter === 'function'){
-                            message[key] = options.messageFilter(name, msg)||''
+                            message[key] = options.messageFilter.call(self.options, name, msg)||''
                         }
                         message[key] = '<b></b><s></s><i class="iconfont">&#xe605;</i>' + message[key];
                     })
@@ -228,24 +228,15 @@ Nui.define(['./layer'], function(layer){
 					},
                     submitHandler:function(){
                         var param = {};
-                        if(options.ajax && typeof options.ajax.getData === 'function'){
-                        	param = options.ajax.getData(form)
+                        if(typeof options.getData === 'function'){
+                        	param = options.getData.call(self.options, form)
                         }
                         else{
-                        	var serialize = form.serializeArray();
-                        	$.each(serialize, function(k, v){
-                                if(!param[v.name]){
-                                    param[v.name] = [];
-                                }
-                                param[v.name].push(v.value)
-                            })
-                            for(var i in param){
-                                param[i] = param[i].join(',')
-                            }
+                            param = util.getData(form).result;
                         }
 
                         if(typeof options.onBeforeSubmit === 'function'){
-                        	param = options.onBeforeSubmit.call(that, main, id, param);
+                        	param = options.onBeforeSubmit.call(self.options, self, param);
                             if(param === false){
                                 return false
                             }
@@ -253,7 +244,7 @@ Nui.define(['./layer'], function(layer){
 
                         var loading = layer.loading({
                             content:options.loading||'正在保存数据...',
-                            under:that
+                            under:self
                         });
                         
                         $.ajax($.extend({
@@ -264,23 +255,22 @@ Nui.define(['./layer'], function(layer){
                             success:function(res, xhr){
                                 loading.hide();
                                 if(typeof options.onSuccess === 'function'){
-                                    options.onSuccess.call(that, main, id, res, xhr)
+                                    options.onSuccess.call(self.options, self, res, xhr)
                                 }
                             },
                             error:function(xhr){
                                 loading.hide();
                                 if(typeof options.onError === 'function'){
-                                    options.onError.call(that, main, id, xhr)
+                                    options.onError.call(self.options, self, xhr)
                                 }
                             }
                         }, options.ajax||{}), null)
                     }
                 }
-                validator = form.validate($.extend(true, opts, setting||{}, valid||{}))
-                typeof onInit === 'function' && onInit.call(that, main, id, validator)
+                self.validator = form.validate($.extend(true, opts, setting||{}, valid||{}));
+                typeof onInit === 'function' && onInit.call(self.options, self)
             }
         }, options||{}))
-        formLayer.validator = validator;
         return formLayer
     }
 

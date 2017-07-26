@@ -9,11 +9,11 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
     var statics = {
         _paths:{},
         _init:function(){
-            var that = this;
+            var self = this;
             Nui.doc.on('click', '.nui-router-back', function(){
-                return that.back()
+                return self.back()
             }).on('click', '.nui-router-forward', function(){
-                return that.forward()
+                return self.forward()
             })
         },
         _setpaths:function(rule, paths){
@@ -54,13 +54,13 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             return ret;
         },
         _change:function(){
-            var that = this;
-            if(!$.isEmptyObject(that._paths)){
-                var _hash = location.hash, ret = this._split(_hash), hash = that._replace(ret.url), query = ret.params;
-                Nui.each(that._paths, function(v){
+            var self = this;
+            if(!$.isEmptyObject(self._paths)){
+                var _hash = location.hash, ret = this._split(_hash), hash = self._replace(ret.url), query = ret.params;
+                Nui.each(self._paths, function(v){
                     if(hash === v.path || hash.indexOf(v.path) === 0){
                         var params = hash.replace(v.path, '').replace(/^\//, '');
-                        var object = that.__instances[v.id], opts = object.options, param = {};
+                        var object = self.__instances[v.id], opts = object.options, param = {};
                         params = params ? params.split('/') : [];
                         if(params.length === v.params.length){
                             Nui.each(v.params, function(val, key){
@@ -83,15 +83,15 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
 
                             if(object._isRrender === true || !object._wrapper){
                                 if(opts.wrapper && !object._wrapper){
-                                    object._wrapper = that._getWrapper(object.container)
+                                    object._wrapper = self._getWrapper(object.container)
                                 }
-                                else if(!that._wrapper){
-                                    that._wrapper = that._getWrapper(object.container)
+                                else if(!self._wrapper){
+                                    self._wrapper = self._getWrapper(object.container)
                                 }
                                 if(object._isRrender || !object._wrapper){
-                                    component.destroy((object._wrapper||that._wrapper).off());
+                                    component.destroy((object._wrapper||self._wrapper).off());
                                 }
-                                var wrapper = opts.element = object._wrapper || that._wrapper;
+                                var wrapper = opts.element = object._wrapper || self._wrapper;
                                 var tmpl = opts.template;
                                 
                                 if(tmpl){
@@ -109,55 +109,55 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 component.init(wrapper);
                                 delete object._isRrender;
                             }
-                            var wrapper = object._wrapper || that._wrapper;
+                            var wrapper = object._wrapper || self._wrapper;
                             wrapper.show().siblings('.nui-router-wrapper').hide();
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts)
                             }
-                            that._initialize = match = true;
+                            self._initialize = match = true;
                             if(Nui.bsie7){
-                                that._setHistory(_hash);
+                                self._setHistory(_hash);
                             }
                             return false
                         }
                     }
                 })
 
-                if(!that._initialize){
-                    Nui.each(that.__instances, function(v){
-                        if(!that._isEntry && v.options.entry === true){
-                            that._isEntry= true;
+                if(!self._initialize){
+                    Nui.each(self.__instances, function(v){
+                        if(!self._isEntry && v.options.entry === true){
+                            self._isEntry= true;
                             if(v.target){
                                 v._render(v.target.eq(0));
                             }
-                            that._initialize = true;
+                            self._initialize = true;
                             return false
                         }
                     })
                 }
             }
-            that._oldhash = _hash;
+            self._oldhash = _hash;
         },
         _bindHashchange:function(){
-            var that = this;
+            var self = this;
             if(Nui.bsie7){
                 var hashchange = function(ret){
                     var hash = location.hash;
-                    if(that._oldhash !== hash){
+                    if(self._oldhash !== hash){
                         return !ret
                     }
                     return false
                 }
                 setInterval(function(){
                     if(hashchange()){
-                        that._change()
+                        self._change()
                     }
                 }, 100);
                 hashchange(true)
             }
             else{
                 Nui.win.on('hashchange', function(){
-                    that._change()
+                    self._change()
                 })
             }
         },
@@ -169,7 +169,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             }
         },
         location:function(url, data, render){
-            var that = this;
+            var self = this;
             if(url){
                 if(arguments.length <=2 && typeof data === 'boolean'){
                     render = data;
@@ -181,7 +181,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                     if(rule === url || (url.indexOf(val.path) === 0 &&
                                         (temp = url.replace(val.path+'/', '')) && 
                                         temp.split('/').length === val.params.length)){
-                        _router = that.__instances[val.id];
+                        _router = self.__instances[val.id];
                         return false
                     }
                 })
@@ -194,7 +194,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                 }
             }
             else{
-                that.start()
+                self.start()
             }
         },
         forward:function(index){
@@ -224,9 +224,9 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
         Nui.each(['forward', 'back'], function(v){
             var value = v==='forward' ? 1 : -1;
             statics[v] = function(){
-                var that = this, len = that._history.length;
+                var self = this, len = self._history.length;
                 statics._isHistory = true;
-                Nui.each(that._history, function(val, i){
+                Nui.each(self._history, function(val, i){
                     var index = i + value;
                     if(val.active){
                         //历史记录在起始或者末尾时，调用原生的记录
@@ -234,7 +234,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                             window.history[v]();
                             return false
                         }
-                        var _history = that._history[index];
+                        var _history = self._history[index];
                         if(_history){
                             location.hash = _history.hash;
                             _history.active = true;
@@ -264,18 +264,18 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             onData:null
         },
         _init:function(){
-            var that = this, router = that.constructor;
-            if(that._exec() && !router._bind){
+            var self = this, router = self.constructor;
+            if(self._exec() && !router._bind){
                 router._bind = true;
                 router._bindHashchange();
             }
         },
         _exec:function(){
-            var that = this, opts = that.options, router = that.constructor;
-            that.container = router._jquery(opts.container);
-            if(opts.path && that.container){
-                that.path = router._replace(opts.path);
-                var paths = that._getpath();
+            var self = this, opts = self.options, router = self.constructor;
+            self.container = router._jquery(opts.container);
+            if(opts.path && self.container){
+                self.path = router._replace(opts.path);
+                var paths = self._getpath();
                 var len = paths.params.length;
                 if((!len && opts.level === 1) || opts.level !== 1){
                     router._setpaths(paths.rule, paths)
@@ -290,15 +290,15 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                         }))
                     }
                 }
-                if(that._getTarget()){
-                    return that._event()
+                if(self._getTarget()){
+                    return self._event()
                 }
             }
         },
         _getpath:function(){
-            var that = this, path = that.path, opts = that.options, index = path.indexOf('/:');
+            var self = this, path = self.path, opts = self.options, index = path.indexOf('/:');
             var paths = {
-                id:that.__id,
+                id:self.__id,
                 params:[],
                 rule:path,
                 path:path
@@ -313,12 +313,12 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             return paths
         },
         _render:function(url){
-            var that = this, opts = that.options, href = url instanceof jQuery ? url.attr('href') : url;
+            var self = this, opts = self.options, href = url instanceof jQuery ? url.attr('href') : url;
             if(href){
                 var trigger = false;
                 var change = function(){
                     trigger = true;
-                    location.hash = '#!'+that.constructor._replace(href)
+                    location.hash = '#!'+self.constructor._replace(href)
                 }
                 if(typeof opts.onBefore === 'function' && opts.onBefore.call(opts, change) === false){
                     return false
@@ -329,22 +329,22 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             }
         },
         _event:function(){
-            var that = this, opts = that.options;
-            that._on('click', Nui.doc, that.target, function(e, elem){
-                that._render(elem);
+            var self = this, opts = self.options;
+            self._on('click', Nui.doc, self.target, function(e, elem){
+                self._render(elem);
                 return false
             })
-            return that
+            return self
         },
         _reset:function(){
-            var that = this, router = that.constructor;
-            that._off();
+            var self = this, router = self.constructor;
+            self._off();
             Nui.each(router._paths, function(val, i){
-                if(val.id === that.__id){
+                if(val.id === self.__id){
                     delete router._paths[i];
                 }
             })
-            return that
+            return self
         },
         option:null,
         reset:null

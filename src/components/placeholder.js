@@ -38,85 +38,85 @@ Nui.define(['component'], function(component){
             this._exec();
         },
         _exec:function(){
-            var that = this, target = that._getTarget();
+            var self = this, target = self._getTarget();
             if(target){
-                var text = that.deftext = target.attr('placeholder');
-                if(!that.deftext && that.options.text){
-                    target.attr('placeholder', text = that.options.text)
+                var text = self.deftext = target.attr('placeholder');
+                if(!self.deftext && self.options.text){
+                    target.attr('placeholder', text = self.options.text)
                 }
-                that.text = Nui.trim(text);
-                if(that.val === undefined){
-                    that.val = Nui.trim(target.val());
+                self.text = Nui.trim(text);
+                if(self.val === undefined){
+                    self.val = Nui.trim(target.val());
                 }
-                if(that.text){
-                    that._create()
+                if(self.text){
+                    self._create()
                 }
             }
         },
         _create:function(){
-            var that = this, opts = that.options, self = that.constructor;
+            var self = this, opts = self.options, _class = self.constructor;
             if(opts.animate || (!opts.animate && !('placeholder' in document.createElement('input')))){
                 if(opts.animate){
-                    that.target.removeAttr('placeholder')
+                    self.target.removeAttr('placeholder')
                 }
-                var data = that._tplData();
+                var data = self._tplData();
                 data.style = {
                     'position':'relative',
                     'display':'inline-block',
-                    'width':that.target.outerWidth()+'px',
+                    'width':self.target.outerWidth()+'px',
                     'overflow':'hidden',
                     'cursor':'text'
                 }
-                that.target.wrap(that._tpl2html('wrap', data))
-                that.element = $(that._tpl2html('elem', {
-                        text:that.text,
+                self.target.wrap(self._tpl2html('wrap', data))
+                self.element = $(self._tpl2html('elem', {
+                        text:self.text,
                         style:(function(){
-                            var height = that.target.outerHeight();
-                            var isText = that.target.is('textarea');
+                            var height = self.target.outerHeight();
+                            var isText = self.target.is('textarea');
                             return ({
-                                'display':Nui.trim(that.target.val()) ? 'none' : 'inline',
+                                'display':Nui.trim(self.target.val()) ? 'none' : 'inline',
                                 'position':'absolute',
-                                'left':self._getSize(that.target, 'l', 'padding')+self._getSize(that.target, 'l')+'px',
-                                'top':self._getSize(that.target, 't', 'padding')+self._getSize(that.target, 't')+'px',
+                                'left':_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
+                                'top':_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
                                 'height':isText ? 'auto' : height+'px',
                                 'line-height':isText ? 'normal' : height+'px',
                                 'color':opts.color
                             })
                         })()
-                    })).insertAfter(that.target)
+                    })).insertAfter(self.target)
 
-                that._events()
+                self._events()
             }
             else{
-                that._setStyle()
+                self._setStyle()
             }
         },
         _setStyle:function(){
-            var that = this, opts = that.options;
-            that.className = '_placeholder-'+that.__id;
-            that.target.addClass(that.className);
-            if(!that.constructor.style){
-                that._createStyle()
+            var self = this, opts = self.options;
+            self.className = '_placeholder-'+self.__id;
+            self.target.addClass(self.className);
+            if(!self.constructor.style){
+                self._createStyle()
             }
-            that._createRules()
+            self._createRules()
         },
         _createStyle:function(){
-            var that = this;
+            var self = this;
             var style = document.createElement('style');
             document.head.appendChild(style);
-            that.constructor.style = style.sheet
+            self.constructor.style = style.sheet
         },
         _createRules:function(){
-            var that = this;
-            var sheet = that.constructor.style;
-            var id = that.__id;
+            var self = this;
+            var sheet = self.constructor.style;
+            var id = self.__id;
             try{
                 sheet.deleteRule(id)
             }
             catch(e){}
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
-                var selector = '.'+that.className+v;
-                var rules = 'opacity:1; color:'+(that.options.color||'');
+                var selector = '.'+self.className+v;
+                var rules = 'opacity:1; color:'+(self.options.color||'');
                 try{
                     if('addRule' in sheet){
                         sheet.addRule(selector, rules, id)
@@ -129,42 +129,42 @@ Nui.define(['component'], function(component){
             })
         },
         _events:function(){
-            var that = this, opts = that.options, self = that.constructor;
-            var pleft = self._getSize(that.target, 'l', 'padding') + self._getSize(that.target, 'l');
-            that._on('click', that.element, function(){
-                that.target.focus()
+            var self = this, opts = self.options, _class = self.constructor;
+            var pleft = _class._getSize(self.target, 'l', 'padding') + _class._getSize(self.target, 'l');
+            self._on('click', self.element, function(){
+                self.target.focus()
             })
 
-            that._on('focus', that.target, function(){
-                opts.animate && that.element.stop(true, false).animate({left:pleft+10, opacity:'0.5'});
+            self._on('focus', self.target, function(){
+                opts.animate && self.element.stop(true, false).animate({left:pleft+10, opacity:'0.5'});
             })
 
-            that._on('blur change', that.target, function(e, elem){
-                that.value();
+            self._on('blur change', self.target, function(e, elem){
+                self.value();
             })
 
-            that._on('keyup keydown', that.target, function(e, elem){
-                Nui.trim(elem.val()) ? that.element.hide() : that.element.show()
+            self._on('keyup keydown', self.target, function(e, elem){
+                Nui.trim(elem.val()) ? self.element.hide() : self.element.show()
             })
         },
         _reset:function(){
-            var that = this;
-            that._off();
-            if(that.element){
-                that.element.remove();
-                that.target.unwrap();
+            var self = this;
+            self._off();
+            if(self.element){
+                self.element.remove();
+                self.target.unwrap();
             }
-            that.target.val(that.val).removeClass(that.className);
-            if(that.deftext){
-                that.target.attr('placeholder', that.deftext)
+            self.target.val(self.val).removeClass(self.className);
+            if(self.deftext){
+                self.target.attr('placeholder', self.deftext)
             }
             else{
-                that.target.removeAttr('placeholder')
+                self.target.removeAttr('placeholder')
             }
         },
         value:function(val){
-            var self = this.constructor, target = this.target;
-            var pleft = self._getSize(target, 'l', 'padding') + self._getSize(target, 'l');
+            var _class = this.constructor, target = this.target;
+            var pleft = _class._getSize(target, 'l', 'padding') + _class._getSize(target, 'l');
             var v = Nui.trim(!arguments.length ? target.val() : target.val(val).val());
             if((!this.options.equal && v === this.text) || !v){
                 target.val('');

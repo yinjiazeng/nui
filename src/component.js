@@ -43,11 +43,11 @@
             * init表示初始化组件，会查询容器内包含属性为 data-组件名-options的dom元素，并调用组件
             */
             __setMethod:function(apis, components){
-                var that = this;
+                var self = this;
                 Nui.each(apis, function(val, methodName){
-                    if(that[methodName] === undefined){
-                        that[methodName] = function(){
-                            var that = this, args = arguments, container = args[0], name = that.__component_name;
+                    if(self[methodName] === undefined){
+                        self[methodName] = function(){
+                            var self = this, args = arguments, container = args[0], name = self.__component_name;
                             if(name && name !== 'component'){
                                 if(container && container instanceof jQuery){
                                     if(methodName === 'init'){
@@ -78,7 +78,7 @@
                                     }
                                 }
                                 else{
-                                    Nui.each(that.__instances, function(obj){
+                                    Nui.each(self.__instances, function(obj){
                                         var method = obj[methodName];
                                         if(typeof method === 'function'){
                                             callMethod(method, args, obj)
@@ -96,7 +96,7 @@
                         }
                     }
                 })
-                return that
+                return self
             },
             //对所有实例设置默认选项
             _options:{},
@@ -211,29 +211,29 @@
             _init:jQuery.noop,
             _exec:jQuery.noop,
             _getTarget:function(){
-                var that = this;
-                if(!that.target){
-                    var target = that.options.target;
-                    var self = that.constructor;
+                var self = this;
+                if(!self.target){
+                    var target = self.options.target;
+                    var _class = self.constructor;
                     if(!target){
                         return null
                     }
-                    target = self._jquery(target);
-                    var attr = 'nui_component_'+self.__component_name;
-                    that.target = target.attr(attr, '');
-                    that.target.each(function(){
+                    target = _class._jquery(target);
+                    var attr = 'nui_component_'+_class.__component_name;
+                    self.target = target.attr(attr, '');
+                    self.target.each(function(){
                         if(!this.nui){
                             this.nui = {};
                         }
-                        this.nui[self.__component_name] = that
+                        this.nui[_class.__component_name] = self
                     })
                 }
-                return that.target
+                return self.target
             },
             _tplData:function(data){
                 var opts = this.options, 
-                    self = this.constructor,
-                    name = 'nui-' + self.__component_name, 
+                    _class = this.constructor,
+                    name = 'nui-' + _class.__component_name, 
                     skin = Nui.trim(opts.skin),
                     getName = function(_class, arrs){
                         if(_class.__parent){
@@ -248,14 +248,14 @@
                             }
                         }
                         return arrs
-                    }, className = getName(self, []);
+                    }, className = getName(_class, []);
 
                 className.push(name);
                 if(skin){
                     className.push(name+'-'+skin)
                 }
                 if(opts.id){
-                    className.push(self.__component_name + '-' + opts.id)
+                    className.push(_class.__component_name + '-' + opts.id)
                 }
                 if(!data){
                     data = {}
@@ -267,13 +267,13 @@
                 return events.call(this)
             },
             _on:function(type, dalegate, selector, callback, trigger){
-                var that = this;
+                var self = this;
                 if(typeof selector === 'function'){
                     trigger = callback;
                     callback = selector;
                     selector = dalegate;
                     dalegate = null;
-                    selector = that.constructor._jquery(selector)
+                    selector = self.constructor._jquery(selector)
                 }
 
                 var _callback = function(e){
@@ -284,7 +284,7 @@
                     if(typeof selector !== 'string'){
                         selector = selector.selector;
                         if(!selector){
-                            selector = that.options.target
+                            selector = self.options.target
                         }
                     }
                     dalegate.on(type, selector, _callback);
@@ -299,17 +299,17 @@
                     }
                 }
 
-                that._eventList.push({
+                self._eventList.push({
                     dalegate:dalegate,
                     selector:selector,
                     type:type,
                     callback:_callback
                 });
 
-                return that
+                return self
             },
             _off:function(){
-                var that = this, _eventList = that._eventList;
+                var self = this, _eventList = self._eventList;
                 Nui.each(_eventList, function(val, key){
                     if(val.dalegate){
                         val.dalegate.off(val.type, val.selector, val.callback)
@@ -320,22 +320,22 @@
                     _eventList[key] = null;
                     delete _eventList[key]
                 });
-                that._eventList = [];
-                return that
+                self._eventList = [];
+                return self
             },
             _delete:function(){
-                var that = this, self = that.constructor;
-                if(that.target){
-                    var attr = 'nui_component_'+self.__component_name;
-                    that.target.removeAttr(attr).each(function(){
+                var self = this, _class = self.constructor;
+                if(self.target){
+                    var attr = 'nui_component_'+_class.__component_name;
+                    self.target.removeAttr(attr).each(function(){
                         if(this.nui){
-                            this.nui[self.__component_name] = null;
-                            delete this.nui[self.__component_name];
+                            this.nui[_class.__component_name] = null;
+                            delete this.nui[_class.__component_name];
                         }
                     })
                 }
-                self.__instances[that.__id] = null;
-                delete self.__instances[that.__id]
+                _class.__instances[self.__id] = null;
+                delete _class.__instances[self.__id]
             },
             _reset:function(){
                 this._off();

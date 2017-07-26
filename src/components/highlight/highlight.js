@@ -9,17 +9,17 @@ Nui.define(function(){
     return this.extend('component', {
         static:{
             _init:function(){
-                var that = this;
+                var self = this;
                 Nui.doc.on('click', function(){
-                    if(that._active){
-                        Nui.each(that.__instances, function(val){
+                    if(self._active){
+                        Nui.each(self.__instances, function(val){
                             if(val._active){
                                 val.element.find('tr.s-crt').removeClass('s-crt');
                                 val._active = false;
                             }
                         })
                     }
-                    that._active = false;
+                    self._active = false;
                 })
             },
             _getcode:function(type, text){
@@ -71,20 +71,20 @@ Nui.define(function(){
             this._exec();
         },
         _exec:function(){
-            var that = this, target = that._getTarget();
+            var self = this, target = self._getTarget();
             if(target){
                 var dom = target.get(0);
                 if(dom.tagName === 'SCRIPT' && dom.type == 'text/highlight'){
-                    that.code = target.html()
+                    self.code = target.html()
                                 .replace(/^[\r\n]+|[\r\n]+$/g, '')
                                 .replace(/</g, '&lt;')
                                 .replace(/>/g, '&gt;');
-                    if(that.element){
-                        that.element.remove();
+                    if(self.element){
+                        self.element.remove();
                     }
-                    that._create();
-                    if(that.options.isLight){
-                        that._event();
+                    self._create();
+                    if(self.options.isLight){
+                        self._event();
                     }
                 }
             }
@@ -124,17 +124,17 @@ Nui.define(function(){
             }
         },
         _create:function(){
-            var that = this;
-            var opts = that.options;
+            var self = this;
+            var opts = self.options;
             var data = $.extend({
                 bsie7:Nui.bsie7,
-                list:that._list(),
-                title:that._title,
+                list:self._list(),
+                title:self._title,
                 isLine:opts.isLine,
                 tools:opts.tools,
                 isTitle:opts.isTitle
-            }, that._tplData())
-            that.element = $(that._tpl2html(data)).insertAfter(that.target);
+            }, self._tplData())
+            self.element = $(self._tpl2html(data)).insertAfter(self.target);
         },
         _getCode:function(){
             return this.code
