@@ -530,19 +530,19 @@ Nui.define(['component', 'util'], function(component, util){
                     }
                     else{
                         if(k === 'top' || k === 'bottom'){
-                            if(v === '_class'){
+                            if(v === 'self'){
                                 _v = data.outerHeight
                             }
                             else if(/[\+\-\*\/]/.test(v)){
-                                _v = (new Function('var _class = '+data.outerHeight+'; return '+v))()
+                                _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
                             }
                         }
                         else{
-                            if(v === '_class'){
+                            if(v === 'self'){
                                 _v = data.outerWidth
                             }
                             else if(/[\+\-\*\/]/.test(v)){
-                                _v = (new Function('var _class = '+data.outerWidth+'; return '+v))()
+                                _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
                             }
                         }
                     }

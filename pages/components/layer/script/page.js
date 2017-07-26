@@ -32,9 +32,9 @@ Nui.define(['{com}/layer/layerExt', 'events'], function(layer, events){
                         bottom:'self*-1',
                         right:0
                     },
-                    onInit:function(){
-                        this.options.position.bottom = 0;
-                        this.element.animate({top:this.data.top - this.data.outerHeight})
+                    onInit:function(self){
+                        this.position.bottom = 0;
+                        self.element.animate({top:self.data.top - self.data.outerHeight})
                     }
                 })
             }
