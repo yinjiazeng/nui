@@ -1268,6 +1268,15 @@ Nui.define('template', ['util'], function(util){
         })
     }
 
+    //部分浏览器中表单对象name属性如果和模版中需要使用的变量重名，而这个变量又不存在，返回值就会变成该dom....
+    var isDom = typeof HTMLElement === 'object' ? 
+    function(obj){
+        return obj instanceof HTMLElement;
+    } : 
+    function(obj){
+        return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+    };
+
     var render = function(tpl, data, opts){
         var that = this;
         if(typeof tpl === 'string'){
@@ -1309,6 +1318,9 @@ Nui.define('template', ['util'], function(util){
                     var Rander = new Function('$data', code);
                     Rander.prototype.methods = methods;
                     Rander.prototype.error = error(code, data, that.tplid);
+                    Rander.prototype.dom = function(code){
+                        return isDom(code)
+                    }
                     tpl = new Rander(data).out();
                     Rander = null
                 }
@@ -1395,8 +1407,7 @@ Nui.define('template', ['util'], function(util){
     //a.b??  a[b]??  a['b']??  a[b['c']]??
     var exists = function(code, isVal){
         return code.replace(/([\.\$\w]+\s*(\[[\'\"\[\]\w\.\$\s]+\])?)\?\?/g, function(a, b){
-            //IE中表单对象设置name值，当直接访问name这个变量时，会返回dom
-            var rep = '(typeof '+ b + '!=="undefined"&&typeof '+ b + '!=="object"';
+            var rep = '(typeof '+ b + '!=="undefined"&&!$that.dom('+ b +')';
             if(isVal){
                 rep += '?' + b + ':' + '""';
             }
