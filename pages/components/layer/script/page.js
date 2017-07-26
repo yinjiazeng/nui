@@ -9,7 +9,10 @@ Nui.define(['{com}/layer/layerExt', 'events'], function(layer, events){
                     width:280,
                     height:140,
                     cancel:{
-                        text:'关闭'
+                        text:'关闭',
+                        callback:function(self){
+                            console.log(self)
+                        }
                     }
                 })
             },
