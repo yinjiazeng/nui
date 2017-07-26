@@ -658,7 +658,7 @@ Nui.define(['component', 'util'], function(component, util){
             if(self._iframe){
                 self._iframe.height(_height);
             }
-            self._body.height(_height)
+            self._body.height(self.data.contentHeight = _height)
         },
         _showMask:function(){
             var self = this, _class = self.constructor, opts = self.options;

@@ -184,8 +184,7 @@ Nui.define(['./layer', 'util'], function(layer, util){
         var formLayer = layer($.extend(true, {button:btns}, {
             scrollbar:false,
             id:'form',
-            onInit:function(main, id){
-                var self = this;
+            onInit:function(self){
                 var main = self.main;
                 var elems = main.find('[name!=""][data-rule]');
                 var form = main.find('form');
