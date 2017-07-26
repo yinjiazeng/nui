@@ -71,6 +71,10 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 param[val] = query[key]
                             })
 
+                            if(typeof opts.onChange === 'function'){
+                                opts.onChange.call(opts);
+                            }
+
                             if(object._send && object._send.data && typeof opts.onData === 'function'){
                                 opts.onData.call(opts, object._send.data)
                                 delete object._send;
@@ -259,9 +263,10 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             wrapper:false,
             level:1,
             onBefore:null,
+            onChange:null,
+            onData:null,
             onInit:null,
-            onAfter:null,
-            onData:null
+            onAfter:null
         },
         _init:function(){
             var self = this, router = self.constructor;

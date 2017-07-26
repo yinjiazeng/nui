@@ -173,12 +173,42 @@ router({
 	}
 })
 </script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onChange</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>默认值：null</p>
+				<p>说明：路由改变渲染之前触发</p>
+			</div>
+<script type="text/highlight" data-javascript-options>
+router({
+	onChnage:function(){
+		
+	}
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onData</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>默认值：null</p>
+				<p>参数：data {Anything} 接收数据</p>
+				<p>说明：路由改变渲染之前触发，用于接收路由跳转时传递的数据</p>
+			</div>
+<script type="text/highlight" data-javascript-options>
+router.location('/index/', 'hello world')
+
+router({
+	path:'/index/',
+	onData:function(data){
+		console.log(data) //hello world
+	}
+})
+</script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onInit</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>默认值：null</p>
 				<p>必填：<b class="f-cgreen f-fs16">✔</b></p>
-				<p>说明：路由地址改变时触发，当wrapper为true时仅会触发一次</p>
+				<p>说明：路由渲染之后触发，当选项参数wrapper为true时仅会触发一次</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -197,7 +227,7 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>默认值：null</p>
-				<p>说明：路由地址改变后触发，在onInit后执行</p>
+				<p>说明：路由渲染后触发，在onInit后执行，不论选项参数wrapper是何值都触发</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -210,23 +240,7 @@ router({
 	}
 })
 </script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onData</h3>
-			<div class="e-mt15 f-lh22">
-				<p>类型：{Function}</p>
-				<p>默认值：null</p>
-				<p>参数：data {Anything} 接收数据</p>
-				<p>说明：用于接收路由跳转时传递的数据</p>
-			</div>
-<script type="text/highlight" data-javascript-options>
-router.location('/index/', 'hello world')
-
-router({
-	path:'/index/',
-	onData:function(data){
-		console.log(data) //hello world
-	}
-})
-</script>
+			
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<div class="e-mt15 f-lh22">
 				<p>在函数中可以通过this.element访问页面容器的jquery实例</p>
