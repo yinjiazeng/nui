@@ -275,10 +275,10 @@
 
     /* 修复toFixed四舍五入bug */
     var toFixed = Number.prototype.toFixed;
-    Number.prototype.toFixed = function(n){
+    String.prototype.toFixed = Number.prototype.toFixed = function(n){
         var num = 1;
-        var total = n;
-        while(total){
+        var total = n || 0;
+        while(total > 0){
             num *= 10;
             total--;
         }
