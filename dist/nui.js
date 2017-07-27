@@ -276,10 +276,10 @@
     /* 修复toFixed四舍五入bug */
     var toFixed = Number.prototype.toFixed;
     Number.prototype.toFixed = function(n){
-        var num = '1';
+        var num = 1;
         var total = n;
         while(total){
-            num += '0'
+            num *= 10;
             total--;
         }
         return toFixed.call((Math.round(this*num)/num), n)
@@ -1198,20 +1198,7 @@ Nui.define('template', ['util'], function(util){
     var methods = {
         trim:Nui.trim,
         formatDate:util.formatDate,
-        setParam:util.setParam,
-        toFixed:function(value, num){
-            if(typeof value === 'number'){
-                return value.toFixed(num)
-            }
-            else if(typeof value === 'string'){
-                var val = parseFloat(value);
-                if(isNaN(val)){
-                    return value
-                }
-                return val.toFixed(num)
-            }
-            return value
-        }
+        setParam:util.setParam
     }
 
     var isstr = !!''.trim;

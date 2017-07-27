@@ -276,10 +276,10 @@
     /* 修复toFixed四舍五入bug */
     var toFixed = Number.prototype.toFixed;
     Number.prototype.toFixed = function(n){
-        var num = '1';
+        var num = 1;
         var total = n;
         while(total){
-            num += '0'
+            num *= 10;
             total--;
         }
         return toFixed.call((Math.round(this*num)/num), n)
