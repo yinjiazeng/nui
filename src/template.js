@@ -239,7 +239,7 @@ Nui.define('template', ['util'], function(util){
     //a.b??  a[b]??  a['b']??  a[b['c']]??
     var exists = function(code, isVal){
         return code.replace(/([\.\$\w]+\s*(\[[\'\"\[\]\w\.\$\s]+\])?)\?\?/g, function(a, b){
-            var rep = '(typeof '+ b + '!=="undefined"&&!$that.dom('+ b +')';
+            var rep = '(typeof '+ b + '!=="undefined"&&'+ b +'!==null&&'+ b +'!==undefined&&!$that.dom('+ b +')';
             if(isVal){
                 rep += '?' + b + ':' + '""';
             }
