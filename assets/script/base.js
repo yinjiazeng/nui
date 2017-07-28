@@ -13,6 +13,9 @@ Nui.define(['{light}/xml'], function(xml){
                 this.event();
                 this.position();
             }
+            if(Nui.bsie7){
+                this.bsie7();
+            }
         },
         setYear:function(){
             $('#nowyear').text('-'+new Date().getFullYear());
@@ -49,6 +52,19 @@ Nui.define(['{light}/xml'], function(xml){
                     }
                 })
             })
+        },
+        bsie7:function(){
+            var box = $('.g-html .g-content');
+            var height = $('.g-header').outerHeight();
+            var timer = null;
+            var resize = function(){
+                box.height(Nui.win.height() - height)
+            }
+            Nui.win.resize(function(){
+                clearTimeout(timer);
+                timer = setTimeout(resize, 100)
+            })
+            resize();
         }
     })
 })
