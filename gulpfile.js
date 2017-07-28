@@ -59,7 +59,7 @@ gulp.task('revcss', function(){
 gulp.task('watch', function() {    
     gulp.watch(['{pages,assets}/**/*.{js,css}', '!{pages,assets}/**/*-min.{js,css}','!assets/script/config.js'], ['revhtml']);
     gulp.watch(['{pages,assets}/**/*.{jpg,png,gif,eot,svg,ttf,woff}'], ['revcss']);
-    gulp.watch(['src/*.js'], ['concat']);
+    gulp.watch(['src/**/*.js'], ['concat', 'revhtml']);
     gulp.watch(['html/**/*.html', 'tpl/*.tpl'], ['nunjucks', 'revhtml']);
 });
 

@@ -3,7 +3,7 @@ Nui.define(['{com}/router'], function(router){
 	router({
 		target:'#home',
 		entry:true,
-		path:'/home/',
+		path:'/home/', 
 		container:'#main',
 		template:'<div>这是首页</div>'
 	})
