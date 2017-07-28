@@ -3,7 +3,6 @@ var path = require('path');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
-var watch = require('gulp-nuiwatch');
 var nui = require('gulp-nui');
 var nunjucks = require('gulp-nunjucks-render');
 
@@ -38,24 +37,30 @@ gulp.task('nunjucks', function() {
         .pipe(nunjucks({
             path: './tpl'
         }))
-        .pipe(nui(options))
         .pipe(gulp.dest('./'))
 });
 
-gulp.task('watch', function() {
-    watch(['./src/components/**/*.js', './pages/**/*', '!./pages/**/*.html', './dist/*.js', './assets/**/*', '!./assets/script/config.js', , '!./**/*.map', '!./**/*-{debug,min}.{js,css}'],
-        function(watcher) {
-            options.watcher = watcher;
-            gulp.src(['./pages/**/*.html'])
-                .pipe(nui(options))
-                .pipe(gulp.dest('./pages'))
+gulp.task('revhtml', ['nunjucks'], function(){
+    gulp.src(['./pages/**/*.html'])
+        .pipe(nui(options))
+        .pipe(gulp.dest('./pages'))
 
-            gulp.src(['./index.html'])
-                .pipe(nui(options))
-                .pipe(gulp.dest('./'))
-        })
-    gulp.watch(['./src/*.js'], ['concat']);
-    gulp.watch(['./html/**/*.html', './tpl/*.tpl'], ['nunjucks']);
+    gulp.src(['./index.html'])
+        .pipe(nui(options))
+        .pipe(gulp.dest('./'))
+})
+
+gulp.task('revcss', function(){
+    gulp.src(['./{pages,assets}/**/*.css'])
+        .pipe(nui())
+        .pipe(gulp.dest('./'))
+})
+
+gulp.task('watch', function() {    
+    gulp.watch(['{pages,assets}/**/*.{js,css}', '!{pages,assets}/**/*-min.{js,css}','!assets/script/config.js'], ['revhtml']);
+    gulp.watch(['{pages,assets}/**/*.{jpg,png,gif,eot,svg,ttf,woff}'], ['revcss']);
+    gulp.watch(['src/*.js'], ['concat']);
+    gulp.watch(['html/**/*.html', 'tpl/*.tpl'], ['nunjucks', 'revhtml']);
 });
 
-gulp.task('default', ['concat', 'nunjucks', 'watch']);
+gulp.task('default', ['concat', 'revhtml', 'revcss', 'watch']);

@@ -41,7 +41,7 @@ caption, th { text-align:left; font-weight:normal;}
 textarea{ overflow:auto; resize:none;}
 label, summary { cursor:default;}
 a, button, label { cursor:pointer;}
-body, textarea, input, button, select, keygen, legend { font:14px/1.14 \5fae\8f6f\96c5\9ed1,helvetica,sans-serif; color:#666;}
+body, textarea, input, button, select, keygen, legend { font:14px/1.14 '\5fae\8f6f\96c5\9ed1',helvetica,sans-serif; color:#666;}
 html { _background-image:url(about:blank); _background-attachment:fixed;}
 body, html { background-color:#fff;}
 a { color:#666; -webkit-tap-highlight-color:rgba(0,0,0,0);}
@@ -173,7 +173,7 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .g-footer, .g-footer a, .g-footer a:hover { color:#fff;}
 .g-footer a { margin: 0 5px;}
 .g-html .g-header { border-bottom:2px solid #F6F6F6;}
-.g-html .g-content { position: absolute; top: 60px; bottom: 0; width: 100%; *height:expression(eval(document.documentElement.clientHeight - 62));}
+.g-html .g-content { position: absolute; top: 60px; bottom: 0; width: 100%; *height:'expression(eval(document.documentElement.clientHeight - 62))';}
 .g-main { position:relative; width: 100%; margin-left: -200px;}
 .g-main .mainbox { position:relative; padding-left:300px; padding-bottom:30px; width:900px;}
 .g-main .data { width: 100%;}
