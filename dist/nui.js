@@ -205,8 +205,8 @@
         return '_module_'+mid
     }
 
-    var replaceSuffix = function(str){
-        return str.replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '')
+    var replaceExt = function(str){
+        return str.replace(/(\.(js|css))?(\?[\s\S]*)?$/i, '')
     }
 
     var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
@@ -716,7 +716,7 @@
         if(pathMatch){
             var path = config.paths[pathMatch[1]];
             if(path){
-                id = id.replace(pathMatch[0], path).replace(/(\.(js|css))?(\?[\s\S]*)?$/g, '');
+                id = replaceExt(id.replace(pathMatch[0], path));
             }
         }
         return id
@@ -725,7 +725,7 @@
     Module.getAttrs = function(id, uri){
         // xxx.js?v=1.1.1 => xxx
         // xxx.css?v=1.1.1 => xxx
-        var name = replaceSuffix(id);
+        var name = replaceExt(id);
         var match = name.match(/-min$/g);
         var suffix = '';
         var dirid;
@@ -754,7 +754,7 @@
             var match = id.match(/(\?[\s\S]*)$/);
 
             if(config.min === true && isMin === true){
-                id = replaceSuffix(id);
+                id = replaceExt(id);
                 if(!/-min$/.test(id)){
                     id += '-min'
                 }
