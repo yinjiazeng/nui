@@ -226,10 +226,15 @@
     var components = {};
 
     var config = {
+        //全局设置皮肤
         skin:null,
+        //是否加载后缀为-min文件
         min:true,
+        //路径别名
         paths:{},
+        //模块别名
         alias:{},
+        //版本映射
         maps:{}
     }
 
