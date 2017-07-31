@@ -73,7 +73,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
 
                             if(object._send && object._send.data && typeof opts.onData === 'function'){
                                 opts.onData.call(opts, object._send.data);
-                                opts.isData = true;
+                                opts.isReceiveData = true;
                                 delete object._send;
                             }
 
@@ -119,7 +119,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts)
                             }
-                            delete opts.isData;
+                            delete opts.isReceiveData;
                             self._initialize = match = true;
                             if(Nui.bsie7){
                                 self._setHistory(_hash);
