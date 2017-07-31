@@ -680,7 +680,7 @@
                 _eventList:[]
             });
             that.options = extend(true, {}, that.options, Class._options, options||{})
-            that._defaultOptions = extend(that.options);
+            that._defaultOptions = extend(true, that.options);
             Class.__instances[that.__id] = that;
             that._init()
         }

@@ -63,6 +63,12 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                         var object = self.__instances[v.id], opts = object.options, param = {};
                         params = params ? params.split('/') : [];
                         if(params.length === v.params.length){
+                            var isRender = object._isRrender === true;
+
+                            if(!object._wrapper || (object._wrapper && isRender)){
+                                opts.data = $.extend(true, {}, object._defaultOptions.data);
+                            }
+
                             Nui.each(v.params, function(val, key){
                                 param[val] = params[key]
                             })
@@ -73,7 +79,6 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
 
                             if(object._send && object._send.data && typeof opts.onData === 'function'){
                                 opts.onData.call(opts, object._send.data);
-                                opts.isReceiveData = true;
                                 delete object._send;
                             }
 
@@ -86,7 +91,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 opts.onChange.call(opts);
                             }
 
-                            if(object._isRrender === true || !object._wrapper){
+                            if(isRender || !object._wrapper){
                                 if(opts.wrapper && !object._wrapper){
                                     object._wrapper = self._getWrapper(object.container)
                                 }
@@ -104,7 +109,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                         wrapper.html(template.render(tmpl, opts.data));
                                     }
                                     else{
-                                        wrapper.html(template.render.call(tmpl, tmpl.layout, opts.data));
+                                        wrapper.html(template.render.call(tmpl, tmpl.main, opts.data));
                                     }
                                 }
                                 if(typeof opts.onInit === 'function'){
@@ -119,7 +124,6 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts)
                             }
-                            delete opts.isReceiveData;
                             self._initialize = match = true;
                             if(Nui.bsie7){
                                 self._setHistory(_hash);
