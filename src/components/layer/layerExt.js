@@ -165,7 +165,7 @@ Nui.define(['./layer', 'util'], function(layer, util){
         var btns = $.extend([], options.button || [{
             id:'cancel',
             text:'关闭'
-        }, {
+        }, { 
             id:'confirm',
             name:'normal',
             text:'保存'
@@ -196,15 +196,17 @@ Nui.define(['./layer', 'util'], function(layer, util){
                     var name = elem.attr('name');
                     var data = elem.data();
                     var rule = eval('('+ data.rule +')');
-                    var message = eval('('+ data.message +')');
                     rules[name] = rule;
-                    $.each(message, function(key, msg){
-                        if(typeof options.messageFilter === 'function'){
-                            message[key] = options.messageFilter.call(self.options, name, msg)||''
-                        }
-                        message[key] = '<b></b><s></s><i class="iconfont">&#xe605;</i>' + message[key];
-                    })
-                    messages[name] = message;
+                    if(typeof data.message !== 'undefined'){
+                        var message = eval('('+ data.message +')');
+                        $.each(message, function(key, msg){
+                            if(typeof options.messageFilter === 'function'){
+                                message[key] = options.messageFilter.call(self.options, name, msg)||''
+                            }
+                            message[key] = '<b></b><s></s><i class="iconfont">&#xe605;</i>' + message[key];
+                        })
+                        messages[name] = message;
+                    } 
                 });
                 var opts = {
                     rules:rules,
