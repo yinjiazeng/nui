@@ -1286,13 +1286,24 @@ Nui.define('template', ['util'], function(util){
     }
 
     //部分浏览器中表单对象name属性如果和模版中需要使用的变量重名，而这个变量又不存在，返回值就会变成该dom....
-    var isDom = typeof HTMLElement === 'object' ? 
+    var isNode = typeof HTMLElement === 'object' ? 
     function(obj){
         return obj instanceof HTMLElement;
     } : 
     function(obj){
-        return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+        return obj.nodeType === 1 && typeof obj.nodeName === 'string';
     };
+    var isDom = function(obj){
+        if(obj && typeof obj === 'object'){
+            //元素集合
+            var ele = obj[0];
+            if(ele){
+                return isNode(ele)
+            }
+            //元素
+            return isNode(obj)
+        }
+    }
 
     var render = function(tpl, data, opts){
         var that = this;
@@ -1335,9 +1346,7 @@ Nui.define('template', ['util'], function(util){
                     var Rander = new Function('$data', code);
                     Rander.prototype.methods = methods;
                     Rander.prototype.error = error(code, data, that.tplid);
-                    Rander.prototype.dom = function(code){
-                        return isDom(code)
-                    }
+                    Rander.prototype.dom = isDom;
                     tpl = new Rander(data).out();
                     Rander = null
                 }
