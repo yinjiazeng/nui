@@ -51,8 +51,8 @@ Nui.define(['template', 'events', '{com}/layer/layerExt'], function(template, ev
         },
         update:function(e, elem, data){
             var that = this;
-            layer.confirm('<input type="text" style="border:1px solid #ccc; width:180px; height:24px;" />', function(main){
-                var val = Nui.trim(main.find('input').val());
+            layer.confirm('<input type="text" style="border:1px solid #ccc; width:180px; height:24px;" />', function(e, self){
+                var val = Nui.trim(self.main.find('input').val());
                 if(val){
                     Nui.each(data, function(v){
                         that.data[v] = val;

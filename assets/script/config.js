@@ -12,7 +12,7 @@ Nui.config({
     },
     "maps": {
         "{script}/base": "efe2004",
-        "./script/events/page": "2d7be38",
+        "./script/events/page": "fd8975e",
         "./script/template/page": "c7f3c81",
         "./script/page": "bb2be7d",
         "./script/demo": "83c92bd"
