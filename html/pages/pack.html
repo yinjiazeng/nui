@@ -31,30 +31,40 @@ cnpm install -g gulp
 <script type="text/highlight" data-highlight-options>
 
 </script>
-			<p class="e-mt15 f-lh22">执行后会生成以下目录结构，用浏览器打开index.html文件可以看到页面中输出hello world</p>
+			<p class="e-mt15 f-lh22">执行后会生成以下目录结构，此时打开index.html不会看到任何内容，而且页面会报main-min.css以及main-min.js的404错误</p>
 <script type="text/highlight" data-style-options>
 ┌─ images
 ├─ script
 │       ├─ libs 
 │       │       ├─ jquery  /*存放jquery类库，1.8.1及以上版本*/
 │       │       └─ nui
-│       │             ├─ nui-debug.js
+│       │             ├─ nui.js
 │       │             └─ nui-min.js
 │       ├─ components  /*存放nui组件*/
-│       ├─ modules     /*存放业务逻辑模块*/
+│       ├─ pages       /*存放各页面模块*/
+│       │      ├─ index
+│       │      │       └─ main.js
+│       │      └─ news
+│       │               └─ main.js
+│       ├─ templates   /*存放模版*/
+│       │      ├─ layout.js
+│       │      ├─ index.js
+│       │      └─ news.js
+│       ├─ public      /*存放公共模块*/
+│       │      └─ router.js
 │       ├─ config.js   /*nui配置文件*/
 │       └─ main.js     /*入口模块*/
 ├─ style
-│       ├─ base.css
-│       └─ main.css
+│       ├─ index.css
+│       └─ news.css
 ├─ gulpfile.js
 └─ index.html
 </script>
-			<p class="e-mt15 f-lh22">切换至项目根目录作为开发依赖分别安装gulp和<a href="https://www.npmjs.com/package/gulp-nui" target="_blank" class="f-cblue">gulp-nui</a></p>
+			<p class="e-mt15 f-lh22">切换至项目根目录分别安装gulp和<a href="https://www.npmjs.com/package/gulp-nui" target="_blank" class="f-cblue">gulp-nui</a></p>
 <script type="text/highlight" data-highlight-options>
 cnpm install --save-dev gulp gulp-nui
 </script>
-
+			<p class="e-mt15 f-lh22">安装好后执行gulp命令，在style目录中会生成main-min.css和main-min.css.map文件，script目录中会生成main-min.js和main-min.css.map文件，此时再次打开index.html便可正常访问页面内容。</p>
 		</div>	
 	</div>
 	{% import 'sidecol.tpl' as side %}
