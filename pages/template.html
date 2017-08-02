@@ -181,9 +181,16 @@ Nui.define(['template'], function(template){
 <% key == 0 ? 1 : 2 %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 方法调用</h3>
-			<p class="e-mt15 f-lh22"><a href="#method" class="f-corange f-tdu">如何创建方法？</a></p>
+			<div class="e-mt15 f-lh22">
+				<p>使用时“|”两边必须加空格</p>
+				<p><a href="#method" class="f-corange f-tdu">如何创建方法？</a></p>
+			</div>
 <script type="text/highlight" data-javascript-options>
 <% 方法名 | 参数1, 参数2, ... %>
+
+<%var num = 0%>
+//表达式中使用时必须用括号括起来
+<% num = (方法名 | 参数1, 参数2, ...) %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 导入模板</h3>
 <script type="text/highlight" data-javascript-options>
@@ -301,17 +308,21 @@ mobile:<% filter | $value.mobile %>
 <% /each %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 内置方法</h3>
-			<p class="e-mt15 f-lh22">过滤空格，参数等同<a class="f-corange" href="api.html#trim">Nui.trim</a></p>
+			<p class="e-mt15 f-lh22">过滤空格，用法参考<a class="f-corange" href="api.html#trim">Nui.trim</a></p>
 <script type="text/highlight" data-javascript-options>
 <% trim | string %>
 </script>
-			<p class="e-mt15 f-lh22">格式化日期，参数等同<a class="f-corange" href="util.html#formatDate">formatDate</a></p>
+			<p class="e-mt15 f-lh22">格式化日期，用法参考<a class="f-corange" href="util.html#formatDate">formatDate</a></p>
 <script type="text/highlight" data-javascript-options>
 <% formatDate | timestamp, format %>
 </script>
-			<p class="e-mt15 f-lh22">设置url参数，参数等同<a class="f-corange" href="util.html#setParam">setParam</a></p>
+			<p class="e-mt15 f-lh22">设置url参数，用法参考<a class="f-corange" href="util.html#setParam">setParam</a></p>
 <script type="text/highlight" data-javascript-options>
-<% setParam | name, value, url? %>
+<% setParam | name, value, url %>
+</script>
+			<p class="e-mt15 f-lh22">四舍五入保留小数，用法参考<a class="f-corange" href="util.html#toFixed">toFixed</a></p>
+<script type="text/highlight" data-javascript-options>
+<% toFixed | digit, decimal, number %>
 </script>
 			<h2 class="e-pt20 e-pb10 f-fs22 f-bb" id="config">config</h2>
 			<p class="e-mt15 f-lh22">配置全局参数</p>
@@ -449,7 +460,7 @@ template.config(key, value?)
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=553b2fd"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=f339bb5"></script>
 <script type="text/javascript" src="/nui/assets/script/config.js?v=6163ea6"></script>
     
     <script type="text/javascript">

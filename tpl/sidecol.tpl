@@ -83,6 +83,9 @@
                         <a href="#regex">regex</a>
                     </li>
                     <li>
+                        <a href="#toFixed">toFixed</a>
+                    </li>
+                    <li>
                         <a href="#getParam">getParam</a>
                     </li>
                     <li>
@@ -99,9 +102,6 @@
                     </li>
                     <li>
                         <a href="#formatDate">formatDate</a>
-                    </li>
-                    <li>
-                        <a href="#getJSON">getJSON</a>
                     </li>
                     <li>
                         <a href="#getData">getData</a>

@@ -278,51 +278,6 @@
         document.execCommand('BackgroundImageCache', false, true);
     }
 
-    /* 修复toFixed四舍五入bug */
-    var toFixed = Number.prototype.toFixed;
-    String.prototype.toFixed = Number.prototype.toFixed = function(n){
-        n = n || 0;
-        if(isNaN(this)){
-            return this
-        }
-        //将数字转换为字符串，用于分割
-        var value = this.toString();
-        var pre = '';
-        if(value < 0){
-            value = value.replace('-', '');
-            pre = '-';
-        }
-        //获取小数点所在位置
-        var i = value.indexOf('.');
-        //补零
-        var mend = function(num){
-            var zero = '';
-            while(num){
-                zero += '0';
-                num--
-            }
-            return zero
-        }
-        //存在小数点
-        if(i !== -1 && n >= 0){
-            var integer = parseInt(value.substr(0, i));
-            //小数部分转为0.xxxxx
-            var decimal = '0' + value.substr(i);
-            var num = '1' + mend(n);
-            decimal = toFixed.call((Math.round(decimal*num)/num), n);
-            //小数四舍五入后，若大于0，整数部分需要加1
-            if(decimal.indexOf('1') === 0){
-                integer = (integer + 1).toString()
-            }
-            return pre + integer + decimal.substr(1)
-        }
-        //整数就直接补零
-        else if(n > 0){
-            return value + '.' + mend(n)
-        }
-        return value
-    }
-
     //常用jq对象
     if(typeof jQuery !== 'undefined'){
         Nui.win = jQuery(window);

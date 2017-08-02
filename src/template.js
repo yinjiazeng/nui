@@ -30,7 +30,8 @@ Nui.define('template', ['util'], function(util){
     var methods = {
         trim:Nui.trim,
         formatDate:util.formatDate,
-        setParam:util.setParam
+        setParam:util.setParam,
+        toFixed:util.toFixed
     }
 
     var isstr = !!''.trim;
@@ -216,7 +217,18 @@ Nui.define('template', ['util'], function(util){
                 code = '});'
             }
             else if((res = match(tpl, ' | ', /\s*,\s*/)) !== undefined){
-                code = joinCode('$that.methods.'+res[0]+'('+ exists(res.slice(1).toString()) +')')
+                var str = res[0];
+                var i = str.lastIndexOf('(');
+                var _call = '(' +exists(res.slice(1).toString()) +')';
+                //赋值操作必须要用括号包裹起来
+                if(i !== -1){
+                    var start = str.substr(0, i);
+                    var end = Nui.trimLeft(str.substr(i+1));
+                    code = joinCode(start+'($that.methods.' + end + _call)
+                }
+                else{
+                    code = joinCode('$that.methods.'+ str + _call)
+                }
             }
             else if(/^(var|let|const)\s+/.test(tpl)){
                 code = exists(tpl)+';'

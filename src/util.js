@@ -6,6 +6,7 @@
  */
 
 Nui.define('util', {
+    
     /**
      * @func 常用正则表达式
      */
@@ -23,6 +24,81 @@ Nui.define('util', {
         //税号
         taxnum:/^[a-zA-Z0-9]{15,20}$/
     },
+
+    /**
+     * @func 四舍五入保留小数，原生toFixed会有精度问题
+     * @return <String>
+     * @param digit <String, Number> 待转换数字
+     * @param decimal <Number> 保留位数
+     * @param number <Number> 小数部分末尾最多显示0的数量
+     */
+    toFixed:function(digit, decimal, number){
+        if(isNaN(digit)){
+            return digit
+        }
+
+        //默认末尾只保留2个0
+        if(number === undefined){
+            number = 2
+        }
+
+        decimal = decimal || 0;
+
+        //将数字转换为字符串，用于分割
+        var value = digit.toString();
+
+        //补零
+        var mend = function(num){
+            var zero = '';
+            while(num > 0){
+                zero += '0';
+                num--
+            }
+            return zero
+        }
+
+        //正负数
+        var pre = '';
+        if(value < 0){
+            value = value.replace('-', '');
+            pre = '-';
+        }
+
+        //获取小数点所在位置
+        var i = value.indexOf('.');
+        //存在小数点
+        if(i !== -1 && decimal >= 0){
+            var integer = parseInt(value.substr(0, i));
+            //小数部分转为0.xxxxx
+            var _decimal = '0' + value.substr(i);
+            var num = '1' + mend(decimal);
+            _decimal = (Math.round(_decimal*num)/num).toFixed(decimal);
+            //小数四舍五入后，若大于等于1，整数部分需要加1
+            if(_decimal >= 1){
+                integer = (integer + 1).toString()
+            }
+            value = pre + integer + _decimal.substr(1)
+        }
+        //整数就直接补零
+        else if(decimal > 0){
+            value = value + '.' + mend(decimal)
+        }
+
+        if(number !== null && number >= 0 && number < decimal){
+            value = value.replace(/0+$/, '');
+            var i = value.indexOf('.'), len = 0;
+            if(i !== -1){
+                len = value.substr(i+1).length;
+            }
+            while(len < number){
+                value = value + '0';
+                len++;
+            }
+        }
+        
+        return value
+    },
+
     /**
      * @func 获取url参数值
      * @return <String, Object>
@@ -44,6 +120,7 @@ Nui.define('util', {
         }
         return value;
     },
+
     /**
      * @func 设置url参数值
      * @return <String> 设置后的url
@@ -86,6 +163,7 @@ Nui.define('util', {
         }
         return url;
     },
+
     /**
      * @func 检测浏览器是否支持CSS3属性
      * @return <Boolean>
@@ -107,6 +185,7 @@ Nui.define('util', {
             if (humpString[i] in htmlStyle) return true;
         return false;
     },
+
     /**
      * @func 检测浏览器是否支持Html5属性
      * @return <Boolean>
@@ -116,6 +195,7 @@ Nui.define('util', {
     supportHtml5:function(attr, element){
         return attr in document.createElement(element);
     },
+
     /**
      * @func 模拟location.href跳转
      * @return <Undefined>
@@ -128,6 +208,7 @@ Nui.define('util', {
                 .appendTo('body').children().click().end().remove();
         }
     },
+
     /**
      * @func 格式化日期
      * @return <String>
@@ -165,43 +246,36 @@ Nui.define('util', {
         }
         return '-';
     },
+
     /**
-     * @func 格式化json
-     * @return <JSON String>
-     * @param data <Array, Object> 数组或者对象
-     */
-    getJSON:function(data){
-        if(typeof JSON !== 'undefined'){
-            var jsonstr = JSON.stringify(data);
-            if(Nui.browser.msie && Nui.browser.version == '8.0'){
-                return jsonstr.replace(/\\u([0-9a-fA-F]{2,4})/g,function(str, matched){
-                    return String.fromCharCode(parseInt(matched,16))
-                })
-            }
-            return jsonstr;
-        }
-        else{
-            if(Nui.isArray(data)){
-                var arr = [];
-                Nui.each(data, function(val){
-                    arr.push(tools.getJSON(val));
-                });
-                return '[' + arr.join(',') + ']';
-            }
-            else if(Nui.type(data, 'Object')){
-                var temp = [];
-                Nui.each(data, function(val, key){
-                    temp.push('"'+ key +'":'+ tools.getJSON(val));
-                });
-                return '{' + temp.join(',') + '}';
-            }
-            else{
-                return '"'+data+'"';
-            }
-        }
-    },
-    /**
-     * @func 返回form数据对象
+     * @func 获取表单数据集合
+     * @return <Object>
+     * @param element <jQuery Object> 表单元素集合或者form元素
+     * @param item <String> 将name相同表单元素值分隔，当设置为jquery选择器时，配合field参数使用，用于获取item中表单元素的数据集合
+     * @param field <String> 字段名，配合item参数使用，返回对象中会包含该字段
+     * @example
+     * <form id="form">
+     *  <input type="hidden" name="name0" value="0">
+     * <div>
+     *  <input type="hidden" name="name1" value="1">
+     *  <input type="hidden" name="name2" value="2">
+     * </div>
+     * <div>
+     *  <input type="hidden" name="name1" value="3">
+     *  <input type="hidden" name="name2" value="4">
+     * </div>
+     * <form>
+     * getData($('#form'), 'div', 'list').result => 
+     * {
+     *  name0:'0',
+     *  list:[{
+     *      name1:'1',
+     *      name2:'2'
+     *  }, {
+     *      name1:'3',
+     *      name2:'4'
+     *  }]
+     * }
      */
     getData:function(element, item, field){
         var that = this;
@@ -210,7 +284,7 @@ Nui.define('util', {
     		'voids':0, //字段中空值数量
             'total':0 //总计多少个字段
     	}, arr = element.serializeArray(), div = ',';
-        if(item && typeof item === 'string'){
+        if(item && typeof item === 'string' && !field){
             div = item
         }
         Nui.each(arr, function(v, i){
@@ -228,10 +302,10 @@ Nui.define('util', {
         Nui.each(data.result, function(v, k){
             data.result[k] = v.join(div)
         })
-        if(item && item instanceof jQuery && field){
+        if(item && field){
             var once = false;
             data.result[field] = [];
-            item.each(function(){
+            element.find(item).each(function(){
                 var result = that.getData($(this).find('[name]')).result;
                 if(!once){
                     Nui.each(result, function(v, k){
