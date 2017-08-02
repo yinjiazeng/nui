@@ -344,7 +344,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             var self = this, opts = self.options;
             self._on('click', Nui.doc, self.target, function(e, elem){
                 self._render(elem);
-                return false
+                e.preventDefault()
             })
             return self
         },
