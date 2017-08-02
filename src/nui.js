@@ -282,8 +282,16 @@
     var toFixed = Number.prototype.toFixed;
     String.prototype.toFixed = Number.prototype.toFixed = function(n){
         n = n || 0;
+        if(isNaN(this)){
+            return this
+        }
         //将数字转换为字符串，用于分割
         var value = this.toString();
+        var pre = '';
+        if(value < 0){
+            value = value.replace('-', '');
+            pre = '-';
+        }
         //获取小数点所在位置
         var i = value.indexOf('.');
         //补零
@@ -306,7 +314,7 @@
             if(decimal.indexOf('1') === 0){
                 integer = (integer + 1).toString()
             }
-            return integer + decimal.substr(1)
+            return pre + integer + decimal.substr(1)
         }
         //整数就直接补零
         else if(n > 0){
