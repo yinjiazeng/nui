@@ -994,7 +994,7 @@ Nui.define('util', {
         }
         //整数就直接补零
         else if(decimal > 0){
-            value = value + '.' + mend(decimal)
+            value = pre + value + '.' + mend(decimal)
         }
 
         if(number !== null && number >= 0 && number < decimal){
@@ -1426,6 +1426,8 @@ Nui.define('template', ['util'], function(util){
             console.error(msg)
         }
     }
+
+    console.log(util.toFixed(-5845.00, 2))
 
     var compile = function(tpl, logic){
         if(!tpl){

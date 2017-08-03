@@ -81,7 +81,7 @@ Nui.define('util', {
         }
         //整数就直接补零
         else if(decimal > 0){
-            value = value + '.' + mend(decimal)
+            value = pre + value + '.' + mend(decimal)
         }
 
         if(number !== null && number >= 0 && number < decimal){
