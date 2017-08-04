@@ -23,6 +23,10 @@ datagrid({
             children:[{
                 title:'id11',
                 field:'id',
+                children:[{
+                    title:'id12',
+                field:'id',
+                }]
             }, {
                 title:'id12',
                 field:'id',
