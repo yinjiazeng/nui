@@ -1427,8 +1427,6 @@ Nui.define('template', ['util'], function(util){
         }
     }
 
-    console.log(util.toFixed(-5845.00, 2))
-
     var compile = function(tpl, logic){
         if(!tpl){
             return ''

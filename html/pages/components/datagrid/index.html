@@ -1,0 +1,25 @@
+{% extends "layout.tpl" %}
+
+{% block title %}{% endblock %}
+
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('study')}}
+{% endblock %}
+
+{% block subpage %} class="g-html"{% endblock %}
+
+{% block content %}
+	<div class="g-main f-fr">
+		<div class="mainbox">
+            <h1 class="e-pt20 e-pb20 f-fs28">数据网格</h1>
+            <div id="data"></div>
+		</div>
+	</div>
+	{% import 'sidecol.tpl' as side %}
+	{{side.active('cpns', 'datagrid')}}
+{% endblock %}
+
+{% block script %}
+Nui.load('./script/demo')
+{% endblock %}
