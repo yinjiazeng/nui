@@ -10,12 +10,25 @@
 {% block subpage %} class="g-html"{% endblock %}
 
 {% block content %}
+
 	<div class="g-main f-fr">
 		<div class="mainbox">
             <h1 class="e-pt20 e-pb20 f-fs28">数据网格</h1>
-			<div id="data"></div>
+			<div id="data" style="height:200px; position:relative; zoom:1;"></div>
 			<style>
-			th { border:1px solid #f00;}
+			table { width: 100%;}
+			th { height: 30px;}
+			th .cell-text {}
+			th, td { border:1px solid #ccc; text-align: center; vertical-align: middle; box-sizing: border-box;}
+			td { height: 30px;/* word-wrap: break-word; word-break: break-all;*/}
+			.datagrid-table-normal { }
+			.datagrid-main { position: relative;}
+			.datagrid-table-fixed { position: absolute; top:0; background-color: #fff;}
+			.datagrid-table-left { left: 0;}
+			.datagrid-table-right { right: 0;}
+			.datagrid-table-fixed table { width: auto;}
+			.cell-text { display: inline-block; max-width: 100%; overflow:hidden;}
+			.datagrid-inner { margin-top: -1px; overflow: auto; position: relative;}
 			</style>
 		</div>
 	</div>
