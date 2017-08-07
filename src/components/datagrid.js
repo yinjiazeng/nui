@@ -130,6 +130,7 @@ Nui.define(['component'], function(component){
                     '<div class="datagrid-body">'+
                         '<%include "table"%>'+
                     '</div>'+
+                    '<%if footer || paging%>'+
                     '<div class="datagrid-foot">'+
                         '<%if footer%>'+
                         '<%footer%>'+
@@ -138,6 +139,7 @@ Nui.define(['component'], function(component){
                         '<div class="datagrid-paging"></div>'+
                         '<%/if%>'+
                     '</div>'+
+                    '<%/if%>'+
                 '</div>',
             table:
                 '<%each rows v k%>'+
