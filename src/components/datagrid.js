@@ -1,6 +1,7 @@
 Nui.define(['component'], function(component){
     var module = this;
-    var paging = module.require('./paging');
+    var paging = module.require('../paging');
+
     return module.extend(component, {
         static:{
             _init:function(){
@@ -71,24 +72,34 @@ Nui.define(['component'], function(component){
             isBorder:true,
             url:null,
             paging:null,
+            fields:null,
+            dataName:'list',
+            width:'100%',
+            height:'auto',
+            footer:'',
 
-            onFilter:null,
-            onClick:null,
             onFocusin:null,
             onFocusout:null,
             onFocus:null,
             onBlur:null,
 
+            stringify:null,
             onRowClick:null,
-            onRowDblclick:null
+            onRowDblclick:null,
+            onCheckboxChange:null,
+            onRenderBefore:null,
+            onRender:null
         },
         _template:{
             layout:
                 '<div class="<% className %>">'+
                     '<div class="datagrid-body">'+
-                        '<div class="datagrid-main">'+
-                            '<%include "table"%>'+
-                        '</div>'+
+                        '<%include "table"%>'+
+                    '</div>'+
+                    '<div class="datagrid-foot">'+
+                        '<%if footer%>'+
+                        '<%footer%>'+
+                        '<%/if%>'+
                         '<%if paging%>'+
                         '<div class="datagrid-paging"></div>'+
                         '<%/if%>'+
@@ -98,14 +109,23 @@ Nui.define(['component'], function(component){
                 '<%each rows v k%>'+
                     '<%if v.length%>'+
                     '<div class="datagrid-table<%if k === "left" || k === "right"%> datagrid-table-fixed<%/if%> datagrid-table-<%k%>">'+
-                        '<div class="datagrid-thead">'+
+                        '<div class="datagrid-title">'+
+                            '<div class="datagrid-thead">'+
                             '<table class="ui-table">'+
                                 '<thead class="table-thead">'+
                                     '<%each v%>'+
                                     '<tr class="table-row">'+
                                         '<%each $value val%>'+
                                         '<th class="table-cell"<%include "attr"%>>'+
-                                            '<span class="cell-text"><%val.title%></span>'+
+                                            '<span class="cell-text">'+
+                                            '<%if val.content === "checkbox"%>'+
+                                            '<span class="ui-checkradio">'+
+                                            '<input type="checkbox" name="datagrid-checkbox">'+
+                                            '</span>'+
+                                            '<%else%>'+
+                                            '<%val.title%>'+
+                                            '<%/if%>'+
+                                            '</span>'+
                                         '</th>'+
                                         '<%/each%>'+
                                     '</tr>'+
@@ -115,6 +135,7 @@ Nui.define(['component'], function(component){
                                 '<tbody class="table-tbody datagrid-inner"></tbody>'+
                                 '<%/if%>'+
                             '</table>'+
+                            '</div>'+
                         '</div>'+
                         '<%if isFixed === true%>'+
                         '<div class="datagrid-inner"></div>'+
@@ -136,17 +157,42 @@ Nui.define(['component'], function(component){
                 '<%/if%>',
             rows:
                 '<%if list && list.length%>'+
+                '<%var toLower = function(str){'+
+                    'return str.replace(/([A-Z])/g, function(a){'+
+                        'return "-"+a.toLowerCase()'+
+                    '})'+
+                '}%>'+
                 '<%each list%>'+
-                '<tr class="table-row" data-row-index="<%$index%>">'+
-                    '<%each fields val key%>'+
-                    '<%each $value v k%>'+
-                    '<%if val.field === k%>'+
-                    '<td class="table-cell"<%include "attr"%>>'+
-                        '<span class="cell-text"><%v%></div>'+
-                    '</td>'+
-                    '<%return false%>'+
+                '<tr class="table-row" data-row-index="<%$index%>"<%include "data"%>>'+
+                    '<%each cols val key%>'+
+                    '<%var _value%>'+
+                    '<%if val.field && (!val.content || "number checkbox input".indexOf(val.content)===-1)%>'+
+                    '<%var _value=$value[val.field]%>'+
+                    '<%elseif val.content === "number"%>'+
+                    '<%var _value=$index+1%>'+
+                    '<%elseif val.content === "checkbox"%>'+
+                    '<%var _value={"name":val.field ? val.field : "datagrid-checkbox", "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
+                    '<%elseif val.content === "input"%>'+
+                    '<%var _value={"name":val.field ? val.field : "datagrid-input", "class":"datagrid-input", "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
+                    '<%else%>'+
+                    '<%var _value=val.content%>'+
                     '<%/if%>'+
-                    '<%/each%>'+
+                    '<td class="table-cell"<%include "attr"%>>'+
+                        '<span class="cell-text<%if val.nowrap === true%> cell-nowrap<%/if%>">'+
+                        '<%if typeof val.filter === "function"%>'+
+                        '<%var _value = val.filter(_value, val.field, $value)%>'+
+                        '<%/if%>'+
+                        '<%if val.content === "checkbox" && typeof _value === "object"%>'+
+                        '<span class="checkradio">'+
+                        '<input type="checkbox"<%include "_attr"%>>'+
+                        '</span>'+
+                        '<%elseif val.content === "input" && typeof _value === "object"%>'+
+                        '<input type="text" autocomplete="off"<%include "_attr"%>>'+
+                        '<%else%>'+
+                        '<%_value%>'+
+                        '<%/if%>'+
+                        '</span>'+
+                    '</td>'+
                     '<%/each%>'+
                 '</tr>'+
                 '<%/each%>'+
@@ -159,12 +205,24 @@ Nui.define(['component'], function(component){
                 '<%/if%>',
             head:'',
             foot:'',
+            _attr:
+                '<%each _value _v _k%>'+
+                ' <%_k%>="<%_v%>"'+
+                '<%/each%>',
             attr:
                 '<%each val value name%>'+
-                '<%if "width field align valign nowrap colspan rowspan cellid".indexOf(name) !== -1%>'+
+                '<%if "width field align valign colspan rowspan cellid".indexOf(name) !== -1%>'+
                 ' <%name%>="<%value%>"'+
                 '<%/if%>'+
-                '<%/each%>'
+                '<%/each%>',
+            data:
+                '<%if fields%>'+
+                '<%each $value value field%>'+
+                '<%if fields === true || $.inArray(field, fields) !== -1%>'+
+                ' data-<%toLower(field)%>=<%if typeof stringify === "function"%><%stringify(value)%><%else%>"<%value%>"<%/if%>'+
+                '<%/if%>'+
+                '<%/each%>'+
+                '<%/if%>'
         },
         _init:function(){
             this._exec()
@@ -195,8 +253,6 @@ Nui.define(['component'], function(component){
             self._cols = {};
             self._rowNumber = _class._getRowNumber(opts.columns, 0, []);
 
-            self._data = opts.data;
-
             Nui.each(self._columns, function(v, k){
                 self._setRowCol(v, k)
             })
@@ -206,44 +262,96 @@ Nui.define(['component'], function(component){
             self.element = $(self._tpl2html('layout', self._tplData({
                 rows:self._rows,
                 isFixed:opts.isFixed,
-                paging:opts.paging
+                paging:typeof opts.paging === 'object',
+                footer:opts.footer
             }))).appendTo(self.target);
 
-            self._theadHeight();
+            self._body = self.element.children('.datagrid-body');
+            self._tableNormal = self._body.children('.datagrid-table-normal');
+            self._tableNormalInner = self._tableNormal.children('.datagrid-inner');
+            self._tableNormalTitle = self._tableNormal.children('.datagrid-title');
+            self._tableNormalThead = self._tableNormalTitle.children('.datagrid-title');
+            self._tableLeft = self._body.children('.datagrid-table-left');
+            self._tableRight = self._body.children('.datagrid-table-right');
+            self._tableFixed = self._body.children('.datagrid-table-fixed');
+            self._tableFixedInner = self._tableFixed.children('.datagrid-inner');
+            self._foot = self.element.children('.datagrid-foot');
 
+            self._theadHeight();
+            self._initList();
+            self._bindEvent();
+        },
+        _initList:function(){
+            var self = this, opts = self.options;
+            if(opts.paging){
+                opts.paging.wrap = self._foot.children('.datagrid-paging');
+                var pagingId = 'paging_'+self.__id;
+                var echoData = opts.paging.echoData;
+                opts.paging.echoData = function(data, type){
+                    self._list = data[opts.dataName] || [];
+                    self._render();
+                    if(typeof echoData === 'function'){
+                        echoData.call(opts.paging, data, type)
+                    }
+                }
+                self.paging = $.paging(pagingId, opts.paging);
+            }
+            else if(opts.data){
+                self._list = opts.data;
+                self._render();
+            }
+        },
+        _bindEvent:function(){
+            var self = this;
+            self._on('scroll', self._tableNormalInner, function(){
+                self._scroll($(this))
+            })
+            self._event()
+        },
+        _render:function(){
+            var self = this, opts = self.options;
             Nui.each(self._cols, function(v, k){
-                self.element.find('.datagrid-table-'+k+' .datagrid-inner').html(self._tpl2html('tbody', {
+                self.element.find('.datagrid-table-'+k+' > .datagrid-inner').html(self._tpl2html('tbody', {
                     isFixed:opts.isFixed,
-                    fields:v,
-                    list:self._data
+                    cols:v,
+                    fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
+                    list:self._list,
+                    stringify:opts.stringify
                 }))
             })
-
             self._rowHeight();
             self._resetHeight();
-            self._event()
         },
         _resetHeight:function(){
             var self = this, opts = self.options;
             if(opts.isFixed === true){
                 var conntailerHeight = self.target.innerHeight();
-                var inner = self.element.find('.datagrid-inner');
-                var tbody = self.element.find('.datagrid-tbody');
-                var thead = self.element.find('.datagrid-thead');
-                var height = conntailerHeight - thead.outerHeight() - self.element.find('.datagrid-paging').outerHeight();
-                inner.height(height);
-                var width = inner.width() - inner.children().width();
-                thead.css({'padding-right':width})
+                var tbody = self._tableNormalInner.children('.datagrid-tbody');
+                var height = conntailerHeight - self._tableNormalTitle.outerHeight() - self._foot.outerHeight();
+
+                self._tableNormal.find('.datagrid-thead > .ui-table').width(opts.width);
+                self._tableNormal.find('.datagrid-tbody > .ui-table').width(opts.width);
+
+                if(tbody.children().width() > self._tableNormalInner.width()){
+                    self._tableFixedInner.height(height - 17);
+                }
+                else{
+                    self._tableFixedInner.height(height);
+                }
+                self._tableNormalInner.height(height);
+                var width = self._tableNormalInner.innerWidth() - self._tableNormalInner.children().width();
+                self._tableNormalTitle.css({'margin-right':width});
+
+                self._tableRight.css('right', width)
             }
         },
         _theadHeight:function(){
             var self = this;
             if(self._hasLeftRight){
-                var normalThead = self.element.find('.datagrid-table-normal .table-thead')
 
-                self.element.find('.datagrid-table-fixed .table-thead .table-cell').each(function(i){
+                self._tableFixed.find('.table-thead .table-cell').each(function(i){
                     var item = $(this), cellid = item.attr('cellid');
-                    var elem = normalThead.find('.table-cell[cellid="'+ cellid +'"]');
+                    var elem = self._tableNormalThead.find('.table-cell[cellid="'+ cellid +'"]');
                     var height = elem.innerHeight();
                     if(Nui.browser.msie){
                         if(Nui.browser.version > 8){
@@ -260,10 +368,10 @@ Nui.define(['component'], function(component){
         _rowHeight:function(){
             var self = this;
             if(self._hasLeftRight){
-                var LeftRow = self.element.find('.datagrid-table-left .table-tbody .table-row');
-                var RightRow = self.element.find('.datagrid-table-right .table-tbody .table-row');
+                var LeftRow = self._tableLeft.find('.table-tbody .table-row');
+                var RightRow = self._tableLeft.find('.table-tbody .table-row');
 
-                self.element.find('.datagrid-table-normal .table-tbody .table-row').each(function(i){
+                self._tableNormal.find('.table-tbody .table-row').each(function(i){
                     var height = $(this).outerHeight();
                     LeftRow.eq(i).height(height);
                     RightRow.eq(i).height(height);
@@ -311,8 +419,24 @@ Nui.define(['component'], function(component){
                 self._rows[type][row].push(data)
             })
         },
+        _callback:function(){
+            var args = arguments;
+            var type = args[0];
+            var callback = this.options['on'+type];
+            if(typeof callback === 'function'){
+                return callback.apply(this, Array.prototype.slice.call(args, 1))
+            }
+        },
         _events:{
-            'click .table-tbody .table-row':'_active _getRowData _rowclick'
+            'click .table-tbody .table-row':'_active _getRowData _rowclick',
+            'dblclick .table-tbody .table-row':'_getRowData _rowdblclick',
+            'focus .datagrid-input':'_enable _getRowData _focus',
+            'blur .datagrid-input':'_enable _getRowData _blur',
+            'focusin .table-tbody .table-cell':'_focusin',
+            'focusout .table-tbody .table-cell':'_focusout'
+        },
+        _enable:function(e, elem){
+            return !elem.hasClass('s-dis') && !elem.hasClass('s-disabled')
         },
         _active:function(e, elem){
             var self = this;
@@ -327,13 +451,29 @@ Nui.define(['component'], function(component){
             }
         },
         _getRowData:function(e, elem){
-            return this._data[elem.data('rowIndex')];
+            if(elem.hasClass('table-row')){
+                return elem.data()
+            }
+            return elem.closest('.table-row').data()
+        },
+        _focusin:function(e, elem, data){
+            return this._callback('Focusin', e, elem, data)
+        },
+        _focusout:function(e, elem, data){
+            return this._callback('Focusout', e, elem, data)
         },
         _rowclick:function(e, elem, data){
-            var rowClick = this.options.onRowClick;
-            if(typeof rowClick === 'function'){
-                rowClick.call(this, e, elem, data)
-            }
+            return this._callback('RowClick', e, elem, data)
+        },
+        _rowdblclick:function(e, elem, data){
+            return this._callback('RowDblclick', e, elem, data)
+        },
+        _scroll:function(elem){
+            var self = this;
+            var scrollTop = elem.scrollTop();
+            var scrollLeft = elem.scrollLeft();
+            self._tableFixedInner.scrollTop(scrollTop);
+            self._tableNormalThead.scrollLeft(scrollLeft);
         }
     })
 })
