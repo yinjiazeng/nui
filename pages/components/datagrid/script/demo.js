@@ -5,9 +5,9 @@ datagrid({
     //isFixed:false,
     //fields:true,
     width:'110%',
-    paging:{
+    /*paging:{
         url:'http://127.0.0.1/data/'
-    },
+    },*/
     footer:'11',
     data:[{
         id:'11111111',
@@ -97,11 +97,19 @@ datagrid({
         title:'编号',
         content:'number',
         width:'40',
-        fixed:true
+        //fixed:true
     }, {
         title:'ID',
         field:'id',
-        width:'200'
+        width:'200',
+        order:{
+            desc:'1',
+            asc:'2'
+        },
+        select:[{
+            text:'',
+            value:''
+        }]
     }, {
         title:'期初余额',
         field:'address',
@@ -117,11 +125,13 @@ datagrid({
         }, {
             title:'借方',
             width:'200',
+            order:'asc',
             field:'buaddress',
             nowrap:true
         }]
     }, {
         title:'姓名',
+        order:'desc',
         field:'certificate',
         content:'input',
         width:200
@@ -139,5 +149,8 @@ datagrid({
     },
     onRowDblclick:function(e, elem, data){
         //alert()
+    },
+    onRender:function(){
+        console.log(this)
     }
 })

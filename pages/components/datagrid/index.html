@@ -45,7 +45,7 @@
 	<!-- content -->
 	<div class="g-content">
     
-<div id="data" style="height:300px; margin:100px;"></div>
+<div id="data" style="height:50%; margin:100px;"></div>
 	<div class="g-main f-fr">
 		<div class="mainbox">
             <h1 class="e-pt20 e-pb20 f-fs28">数据网格</h1>
@@ -65,12 +65,25 @@
 			.datagrid-title { position: relative;}
 			.datagrid-table-fixed table { width: auto;}
 			.cell-text.cell-nowrap { display: inline-block; max-width: 100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
-			.datagrid-inner { margin-top: -1px; overflow: auto;}
+			.datagrid-inner { margin-top: -1px; overflow: auto; zoom:1;}
 			.datagrid-table-fixed .datagrid-inner { overflow: hidden;}
 			.datagrid-table-normal .datagrid-thead { overflow: hidden; width:100%;}
 			.datagrid-table-normal .datagrid-tbody { width: 100%;}
 			.ui-paging { overflow:hidden; background-color:#fff;}
 			.datagrid-paging { padding-top: 20px; height:30px;}
+			.datagrid-order { position: relative; display: inline-block;}
+			.datagrid-order b { left: 3px; cursor: pointer;}
+			.datagrid-order b, .datagrid-order s, .datagrid-order i { position: absolute;}
+			.datagrid-order s, .datagrid-order i { line-height:0; font-size:0; border:6px dashed transparent;}
+			.datagrid-order-asc { top: -14px;}
+			.datagrid-order-asc i { border-bottom-style:solid; border-bottom-color:#ccc;}
+			.datagrid-order-asc.s-crt i { border-bottom-color:#f00;}
+			.datagrid-order-desc { bottom: 7px;}
+			.datagrid-order-desc i { border-top-style:solid; border-top-color:#ccc;}
+			.datagrid-order-desc.s-crt i { border-top-color:#f00;}
+			.datagrid-order-both .datagrid-order-asc { top:-18px;}
+			.datagrid-order-both .datagrid-order-desc { bottom:2px;}
+
 .ui-paging li { float:left; display:inline; text-align:center; margin-right:5px; line-height:22px;}
 .ui-paging span,.ui-paging a,.ui-paging em,.ui-paging input,.ui-paging button { float:left;}
 .ui-paging span,.ui-paging a { height:22px; width:22px; text-align:center; border:1px solid #ccc;}

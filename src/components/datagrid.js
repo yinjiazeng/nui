@@ -1,6 +1,16 @@
 Nui.define(['component'], function(component){
     var module = this;
     var paging = module.require('../paging');
+    
+    var scrollBarWidth = (function(){
+        var oldWidth, newWidth, div = document.createElement('div');
+        div.style.cssText = 'position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;';
+        oldWidth = document.body.appendChild(div).clientWidth;
+        div.style.overflowY = 'scroll';
+        newWidth = div.clientWidth;
+        document.body.removeChild(div);
+        return oldWidth - newWidth;
+    })()
 
     return module.extend(component, {
         static:{
@@ -12,6 +22,20 @@ Nui.define(['component'], function(component){
                             val.element.find('.datagrid-tbody table-row.s-crt').removeClass('s-crt');
                         }
                     })
+                });
+
+                /*var timer = null;
+                Nui.win.on('resize', function(){
+                    clearTimeout(timer);
+                    timer = setTimeout(function(){
+                        self._resize()
+                    }, 100)
+                })*/
+            },
+            _resize:function(){
+                Nui.each(this.__instances, function(val){
+                    val._theadHeight();
+                    val._resetHeight()
                 })
             },
             _hasChildren:function(value){
@@ -30,6 +54,17 @@ Nui.define(['component'], function(component){
                 
                 Nui.each(array, function(v){
                     v['cellid'] = id++;
+                    var order = v.order;
+                    if(order === true){
+                        order = 'desc'
+                    }
+                    if(order === 'asc' || order === 'desc'){
+                        v.order = {};
+                        v.order[order] = 1;
+                    }
+                    if(v.order && !v.order.field){
+                        v.order.field = v.field
+                    }
 
                     if(parent && parent.fixed){
                         v.fixed = parent.fixed
@@ -87,7 +122,6 @@ Nui.define(['component'], function(component){
             onRowClick:null,
             onRowDblclick:null,
             onCheckboxChange:null,
-            onRenderBefore:null,
             onRender:null
         },
         _template:{
@@ -124,6 +158,17 @@ Nui.define(['component'], function(component){
                                             '</span>'+
                                             '<%else%>'+
                                             '<%val.title%>'+
+                                            '<%if typeof val.order === "object"%>'+
+                                            '<%var asc = Nui.type(val.order.asc, ["String", "Number"]), desc = Nui.type(val.order.desc, ["String", "Number"])%>'+
+                                            '<em class="datagrid-order<%if asc && desc%> datagrid-order-both<%/if%>" field="<%val.order.field%>">'+
+                                            '<%if asc%>'+
+                                            '<b class="datagrid-order-asc" type="asc" value="<%val.order.asc%>"><i></i><s></s></b>'+
+                                            '<%/if%>'+
+                                            '<%if desc%>'+
+                                            '<b class="datagrid-order-desc" value="<%val.order.desc%>"><i></i><s></s></b>'+
+                                            '<%/if%>'+
+                                            '</em>'+
+                                            '<%/if%>'+
                                             '<%/if%>'+
                                             '</span>'+
                                         '</th>'+
@@ -270,7 +315,7 @@ Nui.define(['component'], function(component){
             self._tableNormal = self._body.children('.datagrid-table-normal');
             self._tableNormalInner = self._tableNormal.children('.datagrid-inner');
             self._tableNormalTitle = self._tableNormal.children('.datagrid-title');
-            self._tableNormalThead = self._tableNormalTitle.children('.datagrid-title');
+            self._tableNormalThead = self._tableNormalTitle.children('.datagrid-thead');
             self._tableLeft = self._body.children('.datagrid-table-left');
             self._tableRight = self._body.children('.datagrid-table-right');
             self._tableFixed = self._body.children('.datagrid-table-fixed');
@@ -319,11 +364,14 @@ Nui.define(['component'], function(component){
                     stringify:opts.stringify
                 }))
             })
-            self._rowHeight();
             self._resetHeight();
+            if(typeof opts.onRender === 'function'){
+                opts.onRender.call(self)
+            }
         },
         _resetHeight:function(){
             var self = this, opts = self.options;
+            self._rowHeight();
             if(opts.isFixed === true){
                 var conntailerHeight = self.target.innerHeight();
                 var tbody = self._tableNormalInner.children('.datagrid-tbody');
@@ -333,14 +381,17 @@ Nui.define(['component'], function(component){
                 self._tableNormal.find('.datagrid-tbody > .ui-table').width(opts.width);
 
                 if(tbody.children().width() > self._tableNormalInner.width()){
-                    self._tableFixedInner.height(height - 17);
+                    self._tableFixedInner.height(height - scrollBarWidth);
                 }
                 else{
                     self._tableFixedInner.height(height);
                 }
                 self._tableNormalInner.height(height);
-                var width = self._tableNormalInner.innerWidth() - self._tableNormalInner.children().width();
-                self._tableNormalTitle.css({'margin-right':width});
+                
+                var width = self._tableNormalInner.innerHeight() >= tbody.outerHeight() ? 0 : scrollBarWidth;
+                if(!Nui.bsie7){
+                    self._tableNormalTitle.css({'padding-right':width});
+                }
 
                 self._tableRight.css('right', width)
             }
@@ -348,7 +399,6 @@ Nui.define(['component'], function(component){
         _theadHeight:function(){
             var self = this;
             if(self._hasLeftRight){
-
                 self._tableFixed.find('.table-thead .table-cell').each(function(i){
                     var item = $(this), cellid = item.attr('cellid');
                     var elem = self._tableNormalThead.find('.table-cell[cellid="'+ cellid +'"]');
@@ -433,7 +483,19 @@ Nui.define(['component'], function(component){
             'focus .datagrid-input':'_enable _getRowData _focus',
             'blur .datagrid-input':'_enable _getRowData _blur',
             'focusin .table-tbody .table-cell':'_focusin',
-            'focusout .table-tbody .table-cell':'_focusout'
+            'focusout .table-tbody .table-cell':'_focusout',
+            'click .datagrid-order > b':'_order'
+        },
+        _order:function(e, elem){
+            elem.toggleClass('s-crt');
+            elem.siblings().removeClass('s-crt');
+            var parent = elem.parent();
+            var field = parent.attr('field');
+            var value = parent.children('b.s-crt').attr('value');
+            if(this.paging){
+                this.paging.condition[field] = value;
+                this.paging.query(true)
+            }
         },
         _enable:function(e, elem){
             return !elem.hasClass('s-dis') && !elem.hasClass('s-disabled')
@@ -441,7 +503,7 @@ Nui.define(['component'], function(component){
         _active:function(e, elem){
             var self = this;
             if(self.options.isActive === true){
-                self.element.find('.datagrid-tbody .table-row').eq(elem.index()).addClass('s-crt').siblings().removeClass('s-crt');
+                self.element.find('.datagrid-tbody .table-row[data-row-index="'+ elem.index() +'"]').addClass('s-crt').siblings().removeClass('s-crt');
                 Nui.each(self.__instances, function(val){
                     if(val !== self && val.options.isActive === true){
                         val.element.find('.datagrid-tbody table-row.s-crt').removeClass('s-crt');
@@ -474,6 +536,10 @@ Nui.define(['component'], function(component){
             var scrollLeft = elem.scrollLeft();
             self._tableFixedInner.scrollTop(scrollTop);
             self._tableNormalThead.scrollLeft(scrollLeft);
+        },
+        resize:function(){
+            this._theadHeight();
+            this._resetHeight()
         }
     })
 })
