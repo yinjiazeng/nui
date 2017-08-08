@@ -140,6 +140,9 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                             if(v.target){
                                 v._render(v.target.eq(0));
                             }
+                            else if(v.path){
+                                v._render(v.path);
+                            }
                             self._initialize = true;
                             return false
                         }
