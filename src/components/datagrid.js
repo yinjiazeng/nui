@@ -1,5 +1,6 @@
 Nui.define(['component'], function(component){
     var module = this;
+    module.require('../paging');
     
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
@@ -277,8 +278,8 @@ Nui.define(['component'], function(component){
             var self = this, opts = self.options;
             if(self._getTarget() && Nui.isArray(opts.columns) && opts.columns.length){
                 self._columns = {
+                    all:[],
                     left:[],
-                    normal:[],
                     right:[]
                 }
                 Nui.each(opts.columns, function(v, k){
@@ -288,7 +289,7 @@ Nui.define(['component'], function(component){
                     else if(v.fixed === 'right'){
                         self._columns.right.push(v)
                     }
-                    self._columns.normal.push(v)
+                    self._columns.all.push(v)
                 })
                 self._create()
             }
@@ -304,7 +305,7 @@ Nui.define(['component'], function(component){
             })
 
             self._hasLeftRight = this._cols.left.length || this._cols.right.length;
-
+console.log(self._rows)
             self.element = $(self._tpl2html('layout', self._tplData({
                 rows:self._rows,
                 isFixed:opts.isFixed,
@@ -313,10 +314,10 @@ Nui.define(['component'], function(component){
             }))).appendTo(self.target);
 
             self._body = self.element.children('.datagrid-body');
-            self._tableNormal = self._body.children('.datagrid-table-normal');
-            self._tableNormalInner = self._tableNormal.children('.datagrid-inner');
-            self._tableNormalTitle = self._tableNormal.children('.datagrid-title');
-            self._tableNormalThead = self._tableNormalTitle.children('.datagrid-thead');
+            self._tableAll = self._body.children('.datagrid-table-all');
+            self._tableAllInner = self._tableAll.children('.datagrid-inner');
+            self._tableAllTitle = self._tableAll.children('.datagrid-title');
+            self._tableAllThead = self._tableAllTitle.children('.datagrid-thead');
             self._tableLeft = self._body.children('.datagrid-table-left');
             self._tableRight = self._body.children('.datagrid-table-right');
             self._tableFixed = self._body.children('.datagrid-table-fixed');
@@ -349,7 +350,7 @@ Nui.define(['component'], function(component){
         },
         _bindEvent:function(){
             var self = this;
-            self._on('scroll', self._tableNormalInner, function(){
+            self._on('scroll', self._tableAllInner, function(){
                 self._scroll($(this))
             })
             self._event()
@@ -375,44 +376,35 @@ Nui.define(['component'], function(component){
             self._rowHeight();
             if(opts.isFixed === true){
                 var conntailerHeight = self.target.innerHeight();
-                var tbody = self._tableNormalInner.children('.datagrid-tbody');
-                var height = conntailerHeight - self._tableNormalTitle.outerHeight() - self._foot.outerHeight();
+                var tbody = self._tableAllInner.children('.datagrid-tbody');
+                var height = conntailerHeight - self._tableAllTitle.outerHeight() - self._foot.outerHeight();
 
-                self._tableNormal.find('.datagrid-thead > .ui-table').width(opts.width);
-                self._tableNormal.find('.datagrid-tbody > .ui-table').width(opts.width);
+                self._tableAll.find('.datagrid-thead > .ui-table').width(opts.width);
+                self._tableAll.find('.datagrid-tbody > .ui-table').width(opts.width);
 
-                if(tbody.children().width() > self._tableNormalInner.width()){
+                if(tbody.children().width() > self._tableAllInner.width()){
                     self._tableFixedInner.height(height - scrollBarWidth);
                 }
                 else{
                     self._tableFixedInner.height(height);
                 }
-                self._tableNormalInner.height(height);
+                self._tableAllInner.height(height);
                 
-                var width = self._tableNormalInner.innerHeight() >= tbody.outerHeight() ? 0 : scrollBarWidth;
-                if(!Nui.bsie7){
-                    self._tableNormalTitle.css({'padding-right':width});
-                }
+                var width = self._tableAllInner.innerHeight() >= tbody.outerHeight() ? 0 : scrollBarWidth;
+                self._tableAllTitle.css({'margin-right':width});
 
                 self._tableRight.css('right', width)
             }
         },
         _theadHeight:function(){
-            var self = this;
+            var self = this, _class = self.constructor;
             if(self._hasLeftRight){
                 self._tableFixed.find('.table-thead .table-cell').each(function(i){
                     var item = $(this), cellid = item.attr('cellid');
-                    var elem = self._tableNormalThead.find('.table-cell[cellid="'+ cellid +'"]');
-                    var height = elem.innerHeight();
-                    if(Nui.browser.msie){
-                        if(Nui.browser.version > 8){
-                            height += 1
-                        }
-                        else if(Nui.browser.version == 7){
-                            height -= 1
-                        }
-                    }
-                    item.height(height)
+                    var elem = self._tableAllThead.find('.table-cell[cellid="'+ cellid +'"]');
+                    var height = elem.height();
+                    var _height = item.height(height).height() - height;
+                    item.height(height - _height);
                 })
             }
         },
@@ -422,7 +414,7 @@ Nui.define(['component'], function(component){
                 var LeftRow = self._tableLeft.find('.table-tbody .table-row');
                 var RightRow = self._tableLeft.find('.table-tbody .table-row');
 
-                self._tableNormal.find('.table-tbody .table-row').each(function(i){
+                self._tableAll.find('.table-tbody .table-row').each(function(i){
                     var height = $(this).outerHeight();
                     LeftRow.eq(i).height(height);
                     RightRow.eq(i).height(height);
@@ -480,6 +472,12 @@ Nui.define(['component'], function(component){
         },
         _events:{
             'click .table-tbody .table-row':'_active _getRowData _rowclick',
+            'mouseover .table-tbody .table-row':function(e, elem){
+                this.element.find('.datagrid-tbody .table-row[data-row-index="'+ elem.index() +'"]').addClass('s-hover')
+            },
+            'mouseout .table-tbody .table-row':function(e, elem){
+                this.element.find('.datagrid-tbody .table-row[data-row-index="'+ elem.index() +'"]').removeClass('s-hover')
+            },
             'dblclick .table-tbody .table-row':'_getRowData _rowdblclick',
             'focus .datagrid-input':'_enable _getRowData _focus',
             'blur .datagrid-input':'_enable _getRowData _blur',
@@ -536,7 +534,7 @@ Nui.define(['component'], function(component){
             var scrollTop = elem.scrollTop();
             var scrollLeft = elem.scrollLeft();
             self._tableFixedInner.scrollTop(scrollTop);
-            self._tableNormalThead.scrollLeft(scrollLeft);
+            self._tableAllThead.scrollLeft(scrollLeft);
         },
         resize:function(){
             this._theadHeight();

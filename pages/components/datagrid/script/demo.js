@@ -5,9 +5,9 @@ var a = datagrid({
     //isFixed:false,
     //fields:true,
     width:'110%',
-    /*paging:{
+    paging:{
         url:'http://127.0.0.1/data/'
-    },*/
+    },
     footer:'11',
     data:[{
         id:'11111111',
@@ -97,7 +97,7 @@ var a = datagrid({
         title:'编号',
         content:'number',
         width:'40',
-        //fixed:true
+        fixed:true
     }, {
         title:'ID',
         field:'id',

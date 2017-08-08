@@ -1731,7 +1731,7 @@ Nui.define('events', function(){
                 Nui.each(arr, function(val){
                     if(val[attr]){
                         Nui.each(val[attr][dir], function(v){
-                            var value = parseInt(selector.css(attr+v));
+                            var value = parseFloat(selector.css(attr+v));
                             size += isNaN(value) ? 0 : value
                         });
                     }

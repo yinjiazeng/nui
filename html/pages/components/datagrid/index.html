@@ -16,13 +16,20 @@
             <h1 class="e-pt20 e-pb20 f-fs28">数据网格</h1>
 			
 			<style>
-			table { table-layout: fixed;}
-			th { height: 30px;}
-			th .cell-text {}
-			th, td { border:1px solid #ccc; text-align: center; vertical-align: middle; box-sizing: border-box;}
-			td { height: 30px;/* word-wrap: break-word; word-break: break-all;*/}
-			.datagrid-table-normal { }
-			.datagrid-table-normal table { width: 100%;}
+			.ui-table { table-layout: fixed; width: 100%;}
+			.ui-table td { height: 60px;}
+			.ui-table td, .ui-table th { padding:5px; line-height: 20px; border:1px solid #ECEDEF; vertical-align: middle; font-size: 13px; word-break:break-all; box-sizing: border-box;}
+			.ui-table th { text-align: center; background-color: #F7FAFF;}
+			.ui-table .rows:hover { background-color: #F1FCFF;}
+			.ui-table .rows.s-crt, .ui-table .rows.s-crt:hover { background-color: #D9F6FF;}
+			.ui-table .table-row.s-hover { background-color: #F1FCFF;}
+			.ui-table .table-row.s-crt { background-color: #D9F6FF !important;}
+			.ui-void { display: inline-block; width: 83px; height: 83px; background: url("../../images/void.png?v=01ee8b8") no-repeat center;}
+
+
+			.datagrid-table-all { }
+			.datagrid-table-all table { width: 100%;}
+			.datagrid-body, .datagrid-thead { position: relative;}
 			.datagrid-body { position: relative;}
 			.datagrid-table-fixed { position: absolute; top:0; z-index: 1; background-color: #fff;}
 			.datagrid-table-left { left: 0;}
@@ -32,8 +39,8 @@
 			.cell-text.cell-nowrap { display: inline-block; max-width: 100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
 			.datagrid-inner { margin-top: -1px; overflow: auto; zoom:1;}
 			.datagrid-table-fixed .datagrid-inner { overflow: hidden;}
-			.datagrid-table-normal .datagrid-thead { overflow: hidden; width:100%;}
-			.datagrid-table-normal .datagrid-tbody { width: 100%;}
+			.datagrid-table-all .datagrid-thead { overflow: hidden; width:100%;}
+			.datagrid-table-all .datagrid-tbody { width: 100%;}
 			.ui-paging { overflow:hidden; background-color:#fff;}
 			.datagrid-paging { padding-top: 20px; height:30px;}
 			.datagrid-order { position: relative; display: inline-block;}
