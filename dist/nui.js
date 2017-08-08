@@ -1776,13 +1776,20 @@ Nui.define('events', function(){
                     this.init(Nui.doc)
                 }
             },
-            config:function(option, value){
-                if(jQuery.isPlainObject(option)){
-                    jQuery.extend(true, this._options, option)
+            config:function(){
+                var args = arguments;
+                var len = args.length;
+                var attr = args[0];
+                if(Nui.type(attr, 'Object')){
+                    return this._options = jQuery.extend(true, this._options, attr)
                 }
-                else if(option && Nui.type(option, 'String')){
-                    this._options[option] = value
+                else if(Nui.type(attr, 'String')){
+                    if(args.length === 1){
+                        return this._options[attr]
+                    }
+                    return this._options[attr] = args[1]
                 }
+                
             }
         }
 
