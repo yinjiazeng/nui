@@ -306,8 +306,9 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                     }
                 }
                 if(self._getTarget()){
-                    return self._event()
+                    self._event()
                 }
+                return self
             }
         },
         _getpath:function(){
