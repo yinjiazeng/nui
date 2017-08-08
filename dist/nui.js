@@ -1789,7 +1789,6 @@ Nui.define('events', function(){
                     }
                     return this._options[attr] = args[1]
                 }
-                
             }
         }
 

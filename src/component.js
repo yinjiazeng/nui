@@ -200,7 +200,6 @@
                     }
                     return this._options[attr] = args[1]
                 }
-                
             }
         }
 
