@@ -200,10 +200,9 @@ Nui.define(['./layer', 'util'], function(layer, util){
                     if(typeof data.message !== 'undefined'){
                         var message = eval('('+ data.message +')');
                         $.each(message, function(key, msg){
-                            if(typeof options.messageFilter === 'function'){
-                                message[key] = options.messageFilter.call(self.options, name, msg)||''
+                            if(typeof self.options.messageFilter === 'function'){
+                                message[key] = self.options.messageFilter.call(self.options, name, msg)||''
                             }
-                            message[key] = '<b></b><s></s><i class="iconfont">&#xe605;</i>' + message[key];
                         })
                         messages[name] = message;
                     } 
@@ -224,27 +223,27 @@ Nui.define(['./layer', 'util'], function(layer, util){
 					errorPlacement:function(error, element) {
 						element.removeClass('s-succ');
 						if(error.text()){
-							element.closest(options.itemWrap||'.ui-item').find(options.errorWrap||'.ui-err').html(error);
+							element.closest(self.options.itemWrap||'.ui-item').find(self.options.errorWrap||'.ui-err').html(error);
 						}
 					},
                     submitHandler:function(){
                         var param = {};
-                        if(typeof options.getData === 'function'){
-                        	param = options.getData.call(self.options, self, form)
+                        if(typeof self.options.getData === 'function'){
+                        	param = self.options.getData.call(self.options, self, form)
                         }
                         else{
                             param = util.getData(form).result;
                         }
 
-                        if(typeof options.onBeforeSubmit === 'function'){
-                        	param = options.onBeforeSubmit.call(self.options, self, param);
+                        if(typeof self.options.onBeforeSubmit === 'function'){
+                        	param = self.options.onBeforeSubmit.call(self.options, self, param);
                             if(param === false){
                                 return false
                             }
                         }
 
                         var loading = layer.loading({
-                            content:options.loading||'正在保存数据...',
+                            content:self.options.loading||'正在保存数据...',
                             under:self
                         });
                         
@@ -255,17 +254,17 @@ Nui.define(['./layer', 'util'], function(layer, util){
                             data:param,
                             success:function(res, xhr){
                                 loading.hide();
-                                if(typeof options.onSuccess === 'function'){
-                                    options.onSuccess.call(self.options, self, res, xhr)
+                                if(typeof self.options.onSuccess === 'function'){
+                                    self.options.onSuccess.call(self.options, self, res, xhr)
                                 }
                             },
                             error:function(xhr){
                                 loading.hide();
-                                if(typeof options.onError === 'function'){
-                                    options.onError.call(self.options, self, xhr)
+                                if(typeof self.options.onError === 'function'){
+                                    self.options.onError.call(self.options, self, xhr)
                                 }
                             }
-                        }, options.ajax||{}), null)
+                        }, self.options.ajax||{}), null)
                     }
                 }
                 self.validator = form.validate($.extend(true, opts, setting||{}, valid||{}));
