@@ -1,7 +1,6 @@
 Nui.define(['component'], function(component){
     var module = this;
-    module.require('../paging');
-    
+
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
         div.style.cssText = 'position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;';
@@ -19,7 +18,7 @@ Nui.define(['component'], function(component){
                 Nui.doc.on('click', function(){
                     Nui.each(self.__instances, function(val){
                         if(val.options.isActive === true){
-                            val.element.find('.datagrid-tbody table-row.s-crt').removeClass('s-crt');
+                            val.element.find('.datagrid-tbody .table-row.s-crt').removeClass('s-crt');
                         }
                     })
                 });
@@ -34,8 +33,10 @@ Nui.define(['component'], function(component){
             },
             _resize:function(){
                 Nui.each(this.__instances, function(val){
-                    val._theadHeight();
-                    val._resetHeight()
+                    if(val.options.height === '100%'){
+                        val._theadHeight();
+                        val._resetHeight()
+                    }
                 })
             },
             _hasChildren:function(value){
@@ -110,7 +111,7 @@ Nui.define(['component'], function(component){
             fields:null,
             dataName:'list',
             width:'100%',
-            height:'auto',
+            height:'100%',
             footer:'',
 
             onFocusin:null,
@@ -145,63 +146,63 @@ Nui.define(['component'], function(component){
                 '<%each rows v k%>'+
                     '<%if v.length%>'+
                     '<div class="datagrid-table<%if k === "left" || k === "right"%> datagrid-table-fixed<%/if%> datagrid-table-<%k%>">'+
-                        '<div class="datagrid-title">'+
-                            '<div class="datagrid-thead">'+
+                        '<%if isFixed !== true%>'+
+                            '<div class="datagrid-box">'+
                             '<table class="ui-table">'+
-                                '<thead class="table-thead">'+
-                                    '<%each v%>'+
-                                    '<tr class="table-row">'+
-                                        '<%each $value val%>'+
-                                        '<th class="table-cell"<%include "attr"%>>'+
-                                            '<span class="cell-text">'+
-                                            '<%if val.content === "checkbox"%>'+
-                                            '<span class="ui-checkradio">'+
-                                            '<input type="checkbox" name="datagrid-checkbox">'+
-                                            '</span>'+
-                                            '<%else%>'+
-                                            '<%val.title%>'+
-                                            '<%if typeof val.order === "object"%>'+
-                                            '<%var asc = Nui.type(val.order.asc, ["String", "Number"]), desc = Nui.type(val.order.desc, ["String", "Number"])%>'+
-                                            '<em class="datagrid-order<%if asc && desc%> datagrid-order-both<%/if%>" field="<%val.order.field%>">'+
-                                            '<%if asc%>'+
-                                            '<b class="datagrid-order-asc" type="asc" value="<%val.order.asc%>"><i></i><s></s></b>'+
-                                            '<%/if%>'+
-                                            '<%if desc%>'+
-                                            '<b class="datagrid-order-desc" value="<%val.order.desc%>"><i></i><s></s></b>'+
-                                            '<%/if%>'+
-                                            '</em>'+
-                                            '<%/if%>'+
-                                            '<%/if%>'+
-                                            '</span>'+
-                                        '</th>'+
-                                        '<%/each%>'+
-                                    '</tr>'+
-                                    '<%/each%>'+
-                                '</thead>'+
-                                '<%if isFixed !== true%>'+
-                                '<tbody class="table-tbody datagrid-inner"></tbody>'+
-                                '<%/if%>'+
+                                '<%include "thead"%>'+
+                                '<tbody class="table-tbody datagrid-tbody"></tbody>'+
                             '</table>'+
                             '</div>'+
-                        '</div>'+
-                        '<%if isFixed === true%>'+
-                        '<div class="datagrid-inner"></div>'+
+                        '<%else%>'+
+                            '<div class="datagrid-title">'+
+                                '<div class="datagrid-thead">'+
+                                '<table class="ui-table">'+
+                                    '<%include "thead"%>'+
+                                '</table>'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="datagrid-inner">'+
+                                '<div class="datagrid-box">'+
+                                    '<table class="ui-table">'+
+                                    '<tbody class="table-tbody datagrid-tbody"></tbody>'+
+                                    '</table>'+
+                                '</div>'+
+                            '</div>'+
                         '<%/if%>'+
                     '</div>'+
                     '<%/if%>'+
                 '<%/each%>',
-            tbody:
-                '<%if isFixed === true%>'+
-                '<div class="datagrid-tbody">'+
-                    '<table class="ui-table">'+
-                        '<tbody class="table-tbody">'+
-                        '<%include "rows"%>'+
-                        '</tbody>'+
-                    '</table>'+
-                '</div>'+
-                '<%else%>'+
-                '<%include "rows"%>'+
-                '<%/if%>',
+            thead:
+                '<thead class="table-thead">'+
+                    '<%each v%>'+
+                    '<tr class="table-row">'+
+                        '<%each $value val%>'+
+                        '<th class="table-cell"<%include "attr"%>>'+
+                            '<span class="cell-text">'+
+                            '<%if val.content === "checkbox"%>'+
+                            '<span class="ui-checkradio">'+
+                            '<input type="checkbox" name="datagrid-checkbox" class="datagrid-checkbox-all">'+
+                            '</span>'+
+                            '<%else%>'+
+                            '<%val.title%>'+
+                            '<%if typeof val.order === "object"%>'+
+                            '<%var asc = Nui.type(val.order.asc, ["String", "Number"]), desc = Nui.type(val.order.desc, ["String", "Number"])%>'+
+                            '<em class="datagrid-order<%if asc && desc%> datagrid-order-both<%/if%>" field="<%val.order.field%>">'+
+                            '<%if asc%>'+
+                            '<b class="datagrid-order-asc" type="asc" value="<%val.order.asc%>"><i></i><s></s></b>'+
+                            '<%/if%>'+
+                            '<%if desc%>'+
+                            '<b class="datagrid-order-desc" value="<%val.order.desc%>"><i></i><s></s></b>'+
+                            '<%/if%>'+
+                            '</em>'+
+                            '<%/if%>'+
+                            '<%/if%>'+
+                            '</span>'+
+                        '</th>'+
+                        '<%/each%>'+
+                    '</tr>'+
+                    '<%/each%>'+
+                '</thead>',
             rows:
                 '<%if list && list.length%>'+
                 '<%var toLower = function(str){'+
@@ -230,8 +231,8 @@ Nui.define(['component'], function(component){
                         '<%var _value = val.filter(_value, val.field, $value)%>'+
                         '<%/if%>'+
                         '<%if val.content === "checkbox" && typeof _value === "object"%>'+
-                        '<span class="checkradio">'+
-                        '<input type="checkbox"<%include "_attr"%>>'+
+                        '<span class="ui-checkradio">'+
+                        '<input type="checkbox" name="datagrid-checkbox"<%include "_attr"%>>'+
                         '</span>'+
                         '<%elseif val.content === "input" && typeof _value === "object"%>'+
                         '<input type="text" autocomplete="off"<%include "_attr"%>>'+
@@ -243,10 +244,10 @@ Nui.define(['component'], function(component){
                     '<%/each%>'+
                 '</tr>'+
                 '<%/each%>'+
-                '<%else%>'+
+                '<%elseif type === "all"%>'+
                 '<tr>'+
-                    '<td class="table-cell">'+
-                        
+                    '<td class="table-cell" colspan="<%cols.length%>">'+
+                        '<span class="ui-void"></span>'+
                     '</td>'+
                 '</tr>'+
                 '<%/if%>',
@@ -305,7 +306,7 @@ Nui.define(['component'], function(component){
             })
 
             self._hasLeftRight = this._cols.left.length || this._cols.right.length;
-console.log(self._rows)
+
             self.element = $(self._tpl2html('layout', self._tplData({
                 rows:self._rows,
                 isFixed:opts.isFixed,
@@ -316,13 +317,21 @@ console.log(self._rows)
             self._body = self.element.children('.datagrid-body');
             self._tableAll = self._body.children('.datagrid-table-all');
             self._tableAllInner = self._tableAll.children('.datagrid-inner');
+            self._tableAllBox =  self._tableAll.find('.datagrid-box');
             self._tableAllTitle = self._tableAll.children('.datagrid-title');
-            self._tableAllThead = self._tableAllTitle.children('.datagrid-thead');
+            self._tableAllThead = self._tableAll.find('.datagrid-thead');
             self._tableLeft = self._body.children('.datagrid-table-left');
             self._tableRight = self._body.children('.datagrid-table-right');
             self._tableFixed = self._body.children('.datagrid-table-fixed');
             self._tableFixedInner = self._tableFixed.children('.datagrid-inner');
+            self._tableFixedBox = self._tableFixed.find('.datagrid-box');
             self._foot = self.element.children('.datagrid-foot');
+            self._tableTbody = self._body.find('.datagrid-tbody');
+
+            if(opts.width){
+                self._tableAllThead.children().css('width', opts.width);
+                self._tableAllBox.children().css('width', opts.width);
+            }
 
             self._theadHeight();
             self._initList();
@@ -350,7 +359,7 @@ console.log(self._rows)
         },
         _bindEvent:function(){
             var self = this;
-            self._on('scroll', self._tableAllInner, function(){
+            self._on('scroll', self._tableAllInner.children(), function(){
                 self._scroll($(this))
             })
             self._event()
@@ -358,7 +367,8 @@ console.log(self._rows)
         _render:function(){
             var self = this, opts = self.options;
             Nui.each(self._cols, function(v, k){
-                self.element.find('.datagrid-table-'+k+' > .datagrid-inner').html(self._tpl2html('tbody', {
+                self.element.find('.datagrid-table-'+k+' .datagrid-tbody').html(self._tpl2html('rows', {
+                    type:k,
                     isFixed:opts.isFixed,
                     cols:v,
                     fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
@@ -366,42 +376,67 @@ console.log(self._rows)
                     stringify:opts.stringify
                 }))
             })
+            self.element.find('[name="datagrid-checkbox"]').checkradio(self._checkradio())
             self._resetHeight();
             if(typeof opts.onRender === 'function'){
                 opts.onRender.call(self)
             }
+        },
+        _checkradio:function(){
+            var self = this, opts = self.options;
+            var callback = function(me, e){
+                if(me.hasClass('datagrid-checkbox-all')){
+                    self._tableTbody.find('[name="datagrid-checkbox"]:enabled').checkradio('checked', me.prop('checked'))
+                }
+                else{
+                    var checked = self._tableTbody.find('[name="datagrid-checkbox"]:enabled:checked').length === self._tableTbody.find('[name="datagrid-checkbox"]:enabled').length;
+                    self._body.find('.table-thead .datagrid-checkbox-all').checkradio('checked', checked)
+                }
+                if(typeof opts.onCheckboxChange === 'function'){
+                    opts.onCheckboxChange.call(self, me, e)
+                }
+            }
+            var opts = {
+                callback:callback
+            }
+            return opts;
         },
         _resetHeight:function(){
             var self = this, opts = self.options;
             self._rowHeight();
             if(opts.isFixed === true){
                 var conntailerHeight = self.target.innerHeight();
-                var tbody = self._tableAllInner.children('.datagrid-tbody');
                 var height = conntailerHeight - self._tableAllTitle.outerHeight() - self._foot.outerHeight();
-
-                self._tableAll.find('.datagrid-thead > .ui-table').width(opts.width);
-                self._tableAll.find('.datagrid-tbody > .ui-table').width(opts.width);
-
-                if(tbody.children().width() > self._tableAllInner.width()){
-                    self._tableFixedInner.height(height - scrollBarWidth);
-                }
-                else{
-                    self._tableFixedInner.height(height);
-                }
+                self._tableAllBox.css('height', 'auto');
                 self._tableAllInner.height(height);
                 
-                var width = self._tableAllInner.innerHeight() >= tbody.outerHeight() ? 0 : scrollBarWidth;
+                var width = self._tableAllInner.innerHeight() >= self._tableAllBox.outerHeight() ? 0 : scrollBarWidth;
+                var fixedHeight = height;
+
+                if(self._tableAllBox.children().width() > self._tableAllInner.width()){
+                    fixedHeight -= scrollBarWidth;
+                }
+
+                if(width){
+                    self._tableAllBox.css('height', height);
+                    self._tableFixedBox.css('height', fixedHeight);
+                }
+                else{
+                    self._tableAllBox.css('height', 'auto');
+                    self._tableFixedBox.css('height', 'auto');
+                }
+
                 self._tableAllTitle.css({'margin-right':width});
 
                 self._tableRight.css('right', width)
             }
         },
         _theadHeight:function(){
-            var self = this, _class = self.constructor;
+            var self = this;
             if(self._hasLeftRight){
                 self._tableFixed.find('.table-thead .table-cell').each(function(i){
                     var item = $(this), cellid = item.attr('cellid');
-                    var elem = self._tableAllThead.find('.table-cell[cellid="'+ cellid +'"]');
+                    var elem = self._tableAll.find('.table-thead .table-cell[cellid="'+ cellid +'"]');
                     var height = elem.height();
                     var _height = item.height(height).height() - height;
                     item.height(height - _height);
@@ -483,7 +518,8 @@ console.log(self._rows)
             'blur .datagrid-input':'_enable _getRowData _blur',
             'focusin .table-tbody .table-cell':'_focusin',
             'focusout .table-tbody .table-cell':'_focusout',
-            'click .datagrid-order > b':'_order'
+            'click .datagrid-order > b':'_order',
+            '':''
         },
         _order:function(e, elem){
             elem.toggleClass('s-crt');
@@ -517,11 +553,17 @@ console.log(self._rows)
             }
             return elem.closest('.table-row').data()
         },
-        _focusin:function(e, elem, data){
-            return this._callback('Focusin', e, elem, data)
+        _focus:function(e, elem, data){
+            return this._callback('Focus', e, elem, data)
         },
-        _focusout:function(e, elem, data){
-            return this._callback('Focusout', e, elem, data)
+        _blur:function(e, elem, data){
+            return this._callback('Blur', e, elem, data)
+        },
+        _focusin:function(e, elem){
+            return this._callback('Focusin', e, elem)
+        },
+        _focusout:function(e, elem){
+            return this._callback('Focusout', e, elem)
         },
         _rowclick:function(e, elem, data){
             return this._callback('RowClick', e, elem, data)
@@ -533,7 +575,7 @@ console.log(self._rows)
             var self = this;
             var scrollTop = elem.scrollTop();
             var scrollLeft = elem.scrollLeft();
-            self._tableFixedInner.scrollTop(scrollTop);
+            self._tableFixedBox.scrollTop(scrollTop);
             self._tableAllThead.scrollLeft(scrollLeft);
         },
         resize:function(){

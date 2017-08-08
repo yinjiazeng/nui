@@ -1,12 +1,17 @@
+var paging = module.require('./paging');
+var checkradio = module.require('./checkradio');
+
 var datagrid = require('{com}/datagrid');
+
 
 var a = datagrid({
     target:'#data',
-    //isFixed:false,
+    isFixed:false,
     //fields:true,
     width:'110%',
     paging:{
-        url:'http://127.0.0.1/data/'
+        url:'http://127.0.0.1/data/',
+        pCount:4
     },
     footer:'11',
     data:[{
@@ -95,7 +100,7 @@ var a = datagrid({
     }],
     columns:[{
         title:'编号',
-        content:'number',
+        content:'checkbox',
         width:'40',
         fixed:true
     }, {
@@ -142,7 +147,7 @@ var a = datagrid({
         title:'操作',
         content:'<a class="datagrid-button" on-click="alter">修改</a> <a class="datagrid-button" on-click="delete">删除</a>',
         width:150,
-        fixed:'right'
+        //fixed:'right'
     }],
     onRowClick:function(e, elem, data){
         //console.log(1)
@@ -151,12 +156,20 @@ var a = datagrid({
         //alert()
     },
     onRender:function(){
-        console.log(this)
+        
+    },
+    onFocus:function(e, elem, data){
+        
     }
 })
 
 $('h1').click(function(){
     a.option('columns', [{
+        title:'编号1',
+        content:'number',
+        width:'40',
+        //fixed:true
+    }, {
         title:'编号1',
         content:'number',
         width:'40',

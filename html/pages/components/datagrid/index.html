@@ -16,7 +16,7 @@
             <h1 class="e-pt20 e-pb20 f-fs28">数据网格</h1>
 			
 			<style>
-			.ui-table { table-layout: fixed; width: 100%;}
+			.ui-table { width: 100%;}
 			.ui-table td { height: 60px;}
 			.ui-table td, .ui-table th { padding:5px; line-height: 20px; border:1px solid #ECEDEF; vertical-align: middle; font-size: 13px; word-break:break-all; box-sizing: border-box;}
 			.ui-table th { text-align: center; background-color: #F7FAFF;}
@@ -25,23 +25,22 @@
 			.ui-table .table-row.s-hover { background-color: #F1FCFF;}
 			.ui-table .table-row.s-crt { background-color: #D9F6FF !important;}
 			.ui-void { display: inline-block; width: 83px; height: 83px; background: url("../../images/void.png?v=01ee8b8") no-repeat center;}
-
-
-			.datagrid-table-all { }
-			.datagrid-table-all table { width: 100%;}
-			.datagrid-body, .datagrid-thead { position: relative;}
-			.datagrid-body { position: relative;}
+			
+			.datagrid-table .ui-table { table-layout: fixed;}
+			.datagrid-table .ui-table td { text-align: center;}
+			.datagrid-table .cell-text { display: inline-block; max-width: 100%;}
+			.datagrid-table .cell-text.cell-nowrap { overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+			.datagrid-body, .datagrid-thead, .datagrid-title { position: relative;}
+			.datagrid-inner { margin-top: -1px; overflow: hidden;}
+			.datagrid-box { overflow: auto;}
+			.datagrid-table-all .ui-table { width: 100%;}
+			.datagrid-table-all .datagrid-thead { overflow: hidden; width:100%;}
+			.datagrid-table-all .datagrid-box { width: 100%;}
 			.datagrid-table-fixed { position: absolute; top:0; z-index: 1; background-color: #fff;}
+			.datagrid-table-fixed .datagrid-box { overflow: hidden;}
+			.datagrid-table-fixed .ui-table { width: auto;}
 			.datagrid-table-left { left: 0;}
 			.datagrid-table-right { right: 0;}
-			.datagrid-title { position: relative;}
-			.datagrid-table-fixed table { width: auto;}
-			.cell-text.cell-nowrap { display: inline-block; max-width: 100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
-			.datagrid-inner { margin-top: -1px; overflow: auto; zoom:1;}
-			.datagrid-table-fixed .datagrid-inner { overflow: hidden;}
-			.datagrid-table-all .datagrid-thead { overflow: hidden; width:100%;}
-			.datagrid-table-all .datagrid-tbody { width: 100%;}
-			.ui-paging { overflow:hidden; background-color:#fff;}
 			.datagrid-paging { padding-top: 20px; height:30px;}
 			.datagrid-order { position: relative; display: inline-block;}
 			.datagrid-order b { left: 3px; cursor: pointer;}
@@ -49,12 +48,18 @@
 			.datagrid-order s, .datagrid-order i { line-height:0; font-size:0; border:6px dashed transparent;}
 			.datagrid-order-asc { top: -14px;}
 			.datagrid-order-asc i { border-bottom-style:solid; border-bottom-color:#ccc;}
-			.datagrid-order-asc.s-crt i { border-bottom-color:#f00;}
+			.datagrid-order-asc.s-crt i { border-bottom-color:#46679e;}
 			.datagrid-order-desc { bottom: 7px;}
 			.datagrid-order-desc i { border-top-style:solid; border-top-color:#ccc;}
-			.datagrid-order-desc.s-crt i { border-top-color:#f00;}
+			.datagrid-order-desc.s-crt i { border-top-color:#46679e;}
 			.datagrid-order-both .datagrid-order-asc { top:-18px;}
 			.datagrid-order-both .datagrid-order-desc { bottom:2px;}
+			
+			
+			
+			
+			.ui-paging { overflow:hidden; background-color:#fff;}
+			
 
 .ui-paging li { float:left; display:inline; text-align:center; margin-right:5px; line-height:22px;}
 .ui-paging span,.ui-paging a,.ui-paging em,.ui-paging input,.ui-paging button { float:left;}
@@ -62,6 +67,18 @@
 .ui-paging span { background-color:#efefef;}
 .ui-paging input { border:1px solid #DBDBDB; width:30px; height:22px; margin:0 3px; text-align:center; line-height:22px;}
 .ui-paging button { margin-left:2px; width:40px; height:24px; border:1px solid #DBDBDB; background:#fff; cursor:pointer;}
+
+.ui-checkradio, .ui-checkradio em, .ui-checkradio i { display:inline-block;}
+.ui-checkradio em { cursor:pointer;}
+.ui-checkradio input { opacity:0; filter:alpha(opacity=0);}
+.ui-checkradio i { width:14px; height:14px; background:url("./images/check.png?v=4476ed8") no-repeat;}
+.ui-checkradio .ui-checkbox.s-checked i { background-position:-20px 0;}
+.ui-checkradio .ui-checkbox.s-dis i { background-position:-40px 0;}
+.ui-checkradio .ui-radio i { background-image:url("./images/radio.png?v=5c641b3"); background-position: 0 -15px;}
+.ui-checkradio .ui-radio.s-checked i { background-position:-15px -15px;}
+.ui-checkradio .ui-radio.s-dis i { cursor:default; background-position: 0 0;}
+.ui-checkradio .ui-radio.s-checked.s-dis i { background-position: -15px 0;}
+.ui-checkradio .txt { margin-top: -1px; margin-left: 5px;}
 			</style>
 		</div>
 	</div>
