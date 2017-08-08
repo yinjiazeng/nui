@@ -1,6 +1,5 @@
 Nui.define(['component'], function(component){
     var module = this;
-    var paging = module.require('../paging');
     
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
@@ -24,13 +23,13 @@ Nui.define(['component'], function(component){
                     })
                 });
 
-                /*var timer = null;
+                var timer = null;
                 Nui.win.on('resize', function(){
                     clearTimeout(timer);
                     timer = setTimeout(function(){
                         self._resize()
                     }, 100)
-                })*/
+                })
             },
             _resize:function(){
                 Nui.each(this.__instances, function(val){
