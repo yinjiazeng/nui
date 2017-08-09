@@ -1,4 +1,4 @@
-Nui.define(['component'], function(component){
+Nui.define(['component', '../plugins/paging', '../plugins/checkradio.js'], function(component){
     var module = this;
 
     var scrollBarWidth = (function(){
@@ -15,9 +15,10 @@ Nui.define(['component'], function(component){
         static:{
             _init:function(){
                 var self = this;
-                Nui.doc.on('click', function(){
+                Nui.doc.on('click', function(e){
+                    var isRow = $(e.target).closest('tr').hasClass('table-row');
                     Nui.each(self.__instances, function(val){
-                        if(val.options.isActive === true){
+                        if(!isRow && val.options.isActive === true){
                             val.element.find('.datagrid-tbody .table-row.s-crt').removeClass('s-crt');
                         }
                     })
@@ -67,6 +68,22 @@ Nui.define(['component'], function(component){
                         v.order.field = v.field
                     }
 
+                    if(!v.style){
+                        v.style = {};
+                    }
+                    
+                    if(v.align){
+                        v.style['text-align'] = v.align;
+                    }
+
+                    if(v.valign){
+                        v.style['vertical-align'] = v.valign;
+                    }
+
+                    if($.isEmptyObject(v.style)){
+                        delete v.style
+                    }
+
                     if(parent && parent.fixed){
                         v.fixed = parent.fixed
                     }
@@ -106,6 +123,7 @@ Nui.define(['component'], function(component){
             isLine:false,
             isActive:true,
             isBorder:true,
+            isPaging:false,
             url:null,
             paging:null,
             fields:null,
@@ -146,9 +164,9 @@ Nui.define(['component'], function(component){
                 '<%each rows v k%>'+
                     '<%if v.length%>'+
                     '<div class="datagrid-table<%if k === "left" || k === "right"%> datagrid-table-fixed<%/if%> datagrid-table-<%k%>">'+
-                        '<%if isFixed !== true%>'+
+                        '<%if !isFixed%>'+
                             '<div class="datagrid-box">'+
-                            '<table class="ui-table">'+
+                            '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
                                 '<%include "thead"%>'+
                                 '<tbody class="table-tbody datagrid-tbody"></tbody>'+
                             '</table>'+
@@ -156,14 +174,14 @@ Nui.define(['component'], function(component){
                         '<%else%>'+
                             '<div class="datagrid-title">'+
                                 '<div class="datagrid-thead">'+
-                                '<table class="ui-table">'+
+                                '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
                                     '<%include "thead"%>'+
                                 '</table>'+
                                 '</div>'+
                             '</div>'+
                             '<div class="datagrid-inner">'+
                                 '<div class="datagrid-box">'+
-                                    '<table class="ui-table">'+
+                                    '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
                                     '<tbody class="table-tbody datagrid-tbody"></tbody>'+
                                     '</table>'+
                                 '</div>'+
@@ -259,7 +277,9 @@ Nui.define(['component'], function(component){
                 '<%/each%>',
             attr:
                 '<%each val value name%>'+
-                '<%if "width field align valign colspan rowspan cellid".indexOf(name) !== -1%>'+
+                '<%if name === "style"%>'+
+                'style="<%each value _v _k%><%_k%>:<%_v%>;<%/each%>"'+
+                '<%elseif "width field colspan rowspan cellid".indexOf(name) !== -1%>'+
                 ' <%name%>="<%value%>"'+
                 '<%/if%>'+
                 '<%/each%>',
@@ -309,8 +329,9 @@ Nui.define(['component'], function(component){
 
             self.element = $(self._tpl2html('layout', self._tplData({
                 rows:self._rows,
-                isFixed:opts.isFixed,
-                paging:typeof opts.paging === 'object',
+                isFixed:opts.isFixed === true,
+                isBorder:opts.isBorder === true,
+                paging:typeof opts.paging === 'object' && opts.isPaging === true,
                 footer:opts.footer
             }))).appendTo(self.target);
 
@@ -340,7 +361,10 @@ Nui.define(['component'], function(component){
         _initList:function(){
             var self = this, opts = self.options;
             if(opts.paging){
-                opts.paging.wrap = self._foot.children('.datagrid-paging');
+                delete opts.paging.wrap;
+                if(opts.isPaging === true){
+                    opts.paging.wrap = self._foot.children('.datagrid-paging');
+                }
                 var pagingId = 'paging_'+self.__id;
                 var echoData = opts.paging.echoData;
                 opts.paging.echoData = function(data, type){
@@ -369,7 +393,7 @@ Nui.define(['component'], function(component){
             Nui.each(self._cols, function(v, k){
                 self.element.find('.datagrid-table-'+k+' .datagrid-tbody').html(self._tpl2html('rows', {
                     type:k,
-                    isFixed:opts.isFixed,
+                    isFixed:opts.isFixed === true,
                     cols:v,
                     fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
                     list:self._list,
@@ -544,7 +568,6 @@ Nui.define(['component'], function(component){
                         val.element.find('.datagrid-tbody table-row.s-crt').removeClass('s-crt');
                     }
                 })
-                e.stopPropagation();
             }
         },
         _getRowData:function(e, elem){
