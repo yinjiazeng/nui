@@ -14,7 +14,7 @@ Nui.config({
         "{script}/base": "efe2004",
         "./script/events/page": "fd8975e",
         "./script/template/page": "c7f3c81",
-        "./script/demo": "83c92bd",
+        "./script/demo": "670fcdc",
         "./script/page": "cf35b92"
     }
 })
