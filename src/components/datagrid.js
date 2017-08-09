@@ -1,6 +1,6 @@
-Nui.define(['component', '../plugins/paging', '../plugins/checkradio.js'], function(component){
+Nui.define(['component'], function(component){
     var module = this;
-
+/*, '../plugins/paging', '../plugins/checkradio.js'*/
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
         div.style.cssText = 'position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;';
