@@ -83,9 +83,7 @@ Nui.define(function(){
                         self.element.remove();
                     }
                     self._create();
-                    if(self.options.isLight){
-                        self._event();
-                    }
+                    self._event();
                 }
             }
         },
@@ -115,9 +113,11 @@ Nui.define(function(){
             +'</div>',
         _events:{
             'click tr':function(e, elem){
-                this.constructor._active = this._active = true;
-                elem.addClass('s-crt').siblings().removeClass('s-crt');
-                e.stopPropagation()
+                if(this.options.isLight === true){
+                    this.constructor._active = this._active = true;
+                    elem.addClass('s-crt').siblings().removeClass('s-crt');
+                    e.stopPropagation()
+                }
             },
             'click .copy':function(){
                 alert('傻帽！逗你玩呢。')

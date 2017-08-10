@@ -1532,7 +1532,7 @@ Nui.define('events', function(){
         var that = opts || this,
             self = that.constructor,
             isComponent = self && self.__component_name,
-            elem = that.element || Nui.doc, 
+            elem = this.element || that.element || Nui.doc, 
             events = isComponent ? that._events : that.events;
             
         if(!elem || !events){
@@ -1863,7 +1863,11 @@ Nui.define('events', function(){
                 return data
             },
             _event:function(){
-                return events.call(this)
+                var self = this, opts = self.options;
+                if(self.element && opts.events){
+                    events.call(self, opts)
+                }
+                return events.call(self)
             },
             _on:function(type, dalegate, selector, callback, trigger){
                 var self = this;

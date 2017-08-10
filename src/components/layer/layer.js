@@ -5,7 +5,7 @@
  * @description layer弹出层
  */
 
-Nui.define(['component', 'util'], function(component, util){
+Nui.define(['component', 'util', 'events'], function(component, util, events){
     var module = this;
 
     var statics = {
@@ -278,6 +278,7 @@ Nui.define(['component', 'util'], function(component, util){
             if(opts.isFixed === true && !self._isFixed === true){
                 self._bindScroll()
             }
+            self._event();
             self._show()
         },
         _getContent:function(){

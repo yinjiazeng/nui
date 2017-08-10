@@ -274,7 +274,11 @@
                 return data
             },
             _event:function(){
-                return events.call(this)
+                var self = this, opts = self.options;
+                if(self.element && opts.events){
+                    events.call(self, opts)
+                }
+                return events.call(self)
             },
             _on:function(type, dalegate, selector, callback, trigger){
                 var self = this;
