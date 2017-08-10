@@ -1814,16 +1814,20 @@ Nui.define('events', function(){
                         return null
                     }
                     target = _class._jquery(target);
-                    var attr = 'nui_component_'+_class.__component_name;
-                    self.target = target.attr(attr, '');
-                    self.target.each(function(){
-                        if(!this.nui){
-                            this.nui = {};
-                        }
-                        this.nui[_class.__component_name] = self
-                    })
+                    self.target = self._bindComponentName(target);
                 }
                 return self.target
+            },
+            _bindComponentName:function(element){
+                var self = this, _class = self.constructor;
+                var attr = 'nui_component_'+_class.__component_name;
+                element.attr(attr, '').each(function(){
+                    if(!this.nui){
+                        this.nui = {};
+                    }
+                    this.nui[_class.__component_name] = self
+                })
+                return element
             },
             _tplData:function(data){
                 var opts = this.options, 

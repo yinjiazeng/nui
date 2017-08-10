@@ -5,7 +5,7 @@ var datagrid = require('{com}/datagrid');
 
 
 var a = datagrid({
-    target:'#data',
+    container:'#data',
     isFixed:false,
     isBorder:false,
     //fields:true,

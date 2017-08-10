@@ -117,6 +117,7 @@ Nui.define(['component'], function(component){
             }
         },
         options:{
+            container:null,
             data:null,
             columns:null,
             isFixed:true,
@@ -296,8 +297,9 @@ Nui.define(['component'], function(component){
             this._exec()
         },
         _exec:function(){
-            var self = this, opts = self.options;
-            if(self._getTarget() && Nui.isArray(opts.columns) && opts.columns.length){
+            var self = this, opts = self.options, _class = self.constructor, container = opts.container;
+            if(container && Nui.isArray(opts.columns) && opts.columns.length){
+                self._container = _class._jquery(container);
                 self._columns = {
                     all:[],
                     left:[],
@@ -327,13 +329,13 @@ Nui.define(['component'], function(component){
 
             self._hasLeftRight = this._cols.left.length || this._cols.right.length;
 
-            self.element = $(self._tpl2html('layout', self._tplData({
+            self.element = self._bindComponentName($(self._tpl2html('layout', self._tplData({
                 rows:self._rows,
                 isFixed:opts.isFixed === true,
                 isBorder:opts.isBorder === true,
                 paging:typeof opts.paging === 'object' && opts.isPaging === true,
                 footer:opts.footer
-            }))).appendTo(self.target);
+            }))).appendTo(self._container));
 
             self._body = self.element.children('.datagrid-body');
             self._tableAll = self._body.children('.datagrid-table-all');
@@ -365,6 +367,7 @@ Nui.define(['component'], function(component){
                 if(opts.isPaging === true){
                     opts.paging.wrap = self._foot.children('.datagrid-paging');
                 }
+                opts.paging.container = self._tableAllBox;
                 var pagingId = 'paging_'+self.__id;
                 var echoData = opts.paging.echoData;
                 opts.paging.echoData = function(data, type){
@@ -429,7 +432,7 @@ Nui.define(['component'], function(component){
             var self = this, opts = self.options;
             self._rowHeight();
             if(opts.isFixed === true){
-                var conntailerHeight = self.target.innerHeight();
+                var conntailerHeight = self._container.innerHeight();
                 var height = conntailerHeight - self._tableAllTitle.outerHeight() - self._foot.outerHeight();
                 self._tableAllBox.css('height', 'auto');
                 self._tableAllInner.height(height);

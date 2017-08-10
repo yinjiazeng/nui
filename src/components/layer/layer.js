@@ -254,7 +254,7 @@ Nui.define(['component', 'util'], function(component, util){
                 data.style.position = 'fixed';
             }
             self._setTop();
-            self.element = $(self._tpl2html('layout', data)).appendTo(self._container);
+            self.element = self._bindComponentName($(self._tpl2html('layout', data)).appendTo(self._container));
             self._box = self.element.children('.layer-box');
 			self.head = self._box.children('.layer-head');
 			self._body = self._box.children('.layer-body');
