@@ -591,6 +591,7 @@ Nui.define(['component', 'util', 'events'], function(component, util, events){
             var edge = opts.edge > 0 ? opts.edge*2 : 0;
             var wWidth = self._window.outerWidth() - edge;
             var wHeight = self._window.outerHeight() - edge;
+            var scrollbar = opts.scrollbar;
 
             self._body.css({height:'auto', overflow:'visible'});
             element.css({top:'auto', left:'auto', width:'auto', height:'auto'});
@@ -611,6 +612,7 @@ Nui.define(['component', 'util', 'events'], function(component, util, events){
                     width = wWidth;
                 }
                 if(opts.maxWidth > 0 && width >= opts.maxWidth){
+                    scrollbar = true;
                     width = opts.maxWidth
                 }
             }
@@ -641,6 +643,7 @@ Nui.define(['component', 'util', 'events'], function(component, util, events){
                     height = wHeight
                 }
                 if(opts.maxHeight > 0 && height >= opts.maxHeight){
+                    scrollbar = true;
                     height = opts.maxHeight
                 }
             }
@@ -653,7 +656,8 @@ Nui.define(['component', 'util', 'events'], function(component, util, events){
             self.data.height = height - _class._getSize(element, 'tb', 'all');
             element.height(self.data.height);
             var _height = self.data.height - edgeSize;
-            if(self.main.outerHeight() > _height && !self._iframe && opts.scrollbar === true){
+
+            if(self.main.outerHeight() > _height && !self._iframe && scrollbar === true){
                 self._body.css('overflow', 'auto')
             }
             if(self._iframe){
@@ -721,7 +725,7 @@ Nui.define(['component', 'util', 'events'], function(component, util, events){
             Nui.each(_class.__instances, function(val){
                 if(val && val.options.isMask === true && val !== self && val._containerDOM === self._containerDOM){
                     return (noMask = false);
-                }   
+                }
             });
             if(noMask && self._containerDOM.__layermask__){
                 self._containerDOM.__layermask__.remove();
