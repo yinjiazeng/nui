@@ -1,6 +1,6 @@
 Nui.define(['component'], function(component){
     var module = this;
-/*, '../plugins/paging', '../plugins/checkradio.js'*/
+
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
         div.style.cssText = 'position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;';
@@ -223,13 +223,13 @@ Nui.define(['component'], function(component){
                     '<%/each%>'+
                 '</thead>',
             rows:
-                '<%if list && list.length%>'+
+                '<%if data && data.length%>'+
                 '<%var toLower = function(str){'+
                     'return str.replace(/([A-Z])/g, function(a){'+
                         'return "-"+a.toLowerCase()'+
                     '})'+
                 '}%>'+
-                '<%each list%>'+
+                '<%each data%>'+
                 '<tr class="table-row" row-index="<%$index%>"<%include "data"%>>'+
                     '<%each cols val key%>'+
                     '<%var _value%>'+
@@ -371,7 +371,7 @@ Nui.define(['component'], function(component){
                 var pagingId = 'paging_'+self.__id;
                 var echoData = opts.paging.echoData;
                 opts.paging.echoData = function(data, type){
-                    self._list = data[opts.dataName] || [];
+                    self.data = data[opts.dataName] || [];
                     self._render();
                     if(typeof echoData === 'function'){
                         echoData.call(opts.paging, data, type)
@@ -380,7 +380,7 @@ Nui.define(['component'], function(component){
                 self.paging = $.paging(pagingId, opts.paging);
             }
             else if(opts.data){
-                self._list = opts.data;
+                self.data = opts.data;
                 self._render();
             }
         },
@@ -399,14 +399,14 @@ Nui.define(['component'], function(component){
                     isFixed:opts.isFixed === true,
                     cols:v,
                     fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
-                    list:self._list,
+                    data:self.data,
                     stringify:opts.stringify
                 }))
             })
             self.element.find('[name="datagrid-checkbox"]').checkradio(self._checkradio())
             self._resetHeight();
             if(typeof opts.onRender === 'function'){
-                opts.onRender.call(self)
+                opts.onRender.call(opts, self)
             }
         },
         _checkradio:function(){
@@ -420,7 +420,7 @@ Nui.define(['component'], function(component){
                     self._body.find('.table-thead .datagrid-checkbox-all').checkradio('checked', checked)
                 }
                 if(typeof opts.onCheckboxChange === 'function'){
-                    opts.onCheckboxChange.call(self, me, e)
+                    opts.onCheckboxChange.call(opts, e, self, me)
                 }
             }
             var opts = {
@@ -525,11 +525,12 @@ Nui.define(['component'], function(component){
             })
         },
         _callback:function(){
+            var self = this, opts = self.options;
             var args = arguments;
             var type = args[0];
-            var callback = this.options['on'+type];
+            var callback = opts['on'+type];
             if(typeof callback === 'function'){
-                return callback.apply(this, Array.prototype.slice.call(args, 1))
+                return callback.apply(opts, Array.prototype.slice.call(args, 1))
             }
         },
         _events:{
@@ -579,22 +580,22 @@ Nui.define(['component'], function(component){
             return elem.closest('.table-row').data()
         },
         _focus:function(e, elem, data){
-            return this._callback('Focus', e, elem, data)
+            return this._callback('Focus', e, this, elem, data)
         },
         _blur:function(e, elem, data){
-            return this._callback('Blur', e, elem, data)
+            return this._callback('Blur', e, this, elem, data)
         },
         _focusin:function(e, elem){
-            return this._callback('Focusin', e, elem)
+            return this._callback('Focusin', e, this, elem)
         },
         _focusout:function(e, elem){
-            return this._callback('Focusout', e, elem)
+            return this._callback('Focusout', e, this, elem)
         },
         _rowclick:function(e, elem, data){
-            return this._callback('RowClick', e, elem, data)
+            return this._callback('RowClick', e, this, elem, data)
         },
         _rowdblclick:function(e, elem, data){
-            return this._callback('RowDblclick', e, elem, data)
+            return this._callback('RowDblclick', e, this, elem, data)
         },
         _scroll:function(elem){
             var self = this;

@@ -151,16 +151,16 @@ var a = datagrid({
         width:150,
         //fixed:'right'
     }],
-    onRowClick:function(e, elem, data){
-        //console.log(1)
-    },
-    onRowDblclick:function(e, elem, data){
-        //alert()
-    },
-    onRender:function(){
+    onRowClick:function(e, self, elem, data){
         
     },
-    onFocus:function(e, elem, data){
+    onRowDblclick:function(e, self, elem, data){
+        //alert()
+    },
+    onRender:function(self){
+        console.log(self)
+    },
+    onFocus:function(e, self, elem, data){
         
     }
 })
