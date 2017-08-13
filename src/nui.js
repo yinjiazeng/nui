@@ -834,6 +834,7 @@
         return Nui
     }
 
+    //不会生成压缩文件
     Nui.use = function(id, callback){
         if(id && typeof id === 'string'){
             Module.load(id, callback, getModuleid())
