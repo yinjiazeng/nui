@@ -11,94 +11,10 @@ var a = datagrid({
     //fields:true,
     width:'110%',
     paging:{
-        url:'http://127.0.0.1/data/',
+        url:'http://172.30.5.28/data/',
         pCount:4
     },
     footer:'11',
-    data:[{
-        id:'11111111',
-        prov:'安徽', 
-        city:'蚌埠',
-        address:'安徽蚌',
-        job:'php工程师',
-        name:'阿牛'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        job:'前端工程师',
-        name:'尹加增'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        job:'前端工程师',
-        name:'尹加增'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        job:'前端工程师',
-        name:'尹加增'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        job:'前端工程师',
-        name:'尹加增'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        job:'前端工程师',
-        name:'尹加增'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        vC:{
-            a:1
-        },
-        a:[{
-            a:1
-        }],
-        job:'前端工程师',
-        name:'尹加增'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        job:'前端工程师',
-        name:'尹加增'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        job:'前端工程师',
-        name:'尹加增'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        job:'前端工程师',
-        name:'尹加增'
-    }, {
-        id:'22222222',
-        prov:'浙江',
-        city:'杭州',
-        address:'浙江杭州',
-        job:'前端工程师',
-        name:'尹加增'
-    }],
     columns:[{
         title:'编号',
         content:'checkbox',
