@@ -321,7 +321,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             }
             if(index !== -1){
                 paths.params = path.substr(index+2).split('/:');
-                paths.path = path.substr(0, index);
+                self.path = paths.path = path.substr(0, index);
                 if(opts.level > 0){
                     paths.rule = paths.path;
                 }
