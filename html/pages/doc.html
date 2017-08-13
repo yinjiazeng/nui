@@ -41,7 +41,7 @@ Nui.load(id, callback?)
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">当配合打包工具使用时，会在入口模块目录生成后缀为-min.js或者-debug.js的合并文件；如果模块中使用imports加载了样式文件，会在入口模块目录同级style目录中（不存在就创建）生成-min.css或者-debug.css。</p>
+			<p class="e-mt15 f-lh22">当配合打包工具使用时，会在入口模块目录生成后缀为-min.js压缩文件；如果模块中使用imports加载了样式文件，会在入口模块目录同级style目录（不存在就创建）中生成-min.css压缩文件。</p>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="use">use</h2>
 			<p class="e-mt15 f-lh22">加载模块</p>
 <script type="text/highlight" data-javascript-options>
@@ -80,42 +80,34 @@ Nui.config(obj)
 					<th>参数说明</th>
 				</tr>
 				<tr>
-					<td>obj</td>
+					<td>base</td>
+					<td>String</td>
+					<td>设置根目录，设置后将覆盖paths中的base</td>
+				</tr>
+				<tr>
+					<td>paths</td>
 					<td>Object</td>
-					<td>
-						<table class="data">
-							<tr>
-								<th width="100">属性名</th>
-								<th width="100">属性类型</th>
-								<th>属性说明</th>
-							</tr>
-							<tr>
-								<td>base</td>
-								<td>String</td>
-								<td>设置根目录，设置后将覆盖paths中的base</td>
-							</tr>
-							<tr>
-								<td>paths</td>
-								<td>Object</td>
-								<td>设置目录别名，其中base用于设置根目录</td>
-							</tr>
-							<tr>
-								<td>alias</td>
-								<td>Object</td>
-								<td>设置模块别名，路径中可以通过“{目录别名}”简写路径</td>
-							</tr>
-							<tr>
-								<td>maps</td>
-								<td>Object</td>
-								<td>设置版本映射，加载模块时会优先使用该配置中的版本号，模块名无需添加-min和-debug后缀</td>
-							</tr>
-							<tr>
-								<td>skin</td>
-								<td>String</td>
-								<td>设置组件皮肤</td>
-							</tr>
-						</table>
-					</td>
+					<td>设置目录别名，其中base用于设置根目录</td>
+				</tr>
+				<tr>
+					<td>alias</td>
+					<td>Object</td>
+					<td>设置模块别名，路径中可以通过“{目录别名}”简写路径</td>
+				</tr>
+				<tr>
+					<td>min</td>
+					<td>Boolean</td>
+					<td>默认为true，是否默认加载-min.js文件</td>
+				</tr>
+				<tr>
+					<td>maps</td>
+					<td>Object</td>
+					<td>设置版本映射，加载模块时会优先使用该配置中的版本号</td>
+				</tr>
+				<tr>
+					<td>skin</td>
+					<td>String</td>
+					<td>设置组件皮肤</td>
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 栗子</h3>
@@ -125,23 +117,13 @@ Nui.config({
 		base:'http://rs.axnfw.com/'
 		url:'/portal/common/'
 	},
-	alias:{
-		jquery:{url}/jquery.js
-	},
 	maps:{
-		'{url}/page':'123456',
-		'jquery':'?_=abcdefg'
+		'{url}/page':'123456'
 	}
 })
 
-//请求：http://rs.axnfw.com/portal/common/page.js?v=123456
 Nui.load('{url}/page', function(page){
-	//do something
-})
-
-//请求：http://rs.axnfw.com/portal/common/jquery.js?_=abcdefg
-Nui.load('jquery', function($){
-	//do something
+	//实际请求地址为：http://rs.axnfw.com/portal/common/page-min.js?v=123456
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="define">define</h2>
@@ -196,8 +178,7 @@ Nui.define(['./a', './b'], function(a, b){
 					<a href="#require" class="f-corange">require</a> /
 					<a href="#imports" class="f-corange">imports</a> /
 					<a href="#renders" class="f-corange">renders</a> /
-					<a href="#extend" class="f-corange">extend</a></p>
-				<p>若要暴漏接口给其他模块使用，可使用return或者exports，return会覆盖exports的值，若没有导出接口，默认会返回一个空对象。</p>
+					<a href="#extend" class="f-corange">extend</a>通过this访问，在使用时变量名不可变。</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 //a.js
@@ -238,41 +219,8 @@ Nui.define(['./a', './b', './c'], function(a, b, c){
 	c() //hello world
 })
 </script>
-			<p class="e-mt15 f-lh22">内部四个方法如要赋值使用时，方法名称不可变更，因为代码解析时会通过正则匹配提取依赖</p>
-<script type="text/highlight" data-javascript-options>
-Nui.define(function(){
-	var req = this.require, req('./a') //错误
-	var require = this.require, require('./a') //正确
-	//其它方法同理
-})
-</script>
-			<p class="e-mt15 f-lh22">配合构建工具使用时，可无需在外部用Nui.define包装，内部方法和属性也无需通过 this. 使用，提供一个 module 变量指向 this</p>
-<script type="text/highlight" data-javascript-options>
-//a.js
-module.exports = function(){
-	return 'world'
-}
-
-//b.js
-var a = require('./a');
-a('hello '); //hello world
-
-//合并后将变为
-//b-debug.js
-Nui.define('./a', function(){
-	var module = this, require = module.require, ...
-	module.exports = function(){
-		return 'world'
-	}
-})
-Nui.define('./b', function(){
-	var module = this, require = module.require, ...
-	var a = require('./a');
-	a('hello '); //hello world
-})
-</script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="exports">exports</h2>
-			<p class="e-mt15 f-lh22">导出接口</p>
+			<p class="e-mt15 f-lh22">导出接口，也可直接使用return导出接口，return会覆盖exports。</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(function(){
 	this.exports.a = function(){
@@ -281,7 +229,16 @@ Nui.define(function(){
 	this.exports.b = function(){
 
 	}
+
 	//...
+
+	return {
+		a:function(){
+
+		},
+		b:....
+	}
+	
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="require">require</h2>
@@ -305,7 +262,7 @@ Nui.define(function(){
 				</tr>
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="imports">imports</h2>
-			<p class="e-mt15 f-lh22">导入css模块</p>
+			<p class="e-mt15 f-lh22">导入css/less模块</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(function(){
 	this.imports(id)
@@ -325,10 +282,10 @@ Nui.define(function(){
 				</tr>
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="renders">renders</h2>
-			<p class="e-mt15 f-lh22">在js文件中用于渲染模版，不需要做字符串拼接处理</p>
+			<p class="e-mt15 f-lh22">可以直接在js中写html模版，不需要做字符串拼接处理</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(function(){
-	this.renders({tpl})
+	this.renders({template})
 })
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 参数</h3>
@@ -345,7 +302,7 @@ Nui.define(function(){
 				</tr>
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">该方法需要配合构建工具使用，会自动转换为字符串拼接方式，书写时模版外部包含大括号</p>
+			<p class="e-mt15 f-lh22">该方法需要配合打包工具使用，会自动转换为字符串拼接方式</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(function(){						
 	var tpl = this.renders({

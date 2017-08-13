@@ -5,7 +5,7 @@
  * @description layer弹出层
  */
 
-Nui.define(['component', 'util', 'events'], function(component, util, events){
+Nui.define(['component', 'util'], function(component, util){
     var module = this;
 
     var statics = {

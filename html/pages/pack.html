@@ -12,59 +12,14 @@
 {% block content %}
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28">构建工具</h1>
+			<h1 class="e-pt20 e-pb20 f-fs28">打包工具</h1>
 			<div class="e-mt15 f-lh22">
-				<p>开发中往往会需要做一些重复的事情，比如创建目录、合并压缩文件、修改资源版本号等，这些事不仅浪费时间而且时间久了会造成厌倦感，
-				使用构建工具可以帮助我们处理这些事情。这里生成目录的用的是<a href="http://www.yowebapp.com/" target="_blank" class="f-cblue">yeoman</a>
-				，俗称脚手架，合并压缩以及修改版本号用的是<a href="http://www.gulpjs.com.cn/" target="_blank" class="f-cblue">gulp</a>，使用2个工具之前需先安装
-				<a href="http://nodejs.cn/" target="_blank" class="f-cblue">nodejs</a>，并将npm切换为<a href="http://npm.taobao.org/" target="_blank" class="f-cblue">cnpm</a>。</p>
+				<p>模块化开发就是将一个系统拆分为多个独立的功能模块，每个功能模块又可无限拆分为更小的模块。在Nui.js中一个模块就是一个js文件，如果开发时模块很多，就会导致http请求过多，使页面载入变的很慢。</p>
+				<p>为了解决这个问题，可以使用<a href="https://www.npmjs.com/package/gulp-nui" target="_blank" class="f-corange">gulp-nui</a>对模块进行压缩合并，该工具是一个<a href="http://www.gulpjs.com.cn/" target="_blank" class="f-corange">gulp</a>插件，不仅可以合并js模块，也可以对css模块进行合并，以及给静态资源添加版本号用于清理文件缓存。</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="安装使用">安装使用</h2>
-			<p class="e-mt15 f-lh22">全局安装yeoman和gulp</p>
-<script type="text/highlight" data-highlight-options>
-cnpm install -g yo
-</script>
-<script type="text/highlight" data-highlight-options>
-cnpm install -g gulp
-</script>
-			<p class="e-mt15 f-lh22">生成项目目录</p>
-<script type="text/highlight" data-highlight-options>
-
-</script>
-			<p class="e-mt15 f-lh22">执行后会生成以下目录结构，此时打开index.html不会看到任何内容，而且页面会报main-min.css以及main-min.js的404错误</p>
-<script type="text/highlight" data-style-options>
-┌─ images
-├─ script
-│       ├─ libs 
-│       │       ├─ jquery  /*存放jquery类库，1.8.1及以上版本*/
-│       │       └─ nui
-│       │             ├─ nui.js
-│       │             └─ nui-min.js
-│       ├─ components  /*存放nui组件*/
-│       ├─ pages       /*存放各页面模块*/
-│       │      ├─ index
-│       │      │       └─ main.js
-│       │      └─ news
-│       │               └─ main.js
-│       ├─ templates   /*存放模版*/
-│       │      ├─ layout.js
-│       │      ├─ index.js
-│       │      └─ news.js
-│       ├─ public      /*存放公共模块*/
-│       │      └─ router.js
-│       ├─ config.js   /*nui配置文件*/
-│       └─ main.js     /*入口模块*/
-├─ style
-│       ├─ index.css
-│       └─ news.css
-├─ gulpfile.js
-└─ index.html
-</script>
-			<p class="e-mt15 f-lh22">切换至项目根目录分别安装gulp和<a href="https://www.npmjs.com/package/gulp-nui" target="_blank" class="f-cblue">gulp-nui</a></p>
-<script type="text/highlight" data-highlight-options>
-cnpm install --save-dev gulp gulp-nui
-</script>
-			<p class="e-mt15 f-lh22">安装好后执行gulp命令，在style目录中会生成main-min.css和main-min.css.map文件，script目录中会生成main-min.js和main-min.css.map文件，此时再次打开index.html便可正常访问页面内容。</p>
+			<p class="e-mt15 f-lh22"></p>
+			
 		</div>	
 	</div>
 	{% import 'sidecol.tpl' as side %}

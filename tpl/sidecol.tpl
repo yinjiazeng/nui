@@ -23,6 +23,9 @@
                         <a href="#load">load</a>
                     </li>
                     <li>
+                        <a href="#use">use</a>
+                    </li>
+                    <li>
                         <a href="#config">config</a>
                     </li>
                     <li>
@@ -270,7 +273,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'pack' %} s-crt{% endif %}" href="/nui/pages/pack.html">构建工具</a>
+                <a class="f-fs16{%if current == 'pack' %} s-crt{% endif %}" href="/nui/pages/pack.html">打包工具</a>
                 {%if current == 'pack' %}
                 <ul>
                     <li>

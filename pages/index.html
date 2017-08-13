@@ -63,14 +63,13 @@
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="快速上手">快速上手</h2>
 			<div class="e-mt15 f-lh22">
-				<p>Nui.js由模块加载器以及组件基类、实用工具、模版引擎、代理事件4个模块组成，并没有将UI组件集成到里面，使用时可以根据页面需要加载相应的组件模块。若只需要使用模块加载器，也可以下载加载器版。</p>
+				<p>Nui.js由模块加载器、组件基类、实用工具、模版引擎、代理事件5个模块组成，并没有将UI组件集成到里面，使用时可以根据页面需要加载相应的组件模块。</p>
 			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 下载</h3>
 			<div class="e-mt15 f-lh22">
 				<p>
 					<a href="/nui/dist/nui.js" class="f-corange f-tdu">未压缩版</a> 
 					<a href="/nui/dist/nui-min.js" class="f-corange f-tdu e-ml10">压缩版</a>
-					<a href="/nui/src/load.js" class="f-corange f-tdu e-ml10">加载器版</a> 
 				</p>
 			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 引入</h3>
@@ -104,7 +103,7 @@ Nui.define(function(){
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 入口模块调用</h3>
 <script type="text/highlight" data-xml-options>
-&lt;script&gt;
+&lt;script type="text/javascript"&gt;
 Nui.load('./page', function(page){
 	page.init()
 })
@@ -154,7 +153,7 @@ Nui.load('./page', function(page){
                 
             </li>
             <li>
-                <a class="f-fs16" href="/nui/pages/pack.html">构建工具</a>
+                <a class="f-fs16" href="/nui/pages/pack.html">打包工具</a>
                 
             </li>
         </ul>
@@ -169,7 +168,7 @@ Nui.load('./page', function(page){
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
 <script type="text/javascript" src="/nui/dist/nui-min.js?v=9d40944"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=bd73237"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=b646769"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){
