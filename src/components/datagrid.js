@@ -444,6 +444,8 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                              _class._getSize(self._tableAllTitle, 'tb', 'margin') - 
                              self._foot.outerHeight() - 
                              _class._getSize(self._foot, 'tb', 'margin');
+                var stop = self._tableAllBox.scrollTop();
+
                 self._tableAllBox.css('height', 'auto');
                 self._tableAllInner.height(height);
                 
@@ -462,6 +464,8 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                     self._tableAllBox.css('height', 'auto');
                     self._tableFixedBox.css('height', 'auto');
                 }
+                
+                self._tableAllBox.scrollTop(stop);
 
                 self._tableAllTitle.css({'margin-right':width});
 
@@ -546,10 +550,10 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
         _events:{
             'click .table-tbody .table-row':'_active _getRowData _rowclick',
             'mouseover .table-tbody .table-row':function(e, elem){
-                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.index() +'"]').addClass('s-hover')
+                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover')
             },
             'mouseout .table-tbody .table-row':function(e, elem){
-                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.index() +'"]').removeClass('s-hover')
+                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').removeClass('s-hover')
             },
             'dblclick .table-tbody .table-row':'_getRowData _rowdblclick',
             'focus .datagrid-input':'_enable _getRowData _focus',
@@ -575,7 +579,7 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
         _active:function(e, elem){
             var self = this;
             if(self.options.isActive === true){
-                self.element.find('.datagrid-tbody .table-row[row-index="'+ elem.index() +'"]').addClass('s-crt').siblings().removeClass('s-crt');
+                self.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-crt').siblings().removeClass('s-crt');
                 Nui.each(self.__instances, function(val){
                     if(val !== self && val.options.isActive === true){
                         val.element.find('.datagrid-tbody table-row.s-crt').removeClass('s-crt');
