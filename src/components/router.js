@@ -273,7 +273,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             data:{},
             entry:false,
             wrapper:false,
-            level:1,
+            level:2,
             onBefore:null,
             onChange:null,
             onData:null,

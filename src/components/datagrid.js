@@ -232,7 +232,7 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                     '})'+
                 '}%>'+
                 '<%each data%>'+
-                '<tr class="table-row" row-index="<%$index%>"<%include "data"%>>'+
+                '<tr class="table-row table-row-<%$index%>" row-index="<%$index%>"<%include "data"%>>'+
                     '<%each cols val key%>'+
                     '<%var _value%>'+
                     '<%if val.field && (!val.content || "number checkbox input".indexOf(val.content)===-1)%>'+
@@ -335,7 +335,7 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                 rows:self._rows,
                 isFixed:opts.isFixed === true,
                 isBorder:opts.isBorder === true,
-                paging:typeof opts.paging === 'object',
+                paging:typeof opts.paging === 'object' && opts.paging.isPage !== false,
                 footer:opts.footer
             }))).appendTo(self._container));
 
