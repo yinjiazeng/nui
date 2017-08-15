@@ -1,4 +1,4 @@
-Nui.define(['component'], function(component){
+Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function(component){
     var module = this;
 
     var scrollBarWidth = (function(){
@@ -124,8 +124,10 @@ Nui.define(['component'], function(component){
             isLine:false,
             isActive:true,
             isBorder:true,
-            isPaging:false,
+            //初始化时是否调用分页
+            isPaging:true,
             url:null,
+            //分页配置
             paging:null,
             fields:null,
             dataName:'list',
@@ -333,7 +335,7 @@ Nui.define(['component'], function(component){
                 rows:self._rows,
                 isFixed:opts.isFixed === true,
                 isBorder:opts.isBorder === true,
-                paging:typeof opts.paging === 'object' && opts.isPaging === true,
+                paging:typeof opts.paging === 'object',
                 footer:opts.footer
             }))).appendTo(self._container));
 
@@ -364,20 +366,24 @@ Nui.define(['component'], function(component){
             var self = this, opts = self.options;
             if(opts.paging){
                 delete opts.paging.wrap;
-                if(opts.isPaging === true){
-                    opts.paging.wrap = self._foot.children('.datagrid-paging');
-                }
+                opts.paging.wrap = self._foot.children('.datagrid-paging');
                 opts.paging.container = self._tableAllBox;
                 var pagingId = 'paging_'+self.__id;
                 var echoData = opts.paging.echoData;
                 opts.paging.echoData = function(data, type){
-                    self.data = data[opts.dataName] || [];
-                    self._render();
-                    if(typeof echoData === 'function'){
-                        echoData.call(opts.paging, data, type)
+                    if(self.element){
+                        self.data = data[opts.dataName] || [];
+                        self._render();
+                            if(typeof echoData === 'function'){
+                            echoData.call(opts.paging, data, type)
+                        }
                     }
                 }
-                self.paging = $.paging(pagingId, opts.paging);
+                self.paging = window[pagingId] = new Paging(opts.paging);
+
+                if(opts.isPaging === true){
+                    self.paging.query(true)
+                }
             }
             else if(opts.data){
                 self.data = opts.data;
@@ -429,11 +435,15 @@ Nui.define(['component'], function(component){
             return opts;
         },
         _resetHeight:function(){
-            var self = this, opts = self.options;
+            var self = this, opts = self.options, _class = self.constructor;
             self._rowHeight();
             if(opts.isFixed === true){
                 var conntailerHeight = self._container.innerHeight();
-                var height = conntailerHeight - self._tableAllTitle.outerHeight() - self._foot.outerHeight();
+                var height = conntailerHeight - 
+                             self._tableAllTitle.outerHeight() - 
+                             _class._getSize(self._tableAllTitle, 'tb', 'margin') - 
+                             self._foot.outerHeight() - 
+                             _class._getSize(self._foot, 'tb', 'margin');
                 self._tableAllBox.css('height', 'auto');
                 self._tableAllInner.height(height);
                 
