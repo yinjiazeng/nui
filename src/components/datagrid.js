@@ -335,7 +335,7 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                 rows:self._rows,
                 isFixed:opts.isFixed === true,
                 isBorder:opts.isBorder === true,
-                paging:typeof opts.paging === 'object' && opts.paging.isPage !== false,
+                paging:opts.paging && typeof opts.paging === 'object' && opts.paging.isPage !== false,
                 footer:opts.footer
             }))).appendTo(self._container));
 
