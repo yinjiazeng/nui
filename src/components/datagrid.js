@@ -227,7 +227,7 @@ Nui.define(['component'], function(component){
                             '<%/if%>'+
                             '<%elseif val.content === "checkbox"%>'+
                             '<span class="ui-checkradio">'+
-                            '<input type="checkbox" name="datagrid-checkbox" class="datagrid-checkbox datagrid-checkbox-chooseall">'+
+                            '<input type="checkbox" name="datagrid-checkbox-all" class="datagrid-checkbox datagrid-checkbox-choose">'+
                             '</span>'+
                             '<%/if%>'+
                             '</span>'+
@@ -268,7 +268,7 @@ Nui.define(['component'], function(component){
                         '<%/if%>'+
                         '<%if val.content === "checkbox" && typeof _value === "object"%>'+
                         '<span class="ui-checkradio">'+
-                        '<input type="checkbox" name="datagrid-checkbox"<%include "_attr"%>>'+
+                        '<input type="checkbox"<%include "_attr"%>>'+
                         '</span>'+
                         '<%elseif val.content === "input" && typeof _value === "object"%>'+
                         '<input type="text" autocomplete="off"<%include "_attr"%>>'+
@@ -432,7 +432,7 @@ Nui.define(['component'], function(component){
                     stringify:opts.stringify
                 }))
             })
-            self.element.find('[name="datagrid-checkbox"]').checkradio(self._checkradio())
+            self.element.find('.datagrid-checkbox:checkbox').checkradio(self._checkradio())
             self._resetHeight();
             if(typeof opts.onRender === 'function'){
                 opts.onRender.call(opts, self)
@@ -440,16 +440,23 @@ Nui.define(['component'], function(component){
         },
         _checkradio:function(){
             var self = this, opts = self.options;
-            var callback = function(me, e){
-                if(me.hasClass('datagrid-checkbox-chooseall')){
-                    self._tableTbody.find('.datagrid-checkbox-choose:enabled').checkradio('checked', me.prop('checked'))
-                }
-                else{
-                    var checked = self._tableTbody.find('.datagrid-checkbox-choose:enabled:checked').length === self._tableTbody.find('.datagrid-checkbox-choose:enabled').length;
-                    self._body.find('.table-thead .datagrid-checkbox-chooseall').checkradio('checked', checked)
+            var callback = function(elem, e){
+                var className = 'datagrid-checkbox-choose';
+                if(elem.hasClass(className)){
+                    var checked = elem.prop('checked');
+                    if(!elem.closest('.datagrid-table').hasClass('datagrid-table-all')){
+                        self._tableAllBox.find('tr[row-index="'+ elem.closest('tr.table-row').attr('row-index') +'"]').find('.'+className).checkradio('checked', checked)
+                    }
+                    if(elem.attr('name') === 'datagrid-checkbox-all'){
+                        self._tableTbody.find('.'+ className +':enabled').checkradio('checked', checked)
+                    }
+                    else{
+                        var checked = self._tableTbody.find('.'+ className +':checked').length === self._tableTbody.find('.'+className).length;
+                        self._body.find('.table-thead .'+className).checkradio('checked', checked)
+                    }
                 }
                 if(typeof opts.onCheckboxChange === 'function'){
-                    opts.onCheckboxChange.call(opts, e, self, me)
+                    opts.onCheckboxChange.call(opts, e, self, elem)
                 }
             }
             var opts = {
