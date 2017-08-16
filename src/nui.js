@@ -191,14 +191,18 @@
         return url.substr(0, index+1);
     }
 
+    var dirname = getPath();
+
+    if(domain === 'file://'){
+        domain = dirname
+    }
+
     // http://domdin, https://domain, file://url, //domain
     var isHttp = function(url){
         if(/^((https?|file):)?\/\//i.test(url)){
             return true
         }
     }
-
-    var dirname = getPath();
 
     var getModuleid = function(){
         ++mid;

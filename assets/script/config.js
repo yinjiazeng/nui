@@ -1,5 +1,5 @@
 Nui.config({
-    "base": "/nui",
+    "base": "/nui/",
     "paths": {
         "script": "/assets/script",
         "style": "/assets/style",
