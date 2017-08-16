@@ -143,7 +143,7 @@ Nui.define(['component', 'util'], function(component, util){
     }
 
     return this.extend(component, {
-        static:statics,
+        _static:statics,
         _options:options,
         _template:{
             layout:

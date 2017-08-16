@@ -265,7 +265,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
     }
 
     return this.extend(component, {
-        static:statics,
+        _static:statics,
         _options:{
             path:'',
             template:'',

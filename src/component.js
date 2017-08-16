@@ -204,7 +204,7 @@
         }
 
         return ({
-            static:statics,
+            _static:statics,
             _options:{
                 target:null,
                 id:'',

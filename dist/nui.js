@@ -477,7 +477,7 @@
             else if(Nui.type(module, 'Function')){
                 if(module.exports){
                     exports = extend(true, {}, module.exports, members);
-                    exports.static.__parent = new Module.Class.parent(module)
+                    exports._static.__parent = new Module.Class.parent(module)
                 }
                 else{
                     exports = extend(true, noop, module, members)
@@ -552,7 +552,7 @@
                 exports = methods.exports
             }
             
-            if(mod.name === 'component' || (exports.static && exports.static.__parent instanceof Module.Class.parent)){
+            if(mod.name === 'component' || (exports._static && exports._static.__parent instanceof Module.Class.parent)){
                 var obj = {
                     statics:{},
                     propertys:{},
@@ -566,7 +566,7 @@
 
                 Nui.each(exports, function(val, key){
                     //静态属性以及方法
-                    if(key === 'static'){
+                    if(key === '_static'){
                         obj['statics'] = val
                     }
                     //实例方法
@@ -589,7 +589,7 @@
                 else{
                     obj.statics.__component_name = name;
                     mod.module = components[name] = Module.Class(mod, obj);
-                    delete exports.static.__parent;
+                    delete exports._static.__parent;
                     mod.module.exports = exports;
                     if(mod.name !== 'component'){
                         var Class = mod.module.constructor, method;
@@ -1798,7 +1798,7 @@ Nui.define('events', function(){
         }
 
         return ({
-            static:statics,
+            _static:statics,
             _options:{
                 target:null,
                 id:'',

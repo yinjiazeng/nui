@@ -7,7 +7,7 @@
 
 Nui.define(function(){
     return this.extend('component', {
-        static:{
+        _static:{
             _init:function(){
                 var self = this;
                 Nui.doc.on('click', function(){
