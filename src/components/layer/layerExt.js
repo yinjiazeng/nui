@@ -200,8 +200,8 @@ Nui.define(['./layer', 'util'], function(layer, util){
                     if(typeof data.message !== 'undefined'){
                         var message = eval('('+ data.message +')');
                         $.each(message, function(key, msg){
-                            if(typeof self.options.messageFilter === 'function'){
-                                message[key] = self.options.messageFilter.call(self.options, name, msg)||''
+                            if(typeof self._options.messageFilter === 'function'){
+                                message[key] = self._options.messageFilter.call(self._options, name, msg)||''
                             }
                         })
                         messages[name] = message;
@@ -223,27 +223,27 @@ Nui.define(['./layer', 'util'], function(layer, util){
 					errorPlacement:function(error, element) {
 						element.removeClass('s-succ');
 						if(error.text()){
-							element.closest(self.options.itemWrap||'.ui-item').find(self.options.errorWrap||'.ui-err').html(error);
+							element.closest(self._options.itemWrap||'.ui-item').find(self._options.errorWrap||'.ui-err').html(error);
 						}
 					},
                     submitHandler:function(){
                         var param = {};
-                        if(typeof self.options.getData === 'function'){
-                        	param = self.options.getData.call(self.options, self, form)
+                        if(typeof self._options.getData === 'function'){
+                        	param = self._options.getData.call(self._options, self, form)
                         }
                         else{
                             param = util.getData(form).result;
                         }
 
-                        if(typeof self.options.onBeforeSubmit === 'function'){
-                        	param = self.options.onBeforeSubmit.call(self.options, self, param);
+                        if(typeof self._options.onBeforeSubmit === 'function'){
+                        	param = self._options.onBeforeSubmit.call(self._options, self, param);
                             if(param === false){
                                 return false
                             }
                         }
 
                         var loading = layer.loading({
-                            content:self.options.loading||'正在保存数据...',
+                            content:self._options.loading||'正在保存数据...',
                             under:self
                         });
                         
@@ -254,21 +254,21 @@ Nui.define(['./layer', 'util'], function(layer, util){
                             data:param,
                             success:function(res, xhr){
                                 loading.hide();
-                                if(typeof self.options.onSuccess === 'function'){
-                                    self.options.onSuccess.call(self.options, self, res, xhr)
+                                if(typeof self._options.onSuccess === 'function'){
+                                    self._options.onSuccess.call(self._options, self, res, xhr)
                                 }
                             },
                             error:function(xhr){
                                 loading.hide();
-                                if(typeof self.options.onError === 'function'){
-                                    self.options.onError.call(self.options, self, xhr)
+                                if(typeof self._options.onError === 'function'){
+                                    self._options.onError.call(self._options, self, xhr)
                                 }
                             }
-                        }, self.options.ajax||{}), null)
+                        }, self._options.ajax||{}), null)
                     }
                 }
                 self.validator = form.validate($.extend(true, opts, setting||{}, valid||{}));
-                typeof onInit === 'function' && onInit.call(self.options, self)
+                typeof onInit === 'function' && onInit.call(self._options, self)
             }
         }, options||{}))
         return formLayer

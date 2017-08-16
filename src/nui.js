@@ -560,8 +560,8 @@
                     apis:{init:true}
                 }
 
-                if(config.skin && !exports.options.skin){
-                    exports.options.skin = config.skin
+                if(config.skin && !exports._options.skin){
+                    exports._options.skin = config.skin
                 }
 
                 Nui.each(exports, function(val, key){
@@ -646,8 +646,8 @@
                 __id:Class.__id++,
                 _eventList:[]
             });
-            that.options = extend(true, {}, that.options, Class._options, options||{})
-            that._defaultOptions = extend(true, that.options);
+            that._options = extend(true, {}, that._options, Class._options, options||{})
+            that._defaultOptions = extend(true, that._options);
             Class.__instances[that.__id] = that;
             that._init()
         }

@@ -18,7 +18,7 @@ Nui.define(['component', 'util'], function(component, util){
                 clearTimeout(timer);
                 timer = setTimeout(function(){
                     Nui.each(_class.__instances, function(val){
-                        var opts = val.options;
+                        var opts = val._options;
                         if(opts.position || opts.isCenter === true){
                             val.resize()
                         }
@@ -144,7 +144,7 @@ Nui.define(['component', 'util'], function(component, util){
 
     return this.extend(component, {
         static:statics,
-        options:options,
+        _options:options,
         _template:{
             layout:
                 '<div class="<% className %>" style="<% include \'style\' %>">'+
@@ -211,7 +211,7 @@ Nui.define(['component', 'util'], function(component, util){
             this._exec()
         },
         _exec:function(){
-            var self = this, opts = self.options, _class = self.constructor;
+            var self = this, opts = self._options, _class = self.constructor;
             self._container = _class._jquery(opts.container);
             if(self._container.length){
                 self._containerDOM = self._container.get(0);
@@ -232,7 +232,7 @@ Nui.define(['component', 'util'], function(component, util){
             }
         },
         _create:function(){
-            var self = this, opts = self.options;
+            var self = this, opts = self._options;
             var buttons = self._createButton(), isTitle = false;
             if(opts.isTips !== true){
                 isTitle = typeof opts.title === 'string';
@@ -282,7 +282,7 @@ Nui.define(['component', 'util'], function(component, util){
             self._show()
         },
         _getContent:function(){
-            var self = this, opts = self.options, content = '';
+            var self = this, opts = self._options, content = '';
             if(opts.isTips !== true && opts.iframe.enable === true){
                 content = self._createIframe();
             }
@@ -297,8 +297,8 @@ Nui.define(['component', 'util'], function(component, util){
             return content
         },
         _createIframe:function(){
-            var self = this, opts = self.options, name = 'layer-iframe'+self.__id, src = opts.iframe.src;
-            if(options.iframe.cache === false){
+            var self = this, opts = self._options, name = 'layer-iframe'+self.__id, src = opts.iframe.src;
+            if(opts.iframe.cache === false){
                 src = util.setParam('_', new Date().getTime(), src)
             }
             return self._tpl2html('iframe', {
@@ -320,7 +320,7 @@ Nui.define(['component', 'util'], function(component, util){
             })
         },
         _createButton:function(){
-            var self = this, opts = self.options, defaults = {}, buttons = {}, caches = {};
+            var self = this, opts = self._options, defaults = {}, buttons = {}, caches = {};
             self._button = [];
             if(opts.isTips !== true){
                 Nui.each(['confirm', 'cancel'], function(id){
@@ -378,7 +378,7 @@ Nui.define(['component', 'util'], function(component, util){
             return buttons
         },
         _buttonEvent:function(){
-            var self = this, opts = self.options;
+            var self = this, opts = self._options;
             Nui.each(self._button, function(val){
                 self._on('click', self.element, '.layer-button-'+val.id, function(e, button){
                     if(!button.hasClass('nui-button-disabled')){
@@ -398,7 +398,7 @@ Nui.define(['component', 'util'], function(component, util){
             });
         },
         _bindMove:function(){
-            var self = this, opts = self.options, element = self.element;
+            var self = this, opts = self._options, element = self.element;
             var _class = self.constructor, elem = element, isMove = false, x, y, _x, _y;
             self._on('mousedown', self.head, function(e, ele){
                 isMove = true;
@@ -459,7 +459,7 @@ Nui.define(['component', 'util'], function(component, util){
             });
         },
         _bindScroll:function(){
-            var self = this, opts = self.options;
+            var self = this, opts = self._options;
             self._on('scroll', self._window, function(){
                 var top = self.data.offsetTop + self._window.scrollTop();
                 var left = self.data.offsetLeft + self._window.scrollLeft();
@@ -482,7 +482,7 @@ Nui.define(['component', 'util'], function(component, util){
             }
         },
         _setLower:function(destroy){
-            var self = this, _class = self.constructor, opts = self.options, unders = [];
+            var self = this, _class = self.constructor, opts = self._options, unders = [];
             if(opts.under){
                 unders = unders.concat(opts.under);
                 if(unders.length){
@@ -497,13 +497,13 @@ Nui.define(['component', 'util'], function(component, util){
         _setTop:function(){
             var self = this, _class = self.constructor;
             Nui.each(_class.__instances, function(val){
-                if(val && val !== self && val.options.isTop === true){
+                if(val && val !== self && val._options.isTop === true){
                     val._isTop = true;
                 }
             });
         },
         _position:function(){
-            var self = this, data = self.data, pos = self.options.position;
+            var self = this, data = self.data, pos = self._options.position;
             var _pos = {
                 top:pos.top,
                 left:pos.left,
@@ -554,7 +554,7 @@ Nui.define(['component', 'util'], function(component, util){
             return _pos
         },
         _resize:function(type){
-            var self = this, _class = self.constructor, opts = self.options, element = self.element;
+            var self = this, _class = self.constructor, opts = self._options, element = self.element;
             var wWidth = self._window.outerWidth();
             var wHeight = self._window.outerHeight();
             var stop = 0;
@@ -587,7 +587,7 @@ Nui.define(['component', 'util'], function(component, util){
             element.css(self.data);
         },
         _setSize:function(){
-            var self = this, _class = self.constructor, opts = self.options, element = self.element;
+            var self = this, _class = self.constructor, opts = self._options, element = self.element;
             var edge = opts.edge > 0 ? opts.edge*2 : 0;
             var wWidth = self._window.outerWidth() - edge;
             var wHeight = self._window.outerHeight() - edge;
@@ -666,7 +666,7 @@ Nui.define(['component', 'util'], function(component, util){
             self._body.height(self.data.contentHeight = _height)
         },
         _showMask:function(){
-            var self = this, _class = self.constructor, opts = self.options;
+            var self = this, _class = self.constructor, opts = self._options;
             if(!self._containerDOM.__layermask__){
                 self._containerDOM.__layermask__ = $(self._tpl2html('mask', {
                     skin:opts.skin,
@@ -687,7 +687,7 @@ Nui.define(['component', 'util'], function(component, util){
             }
         },
         _show:function(){
-            var self = this, opts = self.options;
+            var self = this, opts = self._options;
             component.init(self.main);
             self._resize('init');
             self._setLower();
@@ -704,7 +704,7 @@ Nui.define(['component', 'util'], function(component, util){
             return self
         },
         _timer:function(){
-            var self = this, opts = self.options;
+            var self = this, opts = self._options;
             if(self._time > 0){
                 if(typeof opts.onTimer === 'function'){
                     opts.onTimer.call(opts, self, self._time)
@@ -723,7 +723,7 @@ Nui.define(['component', 'util'], function(component, util){
             component.exports._reset.call(this);
             component('destroy', self.main);
             Nui.each(_class.__instances, function(val){
-                if(val && val.options.isMask === true && val !== self && val._containerDOM === self._containerDOM){
+                if(val && val._options.isMask === true && val !== self && val._containerDOM === self._containerDOM){
                     return (noMask = false);
                 }
             });
@@ -731,13 +731,13 @@ Nui.define(['component', 'util'], function(component, util){
                 self._containerDOM.__layermask__.remove();
                 self._containerDOM.__layermask__  = null;
             }
-            if(self.options.timer > 0){
+            if(self._options.timer > 0){
                 self.timer = 0;
                 clearTimeout(self._timerid);
             }
         },
         resize:function(){
-            var self = this, opts = self.options, element = self.element;
+            var self = this, opts = self._options, element = self.element;
             self._resize();
             if(typeof opts.onResize === 'function'){
                 opts.onResize.call(opts, self)
@@ -745,12 +745,12 @@ Nui.define(['component', 'util'], function(component, util){
             return self
         },
         hide:function(){
-            if(this.options.isHide === true){
+            if(this._options.isHide === true){
                 this.destroy()
             }
         },
         destroy:function(){
-            var self = this, _class = self.constructor, opts = self.options;
+            var self = this, _class = self.constructor, opts = self._options;
             if(typeof opts.onBeforeDestroy === 'function' && 
                 opts.onBeforeDestroy.call(opts, self) === false){
                 return

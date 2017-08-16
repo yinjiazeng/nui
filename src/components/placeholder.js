@@ -7,7 +7,7 @@
 
 Nui.define(['component'], function(component){
     return this.extend(component, {
-        options:{
+        _options:{
             /**
              * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
              * @type <String>
@@ -41,8 +41,8 @@ Nui.define(['component'], function(component){
             var self = this, target = self._getTarget();
             if(target){
                 var text = self.deftext = target.attr('placeholder');
-                if(!self.deftext && self.options.text){
-                    target.attr('placeholder', text = self.options.text)
+                if(!self.deftext && self._options.text){
+                    target.attr('placeholder', text = self._options.text)
                 }
                 self.text = Nui.trim(text);
                 if(self.val === undefined){
@@ -54,7 +54,7 @@ Nui.define(['component'], function(component){
             }
         },
         _create:function(){
-            var self = this, opts = self.options, _class = self.constructor;
+            var self = this, opts = self._options, _class = self.constructor;
             if(opts.animate || (!opts.animate && !('placeholder' in document.createElement('input')))){
                 if(opts.animate){
                     self.target.removeAttr('placeholder')
@@ -92,7 +92,7 @@ Nui.define(['component'], function(component){
             }
         },
         _setStyle:function(){
-            var self = this, opts = self.options;
+            var self = this, opts = self._options;
             self.className = '_placeholder-'+self.__id;
             self.target.addClass(self.className);
             if(!self.constructor.style){
@@ -116,7 +116,7 @@ Nui.define(['component'], function(component){
             catch(e){}
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
                 var selector = '.'+self.className+v;
-                var rules = 'opacity:1; color:'+(self.options.color||'');
+                var rules = 'opacity:1; color:'+(self._options.color||'');
                 try{
                     if('addRule' in sheet){
                         sheet.addRule(selector, rules, id)
@@ -129,7 +129,7 @@ Nui.define(['component'], function(component){
             })
         },
         _events:function(){
-            var self = this, opts = self.options, _class = self.constructor;
+            var self = this, opts = self._options, _class = self.constructor;
             var pleft = _class._getSize(self.target, 'l', 'padding') + _class._getSize(self.target, 'l');
             self._on('click', self.element, function(){
                 self.target.focus()
@@ -166,10 +166,10 @@ Nui.define(['component'], function(component){
             var _class = this.constructor, target = this.target;
             var pleft = _class._getSize(target, 'l', 'padding') + _class._getSize(target, 'l');
             var v = Nui.trim(!arguments.length ? target.val() : target.val(val).val());
-            if((!this.options.equal && v === this.text) || !v){
+            if((!this._options.equal && v === this.text) || !v){
                 target.val('');
                 this.element && this.element.show();
-                if(this.options.animate){
+                if(this._options.animate){
                     this.element.stop(true, false).animate({left:pleft, opacity:'1'})
                 }
             }

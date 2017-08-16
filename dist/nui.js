@@ -560,8 +560,8 @@
                     apis:{init:true}
                 }
 
-                if(config.skin && !exports.options.skin){
-                    exports.options.skin = config.skin
+                if(config.skin && !exports._options.skin){
+                    exports._options.skin = config.skin
                 }
 
                 Nui.each(exports, function(val, key){
@@ -646,8 +646,8 @@
                 __id:Class.__id++,
                 _eventList:[]
             });
-            that.options = extend(true, {}, that.options, Class._options, options||{})
-            that._defaultOptions = extend(true, that.options);
+            that._options = extend(true, {}, that._options, Class._options, options||{})
+            that._defaultOptions = extend(true, that._options);
             Class.__instances[that.__id] = that;
             that._init()
         }
@@ -1609,7 +1609,7 @@ Nui.define('events', function(){
             //实参大于形参，最后一个实参表示id
             if(args.length > method.length){
                 var id = args[method.length];
-                if(id && obj.options.id !== id && obj.__id !== id){
+                if(id && obj._options.id !== id && obj.__id !== id){
                     return
                 }
             }
@@ -1799,7 +1799,7 @@ Nui.define('events', function(){
 
         return ({
             static:statics,
-            options:{
+            _options:{
                 target:null,
                 id:'',
                 skin:'',
@@ -1813,7 +1813,7 @@ Nui.define('events', function(){
             _getTarget:function(){
                 var self = this;
                 if(!self.target){
-                    var target = self.options.target;
+                    var target = self._options.target;
                     var _class = self.constructor;
                     if(!target){
                         return null
@@ -1835,7 +1835,7 @@ Nui.define('events', function(){
                 return element
             },
             _tplData:function(data){
-                var opts = this.options, 
+                var opts = this._options, 
                     _class = this.constructor,
                     name = 'nui-' + _class.__component_name, 
                     skin = Nui.trim(opts.skin),
@@ -1868,7 +1868,7 @@ Nui.define('events', function(){
                 return data
             },
             _event:function(){
-                var self = this, opts = self.options;
+                var self = this, opts = self._options;
                 if(self.element && opts.events){
                     events.call(self, opts)
                 }
@@ -1892,7 +1892,7 @@ Nui.define('events', function(){
                     if(typeof selector !== 'string'){
                         selector = selector.selector;
                         if(!selector){
-                            selector = self.options.target
+                            selector = self._options.target
                         }
                     }
                     dalegate.on(type, selector, _callback);
@@ -1966,11 +1966,11 @@ Nui.define('events', function(){
             option:function(option, value){
                 var flag = false;
                 if(jQuery.isPlainObject(option)){
-                    jQuery.extend(true, this.options, option);
+                    jQuery.extend(true, this._options, option);
                     flag = true
                 }
                 else if(option && typeof option === 'string'){
-                    this.options[option] = value;
+                    this._options[option] = value;
                     flag = true
                 }
                 if(flag){
@@ -1981,16 +1981,16 @@ Nui.define('events', function(){
             },
             reset:function(){
                 this.option(this._defaultOptions);
-                if(typeof this.options.onReset === 'function'){
-                    this.options.onReset.call(this)
+                if(typeof this._options.onReset === 'function'){
+                    this._options.onReset.call(this)
                 }
                 return this;
             },
             destroy:function(){
                 this._delete();
                 this._reset();
-                if(typeof this.options.onDestroy === 'function'){
-                    this.options.onDestroy.call(this)
+                if(typeof this._options.onDestroy === 'function'){
+                    this._options.onDestroy.call(this)
                 }
             }
         })

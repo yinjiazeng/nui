@@ -54,7 +54,7 @@ Nui.define(function(){
                 return code
             }
         },
-        options:{
+        _options:{
             //工具栏
             tools:{
                 //复制
@@ -110,7 +110,7 @@ Nui.define(function(){
             +'</div>',
         _events:{
             'click tr':function(e, elem){
-                if(this.options.isLight === true){
+                if(this._options.isLight === true){
                     this.constructor._active = this._active = true;
                     elem.addClass('s-crt').siblings().removeClass('s-crt');
                     e.stopPropagation()
@@ -122,7 +122,7 @@ Nui.define(function(){
         },
         _create:function(){
             var self = this;
-            var opts = self.options;
+            var opts = self._options;
             var data = $.extend({
                 bsie7:Nui.bsie7,
                 list:self._list(),

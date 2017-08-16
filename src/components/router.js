@@ -60,7 +60,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                 Nui.each(self._paths, function(v){
                     if(hash === v.path || hash.indexOf(v.path) === 0){
                         var params = hash.replace(v.path, '').replace(/^\//, '');
-                        var object = self.__instances[v.id], opts = object.options, param = {};
+                        var object = self.__instances[v.id], opts = object._options, param = {};
                         params = params ? params.split('/') : [];
                         if(params.length === v.params.length){
                             var isRender = object._isRrender === true;
@@ -137,7 +137,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
 
                 if(!self._initialize){
                     Nui.each(self.__instances, function(v){
-                        if(!self._isEntry && v.options.entry === true){
+                        if(!self._isEntry && v._options.entry === true){
                             self._isEntry= true;
                             if(v.target){
                                 v._render(v.target.eq(0));
@@ -266,7 +266,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
 
     return this.extend(component, {
         static:statics,
-        options:{
+        _options:{
             path:'',
             template:'',
             container:null,
@@ -288,7 +288,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             }
         },
         _exec:function(){
-            var self = this, opts = self.options, router = self.constructor;
+            var self = this, opts = self._options, router = self.constructor;
             self.container = router._jquery(opts.container);
             if(opts.path && self.container){
                 self.path = router._replace(opts.path);
@@ -314,7 +314,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             }
         },
         _getpath:function(){
-            var self = this, path = self.path, opts = self.options, index = path.indexOf('/:');
+            var self = this, path = self.path, opts = self._options, index = path.indexOf('/:');
             var paths = {
                 id:self.__id,
                 params:[],
@@ -331,7 +331,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             return paths
         },
         _render:function(url){
-            var self = this, opts = self.options, href = url instanceof jQuery ? url.attr('href') : url;
+            var self = this, opts = self._options, href = url instanceof jQuery ? url.attr('href') : url;
             if(href){
                 var trigger = false;
                 var change = function(){
@@ -347,7 +347,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             }
         },
         _event:function(){
-            var self = this, opts = self.options;
+            var self = this, opts = self._options;
             self._on('click', Nui.doc, self.target, function(e, elem){
                 self._render(elem);
                 e.preventDefault()
