@@ -134,6 +134,7 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
             width:'100%',
             height:'100%',
             footer:'',
+            placeholder:'',
 
             onFocusin:null,
             onFocusout:null,
@@ -267,8 +268,8 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                 '<%/each%>'+
                 '<%elseif type === "all"%>'+
                 '<tr>'+
-                    '<td class="table-cell" colspan="<%cols.length%>">'+
-                        '<span class="ui-void"></span>'+
+                    '<td class="table-cell table-cell-void" colspan="<%cols.length%>">'+
+                        '<span class="ui-void"><%placeholder??%></span>'+
                     '</td>'+
                 '</tr>'+
                 '<%/if%>',
@@ -406,6 +407,7 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                     cols:v,
                     fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
                     data:self.data,
+                    placeholder:opts.placeholder,
                     stringify:opts.stringify
                 }))
             })
