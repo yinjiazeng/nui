@@ -16,13 +16,13 @@ var a = datagrid({
     },
     footer:'11',
     columns:[{
-        title:'编号',
         content:'checkbox',
         width:'40',
         align:'right',
         fixed:true
     }, {
         title:'ID',
+        content:'checkbox',
         field:'id',
         width:'200',
         order:{
@@ -57,7 +57,11 @@ var a = datagrid({
         order:'desc',
         field:'certificate',
         content:'input',
-        width:200
+        width:200,
+        filter:function(val){
+            val.className = '111';
+            return val
+        }
     }, {
         title:'职业',
         field:'buname'

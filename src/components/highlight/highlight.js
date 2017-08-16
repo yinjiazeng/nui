@@ -79,9 +79,6 @@ Nui.define(function(){
                                 .replace(/^[\r\n]+|[\r\n]+$/g, '')
                                 .replace(/</g, '&lt;')
                                 .replace(/>/g, '&gt;');
-                    if(self.element){
-                        self.element.remove();
-                    }
                     self._create();
                     self._event();
                 }

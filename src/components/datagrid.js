@@ -1,6 +1,6 @@
-Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function(component){
+Nui.define(['component'], function(component){
     var module = this;
-
+    //'../plugins/paging', '../plugins/checkradio'
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
         div.style.cssText = 'position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;';
@@ -57,6 +57,7 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                 Nui.each(array, function(v){
                     v['cellid'] = id++;
                     var order = v.order;
+                    var className = v.className;
                     if(order === true){
                         order = 'desc'
                     }
@@ -79,6 +80,16 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                     if(v.valign){
                         v.style['vertical-align'] = v.valign;
                     }
+
+                    if(!className){
+                        className = '';
+                    }
+
+                    if(className){
+                        className = ' ' + Nui.trim(className);
+                    }
+
+                    v.className = className;
 
                     if($.isEmptyObject(v.style)){
                         delete v.style
@@ -199,13 +210,9 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                     '<%each v%>'+
                     '<tr class="table-row">'+
                         '<%each $value val%>'+
-                        '<th class="table-cell"<%include "attr"%>>'+
+                        '<th class="table-cell<%val.className%>"<%include "attr"%>>'+
                             '<span class="cell-text">'+
-                            '<%if val.content === "checkbox"%>'+
-                            '<span class="ui-checkradio">'+
-                            '<input type="checkbox" name="datagrid-checkbox" class="datagrid-checkbox-all">'+
-                            '</span>'+
-                            '<%else%>'+
+                            '<%if val.title%>'+
                             '<%val.title%>'+
                             '<%if typeof val.order === "object"%>'+
                             '<%var asc = Nui.type(val.order.asc, ["String", "Number"]), desc = Nui.type(val.order.desc, ["String", "Number"])%>'+
@@ -218,6 +225,10 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                             '<%/if%>'+
                             '</em>'+
                             '<%/if%>'+
+                            '<%elseif val.content === "checkbox"%>'+
+                            '<span class="ui-checkradio">'+
+                            '<input type="checkbox" name="datagrid-checkbox" class="datagrid-checkbox datagrid-checkbox-chooseall">'+
+                            '</span>'+
                             '<%/if%>'+
                             '</span>'+
                         '</th>'+
@@ -241,14 +252,17 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
                     '<%elseif val.content === "number"%>'+
                     '<%var _value=$index+1%>'+
                     '<%elseif val.content === "checkbox"%>'+
-                    '<%var _value={"name":val.field ? val.field : "datagrid-checkbox", "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
+                    '<%var _value={"name":val.field ? val.field : "datagrid-checkbox", "class":"datagrid-checkbox"+(!val.title ? " datagrid-checkbox-choose" : ""), "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
                     '<%elseif val.content === "input"%>'+
                     '<%var _value={"name":val.field ? val.field : "datagrid-input", "class":"datagrid-input", "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
                     '<%else%>'+
                     '<%var _value=val.content%>'+
                     '<%/if%>'+
-                    '<td class="table-cell"<%include "attr"%>>'+
-                        '<span class="cell-text<%if val.nowrap === true%> cell-nowrap<%/if%>">'+
+                    '<td class="table-cell<%val.className%>"<%include "attr"%>>'+
+                        '<span class="cell-text'+
+                            '<%if val.nowrap === true%> cell-nowrap<%/if%>'+
+                            '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
+                            '<%if val.content === "input"%> cell-text-input<%/if%>">'+
                         '<%if typeof val.filter === "function"%>'+
                         '<%var _value = val.filter(_value, val.field, $value)%>'+
                         '<%/if%>'+
@@ -276,6 +290,13 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
             head:'',
             foot:'',
             _attr:
+                '<%if !_value["class"]%>'+
+                '<%var _class = _value["class"] = ""%>'+
+                '<%/if%>'+
+                '<%if _value.className%>'+
+                '<%var _class = (_value["class"]+=" "+Nui.trim(_value.className))%>'+
+                '<%delete _value.className%>'+
+                '<%/if%>'+
                 '<%each _value _v _k%>'+
                 ' <%_k%>="<%_v%>"'+
                 '<%/each%>',
@@ -420,12 +441,12 @@ Nui.define(['component', '../plugins/paging', '../plugins/checkradio'], function
         _checkradio:function(){
             var self = this, opts = self.options;
             var callback = function(me, e){
-                if(me.hasClass('datagrid-checkbox-all')){
-                    self._tableTbody.find('[name="datagrid-checkbox"]:enabled').checkradio('checked', me.prop('checked'))
+                if(me.hasClass('datagrid-checkbox-chooseall')){
+                    self._tableTbody.find('.datagrid-checkbox-choose:enabled').checkradio('checked', me.prop('checked'))
                 }
                 else{
-                    var checked = self._tableTbody.find('[name="datagrid-checkbox"]:enabled:checked').length === self._tableTbody.find('[name="datagrid-checkbox"]:enabled').length;
-                    self._body.find('.table-thead .datagrid-checkbox-all').checkradio('checked', checked)
+                    var checked = self._tableTbody.find('.datagrid-checkbox-choose:enabled:checked').length === self._tableTbody.find('.datagrid-checkbox-choose:enabled').length;
+                    self._body.find('.table-thead .datagrid-checkbox-chooseall').checkradio('checked', checked)
                 }
                 if(typeof opts.onCheckboxChange === 'function'){
                     opts.onCheckboxChange.call(opts, e, self, me)
