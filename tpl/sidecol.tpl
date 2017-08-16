@@ -277,10 +277,10 @@
                 {%if current == 'pack' %}
                 <ul>
                     <li>
-                        <a href="#install">安装使用</a>
+                        <a href="#安装使用">安装使用</a>
                     </li>
                     <li>
-                        <a href="#question">常见问题</a>
+                        <a href="#注意事项">注意事项</a>
                     </li>
                 </ul>
                 {% endif %}

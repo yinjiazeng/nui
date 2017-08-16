@@ -64,46 +64,53 @@ cnpm install -g gulp
             <p class="e-mt15 f-lh22">
                 因为打包工具需要配合项目才能使用，因此先<a class="f-corange" href="/nui/assets/file/nui-demo.rar">下载</a>项目案例，打开index.html后并不能看到页面效果，这是因为加载的压缩文件还没有生成。命令行定位到project目录中安装gulp以及gulp-nui：
             </p>
-<!--<script type="text/highlight" data-style-options>
-│  index.html
-│
-├─libs /*公共资源目录*/
-│  ├─images
-│  ├─script
-│  │  ├─components
-│  │  ├─jquery
-│  │  │      jquery-1.11.3.js
-│  │  │      jquery-1.11.3.min.js
-│  │  │
-│  │  └─nui
-│  │          nui-min.js
-│  │          nui.js
-│  │
-│  └─style
-│          reset.less
-│
-└─project /*项目资源目录*/
-    │  gulpfile.js
-    │  package.json
-    │
-    ├─images
-    ├─script
-    │  │  config.js
-    │  │  main.js
-    │  │
-    │  ├─pages /*存放页面业务逻辑*/
-    │  │      helloworld.js
-    │  │
-    │  └─views /*存放页面模版*/
-    │          helloworld.js
-    │
-    └─style
-            helloworld.less
-</script>-->
 <script type="text/highlight" data-highlight-options>
 cnpm install --save-dev gulp gulp-nui
 </script>
-            <p class="e-mt15 f-lh22">执行gulp命令后，在项目目录style文件夹中会生成main-min.css、main-min.css.map文件，script文件夹中会生成main-min.js、main-min.js.map文件，再次打开index.html后即可看到案例效果，然后打开页面源文件，你会发现引用的资源末尾被添加上了版本号</p>
+            <p class="e-mt15 f-lh22">执行gulp命令后，在项目目录style文件夹中会生成main-min.css、main-min.css.map文件，script文件夹中会生成main-min.js、main-min.js.map文件，后缀为map的为sourcemap文件用于浏览器调试。再次打开index.html后即可看到案例效果，然后打开页面源文件，你会发现引用的资源末尾被添加上了版本号，只要修改文件版本号都会更改，这样浏览器就不会存在缓存问题了。</p>
+            <p class="e-mt15 f-lh22">细心的你可能会发现，模块文件外部没有Nui.define却可以直接使用，因为打包工具会自动添加上，如果你了解nodejs，那对这样的写法一定不陌生，想象一下在浏览器端js中书写node代码是不是很激动。</p>
+<script type="text/highlight" data-javascript-options>
+//模块文件
+require('./a');
+imports('./b');
+extend('./c');
+renders({
+    <div></div>
+})
+module.exports = {
+
+}
+
+//模块文件打包后：
+Nui.define(function(require, imports, extend, renders){
+    var module = this;
+    require('./a');
+    imports('./b');
+    extend('./c');
+    renders({
+        <div></div>
+    })
+    module.exports = {
+    
+    }
+})
+</script>
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="注意事项">注意事项</h2>
+            <p class="e-mt15 f-lh22">匹配文件时一定要排除掉生成的压缩文件以及config文件，不然可能会导致任务多次执行。原因是生成或修改压缩文件本身就相当于文件修改，因此又会触发监听任务。</p>
+<script type="text/highlight" data-javascript-options>
+                                                    //注意这里
+gulp.src(['./style/**/*.{css,less}', '!./style/**/*-{min}.css'])
+                                                                    //注意这里
+gulp.watch(['{script,style}/**/*.{js,css,less}', '!script/**/*-min.{js,css}', '!script/config.js'], ['pageRev'])
+</script>
+            <p class="e-mt15 f-lh22">监听文件路径去掉前面的“./”，不然无法监听新增的文件</p>
+<script type="text/highlight" data-javascript-options>
+//错误写法
+gulp.watch(['./images/**/*.{jpg,png,gif,jpeg}', './style/**/*.{eot,svg,ttf,woff}'], ['cssRev'])
+
+//正确写法
+gulp.watch(['images/**/*.{jpg,png,gif,jpeg}', 'style/**/*.{eot,svg,ttf,woff}'], ['cssRev'])
+</script>
         </div>	
     </div>
     
@@ -143,10 +150,10 @@ cnpm install --save-dev gulp gulp-nui
                 
                 <ul>
                     <li>
-                        <a href="#install">安装使用</a>
+                        <a href="#安装使用">安装使用</a>
                     </li>
                     <li>
-                        <a href="#question">常见问题</a>
+                        <a href="#注意事项">注意事项</a>
                     </li>
                 </ul>
                 
