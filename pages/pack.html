@@ -67,7 +67,7 @@ cnpm install -g gulp
 <script type="text/highlight" data-highlight-options>
 cnpm install --save-dev gulp gulp-nui
 </script>
-            <p class="e-mt15 f-lh22">执行gulp命令后，在项目目录style文件夹中会生成main-min.css、main-min.css.map文件，script文件夹中会生成main-min.js、main-min.js.map文件，后缀为map的为sourcemap文件用于浏览器调试。再次打开index.html后即可看到案例效果，然后打开页面源文件，你会发现引用的资源末尾被添加上了版本号，只要修改文件版本号都会更改，这样浏览器就不会存在缓存问题了。</p>
+            <p class="e-mt15 f-lh22">执行gulp命令后，在项目目录style文件夹中会生成main-min.css、main-min.css.map文件，script文件夹中会生成main-min.js、main-min.js.map文件，后缀为map的为sourcemap文件用于浏览器调试。再次打开index.html后即可看到案例效果，查看页面源代码，你会发现引用的资源末尾被添加上了版本号，只要修改文件版本号都会更改，这样浏览器就不会存在缓存问题了。</p>
             <p class="e-mt15 f-lh22">细心的你可能会发现，模块文件外部没有Nui.define却可以直接使用，因为打包工具会自动添加上，如果你了解nodejs，那对这样的写法一定不陌生，想象一下在浏览器端js中书写node代码是不是很激动。</p>
 <script type="text/highlight" data-javascript-options>
 //模块文件
