@@ -76,6 +76,30 @@ gulp.watch(['./images/**/*.{jpg,png,gif,jpeg}', './style/**/*.{eot,svg,ttf,woff}
 //正确写法
 gulp.watch(['images/**/*.{jpg,png,gif,jpeg}', 'style/**/*.{eot,svg,ttf,woff}'], ['cssRev'])
 </script>
+            <p class="e-mt15 f-lh22">文件监听任务执行过慢时，首先考虑是不是一次性监听的文件太多，尽量分开监听，如果项目中js和css过多，可以使用mintype参数，压缩指定类型文件</p>
+<script type="text/highlight" data-javascript-options>
+var pageRev = function(type){
+    if(!type){
+        //压缩css和js
+		delete options.mintype
+	}
+	else{
+        //压缩指定类型
+		options.mintype = type
+	}
+	gulp.src(['./**/*.html'])
+		.pipe(nui(options))
+		.pipe(gulp.dest('./'))
+}
+
+gulp.watch(['./style/**/*.{css,less}', '!./style/**/*-min.css'], function(){
+    pageRev('css')
+})
+
+gulp.watch(['./style/**/*.js', '!./style/**/*-min.js'], function(){
+    pageRev('js')
+})
+</script>
         </div>	
     </div>
     {% import 'sidecol.tpl' as side %}
