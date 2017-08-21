@@ -951,7 +951,7 @@ Nui.define('util', {
      * @param number <Number> 小数部分末尾最多显示0的数量
      */
     toFixed:function(digit, decimal, number){
-        if(isNaN(digit)){
+        if(isNaN(digit) || digit === ''){
             return digit
         }
 
