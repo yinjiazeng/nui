@@ -317,5 +317,53 @@ Nui.define('util', {
             })
         }
         return data;
+    },
+    /**
+     * @func 获取输入框内光标位置
+     * @return <Number>
+     * @param elem <jQuery Object> 表单元素
+     */
+    getFocusIndex:function(elem){
+        var val = Nui.trim(elem.val());
+        var index = val.length;
+        if(elem.setSelectionRange){
+            index = elem.selectionStart;
+        }
+        else{
+            //ie
+            try{
+                var temp = document.selection.createRange();
+                var textRange = elem.createTextRange();
+                textRange.setEndPoint('endtoend', temp);
+                index = textRange.text.length;
+            }
+            catch(e){}
+        }
+        return index;
+    },
+    /**
+     * @func 检测页面是否有文本被选择
+     * @return <Boolean>
+     */
+    isTextSelect:function(){
+        var text = '';
+        //ie10以及以下浏览器
+        if(document.selection){
+            text =  document.selection.createRange().text;
+        }
+        //火狐和ie11浏览器getSelection无法获取表单元素选中文本
+        else if(navigator.userAgent.toLowerCase().indexOf('gecko') !== -1){
+            var textArea = document.activeElement;
+            text = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
+        }
+        //chrome safari opera
+        else if(window.getSelection){
+            text = window.getSelection().toString();
+        }
+        //低版本chrome
+        else if(document.getSelection){
+            text = document.getSelection().toString();
+        }
+        return !!text;
     }
 })
