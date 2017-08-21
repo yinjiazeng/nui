@@ -1239,19 +1239,19 @@ Nui.define('util', {
     /**
      * @func 获取输入框内光标位置
      * @return <Number>
-     * @param elem <jQuery Object> 表单元素
+     * @param element <DOM Object> 表单元素dom对象
      */
-    getFocusIndex:function(elem){
-        var val = Nui.trim(elem.val());
+    getFocusIndex:function(element){
+        var val = Nui.trim(element.value);
         var index = val.length;
-        if(elem.setSelectionRange){
-            index = elem.selectionStart;
+        if(element.setSelectionRange){
+            index = element.selectionStart;
         }
         else{
             //ie
             try{
                 var temp = document.selection.createRange();
-                var textRange = elem.createTextRange();
+                var textRange = element.createTextRange();
                 textRange.setEndPoint('endtoend', temp);
                 index = textRange.text.length;
             }
