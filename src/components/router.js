@@ -64,10 +64,11 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                         params = params ? params.split('/') : [];
                         if(params.length === v.params.length){
                             var isRender = object._isRrender === true;
-                            var _isRender = object._isRrender !== false && !object._wrapper;
+                            var unWrapper = object._isRrender !== false && !object._wrapper;
+                            var _isRrender = !object.loaded || isRender || unWrapper;
                             delete object._isRrender;
 
-                            if(_isRender || (object._wrapper && isRender)){
+                            if(unWrapper || (object._wrapper && isRender)){
                                 opts.data = $.extend(true, {}, object._defaultOptions.data);
                             }
 
@@ -89,11 +90,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 delete object._send;
                             }
 
-                            if(typeof opts.onChange === 'function'){
-                                opts.onChange.call(opts);
-                            }
-
-                            if(!object.loaded || isRender || _isRender){
+                            if(_isRrender){
                                 if(opts.wrapper && !object._wrapper){
                                     object._wrapper = self._getWrapper(object.container)
                                 }
@@ -103,9 +100,16 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 if(object._isRrender || !object._wrapper){
                                     component.destroy((object._wrapper||self._wrapper).off());
                                 }
-                                var wrapper = opts.element = object._wrapper || self._wrapper;
-                                var tmpl = opts.template;
+                            }
+
+                            var wrapper = opts.element = object._wrapper || self._wrapper;
+
+                            if(typeof opts.onChange === 'function'){
+                                opts.onChange.call(opts);
+                            }
                                 
+                            if(_isRrender){
+                                var tmpl = opts.template;
                                 if(tmpl){
                                     if(typeof tmpl === 'string'){
                                         wrapper.html(template.render(tmpl, opts.data));
@@ -121,7 +125,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 component.init(wrapper);
                                 object.loaded = true;
                             }
-                            var wrapper = object._wrapper || self._wrapper;
+
                             wrapper.show().siblings('.nui-router-wrapper').hide();
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts)
