@@ -94,6 +94,7 @@ Nui.define('util', {
                 value = value + '0';
                 len++;
             }
+            value = value.replace(/\.$/, '');
         }
         
         return value
