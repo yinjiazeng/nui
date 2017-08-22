@@ -448,10 +448,10 @@ Nui.define('util', {
     },
     /**
      * @func 将数字转换为中文大写
-     * @param money <String> 数字
+     * @param number <String> 数字
      * @return <String>
      */
-    getUpper:function(money){
+    numberToCN:function(number){
         //汉字的数字
         var cnNums = new Array('零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖');
         //基本单位
@@ -474,23 +474,23 @@ Nui.define('util', {
         var chineseStr = '';
         //分离金额后用的数组，预定义
         var parts;
-        if (money == '') { return ''; }
-        money = parseFloat(money);
-        if (money >= maxNum) {
+        if (number == '') { return ''; }
+        number = parseFloat(number);
+        if (number >= maxNum) {
             //超出最大处理数字
             return '';
         }
-        if (money == 0) {
+        if (number == 0) {
             chineseStr = cnNums[0] + cnIntLast + cnInteger;
             return chineseStr;
         }
         //转换为字符串
-        money = money.toString();
-        if (money.indexOf('.') == -1) {
-            integerNum = money;
+        number = number.toString();
+        if (number.indexOf('.') == -1) {
+            integerNum = number;
             decimalNum = '';
         } else {
-            parts = money.split('.');
+            parts = number.split('.');
             integerNum = parts[0];
             decimalNum = parts[1].substr(0, 4);
         }
