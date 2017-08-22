@@ -1393,7 +1393,8 @@ Nui.define('util', {
         //分离金额后用的数组，预定义
         var parts;
         if (number == '') { return ''; }
-        number = parseFloat(number);
+        var isMinus = number < 0;
+        number = Math.abs(parseFloat(number));
         if (number >= maxNum) {
             //超出最大处理数字
             return '';
@@ -1451,6 +1452,9 @@ Nui.define('util', {
             chineseStr += cnNums[0] + cnIntLast + cnInteger;
         } else if (decimalNum == '') {
             chineseStr += cnInteger;
+        }
+        if(isMinus){
+            chineseStr = '负' + chineseStr
         }
         return chineseStr;
     }
