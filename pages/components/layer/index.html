@@ -72,9 +72,23 @@ Nui.define(['../src/components/layer'], function(layer){
 			
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> content</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{String, Selector}</p>
+				<p>类型：{String, jQuery Object}</p>
 				<p>默认值：''</p>
-				<p>说明：主体内容，可以是标签字符串，也可以是jQuery对象</p>
+				<p>说明：弹出层内容，可以是标签字符串，也可以是jQuery对象</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> template</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{String, Object}</p>
+				<p>默认值：''</p>
+				<p>说明：弹出层内容模版，优先级高于content，当是Object类型时，必须包含main属性作为主模版</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> data</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Object}</p>
+				<p>默认值：{}</p>
+				<p>说明：弹出层模版数据，用于渲染模版</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> width</h3>
@@ -638,7 +652,7 @@ layer({
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
 <script type="text/javascript" src="/nui/dist/nui-min.js?v=c8fabf4"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=1673d08"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=1ecb982"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){
