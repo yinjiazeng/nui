@@ -1,6 +1,5 @@
 Nui.define(['component'], function(component){
     var module = this;
-    //'../plugins/paging', '../plugins/checkradio'
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
         div.style.cssText = 'position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;';
@@ -209,8 +208,10 @@ Nui.define(['component'], function(component){
                 '<thead class="table-thead">'+
                     '<%each v%>'+
                     '<tr class="table-row">'+
-                        '<%each $value val%>'+
-                        '<th class="table-cell<%val.className%>"<%include "attr"%>>'+
+                        '<%var cellLastIndex = $value.length-1%>'+
+                        '<%each $value val key%>'+
+                        '<%var isTitle = true%>'+
+                        '<th class="table-cell<%val.className%> table-cell-<%key%><%if cellLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
                             '<span class="cell-text">'+
                             '<%if val.title%>'+
                             '<%val.title%>'+
@@ -245,6 +246,7 @@ Nui.define(['component'], function(component){
                 '}%>'+
                 '<%each data%>'+
                 '<tr class="table-row table-row-<%$index%>" row-index="<%$index%>"<%include "data"%>>'+
+                    '<%var colLastIndex = cols.length-1%>'+
                     '<%each cols val key%>'+
                     '<%var _value%>'+
                     '<%if val.field && (!val.content || "number checkbox input".indexOf(val.content)===-1)%>'+
@@ -258,14 +260,15 @@ Nui.define(['component'], function(component){
                     '<%else%>'+
                     '<%var _value=val.content%>'+
                     '<%/if%>'+
-                    '<td class="table-cell<%val.className%>"<%include "attr"%>>'+
-                        '<span class="cell-text'+
-                            '<%if val.nowrap === true%> cell-nowrap<%/if%>'+
-                            '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
-                            '<%if val.content === "input"%> cell-text-input<%/if%>">'+
+                    '<td class="table-cell<%val.className%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
                         '<%if typeof val.filter === "function"%>'+
                         '<%var _value = val.filter(_value, val.field, $value)%>'+
                         '<%/if%>'+
+                        '<span class="cell-text'+
+                            '<%if val.nowrap === true%> cell-nowrap<%/if%>'+
+                            '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
+                            '<%if val.content === "input"%> cell-text-input<%/if%>"'+
+                            '<%if val.showtitle === true%> title="<%_value%>"<%/if%>>'+
                         '<%if val.content === "checkbox" && typeof _value === "object"%>'+
                         '<span class="ui-checkradio">'+
                         '<input type="checkbox"<%include "_attr"%>>'+
@@ -302,7 +305,7 @@ Nui.define(['component'], function(component){
                 '<%/each%>',
             attr:
                 '<%each val value name%>'+
-                '<%if name === "style"%>'+
+                '<%if !isTitle?? && name === "style"%>'+
                 'style="<%each value _v _k%><%_k%>:<%_v%>;<%/each%>"'+
                 '<%elseif "width field colspan rowspan cellid".indexOf(name) !== -1%>'+
                 ' <%name%>="<%value%>"'+
@@ -468,7 +471,7 @@ Nui.define(['component'], function(component){
             var self = this, opts = self._options, _class = self.constructor;
             self._rowHeight();
             if(opts.isFixed === true){
-                var conntailerHeight = self._container.innerHeight();
+                var conntailerHeight = self._container.height();
                 var height = conntailerHeight - 
                              self._tableAllTitle.outerHeight() - 
                              _class._getSize(self._tableAllTitle, 'tb', 'margin') - 
