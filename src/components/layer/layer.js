@@ -5,7 +5,7 @@
  * @description layer弹出层
  */
 
-Nui.define(['component', 'util'], function(component, util){
+Nui.define(['component', 'util', 'template'], function(component, util, template){
     var module = this;
 
     var statics = {
@@ -32,8 +32,12 @@ Nui.define(['component', 'util'], function(component, util){
     }
 
     var options = {
-        //主体内容
+        //内容
         content:'',
+        //内容模版
+        template:'',
+        //模版数据
+        data:{},
         //高度
         width:320,
         //宽度
@@ -282,12 +286,20 @@ Nui.define(['component', 'util'], function(component, util){
             self._show()
         },
         _getContent:function(){
-            var self = this, opts = self._options, content = '';
+            var self = this, opts = self._options, content = '', tpl = opts.template;
             if(opts.isTips !== true && opts.iframe.enable === true){
                 content = self._createIframe();
             }
             else{
-                if(typeof opts.content === 'string'){
+                if(tpl){
+                    if(typeof tpl === 'string'){
+                        content = template.render(tpl, opts.data)
+                    }
+                    else if(Nui.type(opts.template, 'Object')){
+                        content = template.render.call(tpl, tpl.main, opts.data)
+                    }
+                }
+                else if(typeof opts.content === 'string'){
                     content = opts.content
                 }
                 else if(opts.content instanceof jQuery){

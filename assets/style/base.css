@@ -228,7 +228,7 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .nui-layer { position:absolute; padding:0px; font-size:14px;}
 .nui-layer .layer-box { background-color:#fff; zoom:1; border:1px solid #B7B7B7; border-radius:5px;}
 .nui-layer .layer-head { padding-left:15px; height:33px; line-height:33px; color:#333; border-bottom:1px solid #DBDBDB;}
-.nui-layer .layer-box, .nui-layer .layer-body, .nui-layer .layer-main { position:relative;}
+.nui-layer .layer-box, .nui-layer .layer-body { position:relative;}
 .nui-layer .layer-main:before, .nui-layer .layer-main:after,
 .nui-layer .layer-foot:before, .nui-layer .layer-foot:after { content:''; display:table;}
 .nui-layer .layer-main:after, .nui-layer .layer-foot:after { clear:both;}
