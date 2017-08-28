@@ -117,7 +117,7 @@ Nui.define(['component'], function(component){
                 }
                 Nui.each(array, function(v){
                     if(self._hasChildren(v)){
-                        count += self._colspan(v.children, count)
+                        count += self._colspan(v.children);
                     }
                     else{
                         count += 1
