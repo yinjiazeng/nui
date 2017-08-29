@@ -92,7 +92,12 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
 
                             if(_isRrender){
                                 if(opts.wrapper && !object._wrapper){
-                                    object._wrapper = self._getWrapper(object.container)
+                                    if(typeof opts.wrapper !== 'boolean'){
+                                        object._wrapper = object.container.children(opts.wrapper)
+                                    }
+                                    else{
+                                        object._wrapper = self._getWrapper(object.container)
+                                    }
                                 }
                                 else if(!self._wrapper){
                                     self._wrapper = self._getWrapper(object.container)

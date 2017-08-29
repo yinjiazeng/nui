@@ -167,9 +167,9 @@ router({
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> wrapper</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{Boolean}</p>
+				<p>类型：{Boolean, Selector}</p>
 				<p>默认值：false</p>
-				<p>说明：值为false时，所有设置该值的路由实例都将共享一个容器，每次加载都会触发onInit；当值为true是，实例会独享一个容器，仅在第一次加载时时会触发onInit。</p>
+				<p>说明：值为false时，所有设置该值的路由实例都将共享一个容器，每次加载都会触发onInit；当值为true时，实例会独享一个容器，仅在第一次加载时时会触发onInit；值为选择器时同true，只不过该元素必须是container的子元素且class值必须包含nui-router-wrapper。</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({

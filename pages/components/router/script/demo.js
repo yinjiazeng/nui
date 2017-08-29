@@ -4,8 +4,9 @@ Nui.define(['{com}/router'], function(router){
 		target:'#home',
 		entry:true,
 		path:'/home/',
+		wrapper:'#aa',
 		container:'#main',
-		template:'<p>这是首页</p>',
+		//template:'<p>这是首页</p>',
 	})
 
 	router({
