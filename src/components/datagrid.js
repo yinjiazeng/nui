@@ -117,7 +117,7 @@ Nui.define(['component'], function(component){
                 }
                 Nui.each(array, function(v){
                     if(self._hasChildren(v)){
-                        count += self._colspan(v.children);
+                        count += self._colspan(v.children)
                     }
                     else{
                         count += 1
@@ -140,7 +140,7 @@ Nui.define(['component'], function(component){
             //分页配置
             paging:null,
             fields:null,
-            dataName:'list',
+            dataField:'list',
             width:'100%',
             height:'100%',
             footer:'',
@@ -397,7 +397,7 @@ Nui.define(['component'], function(component){
                 var echoData = opts.paging.echoData;
                 opts.paging.echoData = function(data, type){
                     if(self.element){
-                        self.data = data[opts.dataName] || [];
+                        self.data = data;
                         self._render();
                             if(typeof echoData === 'function'){
                             echoData.call(opts.paging, data, type)
@@ -422,6 +422,21 @@ Nui.define(['component'], function(component){
             })
             self._event()
         },
+        _getData:function(){
+            var self = this, opts = self._options, field = opts.dataField, data = self.data;
+            if(field){
+                Nui.each(field.split('.'), function(v){
+                    if(data[v]){
+                        data = data[v]
+                    }
+                    else{
+                        data = null;
+                        return false;
+                    }
+                })
+            }
+            return data||[]
+        },
         _render:function(){
             var self = this, opts = self._options;
             Nui.each(self._cols, function(v, k){
@@ -430,7 +445,7 @@ Nui.define(['component'], function(component){
                     isFixed:opts.isFixed === true,
                     cols:v,
                     fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
-                    data:self.data,
+                    data:self._getData(),
                     placeholder:opts.placeholder,
                     stringify:opts.stringify
                 }))
