@@ -477,10 +477,10 @@ Nui.define(['component'], function(component){
                     opts.onCheckboxChange.call(opts, e, self, elem)
                 }
             }
-            var opts = {
+            var _opts = {
                 callback:callback
             }
-            return opts;
+            return _opts;
         },
         _resetHeight:function(){
             var self = this, opts = self._options, _class = self.constructor;
