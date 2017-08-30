@@ -80,6 +80,10 @@ Nui.define(['component'], function(component){
                         v.style['vertical-align'] = v.valign;
                     }
 
+                    if(v.width){
+                        v.width = v.width.toString().replace(/px$/, '');
+                    }
+
                     if(!className){
                         className = '';
                     }
@@ -212,7 +216,7 @@ Nui.define(['component'], function(component){
                         '<%each $value val key%>'+
                         '<%var isTitle = true%>'+
                         '<th class="table-cell<%val.className%> table-cell-<%key%><%if cellLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
-                            '<span class="cell-text">'+
+                            '<span class="cell-text"<%if val.width > 0%> style="width:<%val.width%>px"<%/if%>>'+
                             '<%if val.title%>'+
                             '<%val.title%>'+
                             '<%if typeof val.order === "object"%>'+
@@ -268,7 +272,7 @@ Nui.define(['component'], function(component){
                             '<%if val.nowrap === true%> cell-nowrap<%/if%>'+
                             '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
                             '<%if val.content === "input"%> cell-text-input<%/if%>"'+
-                            '<%if val.showtitle === true%> title="<%_value%>"<%/if%>>'+
+                            '<%if val.showtitle === true%> title="<%_value%>"<%/if%><%if val.width > 0%> style="width:<%val.width%>px"<%/if%>>'+
                         '<%if val.content === "checkbox" && typeof _value === "object"%>'+
                         '<span class="ui-checkradio">'+
                         '<input type="checkbox"<%include "_attr"%>>'+

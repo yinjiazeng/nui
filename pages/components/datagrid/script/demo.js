@@ -14,150 +14,34 @@ var a = datagrid({
         pCount:4
     },
     footer:'11',
+    width:'110%',
     columns:[{
-        content:'checkbox',
-        width:'40',
-        align:'right',
+        title:'名称',
+        width:100,
+        field:'buname',
+        nowrap:true,
+        fixed:'left'
     }, {
-        title:'ID'
+        title:'名称',
+        width:100,
+        field:'buname',
+        nowrap:true
     }, {
-        title:'期初余额',
-        field:'address',
-        children:[{
-            title:'借方',
-            width:'10%',
-            field:'buaddress',
-            nowrap:true,
-            children:[{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            },{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            }]
-        }, {
-            title:'借方',
-            width:'10%',
-            order:'asc',
-            field:'buaddress',
-            nowrap:true,
-            children:[{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            },{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            }]
-        }, {
-            title:'借方',
-            width:'10%',
-            order:'asc',
-            field:'buaddress',
-            nowrap:true,
-            children:[{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            },{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            }]
-        }, {
-            title:'借方',
-            width:'10%',
-            order:'asc',
-            field:'buaddress',
-            nowrap:true,
-            children:[{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            },{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            }]
-        }, {
-            title:'借方',
-            width:'10%',
-            order:'asc',
-            field:'buaddress',
-            nowrap:true,
-            children:[{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            },{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            }]
-        }, {
-            title:'借方',
-            width:'10%',
-            order:'asc',
-            field:'buaddress',
-            nowrap:true,
-            children:[{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            },{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            }]
-        }, {
-            title:'借方',
-            width:'10%',
-            order:'asc',
-            field:'buaddress',
-            nowrap:true,
-            children:[{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            },{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            }]
-        }, {
-            title:'借方',
-            width:'10%',
-            order:'asc',
-            field:'buaddress',
-            nowrap:true,
-            children:[{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            },{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            }]
-        }, {
-            title:'借方',
-            width:'10%',
-            order:'asc',
-            field:'buaddress',
-            nowrap:true,
-            children:[{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            },{
-                title:'aaa',
-                filed:'id',
-                width:'5%'
-            }]
-        }]
+        title:'名称',
+        width:100,
+        field:'buname',
+        nowrap:true
+    }, {
+        title:'名称',
+        width:100,
+        field:'buname',
+        nowrap:true
+    }, {
+        title:'名称',
+        width:100,
+        field:'buname',
+        nowrap:true,
+        fixed:'right'
     }],
     onRowClick:function(e, self, elem, data){
         
