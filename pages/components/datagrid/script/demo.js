@@ -20,8 +20,7 @@ var a = datagrid({
         title:'名称',
         width:100,
         field:'buname',
-        nowrap:true,
-        fixed:'left'
+        nowrap:true
     }, {
         title:'名称',
         width:'200',
@@ -34,8 +33,7 @@ var a = datagrid({
         title:'名称',
         width:100,
         field:'buname',
-        nowrap:true,
-        fixed:'right'
+        nowrap:true
     }],
     onRowClick:function(e, self, elem, data){
         
