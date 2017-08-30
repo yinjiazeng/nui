@@ -9,10 +9,13 @@ var a = datagrid({
     isFixed:false,
     isBorder:false,
     //fields:true,
-    paging:{
+    /*paging:{
         url:'http://172.30.5.28/data/',
         pCount:4
-    },
+    },*/
+    data:[{
+        buname:'11111',
+    }],
     columns:[{
         title:'名称',
         width:100,
@@ -41,7 +44,7 @@ var a = datagrid({
         //alert()
     },
     onRender:function(self){
-        console.log(self)
+        
     },
     onFocus:function(e, self, elem, data){
         

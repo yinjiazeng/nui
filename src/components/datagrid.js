@@ -432,7 +432,7 @@ Nui.define(['component'], function(component){
         },
         _getData:function(){
             var self = this, opts = self._options, field = opts.dataField, data = self.data;
-            if(field){
+            if(field && Nui.type(data, 'Object')){
                 Nui.each(field.split('.'), function(v){
                     if(data[v]){
                         data = data[v]
