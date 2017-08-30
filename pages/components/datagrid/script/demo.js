@@ -13,8 +13,6 @@ var a = datagrid({
         url:'http://172.30.5.28/data/',
         pCount:4
     },
-    footer:'11',
-    width:'110%',
     columns:[{
         title:'名称',
         width:100,
@@ -23,19 +21,12 @@ var a = datagrid({
         fixed:'left'
     }, {
         title:'名称',
-        width:100,
+        width:'200',
         field:'buname',
         nowrap:true
-    }, {
-        title:'名称',
-        width:100,
-        field:'buname',
-        nowrap:true
-    }, {
-        title:'名称',
-        width:100,
-        field:'buname',
-        nowrap:true
+    },{
+        title:'',
+        content:''
     }, {
         title:'名称',
         width:100,

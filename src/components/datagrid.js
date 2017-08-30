@@ -216,7 +216,8 @@ Nui.define(['component'], function(component){
                         '<%each $value val key%>'+
                         '<%var isTitle = true%>'+
                         '<th class="table-cell<%val.className%> table-cell-<%key%><%if cellLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
-                            '<span class="cell-text"<%if val.width > 0%> style="width:<%val.width%>px"<%/if%>>'+
+                            '<span class="cell-wrap"<%if val.width > 0%> style="width:<%val.width%>px"<%/if%>>'+
+                            '<span class="cell-text">'+
                             '<%if val.title%>'+
                             '<%val.title%>'+
                             '<%if typeof val.order === "object"%>'+
@@ -235,6 +236,7 @@ Nui.define(['component'], function(component){
                             '<input type="checkbox" name="datagrid-checkbox-all" class="datagrid-checkbox datagrid-checkbox-choose">'+
                             '</span>'+
                             '<%/if%>'+
+                            '</span>'+
                             '</span>'+
                         '</th>'+
                         '<%/each%>'+
@@ -268,11 +270,12 @@ Nui.define(['component'], function(component){
                         '<%if typeof val.filter === "function"%>'+
                         '<%var _value = val.filter(_value, val.field, $value)%>'+
                         '<%/if%>'+
-                        '<span class="cell-text'+
+                        '<span class="cell-wrap'+
                             '<%if val.nowrap === true%> cell-nowrap<%/if%>'+
                             '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
                             '<%if val.content === "input"%> cell-text-input<%/if%>"'+
                             '<%if val.showtitle === true%> title="<%_value%>"<%/if%><%if val.width > 0%> style="width:<%val.width%>px"<%/if%>>'+
+                        '<span class="cell-text">'+
                         '<%if val.content === "checkbox" && typeof _value === "object"%>'+
                         '<span class="ui-checkradio">'+
                         '<input type="checkbox"<%include "_attr"%>>'+
@@ -282,6 +285,7 @@ Nui.define(['component'], function(component){
                         '<%else%>'+
                         '<%_value%>'+
                         '<%/if%>'+
+                        '</span>'+
                         '</span>'+
                     '</td>'+
                     '<%/each%>'+

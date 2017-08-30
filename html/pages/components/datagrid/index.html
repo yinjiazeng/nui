@@ -30,9 +30,10 @@
 
 			
 			.datagrid-table .ui-table { table-layout: fixed;}
-			.datagrid-table .ui-table td { text-align: center;}
-			.datagrid-table .cell-text { display: inline-block; max-width: 100%;}
-			.datagrid-table .cell-text.cell-nowrap { overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+			.datagrid-table .table-cell { padding-left: 0; padding-right: 0; text-align: center;}
+			.datagrid-table .cell-wrap, .datagrid-table .cell-text { display: inline-block;}
+			.datagrid-table .cell-text { padding: 0 5px;}
+			.datagrid-table .cell-wrap.cell-nowrap { overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
 			.datagrid-body, .datagrid-thead, .datagrid-title { position: relative;}
 			.datagrid-inner { margin-top: -1px; overflow: hidden;}
 			.datagrid-box { overflow: auto;}
