@@ -1,5 +1,8 @@
-Nui.define(['component'], function(component){
+Nui.define(function(){
     var module = this;
+    var component = module.require('component');
+    var util = module.require('util');
+
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
         div.style.cssText = 'position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;';
@@ -17,7 +20,7 @@ Nui.define(['component'], function(component){
                 Nui.doc.on('click', function(e){
                     var isRow = $(e.target).closest('tr').hasClass('table-row');
                     Nui.each(self.__instances, function(val){
-                        if(!isRow && val._options.isActive === true){
+                        if(!isRow && val.element && val._options.isActive === true){
                             val.element.find('.datagrid-tbody .table-row.s-crt').removeClass('s-crt');
                         }
                     })
@@ -140,6 +143,8 @@ Nui.define(['component'], function(component){
             isBorder:true,
             //初始化时是否调用分页
             isPaging:true,
+            isDir:false,
+            keyCode:[9, 13],
             url:null,
             //分页配置
             paging:null,
@@ -159,7 +164,8 @@ Nui.define(['component'], function(component){
             onRowClick:null,
             onRowDblclick:null,
             onCheckboxChange:null,
-            onRender:null
+            onRender:null,
+            onScroll:null
         },
         _template:{
             layout:
@@ -244,13 +250,13 @@ Nui.define(['component'], function(component){
                     '<%/each%>'+
                 '</thead>',
             rows:
-                '<%if data && data.length%>'+
+                '<%if list && list.length%>'+
                 '<%var toLower = function(str){'+
                     'return str.replace(/([A-Z])/g, function(a){'+
                         'return "-"+a.toLowerCase()'+
                     '})'+
                 '}%>'+
-                '<%each data%>'+
+                '<%each list%>'+
                 '<tr class="table-row table-row-<%$index%>" row-index="<%$index%>"<%include "data"%>>'+
                     '<%var colLastIndex = cols.length-1%>'+
                     '<%each cols val key%>'+
@@ -348,6 +354,14 @@ Nui.define(['component'], function(component){
                     }
                     self._columns.all.push(v)
                 })
+                self._keyCode = [];
+                if(opts.isDir === true){
+                    self._keyCode = self._keyCode.concat([37, 38, 39, 40]);
+                }
+                if(opts.keyCode){
+                    self._keyCode = self._keyCode.concat(opts.keyCode);
+                }
+                
                 self._create()
             }
         },
@@ -423,36 +437,40 @@ Nui.define(['component'], function(component){
             }
         },
         _bindEvent:function(){
-            var self = this;
-            self._on('scroll', self._tableAllInner.children(), function(){
-                self._scroll($(this))
+            var self = this, opts = self._options;
+            self._on('scroll', self._tableAllInner.children(), function(e, elem){
+                self._scroll(elem);
+                if(typeof opts.onScroll === 'function'){
+                    opts.onScroll.call(opts, e, self, {left:elem.scrollLeft(), top:elem.scrollTop()})
+                }
             })
             self._event()
         },
-        _getData:function(){
-            var self = this, opts = self._options, field = opts.dataField, data = self.data;
-            if(field && Nui.type(data, 'Object')){
+        _getList:function(){
+            var self = this, opts = self._options, field = opts.dataField, list = self.data;
+            if(field && Nui.type(list, 'Object')){
                 Nui.each(field.split('.'), function(v){
-                    if(data[v]){
-                        data = data[v]
+                    if(list[v]){
+                        list = list[v]
                     }
                     else{
-                        data = null;
+                        list = null;
                         return false;
                     }
                 })
             }
-            return data||[]
+            return list||[]
         },
         _render:function(){
             var self = this, opts = self._options;
+            self.list = self._getList();
             Nui.each(self._cols, function(v, k){
                 self.element.find('.datagrid-table-'+k+' .datagrid-tbody').html(self._tpl2html('rows', {
                     type:k,
                     isFixed:opts.isFixed === true,
                     cols:v,
                     fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
-                    data:self._getData(),
+                    list:self.list,
                     placeholder:opts.placeholder,
                     stringify:opts.stringify
                 }))
@@ -602,12 +620,113 @@ Nui.define(['component'], function(component){
                 return callback.apply(opts, Array.prototype.slice.call(args, 1))
             }
         },
+        _editInput:function(e, elem){
+            var dom = elem.get(0);
+            var keycode = e.keyCode;
+            if(keycode === 37 || keycode === 39){
+                var index = util.getFocusIndex(dom);
+                var edge;
+                if(keycode === 37){
+                    edge = index !== 0;
+                }
+                else{
+                    edge = index !== dom.value.length;
+                }
+                if(util.isTextSelect() || edge){
+                    return false
+                }
+            }
+        },
+        _horzFocus:function(e, elem, type, isTab){
+            var td = elem.closest('td.table-cell');
+            var _td = td[type]();
+            if(isTab){
+                e.preventDefault();
+            }
+            if(_td.length){
+                var input = _td.find('.datagrid-input');
+                if(input.length && !input.prop('readonly') && !input.prop('disabled')){
+                    input.focus();
+                    setTimeout(function(){
+                        input.select();
+                    })
+                }
+                else{
+                    this._horzFocus(e, _td.children(), type, isTab)
+                }
+            }
+            else{
+                var input;
+                var elems = td.closest('tr.table-row').children('td.table-cell');
+                if(type === 'prev'){
+                    $.each($.makeArray(elems).reverse(), function(k, v){
+                        var _input = $(v).find('.datagrid-input');
+                        if(_input.length){
+                            input = _input;
+                            return false;
+                        }
+                    });
+                }
+                else{
+                    elems.each(function(){
+                        var _input = $(this).find('.datagrid-input');
+                        if(_input.length){
+                            input = _input;
+                            return false;
+                        }
+                    })
+                }
+                if(input){
+                    this._verticalFocus(e, input, type)
+                }
+            }
+        },
+        _verticalFocus:function(e, elem, type){
+            var td = elem.closest('td.table-cell');
+            var index = td.index();
+            var tr = td.closest('tr.table-row')[type]();
+            if(tr.length){
+                var _td = tr.children('td.table-cell').eq(index);
+                var input = _td.find('.datagrid-input');
+                if(input.length && !input.prop('readonly') && !input.prop('disabled')){
+                    input.focus();
+                    setTimeout(function(){
+                        input.select();
+                    })
+                }
+                else{
+                    this._verticalFocus(e, _td.children(), type)
+                }
+            }
+            e.preventDefault();
+        },
+        _dirFocus:function(e, elem){
+            var self = this, keycode = e.keyCode;
+            if($.inArray(keycode, self._keyCode) !== -1){
+                switch(keycode){
+                    case 37:
+                        self._horzFocus(e, elem, 'prev')
+                        break;
+                    case 38:
+                        self._verticalFocus(e, elem, 'prev')
+                        break;
+                    case 39:
+                        self._horzFocus(e, elem, 'next')
+                        break;
+                    case 40:
+                        self._verticalFocus(e, elem, 'next')
+                        break;
+                    default:
+                        self._horzFocus(e, elem, 'next', true)
+                }
+            }
+        },
         _events:{
             'click .table-tbody .table-row':'_active _getRowData _rowclick',
-            'mouseover .table-tbody .table-row':function(e, elem){
+            'mouseenter .table-tbody .table-row':function(e, elem){
                 this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover')
             },
-            'mouseout .table-tbody .table-row':function(e, elem){
+            'mouseleave .table-tbody .table-row':function(e, elem){
                 this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').removeClass('s-hover')
             },
             'dblclick .table-tbody .table-row':'_getRowData _rowdblclick',
@@ -615,7 +734,8 @@ Nui.define(['component'], function(component){
             'blur .datagrid-input':'_enable _getRowData _blur',
             'focusin .table-tbody .table-cell':'_focusin',
             'focusout .table-tbody .table-cell':'_focusout',
-            'click .datagrid-order > b':'_order'
+            'click .datagrid-order > b':'_order',
+            'keydown .datagrid-input':'_editInput _dirFocus'
         },
         _order:function(e, elem){
             elem.toggleClass('s-crt');
@@ -649,6 +769,7 @@ Nui.define(['component'], function(component){
             return elem.closest('.table-row').data()
         },
         _focus:function(e, elem, data){
+            this._active(e, elem.closest('.table-row'))
             return this._callback('Focus', e, this, elem, data)
         },
         _blur:function(e, elem, data){
@@ -676,6 +797,11 @@ Nui.define(['component'], function(component){
         resize:function(){
             this._theadHeight();
             this._resetHeight()
+        },
+        scrollTo:function(x, y){
+            var elem = this._tableAllInner.children();
+            elem.scrollTop(y||0);
+            elem.scrollLeft(x||0);
         }
     })
 })
