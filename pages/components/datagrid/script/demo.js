@@ -35,16 +35,16 @@ var a = datagrid({
         field:'buname',
         nowrap:true
     }],
-    onRowClick:function(e, self, elem, data){
-        
+    onRowClick:function(self, e, elem, data){
+        console.log(self)
     },
-    onRowDblclick:function(e, self, elem, data){
+    onRowDblclick:function(self, e, elem, data){
         //alert()
     },
     onRender:function(self){
         
     },
-    onFocus:function(e, self, elem, data){
+    onFocus:function(self, e, elem, data){
         
     }
 })

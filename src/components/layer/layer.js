@@ -395,7 +395,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 self._on('click', self.element, '.layer-button-'+val.id, function(e, button){
                     if(!button.hasClass('nui-button-disabled')){
                         var id = val.id, callback = val.callback;
-                        var isCall = typeof callback === 'function' ? callback.call(opts, e, self, button) : null;
+                        var isCall = typeof callback === 'function' ? callback.call(opts, self, e, button) : null;
                         if((id === 'confirm' && isCall === true) || (id !== 'confirm' && isCall !== false)){
                             self.destroy()
                         }
@@ -472,14 +472,14 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
         },
         _bindScroll:function(){
             var self = this, opts = self._options;
-            self._on('scroll', self._window, function(){
+            self._on('scroll', self._window, function(e, elem){
                 var top = self.data.offsetTop + self._window.scrollTop();
                 var left = self.data.offsetLeft + self._window.scrollLeft();
                 self.data.top = top;
                 self.data.left = left;
                 self.element.css(self.data);
                 if(typeof opts.onScroll === 'function'){
-                    opts.onScroll.call(opts, self)
+                    opts.onScroll.call(opts, self, e, elem, {top:top, left:left})
                 }
             })
         },

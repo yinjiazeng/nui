@@ -441,7 +441,7 @@ Nui.define(function(){
             self._on('scroll', self._tableAllInner.children(), function(e, elem){
                 self._scroll(elem);
                 if(typeof opts.onScroll === 'function'){
-                    opts.onScroll.call(opts, e, self, {left:elem.scrollLeft(), top:elem.scrollTop()})
+                    opts.onScroll.call(opts, self, e, elem, {left:elem.scrollLeft(), top:elem.scrollTop()})
                 }
             })
             self._event()
@@ -611,15 +611,6 @@ Nui.define(function(){
                 self._rows[type][row].push(data)
             })
         },
-        _callback:function(){
-            var self = this, opts = self._options;
-            var args = arguments;
-            var type = args[0];
-            var callback = opts['on'+type];
-            if(typeof callback === 'function'){
-                return callback.apply(opts, Array.prototype.slice.call(args, 1))
-            }
-        },
         _editInput:function(e, elem){
             var dom = elem.get(0);
             var keycode = e.keyCode;
@@ -768,24 +759,32 @@ Nui.define(function(){
             }
             return elem.closest('.table-row').data()
         },
+        _callback:function(method, args){
+            var self = this, opts = self._options;
+            var callback = opts['on'+method];
+            if(typeof callback === 'function'){
+                Array.prototype.unshift.call(args, self);
+                return callback.apply(opts, args)
+            }
+        },
         _focus:function(e, elem, data){
             this._active(e, elem.closest('.table-row'))
-            return this._callback('Focus', e, this, elem, data)
+            return this._callback('Focus', arguments)
         },
         _blur:function(e, elem, data){
-            return this._callback('Blur', e, this, elem, data)
+            return this._callback('Blur', arguments)
         },
         _focusin:function(e, elem){
-            return this._callback('Focusin', e, this, elem)
+            return this._callback('Focusin', arguments)
         },
         _focusout:function(e, elem){
-            return this._callback('Focusout', e, this, elem)
+            return this._callback('Focusout', arguments)
         },
         _rowclick:function(e, elem, data){
-            return this._callback('RowClick', e, this, elem, data)
+            return this._callback('RowClick', arguments)
         },
         _rowdblclick:function(e, elem, data){
-            return this._callback('RowDblclick', e, this, elem, data)
+            return this._callback('RowDblclick', arguments)
         },
         _scroll:function(elem){
             var self = this;
