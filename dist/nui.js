@@ -2093,6 +2093,7 @@ Nui.define('events', function(){
             _event:function(){
                 var self = this, opts = self._options;
                 if(self.element && opts.events){
+                    opts.element = self.element;
                     events.call(self, opts)
                 }
                 return events.call(self)
