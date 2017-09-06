@@ -288,7 +288,7 @@ Nui.define(function(){
                         '<%elseif val.content === "input" && typeof _value === "object"%>'+
                         '<input type="text" autocomplete="off"<%include "_attr"%>>'+
                         '<%else%>'+
-                        '<%_value%>'+
+                        '<%_value??%>'+
                         '<%/if%>'+
                         '</span>'+
                         '</span>'+
