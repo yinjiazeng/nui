@@ -6,13 +6,14 @@ var datagrid = require('{com}/datagrid');
 
 var a = datagrid({
     container:'#data',
-    isFixed:false,
+    //isFixed:false,
     isBorder:false,
-    //fields:true,
-    /*paging:{
+    //width:'110%',
+    isDir:true,
+    paging:{
         url:'http://172.30.5.28/data/',
-        pCount:4
-    },*/
+        pCount:20
+    },
     data:[{
         buname:'11111',
     }],
@@ -20,23 +21,26 @@ var a = datagrid({
         title:'名称',
         width:100,
         field:'buname',
-        nowrap:true
+        fixed:'left',
+        nowrap:true,
     }, {
         title:'名称',
         width:'200',
-        field:'buname',
-        nowrap:true
+        field:'id',
+        //nowrap:true,
+        content:'input'
     },{
         title:'',
         content:''
     }, {
         title:'名称',
-        width:100,
+        width:200,
         field:'buname',
-        nowrap:true
+        content:'input'
+        
     }],
     onRowClick:function(self, e, elem, data){
-        console.log(self)
+        
     },
     onRowDblclick:function(self, e, elem, data){
         //alert()

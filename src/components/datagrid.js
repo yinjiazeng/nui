@@ -31,14 +31,14 @@ Nui.define(function(){
                     clearTimeout(timer);
                     timer = setTimeout(function(){
                         self._resize()
-                    }, 100)
+                    }, 80)
                 })
             },
             _resize:function(){
                 Nui.each(this.__instances, function(val){
                     if(val._options.height === '100%'){
                         val._theadHeight();
-                        val._resetHeight()
+                        val._resetSize()
                     }
                 })
             },
@@ -151,7 +151,6 @@ Nui.define(function(){
             fields:null,
             dataField:'list',
             width:'100%',
-            height:'100%',
             footer:'',
             placeholder:'',
 
@@ -170,7 +169,7 @@ Nui.define(function(){
         _template:{
             layout:
                 '<div class="<% className %>">'+
-                    '<div class="datagrid-body">'+
+                    '<div class="datagrid-body<%if isFixed%> datagrid-fixed<%/if%>">'+
                         '<%include "table"%>'+
                     '</div>'+
                     '<%if footer || paging%>'+
@@ -203,12 +202,10 @@ Nui.define(function(){
                                 '</table>'+
                                 '</div>'+
                             '</div>'+
-                            '<div class="datagrid-inner">'+
-                                '<div class="datagrid-box">'+
-                                    '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
-                                    '<tbody class="table-tbody datagrid-tbody"></tbody>'+
-                                    '</table>'+
-                                '</div>'+
+                            '<div class="datagrid-box">'+
+                                '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
+                                '<tbody class="table-tbody datagrid-tbody"></tbody>'+
+                                '</table>'+
                             '</div>'+
                         '<%/if%>'+
                     '</div>'+
@@ -387,14 +384,12 @@ Nui.define(function(){
 
             self._body = self.element.children('.datagrid-body');
             self._tableAll = self._body.children('.datagrid-table-all');
-            self._tableAllInner = self._tableAll.children('.datagrid-inner');
             self._tableAllBox =  self._tableAll.find('.datagrid-box');
             self._tableAllTitle = self._tableAll.children('.datagrid-title');
             self._tableAllThead = self._tableAll.find('.datagrid-thead');
             self._tableLeft = self._body.children('.datagrid-table-left');
             self._tableRight = self._body.children('.datagrid-table-right');
             self._tableFixed = self._body.children('.datagrid-table-fixed');
-            self._tableFixedInner = self._tableFixed.children('.datagrid-inner');
             self._tableFixedBox = self._tableFixed.find('.datagrid-box');
             self._foot = self.element.children('.datagrid-foot');
             self._tableTbody = self._body.find('.datagrid-tbody');
@@ -438,7 +433,7 @@ Nui.define(function(){
         },
         _bindEvent:function(){
             var self = this, opts = self._options;
-            self._on('scroll', self._tableAllInner.children(), function(e, elem){
+            self._on('scroll', self._tableAllBox, function(e, elem){
                 self._scroll(elem);
                 if(typeof opts.onScroll === 'function'){
                     opts.onScroll.call(opts, self, e, elem, {left:elem.scrollLeft(), top:elem.scrollTop()})
@@ -476,7 +471,7 @@ Nui.define(function(){
                 }))
             })
             self.element.find('.datagrid-checkbox:checkbox').checkradio(self._checkradio())
-            self._resetHeight();
+            self._resetSize();
             if(typeof opts.onRender === 'function'){
                 opts.onRender.call(opts, self)
             }
@@ -507,7 +502,7 @@ Nui.define(function(){
             }
             return _opts;
         },
-        _resetHeight:function(){
+        _resetSize:function(){
             var self = this, opts = self._options, _class = self.constructor;
             self._rowHeight();
             if(opts.isFixed === true){
@@ -518,31 +513,27 @@ Nui.define(function(){
                              self._foot.outerHeight() - 
                              _class._getSize(self._foot, 'tb', 'margin');
                 var stop = self._tableAllBox.scrollTop();
-
-                self._tableAllBox.css('height', 'auto');
-                self._tableAllInner.height(height);
+                var table = self._tableAllBox.children();
+                self._tableAllBox.height(height);
                 
-                var width = self._tableAllInner.innerHeight() >= self._tableAllBox.outerHeight() ? 0 : scrollBarWidth;
+                var barWidth = self._tableAllBox.height() >= table.outerHeight() ? 0 : scrollBarWidth;
                 var fixedHeight = height;
 
-                if(self._tableAllBox.children().width() > self._tableAllInner.width()){
+                if(table.outerWidth() > self._tableAllBox.width()){
                     fixedHeight -= scrollBarWidth;
                 }
+                
+                if(Nui.browser.msie && Nui.browser.version <= 7 && opts.width === '100%'){
+                    table.width(self._tableAllBox.width() - barWidth)
+                }
 
-                if(width){
-                    self._tableAllBox.css('height', height);
-                    self._tableFixedBox.css('height', fixedHeight);
-                }
-                else{
-                    self._tableAllBox.css('height', 'auto');
-                    self._tableFixedBox.css('height', 'auto');
-                }
+                self._tableFixedBox.height(fixedHeight);
                 
                 self._tableAllBox.scrollTop(stop);
 
-                self._tableAllTitle.css({'margin-right':width});
+                self._tableAllTitle.css({'margin-right':barWidth});
 
-                self._tableRight.css('right', width)
+                self._tableRight.css('right', barWidth)
             }
         },
         _theadHeight:function(){
@@ -795,10 +786,10 @@ Nui.define(function(){
         },
         resize:function(){
             this._theadHeight();
-            this._resetHeight()
+            this._resetSize()
         },
         scrollTo:function(x, y){
-            var elem = this._tableAllInner.children();
+            var elem = this._tableAllBox;
             elem.scrollTop(y||0);
             elem.scrollLeft(x||0);
         }
