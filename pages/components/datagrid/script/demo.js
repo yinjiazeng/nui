@@ -9,6 +9,7 @@ var a = datagrid({
     //isFixed:false,
     isBorder:false,
     //width:'110%',
+    //height:'500',
     isDir:true,
     paging:{
         url:'http://172.30.5.28/data/',

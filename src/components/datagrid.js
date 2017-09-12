@@ -151,6 +151,7 @@ Nui.define(function(){
             fields:null,
             dataField:'list',
             width:'100%',
+            height:'100%',
             footer:'',
             placeholder:'',
 
@@ -300,8 +301,6 @@ Nui.define(function(){
                     '</td>'+
                 '</tr>'+
                 '<%/if%>',
-            head:'',
-            foot:'',
             _attr:
                 '<%if !_value["class"]%>'+
                 '<%var _class = _value["class"] = ""%>'+
@@ -505,35 +504,39 @@ Nui.define(function(){
         _resetSize:function(){
             var self = this, opts = self._options, _class = self.constructor;
             self._rowHeight();
-            if(opts.isFixed === true){
+            if(opts.height !== 'auto'){
+                self._tableAllBox.css('height', 'auto');
                 var conntailerHeight = self._container.height();
-                var height = conntailerHeight - 
-                             self._tableAllTitle.outerHeight() - 
-                             _class._getSize(self._tableAllTitle, 'tb', 'margin') - 
-                             self._foot.outerHeight() - 
-                             _class._getSize(self._foot, 'tb', 'margin');
+                if(opts.height > 0){
+                    conntailerHeight = opts.height
+                }
                 var stop = self._tableAllBox.scrollTop();
-                var table = self._tableAllBox.children();
+                var height = conntailerHeight - 
+                    self._tableAllTitle.outerHeight() - 
+                    _class._getSize(self._tableAllTitle, 'tb', 'margin') - 
+                    self._foot.outerHeight() - 
+                    _class._getSize(self._foot, 'tb', 'margin');
                 self._tableAllBox.height(height);
-                
-                var barWidth = self._tableAllBox.height() >= table.outerHeight() ? 0 : scrollBarWidth;
-                var fixedHeight = height;
+                if(opts.isFixed === true){
+                    var table = self._tableAllBox.children();
+                    var barWidth = self._tableAllBox.height() >= table.outerHeight() ? 0 : scrollBarWidth;
+                    var fixedHeight = height;
 
-                if(table.outerWidth() > self._tableAllBox.width()){
-                    fixedHeight -= scrollBarWidth;
-                }
-                
-                if(Nui.browser.msie && Nui.browser.version <= 7 && opts.width === '100%'){
-                    table.width(self._tableAllBox.width() - barWidth)
-                }
+                    if(table.outerWidth() > self._tableAllBox.width()){
+                        fixedHeight -= scrollBarWidth;
+                    }
+                    
+                    if(Nui.browser.msie && Nui.browser.version <= 7 && opts.width === '100%'){
+                        table.width(self._tableAllBox.width() - barWidth)
+                    }
 
-                self._tableFixedBox.height(fixedHeight);
-                
+                    self._tableFixedBox.height(fixedHeight);
+
+                    self._tableAllTitle.css({'margin-right':barWidth});
+
+                    self._tableRight.css('right', barWidth)
+                }
                 self._tableAllBox.scrollTop(stop);
-
-                self._tableAllTitle.css({'margin-right':barWidth});
-
-                self._tableRight.css('right', barWidth)
             }
         },
         _theadHeight:function(){
