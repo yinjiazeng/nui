@@ -505,12 +505,12 @@ Nui.define(function(){
             var self = this, opts = self._options, _class = self.constructor;
             self._rowHeight();
             if(opts.height !== 'auto'){
+                var stop = self._tableAllBox.scrollTop();
                 self._tableAllBox.css('height', 'auto');
                 var conntailerHeight = self._container.height();
                 if(opts.height > 0){
                     conntailerHeight = opts.height
                 }
-                var stop = self._tableAllBox.scrollTop();
                 var height = conntailerHeight - 
                     self._tableAllTitle.outerHeight() - 
                     _class._getSize(self._tableAllTitle, 'tb', 'margin') - 
