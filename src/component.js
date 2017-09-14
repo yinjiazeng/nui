@@ -12,6 +12,7 @@
     Nui.define('component', ['template', 'events'], function(tpl, events){
         var module = this;
         var require = this.require;
+        var extend = this.extend;
         var callMethod = function(method, args, obj){
             //实参大于形参，最后一个实参表示id
             if(args.length > method.length){
@@ -60,21 +61,27 @@
                                                     return
                                                 }
                                                 var elem = jQuery(this);
-                                                var options = elem.data(name+'Options') || {};
+                                                var options = elem.data(name+'Options');
                                                 var _mod;
-                                                if(typeof options === 'string'){
+                                                if(options && typeof options === 'string'){
                                                     if(/^{[\s\S]*}$/.test(options)){
                                                         options = eval('('+ options +')');
                                                     }
                                                     else if(_mod = require(options, true)){
-                                                        options = _mod.exports;
-                                                    }
-                                                    else{
-                                                        options = {};
+                                                        if(typeof _mod.exports === 'function'){
+                                                            options = _mod.exports(elem)
+                                                        }
+                                                        else{
+                                                            options = _mod.exports;
+                                                        }
                                                     }
                                                 }
-                                                options.target = elem;
-                                                mod(options)
+                                                if(typeof options !== 'object'){
+                                                    options = {};
+                                                }
+                                                mod(extend(options, {
+                                                    target:elem
+                                                }))
                                             })
                                         }
                                     }
