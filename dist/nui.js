@@ -444,7 +444,7 @@
                     if(all){
                         return _mod
                     }
-                    return _mod.module
+                    return _mod.module || _mod.exports
                 }
             }
         }
@@ -518,7 +518,7 @@
             return exports
         }
 
-        //导入样式
+        //导入样式表
         methods.imports = noop;
 
         //渲染字符串
@@ -535,7 +535,7 @@
     //调用工厂函数，获取模块导出接口
     Module.prototype.exec = function(){
         var mod = this;
-        if(!mod.module && typeof mod.factory === 'function'){
+        if(!mod.module && !mod.exports && typeof mod.factory === 'function'){
             var methods = mod.methods(), modules;
             if(mod.deps.length){
                 //设置工厂函数形参，也就是依赖模块的引用
@@ -592,7 +592,7 @@
                     obj.statics.__component_name = name;
                     mod.module = components[name] = Module.Class(mod, obj);
                     delete exports._static.__parent;
-                    mod.module.exports = exports;
+                    mod.exports = mod.module.exports = exports;
                     if(mod.name !== 'component'){
                         var Class = mod.module.constructor, method;
                         Nui.each(['_$fn', '_$ready'], function(v){
@@ -605,7 +605,7 @@
                 }
             }
             else{
-                mod.module = exports;
+                mod.exports = exports;
             }
         }
         return mod
@@ -754,7 +754,7 @@
                     }
                 })
                 if(Nui.type(callback, 'Function')){
-                    callback.call(Nui, _module.module)
+                    callback.call(Nui, _module.module || _module.exports)
                 }
                 delete rootModules[_module_];
                 delete mod.callback
@@ -2025,7 +2025,11 @@ Nui.define('events', function(){
             _static:statics,
             _options:{
                 target:null,
+                //组件id，element会增加class 组件名-组件id
                 id:'',
+                //模块id 通过require(模块名, true).id获取
+                mid:'',
+                //组件皮肤，element会增加class nui-组件名-皮肤名
                 skin:'',
                 onInit:null,
                 onReset:null,

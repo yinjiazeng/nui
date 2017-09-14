@@ -3,7 +3,6 @@ var checkradio = module.require('./checkradio');
 
 var datagrid = require('{com}/datagrid');
 
-
 var a = datagrid({
     container:'#data',
     //isFixed:false,

@@ -207,7 +207,11 @@
             _static:statics,
             _options:{
                 target:null,
+                //组件id，element会增加class 组件名-组件id
                 id:'',
+                //模块id 通过require(模块名, true).id获取
+                mid:'',
+                //组件皮肤，element会增加class nui-组件名-皮肤名
                 skin:'',
                 onInit:null,
                 onReset:null,
