@@ -1,15 +1,15 @@
 Nui.define(['{com}/router'], function(router){
 	var renders = this.renders;
 	var require = this.require;
+	var placeholder = require('{com}/placeholder');
 	router({
 		target:'#home',
 		entry:true,
 		path:'/home/',
 		wrapper:'#aa',
-		container:'#main',
-		//template:'<p>这是首页</p>',
+		container:'#main'
 	})
-
+	var placeholder_opts = require('./options', true);
 	router({
 		target:'#news, .news',
 		entry:true,
@@ -17,16 +17,14 @@ Nui.define(['{com}/router'], function(router){
 		container:'#main',
 		level:2,
 		template:{
-			list:renders({
-				<ul>
-					<%each list%>
-					<li><a href="<%$value.url%>/<%$value.title%>" class="news"><%$value.title%></a></li>
-					<%/each%>
-				</ul>
-			}),
+			list:'<ul>'+
+					'<%each list%>'+
+					'<li><a href="<%$value.url%>/<%$value.title%>" class="news"><%$value.title%></a></li>'+
+					'<%/each%>'+
+				'</ul>',
 			detail:'<div>'+
 						'<h3><%params.title%></h3>'+
-						'<p>这是<%params.title%>详情，id是<%params.id%>。</p>'+
+						'<p>这是<%params.title%>详情，id是<%params.id%>。<input type="text" data-placeholder-options="'+ placeholder_opts.id +'"></p>'+
 					'</div>'
 		},
 		data:{

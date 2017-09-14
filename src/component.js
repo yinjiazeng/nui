@@ -11,6 +11,7 @@
     }
     Nui.define('component', ['template', 'events'], function(tpl, events){
         var module = this;
+        var require = this.require;
         var callMethod = function(method, args, obj){
             //实参大于形参，最后一个实参表示id
             if(args.length > method.length){
@@ -60,8 +61,17 @@
                                                 }
                                                 var elem = jQuery(this);
                                                 var options = elem.data(name+'Options') || {};
+                                                var _mod;
                                                 if(typeof options === 'string'){
-                                                    options = eval('('+ options +')')
+                                                    if(/^{[\s\S]*}$/.test(options)){
+                                                        options = eval('('+ options +')');
+                                                    }
+                                                    else if(_mod = require(options, true)){
+                                                        options = _mod.exports;
+                                                    }
+                                                    else{
+                                                        options = {};
+                                                    }
                                                 }
                                                 options.target = elem;
                                                 mod(options)
@@ -209,8 +219,6 @@
                 target:null,
                 //组件id，element会增加class 组件名-组件id
                 id:'',
-                //模块id 通过require(模块名, true).id获取
-                mid:'',
                 //组件皮肤，element会增加class nui-组件名-皮肤名
                 skin:'',
                 onInit:null,

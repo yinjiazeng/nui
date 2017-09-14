@@ -1,5 +1,6 @@
 Nui.config({
     "base": "/nui/",
+    "min": false,
     "paths": {
         "script": "/assets/script",
         "style": "/assets/style",
@@ -14,7 +15,7 @@ Nui.config({
         "{script}/base": "83be6e2",
         "./script/events/page": "e3dc453",
         "./script/template/page": "c7f3c81",
-        "./script/demo": "21117e1",
+        "./script/demo": "ad1e698",
         "./script/page": "91a0579"
     }
 })
