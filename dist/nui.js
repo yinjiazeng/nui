@@ -440,7 +440,7 @@
         methods.require = function(id, all){
             var _mod;
             if(id){
-                if((_mod = mod.depmodules[id]) || (_mod = cacheModules[id])){
+                if((_mod = mod.depmodules[id]) || (_mod = cacheModules[id]) || (_mod = cacheModules[dirname+id])){
                     if(all){
                         return _mod
                     }
