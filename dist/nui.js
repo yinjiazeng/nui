@@ -437,13 +437,15 @@
         var methods = {};
 
         //导入模块
-        methods.require = function(id, callback){
-            var _mod = mod.depmodules[id];
-            if(_mod){
-                if(typeof callback === 'function'){
-                    callback(_mod.module)
+        methods.require = function(id, all){
+            var _mod;
+            if(id){
+                if((_mod = mod.depmodules[id]) || (_mod = cacheModules[id])){
+                    if(all){
+                        return _mod
+                    }
+                    return _mod.module
                 }
-                return _mod.module
             }
         }
 
@@ -757,9 +759,7 @@
                 delete rootModules[_module_];
                 delete mod.callback
             }
-
             rootModules[_module_] = mod;
-
             mod.load()
         }
     }
@@ -768,7 +768,7 @@
     Module.getdeps = function(str){
         var deps = [];
         var styles = [];
-        var match = str.match(/(require|extend|imports)\(('|")[^'"]+\2/g);
+        var match = str.match(/(require|extend|imports)\(?('|")[^'"]+\2/g);
         if(match){
             Nui.each(match, function(val){
                 if(/^(require|extend)/.test(val)){

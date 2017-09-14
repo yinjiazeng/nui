@@ -1,5 +1,6 @@
 Nui.define(['{com}/router'], function(router){
-    
+	var renders = this.renders;
+	var require = this.require;
 	router({
 		target:'#home',
 		entry:true,
@@ -16,11 +17,13 @@ Nui.define(['{com}/router'], function(router){
 		container:'#main',
 		level:2,
 		template:{
-			list:'<ul>'+
-					'<%each list%>'+
-					'<li><a href="<%$value.url%>/<%$value.title%>" class="news"><%$value.title%></a></li>'+
-					'<%/each%>'+
-				'</ul>',
+			list:renders({
+				<ul>
+					<%each list%>
+					<li><a href="<%$value.url%>/<%$value.title%>" class="news"><%$value.title%></a></li>
+					<%/each%>
+				</ul>
+			}),
 			detail:'<div>'+
 						'<h3><%params.title%></h3>'+
 						'<p>这是<%params.title%>详情，id是<%params.id%>。</p>'+
@@ -46,6 +49,9 @@ Nui.define(['{com}/router'], function(router){
 			else{
 				tpl.main = tpl.list;
 			}
+		},
+		onInit:function(){
+			
 		}
 	})
 

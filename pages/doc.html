@@ -296,6 +296,11 @@ Nui.define(function(){
 					<td>String</td>
 					<td>模块id，文件后缀.js可省略</td>
 				</tr>
+				<tr>
+					<td>all</td>
+					<td>Boolean</td>
+					<td>是否返回模块全部数据</td>
+				</tr>
 			</table>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="imports">imports</h2>
 			<p class="e-mt15 f-lh22">导入css/less模块</p>
@@ -339,21 +344,26 @@ Nui.define(function(){
 			</table>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
 			<p class="e-mt15 f-lh22">该方法需要配合打包工具使用，会自动转换为字符串拼接方式</p>
+			<p class="e-mt15 f-lh22">访问外部变量时，格式必须为\'+ 变量名 +\'</p>
 <script type="text/highlight" data-javascript-options>
-Nui.define(function(){						
+Nui.define(function(){	
+	var data = 'haha';					
 	var tpl = this.renders({
 		<div>
 			<p>hello world</p> 
+			<p>\' + data + \'</p>
 		</div>
 	})
 })
 
 转换后
 
-Nui.define(function(){						
+Nui.define(function(){	
+	var data = 'haha';					
 	var tpl = this.renders(
 		'<div>'+
 			'<p>hello world</p>'+
+			'<p>' + data + '</p>'+
 		'</div>'
 	)
 })
@@ -678,7 +688,7 @@ Nui.doc
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=32a2f33"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=7b43b60"></script>
 <script type="text/javascript" src="/nui/assets/script/config.js?v=4df9f77"></script>
     
     <script type="text/javascript">
