@@ -228,6 +228,8 @@
                 id:'',
                 //组件皮肤，element会增加class nui-组件名-皮肤名
                 skin:'',
+                //element增加一个或多个类
+                className:'',
                 onInit:null,
                 onReset:null,
                 onDestroy:null
@@ -288,6 +290,9 @@
                 }
                 if(!data){
                     data = {}
+                }
+                if(opts.className){
+                    className.push(opts.className)
                 }
                 data.className = className.join(' ');
                 return data
