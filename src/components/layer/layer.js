@@ -158,7 +158,11 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                             '<% include "button" %>'+
                         '<%/if%>'+
                         '<%if bubble%>'+
-                        '<span class="layer-bubble layer-bubble-<%bubble%>"><b></b><i></i></span>'+
+                        '<span class="layer-bubble layer-bubble-<%bubble.dir||"top"%>"'+
+                        '<%if bubble.style%>'+
+                        ' style="<%each bubble.style v n%><%n%>:<%v%>;<%/each%>"'+
+                        '<%/if%>'+
+                        '><b></b><i></i></span>'+
                         '<%/if%>'+
                         '<%if title%>'+
                         '<div class="layer-head">'+
@@ -246,7 +250,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 close:buttons.close,
                 button:buttons.button,
                 title:isTitle ? (opts.title||'温馨提示') : null,
-                bubble:opts.bubble.enable === true ? opts.bubble.dir : null,
+                bubble:opts.bubble.enable === true ? opts.bubble : null,
                 align:opts.align || 'center',
                 style:{
                     'z-index':self._zIndex,
