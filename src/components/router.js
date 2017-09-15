@@ -55,6 +55,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
         },
         _change:function(){
             var self = this;
+            delete self._active;
             if(!$.isEmptyObject(self._paths)){
                 var _hash = location.hash, ret = this._split(_hash), hash = self._replace(ret.url), query = ret.params;
                 Nui.each(self._paths, function(v){
@@ -80,10 +81,14 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 param[val] = query[key]
                             })
 
-                            opts.data.path = v.path+'/';
-                            opts.data.url = hash+'/';
-                            opts.data.params = param;
-                            opts.data.query = query;
+                            self._active = {
+                                path:v.path+'/',
+                                url:hash+'/',
+                                params:param,
+                                query:query
+                            }
+
+                            opts.data = $.extend(true, opts.data, self._active);
 
                             if(object._send && object._send.data && typeof opts.onData === 'function'){
                                 opts.onData.call(opts, object._send.data);
@@ -221,6 +226,9 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             else{
                 self.start()
             }
+        },
+        active:function(){
+            return this._active
         },
         forward:function(index){
             history.forward(index);

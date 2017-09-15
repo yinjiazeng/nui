@@ -469,7 +469,7 @@ Nui.define(function(){
                     stringify:opts.stringify
                 }))
             })
-            self.element.find('.datagrid-checkbox:checkbox').checkradio(self._checkradio())
+            self.element.find('.datagrid-checkbox:checkbox').prop('checked', false).checkradio(self._checkradio());
             self._resetSize();
             if(typeof opts.onRender === 'function'){
                 opts.onRender.call(opts, self)
@@ -795,6 +795,20 @@ Nui.define(function(){
             var elem = this._tableAllBox;
             elem.scrollTop(y||0);
             elem.scrollLeft(x||0);
+        },
+        checkedData:function(field){
+            var self = this;
+            var data = [];
+            self._tableAllBox.find('.datagrid-checkbox-choose:checked').each(function(){
+                var _data = $(this).closest('tr.table-row').data();
+                if(field){
+                    data.push(_data[field]);
+                }
+                else{
+                    data.push(_data);
+                }
+            })
+            return data;
         }
     })
 })
