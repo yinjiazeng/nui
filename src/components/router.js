@@ -204,7 +204,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                 url = this._replace(url);
                 Nui.each(this._paths, function(val, rule){
                     if(rule === url || (url.indexOf(val.path) === 0 &&
-                                        (temp = url.replace(val.path+'/', '')) && 
+                                        (temp = url.replace(new RegExp('^'+val.path), '').replace(/^\//, '')) && 
                                         temp.split('/').length === val.params.length)){
                         _router = self.__instances[val.id];
                         return false
