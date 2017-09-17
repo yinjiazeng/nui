@@ -193,14 +193,17 @@
                 {%if current == 'cpns' %}
                 <ul>
                     <li>
-                        <a {%if page == 'index' %} class="s-crt"{% endif %} href="/nui/pages/components/#组件基类">组件基类</a>
+                        <a {%if page == 'index' %} class="s-crt"{% endif %} href="/nui/pages/components/#开发组件">开发组件</a>
                         {%if page == 'index' %}
                         <ul>
                             <li>
-                                <a href="#静态属性">静态属性</a>
+                                <a href="#命名规范">命名规范</a>
                             </li>
                             <li>
-                                <a href="#静态方法">静态方法</a>
+                                <a href="#类属性">类属性</a>
+                            </li>
+                            <li>
+                                <a href="#类方法">类方法</a>
                             </li>
                             <li>
                                 <a href="#实例属性">实例属性</a>
@@ -208,15 +211,8 @@
                             <li>
                                 <a href="#实例方法">实例方法</a>
                             </li>
-                        </ul>
-                        {% endif %}
-                    </li>
-                    <li>
-                        <a {%if page == 'dev' %}class="s-crt"{% endif %} href="/nui/pages/components/dev.html#开发组件">开发组件</a>
-                        {%if page == 'dev' %}
-                        <ul>
                             <li>
-                                <a href="#命名约定">命名约定</a>
+                                <a href="#封装案例">封装案例</a>
                             </li>
                         </ul>
                         {% endif %}

@@ -47,11 +47,20 @@
     
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28" id="组件基类">组件基类</h1>
+			<h1 class="e-pt20 e-pb20 f-fs28" id="开发组件">开发组件</h1>
 			<div class="e-mt15 f-lh22">
-				<p>Nui以面向对象的方式封装组件，内置一个组件基础类模块，提供了常用的方法以及属性，下面按功能划分对属性方法进行介绍：</p>
+				<p>Nui以面向对象的方式封装组件，内置一个组件基础类模块，包含类属性、类方法、实例属性、实例方法，开发组件时必须继承该模块，也可以根据实际需要继承已有的组件，并对齐进行重新封装。</p>
 			</div>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="静态属性">静态属性</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="命名规范">命名规范</h2>
+			<div class="e-mt15 f-lh22">
+				<p>文件名即是组件名，不能重复且只能由下划线、字母、数字组成</p>
+				<p>“_”前缀表示为私有属性或者方法，仅内部使用。</p>
+				<p>“__”前缀表示系统内置的属性或者方法，仅内部使用，不可重写或修改。</p>
+				<p>没有“_”前缀的表示对外公开的属性或方法，可通过“实例对象.方法名”或者“类.方法名”访问。</p>
+				<p>当一个变量名由多个单词组成时，应该首字母大写。</p>
+				<p>选项参数中回调以“onMethod”格式命名。</p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="类属性">类属性</h2>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __instances</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Object}</p>
@@ -67,10 +76,10 @@
 				<p>类型：{String}</p>
 				<p>说明：返回组件名</p>
 			</div>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="静态方法">静态方法</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="类方法">类方法</h2>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __setMethod</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：组件类在初始化时调用，将实例方法中不包含“_”前缀的方法添加为静态方法，比如实例方法中包含show，如果静态方法中没有，那么组件会自动创建名称为show的静态方法，功能等同实例中的show，只不过比实例方法多2个参数，具体参考下面的reset/option/destroy三个静态方法。</p>
+				<p>说明：组件类在初始化时调用，将实例方法中不包含“_”前缀的方法添加为类方法，比如实例方法中包含show，如果类方法中没有，那么组件会自动创建名称为show的类方法，功能等同实例中的show，只不过比实例方法多2个参数，具体参考下面的reset/option/destroy三个类方法。</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _init</h3>
 			<div class="e-mt15 f-lh22">
@@ -272,6 +281,7 @@
 			<div class="e-mt15 f-lh22">
 				<p>说明：销毁组件</p>
 			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="封装案例">封装案例</h2>
 		</div>	
 	</div>
 	
@@ -307,14 +317,17 @@
                 
                 <ul>
                     <li>
-                        <a  class="s-crt" href="/nui/pages/components/#组件基类">组件基类</a>
+                        <a  class="s-crt" href="/nui/pages/components/#开发组件">开发组件</a>
                         
                         <ul>
                             <li>
-                                <a href="#静态属性">静态属性</a>
+                                <a href="#命名规范">命名规范</a>
                             </li>
                             <li>
-                                <a href="#静态方法">静态方法</a>
+                                <a href="#类属性">类属性</a>
+                            </li>
+                            <li>
+                                <a href="#类方法">类方法</a>
                             </li>
                             <li>
                                 <a href="#实例属性">实例属性</a>
@@ -322,11 +335,10 @@
                             <li>
                                 <a href="#实例方法">实例方法</a>
                             </li>
+                            <li>
+                                <a href="#封装案例">封装案例</a>
+                            </li>
                         </ul>
-                        
-                    </li>
-                    <li>
-                        <a  href="/nui/pages/components/dev.html#开发组件">开发组件</a>
                         
                     </li>
                     <li>
