@@ -192,17 +192,28 @@
                 <a class="f-fs16{%if current == 'cpns' %} s-crt{% endif %}" href="/nui/pages/components/">交互组件</a>
                 {%if current == 'cpns' %}
                 <ul>
+                    {%if page == 'index' %}
                     <li>
-                        <a{%if page == 'index' %} class="s-crt"{% endif %} href="#快速入门">快速入门</a>
+                        <a class="s-crt" href="#组件基类">组件基类</a>
                         <ul>
                             <li>
-                                <a href="#规范">规范</a>
+                                <a href="#静态属性">静态属性</a>
                             </li>
                             <li>
-                                <a href="#开发组件">开发组件</a>
+                                <a href="#静态方法">静态方法</a>
+                            </li>
+                            <li>
+                                <a href="#实例属性">实例属性</a>
+                            </li>
+                            <li>
+                                <a href="#实例方法">实例方法</a>
+                            </li>
+                            <li>
+                                <a href="#命名约定">命名约定</a>
                             </li>
                         </ul>
                     </li>
+                    {% endif %}
                     <li>
                         <a{%if page == 'router' %} class="s-crt"{% endif %} href="/nui/pages/components/router/">路由</a>
                     </li>
@@ -210,13 +221,16 @@
                         <a{%if page == 'layer' %} class="s-crt"{% endif %} href="/nui/pages/components/layer/">弹出层</a>
                     </li>
                     <li>
-                        <a{%if page == 'calendar' %} class="s-crt"{% endif %} href="/nui/pages/components/calendar/">日历</a>
-                    </li>
-                    <li>
                         <a{%if page == 'datagrid' %} class="s-crt"{% endif %} href="/nui/pages/components/datagrid/">数据网格</a>
                     </li>
                     <li>
                         <a{%if page == 'placeholder' %} class="s-crt"{% endif %} href="/nui/pages/components/placeholder/">占位符</a>
+                    </li>
+                    <li>
+                        <a{%if page == 'popover' %} class="s-crt"{% endif %} href="/nui/pages/components/popover/">提示框</a>
+                    </li>
+                    <li>
+                        <a{%if page == 'calendar' %} class="s-crt"{% endif %} href="/nui/pages/components/calendar/">日历</a>
                     </li>
                     <li>
                         <a{%if page == 'slider' %} class="s-crt"{% endif %} href="/nui/pages/components/slider/">滑块</a>
@@ -247,9 +261,6 @@
                     </li>
                     <li>
                         <a{%if page == 'tab' %} class="s-crt"{% endif %} href="/nui/pages/components/tab/">选项卡</a>
-                    </li>
-                    <li>
-                        <a{%if page == 'popover' %} class="s-crt"{% endif %} href="/nui/pages/components/popover/">提示框</a>
                     </li>
                     <li>
                         <a{%if page == 'print' %} class="s-crt"{% endif %} href="/nui/pages/components/print/">打印</a>

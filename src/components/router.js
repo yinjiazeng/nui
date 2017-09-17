@@ -113,7 +113,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                             }
 
                             var wrapper = opts.element = object._wrapper || self._wrapper;
-
+                            
                             if(typeof opts.onChange === 'function'){
                                 opts.onChange.call(opts);
                             }

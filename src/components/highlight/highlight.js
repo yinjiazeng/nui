@@ -67,9 +67,6 @@ Nui.define(function(){
             //是否显示语法标题
             isTitle:true
         },
-        _init:function(){
-            this._exec();
-        },
         _exec:function(){
             var self = this, target = self._getTarget();
             if(target){

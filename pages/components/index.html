@@ -47,9 +47,240 @@
     
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28">组件</h1>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="快速入门">快速入门</h2>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="规范">规范</h2>
+			<h1 class="e-pt20 e-pb20 f-fs28" id="组件基类">组件基类</h1>
+			<div class="e-mt15 f-lh22">
+				<p>Nui以面向对象的方式封装组件，内置一个组件基础类模块，提供了常用的方法以及属性，下面按功能划分对属性方法进行介绍：</p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="静态属性">静态属性</h2>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __instances</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Object}</p>
+				<p>说明：组件实例集合</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __parent</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Object}</p>
+				<p>说明：返回父组件对象信息</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __component_name</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{String}</p>
+				<p>说明：返回组件名</p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="静态方法">静态方法</h2>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __setMethod</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：组件类在初始化时调用，将实例方法中不包含“_”前缀的方法添加为静态方法，比如实例方法中包含show，如果静态方法中没有，那么组件会自动创建名称为show的静态方法，功能等同实例中的show，只不过比实例方法多2个参数，具体参考下面的reset/option/destroy三个静态方法。</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _init</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：组件类被初始化时调用</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _jquery</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：elem {selector} 元素</p>
+				<p>说明：检测元素是否是jQuery对象，是就返回该对象，不是就封装为jQuery对象</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _getSize</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：elem {jQuery Object} 元素</p>
+				<p>参数：dir {String} 方向（l, r, lr, t, b, tb），l表示left，r表示right以此类推，默认值为tb</p>
+				<p>参数：attr {String} 边缘属性（border, padding, margin, all），默认值为border</p>
+				<p>说明：返回元素边缘大小</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _$fn</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：name {String} 组件名</p>
+				<p>参数：module {Function} 组件模块</p>
+				<p>说明：将组件封装为jQuery插件形式，不需要的话设置为null</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _$ready</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：name {String} 组件名</p>
+				<p>参数：module {Function} 组件模块</p>
+				<p>说明：自执行组件，元素上必须包含data-组件名-options="选项参数"，不需要的话设置为null</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> config</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：attr {String, Object} 选项参数名或者集合</p>
+				<p>参数：value 选项参数值</p>
+				<p>说明：设置组件默认参数</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> init</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：container {Object} 容器元素</p>
+				<p>说明：初始化容器内包含data-组件名-options="选项参数"属性的组件</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> reset</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：container {Object} 容器元素</p>
+				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
+				<p>说明：重置容器内的组件</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> option</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：container {Object} 容器元素</p>
+				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
+				<p>说明：重置容器内组件的选项参数</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> destroy</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：container {Object} 容器元素</p>
+				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
+				<p>说明：销毁容器内的组件</p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="实例属性">实例属性</h2>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __id</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Number}</p>
+				<p>说明：实例标识符</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __eventList</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Array}</p>
+				<p>说明：事件集合，存储绑定是事件</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _options</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Object}</p>
+				<p>说明：设置选项参数</p>
+				<p>默认值：</p>
+				<table class="data e-mt5">
+					<tr>
+						<th width="100">参数名</th>
+						<th width="150">参数类型</th>
+						<th>参数说明</th>
+					</tr>
+					<tr>
+						<td>target</td>
+						<td>Selector</td>
+						<td>调用组件的元素</td>
+					</tr>
+					<tr>
+						<td>id</td>
+						<td>String</td>
+						<td>组件id</td>
+					</tr>
+					<tr>
+						<td>skin</td>
+						<td>String</td>
+						<td>组件皮肤</td>
+					</tr>
+					<tr>
+						<td>className</td>
+						<td>String</td>
+						<td>给组件生成的元素上增加一个类或者多个类，需配合实例方法_tplData生效</td>
+					</tr>
+					<tr>
+						<td>onInit</td>
+						<td>Function</td>
+						<td>组件初始化时回调，根据实际情况在适当的位置调用，比如element元素创建完成后</td>
+					</tr>
+					<tr>
+						<td>onReset</td>
+						<td>Function</td>
+						<td>组件重置时回调</td>
+					</tr>
+					<tr>
+						<td>onDestroy</td>
+						<td>Function</td>
+						<td>组件销毁时回调</td>
+					</tr>
+				</table>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _template</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Object}</p>
+				<p>说明：设置多个模版</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _events</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Object}</p>
+				<p>说明：绑定事件，_event方法调用后才生效</p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="实例方法">实例方法</h2>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _init</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：入口函数，实例初始化时仅执行一次，内部必须调用_exec方法</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _exec</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：主函数，用于拦截校验，是否执行后续逻辑，执行reset以及option方法时，会重新调用该函数</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _getTarget</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：检测_options中target是否有效，有效则设置实例属性target，并在target上添加“nui_component_组件名”属性，无效返回null</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _bindComponentName</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：element {jQuery Object} </p>
+				<p>说明：给元素添加“nui_component_组件名”属性</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _tplData</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：data {Object} 模版数据</p>
+				<p>说明：在data中增加className属性，用于设置组件生成的元素外部类名</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _tpl2html</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：id {String} 模版id</p>
+				<p>参数：data {Object, Array} 模版数据</p>
+				<p>说明：获取编译后的模版</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _event</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：绑定事件，实例属性中必须包含element（生成的组件元素）与_events属性，用法参考<a class="f-corange" target="_blank" href="/nui/pages/events.html">代理事件</a></p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _on</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：type {String} 事件类型</p>
+				<p>参数：dalegate {Selector} 代理元素</p>
+				<p>参数：selector {String} 触发事件元素</p>
+				<p>参数：callback {Function} 事件回调</p>
+				<p>参数：trigger {Boolean} 是否立即执行事件</p>
+				<p>说明：绑定事件</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _off</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：销毁事件</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _delete</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：删除组件实例</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _reset</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：销毁事件并删除element元素</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _callback</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：method {String} 回调名，不包含on前缀</p>
+				<p>参数：args {Array} 回调传递参数</p>
+				<p>说明：调用选项参数中回调，不论有没有传递参数，第一个实参都为当前对象实例</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> option</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：attr {String, Object} 选项参数名或者集合</p>
+				<p>参数：value 选项参数值</p>
+				<p>说明：重新设置组件实例选项参数</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> reset</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：组件还原为初始状态</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> destroy</h3>
+			<div class="e-mt15 f-lh22">
+				<p>说明：销毁组件</p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="命名约定">命名约定</h2>
+			<div class="e-mt15 f-lh22">
+				<p>上面看到的属性方法名中有些前缀有1个“_”，有些有2个“_”，有些没有前缀，有些是以驼峰命名，这是在组件开发时做的命名约定，用来统一规范。</p>
+				<p>1个“_”表示为私有属性或者方法，可对其修改，不对外公开。</p>
+				<p>2个“_”表示系统内置的属性或者方法，仅能内部使用，不可修改也不对外公开。</p>
+				<p>没有“_”前缀的表示对外部公开的接口。</p>
+				<p>当一个变量名由多个单词组成时，应该首字母大写。</p>
+				<p>选项参数中回调以“onMethod”格式命名。</p>
+			</div>
 		</div>	
 	</div>
 	
@@ -84,17 +315,28 @@
                 <a class="f-fs16 s-crt" href="/nui/pages/components/">交互组件</a>
                 
                 <ul>
+                    
                     <li>
-                        <a class="s-crt" href="#快速入门">快速入门</a>
+                        <a class="s-crt" href="#组件基类">组件基类</a>
                         <ul>
                             <li>
-                                <a href="#规范">规范</a>
+                                <a href="#静态属性">静态属性</a>
                             </li>
                             <li>
-                                <a href="#开发组件">开发组件</a>
+                                <a href="#静态方法">静态方法</a>
+                            </li>
+                            <li>
+                                <a href="#实例属性">实例属性</a>
+                            </li>
+                            <li>
+                                <a href="#实例方法">实例方法</a>
+                            </li>
+                            <li>
+                                <a href="#命名约定">命名约定</a>
                             </li>
                         </ul>
                     </li>
+                    
                     <li>
                         <a href="/nui/pages/components/router/">路由</a>
                     </li>
@@ -102,13 +344,16 @@
                         <a href="/nui/pages/components/layer/">弹出层</a>
                     </li>
                     <li>
-                        <a href="/nui/pages/components/calendar/">日历</a>
-                    </li>
-                    <li>
                         <a href="/nui/pages/components/datagrid/">数据网格</a>
                     </li>
                     <li>
                         <a href="/nui/pages/components/placeholder/">占位符</a>
+                    </li>
+                    <li>
+                        <a href="/nui/pages/components/popover/">提示框</a>
+                    </li>
+                    <li>
+                        <a href="/nui/pages/components/calendar/">日历</a>
                     </li>
                     <li>
                         <a href="/nui/pages/components/slider/">滑块</a>
@@ -139,9 +384,6 @@
                     </li>
                     <li>
                         <a href="/nui/pages/components/tab/">选项卡</a>
-                    </li>
-                    <li>
-                        <a href="/nui/pages/components/popover/">提示框</a>
                     </li>
                     <li>
                         <a href="/nui/pages/components/print/">打印</a>
@@ -179,8 +421,8 @@
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=4e02769"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=e0b1c35"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=bcae5a5"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=770dbfd"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){

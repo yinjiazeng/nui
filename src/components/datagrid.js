@@ -329,9 +329,6 @@ Nui.define(function(){
                 '<%/each%>'+
                 '<%/if%>'
         },
-        _init:function(){
-            this._exec()
-        },
         _exec:function(){
             var self = this, opts = self._options, _class = self.constructor, container = opts.container;
             if(container && Nui.isArray(opts.columns) && opts.columns.length){
@@ -434,9 +431,7 @@ Nui.define(function(){
             var self = this, opts = self._options;
             self._on('scroll', self._tableAllBox, function(e, elem){
                 self._scroll(elem);
-                if(typeof opts.onScroll === 'function'){
-                    opts.onScroll.call(opts, self, e, elem, {left:elem.scrollLeft(), top:elem.scrollTop()})
-                }
+                self._callback('Scroll', [e, elem, {left:elem.scrollLeft(), top:elem.scrollTop()}]);
             })
             self._event()
         },
@@ -471,9 +466,7 @@ Nui.define(function(){
             })
             self.element.find('.datagrid-checkbox:checkbox').prop('checked', false).checkradio(self._checkradio());
             self._resetSize();
-            if(typeof opts.onRender === 'function'){
-                opts.onRender.call(opts, self)
-            }
+            self._callback('Render');
         },
         _checkradio:function(){
             var self = this, opts = self._options;
@@ -492,9 +485,7 @@ Nui.define(function(){
                         self._body.find('.table-thead .'+className).checkradio('checked', checked)
                     }
                 }
-                if(typeof opts.onCheckboxChange === 'function'){
-                    opts.onCheckboxChange.call(opts, e, self, elem)
-                }
+                self._callback('CheckboxChange', [e, elem]);
             }
             var _opts = {
                 callback:callback
@@ -752,14 +743,6 @@ Nui.define(function(){
                 return elem.data()
             }
             return elem.closest('.table-row').data()
-        },
-        _callback:function(method, args){
-            var self = this, opts = self._options;
-            var callback = opts['on'+method];
-            if(typeof callback === 'function'){
-                Array.prototype.unshift.call(args, self);
-                return callback.apply(opts, args)
-            }
         },
         _focus:function(e, elem, data){
             this._active(e, elem.closest('.table-row'))

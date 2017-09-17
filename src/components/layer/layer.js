@@ -466,9 +466,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                         self._moveMask.remove();
                         self._moveMask = null;
                     }
-                    if(typeof opts.onMove === 'function'){
-                        opts.onMove.call(opts, self)
-                    }
+                    self._callback('Move');
                     self.data.offsetTop = self.data.top - self._window.scrollTop();
                     self.data.offsetLeft = self.data.left - self._window.scrollLeft();
                 }
@@ -482,9 +480,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 self.data.top = top;
                 self.data.left = left;
                 self.element.css(self.data);
-                if(typeof opts.onScroll === 'function'){
-                    opts.onScroll.call(opts, self, e, elem, {top:top, left:left})
-                }
+                self._callback('Scroll', [e, elem, {top:top, left:left}]);
             })
         },
         //鼠标点击弹出层将弹出层层级设置最大
@@ -714,17 +710,13 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 self._time = opts.timer;
                 self._timer();
             }
-            if(typeof opts.onInit === 'function'){
-                opts.onInit.call(opts, self)
-            }
+            self._callback('Init');
             return self
         },
         _timer:function(){
             var self = this, opts = self._options;
             if(self._time > 0){
-                if(typeof opts.onTimer === 'function'){
-                    opts.onTimer.call(opts, self, self._time)
-                }
+                self._callback('Timer', [self._time]);
                 self._timerid = setTimeout(function(){
                     self._time -= 1000;
                     self._timer();
@@ -755,9 +747,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
         resize:function(){
             var self = this, opts = self._options, element = self.element;
             self._resize();
-            if(typeof opts.onResize === 'function'){
-                opts.onResize.call(opts, self)
-            }
+            self._callback('Resize');
             return self
         },
         hide:function(){
@@ -767,8 +757,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
         },
         destroy:function(){
             var self = this, _class = self.constructor, opts = self._options;
-            if(typeof opts.onBeforeDestroy === 'function' && 
-                opts.onBeforeDestroy.call(opts, self) === false){
+            if(self._callback('BeforeDestroy') === false){
                 return
             }
             self._delete();
@@ -778,9 +767,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 _class._zIndex--;
                 self._isdestroy = true;
             }
-            if(typeof opts.onDestroy === 'function'){
-                opts.onDestroy.call(opts, self)
-            }
+            self._callback('Destroy');
         }
     })
 });

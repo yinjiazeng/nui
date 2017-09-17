@@ -645,8 +645,10 @@
         var Class = function(options){
             var that = this;
             extend(true, that, object.propertys, {
+                //实例对象唯一标记
                 __id:Class.__id++,
-                _eventList:[]
+                //实例对象事件集合
+                __eventList:[]
             });
             that._options = extend(true, {}, that._options, Class._options, options||{});
             that._options.self = that;

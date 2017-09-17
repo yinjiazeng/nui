@@ -1,6 +1,5 @@
 Nui.config({
     "base": "/nui/",
-    "min": false,
     "paths": {
         "script": "/assets/script",
         "style": "/assets/style",
@@ -12,10 +11,10 @@ Nui.config({
         "highlight": "{light}/highlight"
     },
     "maps": {
-        "{script}/base": "83be6e2",
-        "./script/events/page": "b2ca6ea",
+        "{script}/base": "9dd4e15",
+        "./script/events/page": "df1d3de",
         "./script/template/page": "c7f3c81",
-        "./script/demo": "6f217ae",
-        "./script/page": "03610e5"
+        "./script/demo": "b1812ce",
+        "./script/page": "1507660"
     }
 })

@@ -32,7 +32,7 @@
         /**
          * 单和双下划线开头表示私有方法或者属性，只能在内部使用，
          * 单下划线继承后可重写或修改，双下划线为系统预置无法修改
-         * 系统预置属性方法：__id, __instances, __parent, __component_name, __setMethod
+         * 系统预置属性方法：__id, __instances, __eventList, __parent, __component_name, __setMethod
          */
         var statics = {
             //实例对象唯一标记
@@ -235,7 +235,9 @@
                 onDestroy:null
             },
             _template:{},
-            _init:jQuery.noop,
+            _init:function(){
+                this._exec()
+            },
             _exec:jQuery.noop,
             _getTarget:function(){
                 var self = this;
@@ -338,7 +340,7 @@
                     }
                 }
 
-                self._eventList.push({
+                self.__eventList.push({
                     dalegate:dalegate,
                     selector:selector,
                     type:type,
@@ -348,7 +350,7 @@
                 return self
             },
             _off:function(){
-                var self = this, _eventList = self._eventList;
+                var self = this, _eventList = self.__eventList;
                 Nui.each(_eventList, function(val, key){
                     if(val.dalegate){
                         val.dalegate.off(val.type, val.selector, val.callback)
@@ -359,7 +361,7 @@
                     _eventList[key] = null;
                     delete _eventList[key]
                 });
-                self._eventList = [];
+                self.__eventList = [];
                 return self
             },
             _delete:function(){
@@ -394,6 +396,17 @@
                 }
                 return tpl.render.call(this._template, this._template[id], data, opts)
             },
+            _callback:function(method, args){
+                var self = this, opts = self._options;
+                var callback = opts['on'+method];
+                if(typeof callback === 'function'){
+                    if(args){
+                        Array.prototype.unshift.call(args, self);
+                        return callback.apply(opts, args);
+                    }
+                    return callback.call(opts, self)
+                }
+            },
             option:function(option, value){
                 var flag = false;
                 if(jQuery.isPlainObject(option)){
@@ -412,17 +425,13 @@
             },
             reset:function(){
                 this.option(this._defaultOptions);
-                if(typeof this._options.onReset === 'function'){
-                    this._options.onReset.call(this)
-                }
+                this._callback('Reset');
                 return this;
             },
             destroy:function(){
                 this._delete();
                 this._reset();
-                if(typeof this._options.onDestroy === 'function'){
-                    this._options.onDestroy.call(this)
-                }
+                this._callback('Destroy');
             }
         })
     })

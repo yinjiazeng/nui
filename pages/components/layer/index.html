@@ -91,6 +91,20 @@ Nui.define(['../src/components/layer'], function(layer){
 				<p>说明：弹出层模版数据，用于渲染模版</p>
 			</div>
 
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> events</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Object}</p>
+				<p>默认值：null</p>
+				<p>说明：用于绑定事件，用法参考<a class="f-corange" target="_blank" href="/nui/pages/events.html">代理事件</a></p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> className</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{String}</p>
+				<p>默认值：''</p>
+				<p>说明：添加一个或一组类名</p>
+			</div>
+
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> width</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{String, Number}</p>
@@ -566,17 +580,7 @@ layer({
                 <a class="f-fs16 s-crt" href="/nui/pages/components/">交互组件</a>
                 
                 <ul>
-                    <li>
-                        <a href="#快速入门">快速入门</a>
-                        <ul>
-                            <li>
-                                <a href="#规范">规范</a>
-                            </li>
-                            <li>
-                                <a href="#开发组件">开发组件</a>
-                            </li>
-                        </ul>
-                    </li>
+                    
                     <li>
                         <a href="/nui/pages/components/router/">路由</a>
                     </li>
@@ -584,13 +588,16 @@ layer({
                         <a class="s-crt" href="/nui/pages/components/layer/">弹出层</a>
                     </li>
                     <li>
-                        <a href="/nui/pages/components/calendar/">日历</a>
-                    </li>
-                    <li>
                         <a href="/nui/pages/components/datagrid/">数据网格</a>
                     </li>
                     <li>
                         <a href="/nui/pages/components/placeholder/">占位符</a>
+                    </li>
+                    <li>
+                        <a href="/nui/pages/components/popover/">提示框</a>
+                    </li>
+                    <li>
+                        <a href="/nui/pages/components/calendar/">日历</a>
                     </li>
                     <li>
                         <a href="/nui/pages/components/slider/">滑块</a>
@@ -621,9 +628,6 @@ layer({
                     </li>
                     <li>
                         <a href="/nui/pages/components/tab/">选项卡</a>
-                    </li>
-                    <li>
-                        <a href="/nui/pages/components/popover/">提示框</a>
                     </li>
                     <li>
                         <a href="/nui/pages/components/print/">打印</a>
@@ -661,8 +665,8 @@ layer({
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
-<script type="text/javascript" src="/nui/dist/nui-min.js?v=4e02769"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=8b6da65"></script>
+<script type="text/javascript" src="/nui/dist/nui-min.js?v=bcae5a5"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=a8cd0ae"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){

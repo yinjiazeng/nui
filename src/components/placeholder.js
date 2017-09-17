@@ -34,9 +34,6 @@ Nui.define(['component'], function(component){
             wrap:'<strong class="<% className %>" style="<%include \'list\'%>" />',
             elem:'<b style="<%include \'list\'%>"><%text%></b>'
         },
-        _init:function(){
-            this._exec();
-        },
         _exec:function(){
             var self = this, target = self._getTarget();
             if(target){
