@@ -192,9 +192,9 @@
                 <a class="f-fs16{%if current == 'cpns' %} s-crt{% endif %}" href="/nui/pages/components/">交互组件</a>
                 {%if current == 'cpns' %}
                 <ul>
-                    {%if page == 'index' %}
                     <li>
-                        <a class="s-crt" href="#组件基类">组件基类</a>
+                        <a {%if page == 'index' %} class="s-crt"{% endif %} href="/nui/pages/components/#组件基类">组件基类</a>
+                        {%if page == 'index' %}
                         <ul>
                             <li>
                                 <a href="#静态属性">静态属性</a>
@@ -208,12 +208,19 @@
                             <li>
                                 <a href="#实例方法">实例方法</a>
                             </li>
+                        </ul>
+                        {% endif %}
+                    </li>
+                    <li>
+                        <a {%if page == 'dev' %}class="s-crt"{% endif %} href="/nui/pages/components/dev.html#开发组件">开发组件</a>
+                        {%if page == 'dev' %}
+                        <ul>
                             <li>
                                 <a href="#命名约定">命名约定</a>
                             </li>
                         </ul>
+                        {% endif %}
                     </li>
-                    {% endif %}
                     <li>
                         <a{%if page == 'router' %} class="s-crt"{% endif %} href="/nui/pages/components/router/">路由</a>
                     </li>

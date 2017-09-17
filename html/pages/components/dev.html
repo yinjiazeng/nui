@@ -1,0 +1,31 @@
+{% extends "layout.tpl" %}
+
+{% block title %}{% endblock %}
+
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('study')}}
+{% endblock %}
+
+{% block subpage %} class="g-html"{% endblock %}
+
+{% block content %}
+	<div class="g-main f-fr">
+		<div class="mainbox">
+			<h1 class="e-pt20 e-pb20 f-fs28" id="开发组件">开发组件</h1>
+			<div class="e-mt15 f-lh22">
+                <p>111</p>
+			</div>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="命名规范">命名规范</h2>
+			<div class="e-mt15 f-lh22">
+				<p>“_”前缀表示为私有属性或者方法，仅内部使用。</p>
+				<p>“__”前缀表示系统内置的属性或者方法，仅内部使用，不可重写或修改。</p>
+				<p>没有“_”前缀的表示对外公开的属性或方法，可通过“实例对象.方法名”或者“类.方法名”访问。</p>
+				<p>当一个变量名由多个单词组成时，应该首字母大写。</p>
+				<p>选项参数中回调以“onMethod”格式命名。</p>
+			</div>
+		</div>	
+	</div>
+	{% import 'sidecol.tpl' as side %}
+	{{side.active('cpns', 'dev')}}
+{% endblock %}
