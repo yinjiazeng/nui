@@ -282,6 +282,35 @@
 				<p>说明：销毁组件</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="封装案例">封装案例</h2>
+<script type="text/highlight" data-javascript-options>
+Nui.define(['component'], function(component){
+	return extend(component, {
+		//类成员在此处定义
+		_static:{
+			//类属性
+			_data:{},
+			//类方法
+			_set:function(name, value){
+				this._data[name] = value;
+			}
+		},
+		//实例属性
+		_options:{
+			text:'hello world'
+		},
+		//实例方法
+		_init:function(){
+			//实例之间成员调用
+			this._exec();
+		},
+		_exec:function(){
+			//实例方法中通过constructor访问类成员
+			this.constructor._set('text', this._options.text);
+			this.constructor._data['text']; //hello world
+		}
+	})
+})
+</script>
 		</div>	
 	</div>
 	
