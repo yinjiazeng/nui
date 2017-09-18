@@ -14,7 +14,7 @@
 		<div class="mainbox">
 			<h1 class="e-pt20 e-pb20 f-fs28" id="开发组件">开发组件</h1>
 			<div class="e-mt15 f-lh22">
-				<p>Nui以面向对象的方式封装组件，内置一个组件基础类模块，包含类属性、类方法、实例属性、实例方法，开发组件时必须继承该模块，也可以根据实际需要继承已有的组件，并对齐进行重新封装。</p>
+				<p>Nui以面向对象的方式封装组件，内置一个组件基础类模块，包含类属性、类方法、实例属性、实例方法（不懂的问度娘），开发组件时必须继承该模块，也可以根据实际需要继承已有的组件，并对齐进行重新封装。</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="命名规范">命名规范</h2>
 			<div class="e-mt15 f-lh22">
@@ -42,10 +42,6 @@
 				<p>说明：返回组件名</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="类方法">类方法</h2>
-			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __setMethod</h3>
-			<div class="e-mt15 f-lh22">
-				<p>说明：组件类在初始化时调用，将实例方法中不包含“_”前缀的方法添加为类方法，比如实例方法中包含show，如果类方法中没有，那么组件会自动创建名称为show的类方法，功能等同实例中的show，只不过比实例方法多2个参数，具体参考下面的reset/option/destroy三个类方法。</p>
-			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _init</h3>
 			<div class="e-mt15 f-lh22">
 				<p>说明：组件类被初始化时调用</p>
@@ -108,11 +104,6 @@
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Number}</p>
 				<p>说明：实例标识符</p>
-			</div>
-			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __eventList</h3>
-			<div class="e-mt15 f-lh22">
-				<p>类型：{Array}</p>
-				<p>说明：事件集合，存储绑定是事件</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _options</h3>
 			<div class="e-mt15 f-lh22">
@@ -248,15 +239,20 @@
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="封装案例">封装案例</h2>
 <script type="text/highlight" data-javascript-options>
+//定义一个helloworld.js
 Nui.define(['component'], function(component){
 	return extend(component, {
 		//类成员在此处定义
 		_static:{
-			//类属性
+			//私有类属性
 			_data:{},
-			//类方法
+			//私有类方法
 			_set:function(name, value){
 				this._data[name] = value;
+			},
+			//公开类方法
+			get:function(name){
+				return this._data[name]
 			}
 		},
 		//实例属性
@@ -274,6 +270,20 @@ Nui.define(['component'], function(component){
 			this.constructor._data['text']; //hello world
 		}
 	})
+})
+
+//demo.js
+Nui.define(['./helloworld'], function(helloworld){
+	//初始化组件
+	var obj = helloworld({
+		text:'hello world2'
+	})
+
+	//调用类方法
+	helloworld.get('text') //hello world2
+
+	//调用实例方法
+	obj.destroy()
 })
 </script>
 		</div>	
