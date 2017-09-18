@@ -79,7 +79,7 @@
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="类方法">类方法</h2>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _init</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：组件类被初始化时调用</p>
+				<p>说明：组件被创建时被调用一次</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _jquery</h3>
 			<div class="e-mt15 f-lh22">
@@ -133,6 +133,9 @@
 				<p>参数：container {Object} 容器元素</p>
 				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
 				<p>说明：销毁容器内的组件</p>
+			</div>
+			<div class="e-mt15 f-lh22 f-cred">
+				<p>类成员中包含一个__setMethod方法，该方法仅在组件被创建时内部会自动调用，作用是将公开的实例方法同步到类方法中，例如实例中包含show方法，那么类中也会被添加同等功能的show方法，可以直接“类.show”访问，传参等同上面的reset/option/detroy</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="实例属性">实例属性</h2>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __id</h3>
@@ -214,7 +217,7 @@
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _bindComponentName</h3>
 			<div class="e-mt15 f-lh22">
 				<p>参数：element {jQuery Object} </p>
-				<p>说明：给元素添加“nui_component_组件名”属性</p>
+				<p>说明：给元素添加“nui_component_组件名”属性，并在dom元素上绑定对象实例</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _tplData</h3>
 			<div class="e-mt15 f-lh22">
