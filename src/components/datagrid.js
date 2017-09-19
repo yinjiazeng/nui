@@ -161,6 +161,7 @@ Nui.define(function(){
             onBlur:null,
 
             stringify:null,
+            rowRender:null,
             onRowClick:null,
             onRowDblclick:null,
             onCheckboxChange:null,
@@ -255,7 +256,13 @@ Nui.define(function(){
                     '})'+
                 '}%>'+
                 '<%each list%>'+
-                '<tr class="table-row table-row-<%$index%>" row-index="<%$index%>"<%include "data"%>>'+
+                '<%var rowData = rowRender||{}%>'+
+                '<%if typeof rowData === "function"%>'+
+                '<%var rowData = rowRender($value, $index)||{}%>'+
+                '<%/if%>'+
+                '<%var className = (rowData.className ? " "+rowData.className : "")%>'+
+                '<%delete rowData.className%>'+
+                '<tr class="table-row table-row-<%$index%><%className%>" row-index="<%$index%>"<%include "data"%><%each rowData _v _n%> <%_n%>="<%_v%>"<%/each%>>'+
                     '<%var colLastIndex = cols.length-1%>'+
                     '<%each cols val key%>'+
                     '<%var _value%>'+
@@ -461,7 +468,8 @@ Nui.define(function(){
                     fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
                     list:self.list,
                     placeholder:opts.placeholder,
-                    stringify:opts.stringify
+                    stringify:opts.stringify,
+                    rowRender:opts.rowRender
                 }))
             })
             self.element.find('.datagrid-checkbox:checkbox').prop('checked', false).checkradio(self._checkradio());
@@ -700,10 +708,12 @@ Nui.define(function(){
         _events:{
             'click .table-tbody .table-row':'_active _getRowData _rowclick',
             'mouseenter .table-tbody .table-row':function(e, elem){
-                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover')
+                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover');
+                this._callback('RowMouseover', [e, elem]);
             },
             'mouseleave .table-tbody .table-row':function(e, elem){
-                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').removeClass('s-hover')
+                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').removeClass('s-hover');
+                this._callback('RowMouseout', [e, elem]);
             },
             'dblclick .table-tbody .table-row':'_getRowData _rowdblclick',
             'focus .datagrid-input':'_enable _getRowData _focus',
