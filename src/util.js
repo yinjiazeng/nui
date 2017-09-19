@@ -130,15 +130,12 @@ Nui.define('util', {
      * @param urls <String, Undefined> url，没有则获取浏览器url
      */
     setParam:function(name, value, urls){
-        var url;
+        var self = this, url;
         if(Nui.type(name, 'Object')){
             url = value||location.href;
             Nui.each(name, function(val, key){
                 if(val){
-                    if(Nui.type(val, 'Object')){
-                        val = tools.getJSON(val);
-                    }
-                    url = tools.setParam(key, val, url);
+                    url = self.setParam(key, val, url);
                 }
             });
         }
@@ -146,9 +143,6 @@ Nui.define('util', {
             url = urls||location.href;
             if(url.indexOf('?') === -1){
                 url += '?';
-            }
-            if(Nui.type(value, 'Object')){
-                value = tools.getJSON(value);
             }
             if(url.indexOf(name+'=') !== -1){
                 var reg = new RegExp('('+name+'=)[^&]*');
