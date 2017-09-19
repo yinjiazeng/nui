@@ -27,7 +27,12 @@ Nui.define(['component'], function(component){
              * @func 占位符文本颜色
              * @type <String>
              */
-            color:'#ccc'
+            color:'#ccc',
+            /**
+             * @func 调用value方法后执行回调
+             * @type <Function>
+             */
+            onChange:null
         },
         _template:{
             list:'<%each style%><%$index%>:<%$value%>;<%/each%>',
@@ -173,6 +178,7 @@ Nui.define(['component'], function(component){
             else if(this.element){
                 this.element.hide()
             }
+            this._callback('Change');
         }
     })
 })
