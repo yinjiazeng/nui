@@ -279,7 +279,7 @@ Nui.define(function(){
                     '<%/if%>'+
                     '<td class="table-cell<%val.className%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
                         '<%if typeof val.filter === "function"%>'+
-                        '<%var _value = val.filter(_value, val.field, $value)%>'+
+                        '<%var _value = val.filter(_value, val.field, $value, $index)%>'+
                         '<%/if%>'+
                         '<span class="cell-wrap<%if val.nowrap === true%> cell-nowrap<%/if%>"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>>'+
                         '<span class="cell-text'+
