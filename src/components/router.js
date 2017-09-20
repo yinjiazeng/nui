@@ -64,10 +64,10 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                         var object = self.__instances[v.id], opts = object._options, param = {};
                         params = params ? params.split('/') : [];
                         if(params.length === v.params.length){
-                            var isRender = object._isRrender === true;
-                            var unWrapper = object._isRrender !== false && !object._wrapper;
-                            var _isRrender = !object.loaded || isRender || unWrapper;
-                            delete object._isRrender;
+                            var isRender = object._isRender === true;
+                            var unWrapper = object._isRender !== false && !object._wrapper;
+                            var _isRender = !object.loaded || isRender || unWrapper;
+                            delete object._isRender;
 
                             if(unWrapper || (object._wrapper && isRender)){
                                 opts.data = $.extend(true, {}, object._defaultOptions.data);
@@ -95,7 +95,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 delete object._send;
                             }
 
-                            if(_isRrender){
+                            if(_isRender){
                                 if(opts.wrapper && !object._wrapper){
                                     if(typeof opts.wrapper !== 'boolean'){
                                         object._wrapper = object.container.children(opts.wrapper)
@@ -107,9 +107,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 else if(!self._wrapper){
                                     self._wrapper = self._getWrapper(object.container)
                                 }
-                                if(object._isRrender || !object._wrapper){
-                                    component.destroy((object._wrapper||self._wrapper).off());
-                                }
+                                component.destroy((object._wrapper||self._wrapper).off());
                             }
 
                             var wrapper = opts.element = object._wrapper || self._wrapper;
@@ -118,7 +116,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                                 opts.onChange.call(opts);
                             }
                                 
-                            if(_isRrender){
+                            if(_isRender){
                                 var tmpl = opts.template;
                                 if(tmpl){
                                     if(typeof tmpl === 'string'){
@@ -219,7 +217,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                     _router._send = {
                         data:data
                     }
-                    _router._isRrender = render;
+                    _router._isRender = render;
                     _router._render(url)
                 }
             }
