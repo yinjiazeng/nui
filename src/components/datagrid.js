@@ -166,6 +166,7 @@ Nui.define(function(){
             onRowDblclick:null,
             onCheckboxChange:null,
             onRender:null,
+            onRenderBefore:null,
             onScroll:null
         },
         _template:{
@@ -418,7 +419,7 @@ Nui.define(function(){
                     if(self.element){
                         self.data = data;
                         self._render();
-                            if(typeof echoData === 'function'){
+                        if(typeof echoData === 'function'){
                             echoData.call(opts.paging, data, type)
                         }
                     }
@@ -443,7 +444,7 @@ Nui.define(function(){
             self._event()
         },
         _getList:function(){
-            var self = this, opts = self._options, field = opts.dataField, list = self.data;
+            var self = this, opts = self._options, field = opts.dataField, list = self.data, _list;
             if(field && Nui.type(list, 'Object')){
                 Nui.each(field.split('.'), function(v){
                     if(list[v]){
@@ -454,6 +455,11 @@ Nui.define(function(){
                         return false;
                     }
                 })
+            }
+            if(_list = self._callback('RenderBefore', [list])){
+                if(Nui.type(_list, 'Array')){
+                    list = _list
+                }
             }
             return list||[]
         },
@@ -762,9 +768,11 @@ Nui.define(function(){
             return this._callback('Blur', arguments)
         },
         _focusin:function(e, elem){
+            elem.addClass('s-focus');
             return this._callback('Focusin', arguments)
         },
         _focusout:function(e, elem){
+            elem.removeClass('s-focus');
             return this._callback('Focusout', arguments)
         },
         _rowclick:function(e, elem, data){
