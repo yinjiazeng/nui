@@ -2226,24 +2226,31 @@ Nui.define('events', function(){
                     return callback.call(opts, self)
                 }
             },
-            option:function(option, value){
-                var flag = false;
-                if(jQuery.isPlainObject(option)){
-                    jQuery.extend(true, this._options, option);
-                    flag = true
+            option:function(){
+                var args = arguments;
+                var options;
+                var defaults = false;
+                if(args[0] === true){
+                    defaults = true
                 }
-                else if(option && typeof option === 'string'){
-                    this._options[option] = value;
-                    flag = true
+                else if(jQuery.isPlainObject(args[0])){
+                    options = args[0]
+                    defaults = args[1]
                 }
-                if(flag){
+                else if(args.length > 1 && typeof args[0] === 'string'){
+                    options = {};
+                    options[args[0]] = args[1]
+                    defaults = args[2]
+                }
+                if(options||defaults){
+                    this._options = jQuery.extend(true, {}, this[defaults === true ? '_defaultOptions' : '_options'], options)
                     this._reset();
                     this._exec();
                 }
                 return this
             },
             reset:function(){
-                this.option(this._defaultOptions);
+                this.option(true);
                 this._callback('Reset');
                 return this;
             },
