@@ -426,7 +426,7 @@ Nui.define(function(){
                         self.data = data;
                         self._render();
                         if(typeof echoData === 'function'){
-                            echoData.call(opts.paging, data, type)
+                            echoData.call(opts, data, type)
                         }
                     }
                 }
