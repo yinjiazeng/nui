@@ -21,7 +21,11 @@ Nui.define(function(){
                     var isRow = $(e.target).closest('tr').hasClass('table-row');
                     Nui.each(self.__instances, function(val){
                         if(!isRow && val.element && val._options.isActive === true){
-                            val.element.find('.datagrid-tbody .table-row.s-crt').removeClass('s-crt');
+                            var row = val.element.find('.datagrid-tbody .table-row.s-crt');
+                            if(row.length){
+                                val._callback('CancelActive', [e, row])
+                                row.removeClass('s-crt');
+                            }
                         }
                     })
                 });
@@ -162,6 +166,8 @@ Nui.define(function(){
 
             stringify:null,
             rowRender:null,
+            onActive:null,
+            onCancelActive:null,
             onRowClick:null,
             onRowDblclick:null,
             onCheckboxChange:null,
@@ -712,7 +718,7 @@ Nui.define(function(){
             }
         },
         _events:{
-            'click .table-tbody .table-row':'_active _getRowData _rowclick',
+            'click .table-tbody .table-row':'_getRowData _active',
             'mouseenter .table-tbody .table-row':function(e, elem){
                 this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover');
                 this._callback('RowMouseover', [e, elem]);
@@ -743,8 +749,9 @@ Nui.define(function(){
         _enable:function(e, elem){
             return !elem.hasClass('s-dis') && !elem.hasClass('s-disabled')
         },
-        _active:function(e, elem){
+        _active:function(e, elem, data){
             var self = this;
+            self._callback('RowClick', [e, elem, data]);
             if(self._options.isActive === true){
                 self.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-crt').siblings().removeClass('s-crt');
                 Nui.each(self.__instances, function(val){
@@ -752,6 +759,7 @@ Nui.define(function(){
                         val.element.find('.datagrid-tbody table-row.s-crt').removeClass('s-crt');
                     }
                 })
+                self._callback('Active', [e, elem, data]);
             }
         },
         _getRowData:function(e, elem){
@@ -761,7 +769,7 @@ Nui.define(function(){
             return elem.closest('.table-row').data()
         },
         _focus:function(e, elem, data){
-            this._active(e, elem.closest('.table-row'))
+            this._active(e, elem.closest('.table-row'), data)
             return this._callback('Focus', arguments)
         },
         _blur:function(e, elem, data){
@@ -774,9 +782,6 @@ Nui.define(function(){
         _focusout:function(e, elem){
             elem.removeClass('s-focus');
             return this._callback('Focusout', arguments)
-        },
-        _rowclick:function(e, elem, data){
-            return this._callback('RowClick', arguments)
         },
         _rowdblclick:function(e, elem, data){
             return this._callback('RowDblclick', arguments)

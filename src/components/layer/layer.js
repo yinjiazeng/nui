@@ -42,6 +42,8 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
         width:320,
         //宽度
         height:'auto',
+        //弹出层层级
+        zIndex:null,
         //最大宽度
         maxWidth:0,
         //最大高度
@@ -253,7 +255,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 bubble:opts.bubble.enable === true ? opts.bubble : null,
                 align:opts.align || 'center',
                 style:{
-                    'z-index':self._zIndex,
+                    'z-index':opts.zIndex || self._zIndex,
                     'position':'absolute',
                     'display':'block'
                 }
@@ -500,7 +502,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 if(unders.length){
                     Nui.each(unders, function(obj, k){
                         if(obj && obj.element){
-                            obj.element.css('z-index', destroy ? obj._zIndex : _class._maskzIndex-1)
+                            obj.element.css('z-index', destroy ? (obj._options.zIndex||obj._zIndex) : _class._maskzIndex-1)
                         }
                     })
                 }

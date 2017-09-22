@@ -12,9 +12,9 @@ Nui.config({
     },
     "maps": {
         "{script}/base": "9dd4e15",
-        "./script/events/page": "df1d3de",
+        "./script/events/page": "80bc765",
         "./script/template/page": "c7f3c81",
         "./script/demo": "75b6ca9",
-        "./script/page": "1507660"
+        "./script/page": "b7f7c6c"
     }
 })
