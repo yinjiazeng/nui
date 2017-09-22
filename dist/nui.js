@@ -10,74 +10,7 @@
         return
     }
 
-    var Nui = window.Nui = {
-        // Nui.type('nui', 'String') => true
-        // Nui.type(['nui'], ['Object', 'Array']) => true
-        type:function(obj, type){
-            if(obj === null || obj === undefined){
-                return false
-            }
-            if(isArray(type)){
-                var ret = false;
-                Nui.each(type, function(v){
-                    if(isType(v)(obj)){
-                        ret = true;
-                        return false
-                    }
-                })
-                return ret
-            }
-            return isType(type)(obj)
-        },
-        each:function(obj, callback){
-            var i;
-            if(isArray(obj)){
-                var len = obj.length;
-                for(i=0; i<len; i++){
-                    if(callback(obj[i], i) === false){
-                        break;
-                    }
-                }
-            }
-            else{
-                for(i in obj){
-                    if(callback(obj[i], i) === false){
-                        break;
-                    }
-                }
-            }
-        },
-        //jquery1.9之后就移除了该方法，以插件形式存在
-        browser:(function(){
-            var ua = navigator.userAgent.toLowerCase();
-            var match = /(edge)[ \/]([\w.]+)/.exec(ua) ||
-                        /(chrome)[ \/]([\w.]+)/.exec(ua) ||
-                        /(webkit)[ \/]([\w.]+)/.exec(ua) ||
-                        /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
-                        /(msie) ([\w.]+)/.exec(ua) ||
-                        ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || [];
-            var browser = match[1] || '';
-            var version = match[2] || '0';
-            var ret = {}
-
-            //IE11会伪装成firefox
-            if(browser === 'mozilla' && /trident/.test(ua)){
-                browser = 'msie';
-                version = '11.0'
-            }
-            if(browser){
-                ret[browser] = true;
-                ret.version = version
-            }
-            if(ret.chrome || ret.edge){
-                ret.webkit = true
-            }
-            else if(ret.webkit){
-                ret.safari = true
-            }
-            return ret
-        })()
-    }
+    var Nui = window.Nui = {};
 
     var isType = function(type){
         return function(obj){
@@ -87,7 +20,45 @@
 
     var isArray = Nui.isArray = Array.isArray || isType('Array');
 
-    Nui.each({
+    var each = Nui.each = function(obj, callback){
+        var i;
+        if(isArray(obj)){
+            var len = obj.length;
+            for(i=0; i<len; i++){
+                if(callback(obj[i], i) === false){
+                    break;
+                }
+            }
+        }
+        else{
+            for(i in obj){
+                if(callback(obj[i], i) === false){
+                    break;
+                }
+            }
+        }
+    }
+
+    // type('nui', 'String') => true
+    // type(['nui'], ['Object', 'Array']) => true
+    var type = Nui.type = function(obj, type){
+        if(obj === null || obj === undefined){
+            return false
+        }
+        if(isArray(type)){
+            var ret = false;
+            each(type, function(v){
+                if(isType(v)(obj)){
+                    ret = true;
+                    return false
+                }
+            })
+            return ret
+        }
+        return isType(type)(obj)
+    }
+
+    each({
         trim:/^\s+|\s+$/g,
         trimLeft:/^\s+/g,
         trimRight:/\s+$/g
@@ -104,25 +75,59 @@
         })()
     })
 
-    var noop = function(){}
+    var noop = Nui.noop = function(){}
+
+    Nui.browser = (function(){
+        var ua = navigator.userAgent.toLowerCase();
+        var match = /(edge)[ \/]([\w.]+)/.exec(ua) ||
+                    /(chrome)[ \/]([\w.]+)/.exec(ua) ||
+                    /(webkit)[ \/]([\w.]+)/.exec(ua) ||
+                    /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+                    /(msie) ([\w.]+)/.exec(ua) ||
+                    ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) || [];
+        var browser = match[1] || '';
+        var version = match[2] || '0';
+        var ret = {}
+
+        //IE11会伪装成firefox
+        if(browser === 'mozilla' && /trident/.test(ua)){
+            browser = 'msie';
+            version = '11.0'
+        }
+        if(browser){
+            ret[browser] = true;
+            ret.version = version
+        }
+        if(ret.chrome || ret.edge){
+            ret.webkit = true
+        }
+        else if(ret.webkit){
+            ret.safari = true
+        }
+        return ret
+    })()
 
     Nui.bsie6 = Nui.browser.msie && Nui.browser.version <= 6;
     Nui.bsie7 = Nui.browser.msie && Nui.browser.version <= 7;
 
     // unique(['1', '2', '1']) => ['1', '2']
-    var unique = function(arr){
+    var unique = Nui.unique = function(arr, reverse){
         var newarr = [];
         var temp = {};
-        Nui.each(arr, function(val){
+        var type = 'push';
+        if(reverse === true){
+            type = 'unshift';
+        }
+        each(arr, function(val){
             if(!temp[val]){
                 temp[val] = true
-                newarr.push(val)
+                newarr[type](val)
             }
         })
         return newarr
     }
 
-    var extend = function(){
+    var extend = Nui.extend = function(){
         var src, copyIsArray, copy, name, options, clone,
             target = arguments[0] || {},
             i = 1,
@@ -133,7 +138,7 @@
             target = arguments[1] || {};
             i = 2;
         }
-        if(typeof target !== 'object' && !Nui.type(target, 'Function')){
+        if(typeof target !== 'object' && !type(target, 'Function')){
             target = {};
         }
         if(length === i){
@@ -169,7 +174,7 @@
 
     //判断是不是纯粹的对象
     var isObject = function(obj){
-        if(!Nui.type(obj, 'Object') || obj.constructor !== Object){
+        if(!type(obj, 'Object') || obj.constructor !== Object){
             return false;
         }
         return true
@@ -259,7 +264,7 @@
             if(interactiveScript && interactiveScript.readyState === 'interactive'){
                 return interactiveScript
             }
-            Nui.each(head.getElementsByTagName('script'), function(script){
+            each(head.getElementsByTagName('script'), function(script){
                 if(script.readyState === 'interactive'){
                     interactiveScript = script
                     return false
@@ -346,7 +351,7 @@
     Module.prototype.loadcss = function(){
         var mod = this;
         if(mod.styles && mod.styles.length){
-            Nui.each(mod.styles, function(val){
+            each(mod.styles, function(val){
                 var path = Module.getAttrs(val, mod.uri)[0];
                 if(!cacheStyles[path]){
                     cacheStyles[path] = true;
@@ -365,7 +370,7 @@
     Module.prototype.resolve = function(){
         var mod = this;
         if(mod.alldeps.length && isEmptyObject(mod.depmodules)){
-            Nui.each(mod.alldeps, function(val){
+            each(mod.alldeps, function(val){
                 var module = Module.getModule(val, [], mod.uri);
                 module.version = mod.version;
                 mod.depmodules[val] = module.loaded ? module : module.load()
@@ -385,7 +390,7 @@
                 node = null;
                 mod.loaded = true;
                 if(moduleData){
-                    Nui.each(moduleData, function(val, key){
+                    each(moduleData, function(val, key){
                         val && (mod[key] = val)
                     })
                     moduleData = null;
@@ -401,7 +406,7 @@
 
     //获取入口模块的所有依赖模块id，若依赖全部被加载则执行回调
     Module.prototype.rootCallback = function(){
-        Nui.each(rootModules, function(root, name){
+        each(rootModules, function(root, name){
             var data = root.getData();
             var ids = unique(data.ids);
             if(data.loaded && root.callback){
@@ -424,7 +429,7 @@
             data.loaded = false
         }
         if(this.alldeps.length){
-            Nui.each(this.depmodules, function(val){
+            each(this.depmodules, function(val){
                 data = val.getData(data)
             })
         }
@@ -476,7 +481,7 @@
                     }
                 }
             }
-            else if(Nui.type(module, 'Function')){
+            else if(type(module, 'Function')){
                 if(module.exports){
                     exports = extend(true, {}, module.exports, members);
                     exports._static.__parent = new Module.Class.parent(module)
@@ -485,15 +490,15 @@
                     exports = extend(true, noop, module, members)
                 }
             }
-            else if(Nui.type(module, 'Object')){
+            else if(type(module, 'Object')){
                 exports = extend(true, {}, module, members)
             }
             else{
                 exports = module
             }
 
-            if(isArray(inserts) && Nui.type(exports, ['Object', 'Function'])){
-                Nui.each(inserts, function(val){
+            if(isArray(inserts) && type(exports, ['Object', 'Function'])){
+                each(inserts, function(val){
                     if(val.method && val.content){
                         var arr = val.method.split('->');
                         var lastkey = arr[arr.length-1];
@@ -506,7 +511,7 @@
                             object = object[key]
                         }
                         var func = object[lastkey];
-                        if(Nui.type(func, 'Function')){
+                        if(type(func, 'Function')){
                             var code = func.toString().replace(/(\})$/, ';'+val.content+'$1');
                             func = new Function('return '+code);
                             object[lastkey] = func();
@@ -540,7 +545,7 @@
             if(mod.deps.length){
                 //设置工厂函数形参，也就是依赖模块的引用
                 modules = [];
-                Nui.each(mod.deps, function(val){
+                each(mod.deps, function(val){
                     modules.push(methods.require(val))
                 })
             }
@@ -566,7 +571,7 @@
                     exports._options.skin = config.skin
                 }
 
-                Nui.each(exports, function(val, key){
+                each(exports, function(val, key){
                     //静态属性以及方法
                     if(key === '_static'){
                         obj['statics'] = val
@@ -595,7 +600,7 @@
                     mod.exports = mod.module.exports = exports;
                     if(mod.name !== 'component'){
                         var Class = mod.module.constructor, method;
-                        Nui.each(['_$fn', '_$ready'], function(v){
+                        each(['_$fn', '_$ready'], function(v){
                             method = Class[v];
                             if(typeof method === 'function'){
                                 method.call(Class, name, mod.module)
@@ -666,7 +671,7 @@
             return new Class(options)
         }
         module.constructor = Class;
-        Nui.each(Class, function(v, k){
+        each(Class, function(v, k){
             if(typeof v === 'function' && !/^_/.test(k) && k !== 'constructor'){
                 if(typeof v === 'function'){
                     module[k] = function(){
@@ -721,7 +726,7 @@
     }
 
     Module.load = function(id, callback, _module_, isMin){
-        if(Nui.type(id, 'String') && Nui.trim(id)){
+        if(type(id, 'String') && Nui.trim(id)){
             //截取入口文件参数，依赖的文件加载时都会带上该参数
             var match = id.match(/(\?[\s\S]*)$/);
 
@@ -749,13 +754,13 @@
             mod.callback = function(ids){
                 var _module = mod.depmodules[depname];
                 var suffix = _module.suffix;
-                Nui.each(ids, function(id){
+                each(ids, function(id){
                     var module = cacheModules[id].exec();
                     if(!suffix){
                         module.loadcss()
                     }
                 })
-                if(Nui.type(callback, 'Function')){
+                if(type(callback, 'Function')){
                     callback.call(Nui, _module.module || _module.exports)
                 }
                 delete rootModules[_module_];
@@ -772,7 +777,7 @@
         var styles = [];
         var match = str.match(/(require|extend|imports)\(?('|")[^'"]+\2/g);
         if(match){
-            Nui.each(match, function(val){
+            each(match, function(val){
                 if(/^(require|extend)/.test(val)){
                     deps.push(val.replace(/^(require|extend)|[\('"]/g, ''))
                 }
@@ -787,16 +792,16 @@
 
     Module.define = function(id, deps, factory){
         //Nui.define(function(){})
-        if(Nui.type(id, 'Function')){
+        if(type(id, 'Function')){
             factory = id;
             id = undefined;
             deps = [];
         }
         //Nui.define(['mod1', 'mod2', ..], function(){})
         //Nui.define('id', function(){})
-        else if(Nui.type(deps, 'Function')){
+        else if(type(deps, 'Function')){
             factory = deps;
-            if(Nui.type(id, 'String')){
+            if(type(id, 'String')){
                 deps = []
             }
             else{
@@ -858,7 +863,7 @@
         //Nui.define('')
         //Nui.define([])
         //Nui.define({})
-        if(!len || (len === 1 && !Nui.type(args[0], 'Function'))){
+        if(!len || (len === 1 && !type(args[0], 'Function'))){
             params.push(function(){
                 return args[0]
             })
@@ -866,7 +871,7 @@
 
         //Nui.define('id', [])
         //Nui.define('id', {})
-        else if((len === 2 && !Nui.type(args[1], 'Function')) || (len == 3 && !Nui.type(args[2], 'Function'))){
+        else if((len === 2 && !type(args[1], 'Function')) || (len == 3 && !type(args[2], 'Function'))){
             params.push(args[0]);
             params.push(function(){
                 return args[1]
@@ -874,13 +879,13 @@
         }
 
         //Nui.define({}, function(){})
-        else if(len === 2 && !Nui.type(args[0], ['Array', 'String']) && Nui.type(args[1], 'Function')){
+        else if(len === 2 && !type(args[0], ['Array', 'String']) && type(args[1], 'Function')){
             params.push(args[1])
         }
 
         //Nui.define('id', {}, function(){})
         //Nui.define('id', '', function(){})
-        else if(len === 3 && !isArray(args[1]) && Nui.type(args[2], 'Function')){
+        else if(len === 3 && !isArray(args[1]) && type(args[2], 'Function')){
             params.push(args[0]);
             params.push(args[2]);
         }
@@ -894,10 +899,10 @@
     }
 
     Nui.config = function(obj, val){
-        if(Nui.type(obj, 'Object')){
+        if(type(obj, 'Object')){
             config = extend({}, config, obj);
         }
-        else if(val && Nui.type(obj, 'String')){
+        else if(val && type(obj, 'String')){
             config[obj] = val;
             if(obj !== 'paths'){
                 return
@@ -910,7 +915,7 @@
         if(!isHttp(base)){
             base = config.paths.base = domain+base
         }
-        Nui.each(config.paths, function(v, k){
+        each(config.paths, function(v, k){
             if(k !== 'base' && !isHttp(v)){
                 config.paths[k] = base+'/' + v
             }

@@ -64,6 +64,15 @@
                         <a href="#type">type</a>
                     </li>
                     <li>
+                        <a href="#unique">unique</a>
+                    </li>
+                    <li>
+                        <a href="#extend">extend</a>
+                    </li>
+                    <li>
+                        <a href="#noop">noop</a>
+                    </li>
+                    <li>
                         <a href="#browser">browser</a>
                     </li>
                     <li>

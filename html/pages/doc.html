@@ -513,6 +513,22 @@ Nui.type(object, type)
 					<td>小写类型字符串，当为数组时，匹配是否满足数组中任意一种类型</td>
 				</tr>
 			</table>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="unique">unique</h2>
+			<p class="e-mt15 f-lh22">去重</p>
+<script type="text/highlight" data-javascript-options>
+Nui.unique([1,2,1,3]) //1,2,3
+Nui.unique([1,2,1,3], true) //3,2,1
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="extend">extend</h2>
+			<p class="e-mt15 f-lh22">扩展</p>
+<script type="text/highlight" data-javascript-options>
+Nui.extend({a:1}, {b:1}) //{a:1,b:2}
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="noop">noop</h2>
+			<p class="e-mt15 f-lh22">空函数</p>
+<script type="text/highlight" data-javascript-options>
+Nui.noop //fucntion(){}
+</script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="browser">browser</h2>
 			<p class="e-mt15 f-lh22">检测浏览器内核以及版本号</p>
 <script type="text/highlight" data-javascript-options>
