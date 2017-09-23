@@ -186,7 +186,7 @@
                             var object;
                             if(this.nui && (object=this.nui[name]) && options.indexOf('_') !== 0){
                                 if(options === 'options'){
-                                    object.set(args[1], args[2])
+                                    object.option(args[1], args[2])
                                 }
                                 else{
                                     var attr = object[options];
