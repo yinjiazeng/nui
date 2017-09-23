@@ -14,7 +14,7 @@ Nui.define(['component'], function(component){
              */
             text:'',
             /**
-             * @func 是否启用动画显示展示
+             * @func 是否启用动画形式展示
              * @type <Boolean>
              */
             animate:false,
@@ -23,6 +23,11 @@ Nui.define(['component'], function(component){
              * @type <Boolean>
              */
             equal:false,
+            /**
+             * @func 销毁或者重置组件是否还原默认值
+             * @type <Boolean>
+             */
+            restore:true,
             /**
              * @func 占位符文本颜色
              * @type <String>
@@ -40,17 +45,16 @@ Nui.define(['component'], function(component){
             elem:'<b style="<%include \'list\'%>"><%text%></b>'
         },
         _exec:function(){
-            var self = this, target = self._getTarget();
+            var self = this, opts = self._options, target = self._getTarget();
             if(target){
-                var text = self.deftext = target.attr('placeholder');
-                if(!self.deftext && self._options.text){
-                    target.attr('placeholder', text = self._options.text)
+                var text = self._deftext = target.attr('placeholder');
+                if(!self._deftext && opts.text){
+                    target.attr('placeholder', text = opts.text)
                 }
-                self.text = Nui.trim(text);
-                if(self.val === undefined){
-                    self.val = Nui.trim(target.val());
+                if(self._val === undefined){
+                    self._val = Nui.trim(target.val());
                 }
-                if(self.text){
+                if(self._text = Nui.trim(text)){
                     self._create()
                 }
             }
@@ -71,7 +75,7 @@ Nui.define(['component'], function(component){
                 }
                 self.target.wrap(self._tpl2html('wrap', data))
                 self.element = $(self._tpl2html('elem', {
-                        text:self.text,
+                        text:self._text,
                         style:(function(){
                             var height = self.target.outerHeight();
                             var isText = self.target.is('textarea');
@@ -156,9 +160,12 @@ Nui.define(['component'], function(component){
                 self.element.remove();
                 self.target.unwrap();
             }
-            self.target.val(self.val).removeClass(self.className);
-            if(self.deftext){
-                self.target.attr('placeholder', self.deftext)
+            if(self._options.restore === true){
+                self.target.val(self._val)
+            }
+            self.target.removeClass(self.className);
+            if(self._deftext){
+                self.target.attr('placeholder', self._deftext)
             }
             else{
                 self.target.removeAttr('placeholder')

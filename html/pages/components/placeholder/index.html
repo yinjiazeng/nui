@@ -1,0 +1,182 @@
+{% extends "layout.tpl" %}
+
+{% block title %}{% endblock %}
+
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('study')}}
+{% endblock %}
+
+{% block subpage %} class="g-html"{% endblock %}
+
+{% block content %}
+	<div class="g-main f-fr">
+		<div class="mainbox">
+			<h1 class="e-pt20 e-pb20 f-fs28">占位符</h1>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">使用模块</h2>
+			<div class="e-mt15 f-lh22">
+				<p>
+					<a href="/nui/src/components/placeholder.js" class="f-corange" target="_blank">下载</a>
+					最新组件作为依赖项引入到模块中，并创建实例。
+				</p>
+            </div>
+<script type="text/highlight" data-xml-options>
+<input type="text" id="demo" placeholder="请输入内容">
+</script>
+<script type="text/highlight" data-javascript-options>
+Nui.define(['../src/components/placeholder'], function(placeholder){
+    placeholder({选项参数})
+    //或
+    $('#demo').placeholder({选项参数})
+})
+</script>
+
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">选项参数</h2>
+			
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> text</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{String}</p>
+				<p>默认值：''</p>
+				<p>说明：输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> animate</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Boolean}</p>
+				<p>默认值：false</p>
+				<p>说明：是否使用动画形式显示占位文本</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> equal</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Boolean}</p>
+				<p>默认值：false</p>
+				<p>说明：输入框值是否可以和占位符相同</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> restore</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Boolean}</p>
+				<p>默认值：true</p>
+				<p>说明：销毁或者重置组件是否还原默认值</p>
+            </div>
+            <div class="e-mt15">
+                <input type="text" class="ui-input">
+            </div>
+<script type="text/highlight" data-javascript-options>
+placeholder({
+    target:'#elem',
+    text:'19920604',
+    restore:false
+})
+</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> color</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{String}</p>
+				<p>默认值：'#ccc'</p>
+				<p>说明：占位符文本颜色</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> id</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{String}</p>
+				<p>默认值：''</p>
+				<p>说明：标识符名称，弹出层最外层元素会增加layer-标识符名称的类名，</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> skin</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{String}</p>
+				<p>默认值：''</p>
+				<p>说明：皮肤名称，弹出层最外层元素会增加nui-layer-皮肤名称的类名</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onChange</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>默认值：null</p>
+				<p>说明：调用实例的value方法后执行回调</p>
+			</div>
+
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10">实例属性与方法</h2>
+            <h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> value</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：val {String}</p>
+				<p>说明：设置输入框值</p>
+            </div>
+            
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> option</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：option {String, Object} 选项参数集合或者参数名</p>
+				<p>参数：value {Anything} 参数值，option为string类型时才会使用</p>
+				<p>说明：设置选项参数</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> reset</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>说明：将实例还原为初始状态</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> destroy</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>说明：销毁实例</p>
+			</div>
+
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">静态方法</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> config</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：option {String, Object} 选项参数集合或者参数名</p>
+				<p>参数：value {Anything} 参数值，option为string类型时才会使用</p>
+				<p>说明：全局设置默认选项参数，需在调用组件前设置方可生效</p>
+            </div>
+            
+            <h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> value</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：将实例还原为初始状态，不传id则对所有实例操作</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> option</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：option {String, Object} 选项参数集合或者参数名</p>
+				<p>参数：value {Anything} 参数值，option为string类型时才会使用</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：设置选项参数，不传id则对所有实例操作</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> reset</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：将实例还原为初始状态，不传id则对所有实例操作</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> resize</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：改变实例大小位置为正常状态，不传id则对所有实例操作</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> destroy</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：id {Number, String} 实例id或者选项参数id</p>
+				<p>说明：销毁实例，不传id则对所有实例操作</p>
+			</div>
+		</div>	
+	</div>
+	{% import 'sidecol.tpl' as side %}
+	{{side.active('cpns', 'placeholder')}}
+{% endblock %}
+
+{% block script %}
+Nui.load('./script/page-min')
+{% endblock %}

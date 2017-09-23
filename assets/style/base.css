@@ -202,7 +202,13 @@ a:hover { color:#FD6E0E; text-decoration:underline;}
 .ui-form:after, .ui-form-item:after { clear:both;}
 .ui-form, .ui-form-item { *zoom:1;}
 .ui-form {}
-.ui-input {}
+.ui-input {
+  padding-left: 8px;
+  border: 1px solid #ccc;
+  height: 30px;
+  line-height: 30px;
+  width: 230px;
+}
 
 /* component */
 .nui-highlight { position:relative; margin-top:15px; overflow:hidden; border-radius:3px; background-color:#F6F6F6; font-size: 14px;}
