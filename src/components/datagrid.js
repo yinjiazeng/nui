@@ -20,11 +20,13 @@ Nui.define(function(){
                 Nui.doc.on('click', function(e){
                     var isRow = $(e.target).closest('tr').hasClass('table-row');
                     Nui.each(self.__instances, function(val){
-                        if(!isRow && val.element && val._options.isActive === true){
-                            var row = val.element.find('.datagrid-tbody .table-row.s-crt');
-                            if(row.length){
-                                val._callback('CancelActive', [e, row])
-                                row.removeClass('s-crt');
+                        if(!isRow && val.element && val._activeElem){
+                            val._callback('CancelActive', [e, val._activeElem])
+                            val._activeElem.removeClass('s-crt');
+                            delete val._activeElem;
+                            if(val._activeFixedElem){
+                                val._activeFixedElem.removeClass('s-crt');
+                                delete val._activeFixedElem
                             }
                         }
                     })
@@ -263,10 +265,7 @@ Nui.define(function(){
                     '})'+
                 '}%>'+
                 '<%each list%>'+
-                '<%var rowData = rowRender||{}%>'+
-                '<%if typeof rowData === "function"%>'+
                 '<%var rowData = rowRender($value, $index)||{}%>'+
-                '<%/if%>'+
                 '<%var className = (rowData.className ? " "+rowData.className : "")%>'+
                 '<%delete rowData.className%>'+
                 '<tr class="table-row table-row-<%$index%><%className%>" row-index="<%$index%>"<%include "data"%><%each rowData _v _n%> <%_n%>="<%_v%>"<%/each%>>'+
@@ -338,7 +337,8 @@ Nui.define(function(){
                 '<%if fields%>'+
                 '<%each $value value field%>'+
                 '<%if fields === true || $.inArray(field, fields) !== -1%>'+
-                ' data-<%toLower(field)%>=<%if typeof stringify === "function"%><%stringify(value)%><%else%>"<%value%>"<%/if%>'+
+                '<%var _value = stringify(value)%>'+
+                ' data-<%toLower(field)%>=<%if typeof _value !== "undefined"%><%_value%><%else%>"<%value%>"<%/if%>'+
                 '<%/if%>'+
                 '<%/each%>'+
                 '<%/if%>'
@@ -480,8 +480,17 @@ Nui.define(function(){
                     fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
                     list:self.list,
                     placeholder:opts.placeholder,
-                    stringify:opts.stringify,
-                    rowRender:opts.rowRender
+                    stringify:function(val){
+                        if(typeof opts.stringify=== 'function'){
+                            return opts.stringify.call(opts, val)
+                        }
+                    },
+                    rowRender:function(val, i){
+                        if(typeof opts.rowRender === 'function'){
+                            return opts.rowRender.call(opts, val, i)
+                        }
+                        return opts.rowRender
+                    }
                 }))
             })
             self.element.find('.datagrid-checkbox:checkbox').prop('checked', false).checkradio(self._checkradio());
@@ -720,11 +729,17 @@ Nui.define(function(){
         _events:{
             'click .table-tbody .table-row':'_getRowData _active',
             'mouseenter .table-tbody .table-row':function(e, elem){
-                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover');
+                if(this._tableFixed.length){
+                    self._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover');
+                }
+                elem.addClass('s-hover');
                 this._callback('RowMouseover', [e, elem]);
             },
             'mouseleave .table-tbody .table-row':function(e, elem){
-                this.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').removeClass('s-hover');
+                if(this._tableFixed.length){
+                    this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').removeClass('s-hover');
+                }
+                elem.removeClass('s-hover');
                 this._callback('RowMouseout', [e, elem]);
             },
             'dblclick .table-tbody .table-row':'_getRowData _rowdblclick',
@@ -756,12 +771,14 @@ Nui.define(function(){
             var self = this;
             self._callback('RowClick', [e, elem, data]);
             if(self._options.isActive === true){
-                self.element.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-crt').siblings().removeClass('s-crt');
-                Nui.each(self.__instances, function(val){
-                    if(val !== self && val._options.isActive === true){
-                        val.element.find('.datagrid-tbody table-row.s-crt').removeClass('s-crt');
-                    }
-                })
+                if(self._activeElem){
+                    self._activeElem.removeClass('s-crt');
+                    delete self._activeElem
+                }
+                self._activeElem = elem.addClass('s-crt');
+                if(self._tableFixed.length){
+                    self._activeFixedElem = self._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-crt');
+                }
                 self._callback('Active', [e, elem, data]);
             }
         },

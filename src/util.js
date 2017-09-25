@@ -454,7 +454,7 @@ Nui.define('util', {
             if(dot > 0){
                 decimal = number.substr(dot);
             }
-            return integer.toLocaleString() + decimal
+            return integer.toLocaleString().replace(/\.\d+$/, '') + decimal
         }
         return number
     },
