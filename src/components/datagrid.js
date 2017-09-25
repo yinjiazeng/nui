@@ -747,7 +747,10 @@ Nui.define(function(){
             }
         },
         _enable:function(e, elem){
-            return !elem.hasClass('s-dis') && !elem.hasClass('s-disabled')
+            if(elem.prop('readonly') || elem.prop('disabled')){
+                e.stopPropagation();
+                return false
+            }
         },
         _active:function(e, elem, data){
             var self = this;
