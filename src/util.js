@@ -449,7 +449,11 @@ Nui.define('util', {
     formatNumber:function(number){
         var integer = parseInt(number);
         if(!isNaN(integer) && integer && (number = number.toString())){
-            var decimal = number.substr(number.indexOf('.'));
+            var dot = number.indexOf('.');
+            var decimal = '';
+            if(dot > 0){
+                decimal = number.substr(dot);
+            }
             return integer.toLocaleString() + decimal
         }
         return number
