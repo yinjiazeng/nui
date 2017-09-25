@@ -30,8 +30,10 @@ Nui.define('template', ['util'], function(util){
     var methods = {
         trim:Nui.trim,
         formatDate:util.formatDate,
+        formatNumber:util.formatNumber,
         setParam:util.setParam,
-        toFixed:util.toFixed
+        toFixed:util.toFixed,
+        numberToCN:util.numberToCN
     }
 
     var isstr = !!''.trim;

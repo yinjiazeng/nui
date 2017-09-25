@@ -1368,6 +1368,19 @@ Nui.define('util', {
         }
     },
     /**
+     * @func 将数字转换为逗号千分位分隔
+     * @param number <String> 数字
+     * @return <String>
+     */
+    formatNumber:function(number){
+        var integer = parseInt(number);
+        if(!isNaN(integer) && integer && (number = number.toString())){
+            var decimal = number.substr(number.indexOf('.'));
+            return integer.toLocaleString() + decimal
+        }
+        return number
+    },
+    /**
      * @func 将数字转换为中文大写
      * @param number <String> 数字
      * @return <String>
@@ -1495,8 +1508,10 @@ Nui.define('template', ['util'], function(util){
     var methods = {
         trim:Nui.trim,
         formatDate:util.formatDate,
+        formatNumber:util.formatNumber,
         setParam:util.setParam,
-        toFixed:util.toFixed
+        toFixed:util.toFixed,
+        numberToCN:util.numberToCN
     }
 
     var isstr = !!''.trim;
