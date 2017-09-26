@@ -217,6 +217,24 @@
                     }
                     return this._options[attr] = args[1]
                 }
+            },
+            hasInstance:function(id){
+                var exist = false;
+                var instances = this.__instances;
+                if(id){
+                    Nui.each(instances, function(v){
+                        if(v._options.id === id){
+                            exist = true;
+                            return false
+                        }
+                    })
+                }
+                else{
+                    for(i in instances){
+                        return true
+                    }
+                }
+                return exist
             }
         }
 
