@@ -1204,38 +1204,45 @@ Nui.define('util', {
     		'result':{},
     		'voids':0, //字段中空值数量
             'total':0 //总计多少个字段
-    	}, arr = element.serializeArray(), div = ',';
-        if(item && typeof item === 'string' && !field){
-            div = item
         }
-        Nui.each(arr, function(v, i){
-            var val = Nui.trim(v.value)
-        	data.total++;
-        	if(!val){
-        		data.voids++
-        	}
-        	var name = v.name;
-        	if(!Nui.isArray(data.result[name])){
-                data.result[name] = [];
+        if(element.length){
+            var arr = element.serializeArray();
+            if(!arr.length){
+                arr = element.find('[name]').serializeArray();
             }
-            data.result[name].push(val)
-        })
-        Nui.each(data.result, function(v, k){
-            data.result[k] = v.join(div)
-        })
-        if(item && field){
-            var once = false;
-            data.result[field] = [];
-            element.find(item).each(function(){
-                var result = that.getData($(this).find('[name]')).result;
-                if(!once){
-                    Nui.each(result, function(v, k){
-                        delete data.result[k];
-                    });
-                    once = true
+            var div = ',';
+            if(item && typeof item === 'string' && !field){
+                div = item
+            }
+            Nui.each(arr, function(v, i){
+                var val = Nui.trim(v.value)
+                data.total++;
+                if(!val){
+                    data.voids++
                 }
-                data.result[field].push(result)
+                var name = v.name;
+                if(!Nui.isArray(data.result[name])){
+                    data.result[name] = [];
+                }
+                data.result[name].push(val)
             })
+            Nui.each(data.result, function(v, k){
+                data.result[k] = v.join(div)
+            })
+            if(item && field){
+                var once = false;
+                data.result[field] = [];
+                element.find(item).each(function(){
+                    var result = that.getData($(this).find('[name]')).result;
+                    if(item !== true && !once){
+                        Nui.each(result, function(v, k){
+                            delete data.result[k];
+                        });
+                        once = true
+                    }
+                    data.result[field].push(result)
+                })
+            }
         }
         return data;
     },
