@@ -1785,10 +1785,10 @@ Nui.define('template', ['util'], function(util){
 
 Nui.define('events', function(){
     return function(opts){
-        var that = opts || this,
-            self = that.constructor,
-            isComponent = self && self.__component_name,
-            elem = this.element || that.element || Nui.doc, 
+        var self = this, that = opts || self,
+            constr = that.constructor,
+            isComponent = constr && constr.__component_name,
+            elem = self.element || that.element || Nui.doc, 
             events = isComponent ? that._events : that.events;
             
         if(!elem || !events){
@@ -1810,7 +1810,7 @@ Nui.define('events', function(){
             }
             else{
                 Nui.each(cbs, function(cb, i){
-                    cb = that[cb];
+                    cb = that[cb]||self[cb];
                     if(typeof cb === 'function'){
                         return ret = cb.call(that, e, elem, ret);
                     }
@@ -1829,13 +1829,13 @@ Nui.define('events', function(){
                 ele = evts.join(' ');
                 //组件内部处理
                 if(isComponent){
-                    that._on(evt, elem, ele, function(e){
-                        callback(e, $(this), cbs)
+                    that._on(evt, elem, ele, function(e, elem){
+                        callback(e, elem, cbs)
                     })
                 }
                 else{
                     elem.on(evt, ele, function(e){
-                        callback(e, $(this), cbs)
+                        callback(e, jQuery(this), cbs)
                     })
                 }
             }
