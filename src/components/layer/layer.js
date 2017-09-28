@@ -142,8 +142,10 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
         onResize:null,
         //容器滚动时回调
         onScroll:null,
+        //弹窗隐藏前回调，若返回false则不能隐藏
+        onHideBefore:null,
         //弹窗销毁前回调，若返回false则不能销毁
-        onBeforeDestroy:null,
+        onDestroyBefore:null,
         //定时关闭弹窗回调
         onTimer:null
     }
@@ -754,12 +756,15 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
         },
         hide:function(){
             if(this._options.isHide === true){
+                if(this._callback('HideBefore') === false){
+                    return
+                }
                 this.destroy()
             }
         },
         destroy:function(){
             var self = this, _class = self.constructor, opts = self._options;
-            if(self._callback('BeforeDestroy') === false){
+            if(self._callback('DestroyBefore') === false){
                 return
             }
             self._delete();

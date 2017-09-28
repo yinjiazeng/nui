@@ -384,6 +384,13 @@ layer({
 				<p>说明：弹出层初始化时回调函数。</p>
 			</div>
 
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onHideBefore</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>参数：self {Layer Object} 当前layer实例</p>
+				<p>说明：弹出层调用hide方法被销毁之前回调，若返回false，则不能销毁该弹出层。</p>
+			</div>
+
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onDestroy</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
@@ -391,7 +398,7 @@ layer({
 				<p>说明：弹出层关闭销毁时回调函数。</p>
 			</div>
 
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onBeforeDestroy</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onDestroyBefore</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>参数：self {Layer Object} 当前layer实例</p>
@@ -676,7 +683,7 @@ layer({
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
 <script type="text/javascript" src="/nui/dist/nui-min.js?v=03e51a6"></script>
-<script type="text/javascript" src="/nui/assets/script/config.js?v=eab84d0"></script>
+<script type="text/javascript" src="/nui/assets/script/config.js?v=a66885c"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){
