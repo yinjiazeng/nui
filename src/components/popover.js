@@ -67,6 +67,11 @@ Nui.define(['component', './layer/layer'], function(component, layer){
                     isMask:false,
                     scrollbar:false,
                     title:null,
+                    events:{
+                        'click':function(e){
+                            e.stopPropagation()
+                        }
+                    },
                     close:{
                         enable:false
                     },
