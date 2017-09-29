@@ -771,10 +771,7 @@ Nui.define(function(){
             var self = this;
             self._callback('RowClick', [e, elem, data]);
             if(self._options.isActive === true){
-                if(self._activeElem){
-                    self._activeElem.removeClass('s-crt');
-                    delete self._activeElem
-                }
+                self.cancelActive();
                 self._activeElem = elem.addClass('s-crt');
                 if(self._tableFixed.length){
                     self._activeFixedElem = self._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-crt');
@@ -821,6 +818,12 @@ Nui.define(function(){
             var elem = this._tableAllBox;
             elem.scrollTop(y||0);
             elem.scrollLeft(x||0);
+        },
+        cancelActive:function(){
+            if(this._options.isActive === true && this._activeElem){
+                this._activeElem.removeClass('s-crt');
+                delete this._activeElem
+            }
         },
         checkedData:function(field){
             var self = this;
