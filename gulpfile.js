@@ -7,7 +7,7 @@ var nui = require('gulp-nui');
 var nunjucks = require('gulp-nunjucks-render');
 
 gulp.task('concat', function() {
-    return gulp.src(['./src/nui.js',
+    return gulp.src(['./src/load.js',
             './src/util.js',
             './src/template.js',
             './src/events.js',

@@ -2,6 +2,11 @@ Nui.define(['{com}/router'], function(router){
 	var renders = this.renders;
 	var require = this.require;
 	var placeholder = require('{com}/placeholder');
+
+	require.async('./a?v=1', function(a){
+		console.log(a)
+	})
+
 	router({
 		target:'#home',
 		entry:true,
@@ -42,6 +47,7 @@ Nui.define(['{com}/router'], function(router){
 		onChange:function(){
 			var tpl = this.template, params = this.data.params;
 			if(params.id && params.title){
+				
 				tpl.main = tpl.detail;
 			}
 			else{

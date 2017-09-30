@@ -454,6 +454,12 @@
             }
         }
 
+        methods.require.async = function(id, callback){
+            setTimeout(function(){
+                Module.load(id, callback, getModuleid(), mod.uri)
+            })
+        }
+
         //继承模块
         methods.extend = function(module, members, inserts){
             var exports;
@@ -551,7 +557,13 @@
             }
             else{
                 //将工厂函数的内部方法作为参数传递，方便调用
-                modules = [methods.require, methods.imports, methods.renders, methods.extend]
+                modules = [
+                    methods.require, 
+                    methods.imports, 
+                    methods.renders, 
+                    methods.extend,
+                    methods.exports
+                ]
             }
             var exports = mod.factory.apply(methods, modules);
             //优先使用return接口
@@ -713,7 +725,7 @@
         id = Module.setPath(config.alias[name] || name);
         if(!isHttp(id)){
             dirid = Module.normalize(dirname + id);
-            id = (uri || dirname) + id;
+            id = (typeof uri === 'string' ? uri : dirname) + id;
         }
         id = Module.normalize(id);
         return [id, name, suffix, dirid]
@@ -725,50 +737,48 @@
         return cacheModules[attrs[1]] || cacheModules[id] || cacheModules[attrs[3]] || (cacheModules[id] = new Module(attrs, deps))
     }
 
-    Module.load = function(id, callback, _module_, isMin){
-        if(type(id, 'String') && Nui.trim(id)){
-            //截取入口文件参数，依赖的文件加载时都会带上该参数
-            var match = id.match(/(\?[\s\S]*)$/);
-
-            if(config.min === true && isMin === true){
-                id = replaceExt(id);
-                if(!/-min$/.test(id)){
-                    id += '-min'
-                }
+    Module.load = function(id, callback, _module_, uri){
+        //截取入口文件参数，依赖的文件加载时都会带上该参数
+        var match = id.match(/(\?[\s\S]*)$/);
+        
+        if(config.min === true && uri === true){
+            id = replaceExt(id);
+            if(!/-min$/.test(id)){
+                id += '-min'
             }
-
-            var mod = Module.getModule(_module_, [id]);
-
-            if(match){
-                mod.version = match[0]
-            }
-            var depname = mod.alldeps[0];
-            var version = config.maps[depname.replace(/(-min)?(\.js)?$/, '')];
-            if(version){
-                if(!/^\?/.test(version)){
-                    version = '?v='+version
-                }
-                mod.version = version
-            }
-
-            mod.callback = function(ids){
-                var _module = mod.depmodules[depname];
-                var suffix = _module.suffix;
-                each(ids, function(id){
-                    var module = cacheModules[id].exec();
-                    if(!suffix){
-                        module.loadcss()
-                    }
-                })
-                if(type(callback, 'Function')){
-                    callback.call(Nui, _module.module || _module.exports)
-                }
-                delete rootModules[_module_];
-                delete mod.callback
-            }
-            rootModules[_module_] = mod;
-            mod.load()
         }
+
+        var mod = Module.getModule(_module_, [id], uri);
+
+        if(match){
+            mod.version = match[0]
+        }
+        var depname = mod.alldeps[0];
+        var version = config.maps[depname.replace(/(-min)?(\.js)?$/, '')];
+        if(version){
+            if(!/^\?/.test(version)){
+                version = '?v='+version
+            }
+            mod.version = version
+        }
+
+        mod.callback = function(ids){
+            var _module = mod.depmodules[depname];
+            var suffix = _module.suffix;
+            each(ids, function(id){
+                var module = cacheModules[id].exec();
+                if(!suffix){
+                    module.loadcss()
+                }
+            })
+            if(type(callback, 'Function')){
+                callback.call(Nui, _module.module || _module.exports)
+            }
+            delete rootModules[_module_];
+            delete mod.callback
+        }
+        rootModules[_module_] = mod;
+        mod.load()
     }
 
     //获取工厂函数中模块的依赖
@@ -833,26 +843,26 @@
 
         if(typeof getCurrentScript !== 'undefined'){
             var script = getCurrentScript();
+            
             if(script){
                 script.moduleData = moduleData
             }
         }
     }
 
-    Nui.load = function(id, callback){
-        if(id && typeof id === 'string'){
-            Module.load(id, callback, getModuleid(), true)
+    Module._load = function(isMin){
+        return function(id, callback){
+            if(id && typeof id === 'string'){
+                Module.load(id, callback, getModuleid(), isMin)
+            }
+            return Nui
         }
-        return Nui
     }
 
+    Nui.load = Module._load(true);
+
     //不会生成压缩文件
-    Nui.use = function(id, callback){
-        if(id && typeof id === 'string'){
-            Module.load(id, callback, getModuleid())
-        }
-        return Nui
-    }
+    Nui.use = Module._load();
 
     Nui.define = function(){
         var args = arguments;
