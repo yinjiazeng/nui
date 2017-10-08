@@ -1819,10 +1819,16 @@ Nui.define('events', function(){
                 cbs.call(that, e, elem);
             }
             else{
+                var _cb, _that;
                 Nui.each(cbs, function(cb, i){
-                    cb = that[cb]||self[cb];
-                    if(typeof cb === 'function'){
-                        return ret = cb.call(that, e, elem, ret);
+                    if(typeof (_cb = that[cb]) === 'function'){
+                        _that = that;
+                    }
+                    else if(typeof (_cb = self[cb]) === 'function'){
+                        _that = self;
+                    }
+                    if(_that){
+                        return ret = _cb.call(_that, e, elem, ret);
                     }
                 })
             }
