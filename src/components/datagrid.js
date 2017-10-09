@@ -1,4 +1,4 @@
-Nui.define(function(){
+Nui.define( function(){
     var module = this;
     var component = module.require('component');
     var util = module.require('util');
@@ -36,16 +36,12 @@ Nui.define(function(){
                 Nui.win.on('resize', function(){
                     clearTimeout(timer);
                     timer = setTimeout(function(){
-                        self._resize()
+                        Nui.each(self.__instances, function(val){
+                            if(val._options.height === '100%'){
+                                val.resize()
+                            }
+                        })
                     }, 80)
-                })
-            },
-            _resize:function(){
-                Nui.each(this.__instances, function(val){
-                    if(val._options.height === '100%'){
-                        val._theadHeight();
-                        val._resetSize()
-                    }
                 })
             },
             _hasChildren:function(value){
@@ -812,7 +808,8 @@ Nui.define(function(){
         },
         resize:function(){
             this._theadHeight();
-            this._resetSize()
+            this._resetSize();
+            this._callback('Resize')
         },
         scrollTo:function(x, y){
             var elem = this._tableAllBox;
