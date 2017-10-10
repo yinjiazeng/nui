@@ -1,4 +1,4 @@
-Nui.define( function(){
+Nui.define(function(){
     var module = this;
     var component = module.require('component');
     var util = module.require('util');
@@ -289,6 +289,7 @@ Nui.define( function(){
                             '<%if val.content === "input"%> cell-text-input<%/if%>"'+
                             '<%if val.showtitle === true%> title="<%_value%>"<%/if%>>'+
                         '<%if val.content === "checkbox" && typeof _value === "object"%>'+
+                        '<%if checked === true && (_value["checked"]=checked)%><%/if%>'+
                         '<span class="ui-checkradio">'+
                         '<input type="checkbox"<%include "_attr"%>>'+
                         '</span>'+
@@ -388,6 +389,8 @@ Nui.define( function(){
                 footer:opts.footer
             }))).appendTo(self._container));
 
+            self.element.find('.table-thead .datagrid-checkbox-choose').checkradio(self._checkradio());
+
             self._body = self.element.children('.datagrid-body');
             self._tableAll = self._body.children('.datagrid-table-all');
             self._tableAllBox =  self._tableAll.find('.datagrid-box');
@@ -476,6 +479,7 @@ Nui.define( function(){
                     fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
                     list:self.list,
                     placeholder:opts.placeholder,
+                    checked:self._checked,
                     stringify:function(val){
                         if(typeof opts.stringify=== 'function'){
                             return opts.stringify.call(opts, val)
@@ -487,9 +491,8 @@ Nui.define( function(){
                         }
                         return opts.rowRender
                     }
-                }))
+                })).find('.datagrid-checkbox-choose').checkradio(self._checkradio());
             })
-            self.element.find('.datagrid-checkbox:checkbox').prop('checked', false).checkradio(self._checkradio());
             self._resetSize();
             self._callback('Render');
         },
@@ -503,10 +506,12 @@ Nui.define( function(){
                         self._tableAllBox.find('tr[row-index="'+ elem.closest('tr.table-row').attr('row-index') +'"]').find('.'+className).checkradio('checked', checked)
                     }
                     if(elem.attr('name') === 'datagrid-checkbox-all'){
+                        self._checked = checked;
                         self._tableTbody.find('.'+ className +':enabled').checkradio('checked', checked)
                     }
                     else{
                         var checked = self._tableTbody.find('.'+ className +':checked').length === self._tableTbody.find('.'+className).length;
+                        self._checked = checked;
                         self._body.find('.table-thead .'+className).checkradio('checked', checked)
                     }
                 }
