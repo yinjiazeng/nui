@@ -289,7 +289,7 @@ Nui.define(function(){
                             '<%if val.content === "input"%> cell-text-input<%/if%>"'+
                             '<%if val.showtitle === true%> title="<%_value%>"<%/if%>>'+
                         '<%if val.content === "checkbox" && typeof _value === "object"%>'+
-                        '<%if checked === true && (_value["checked"]=checked)%><%/if%>'+
+                        '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
                         '<span class="ui-checkradio">'+
                         '<input type="checkbox"<%include "_attr"%>>'+
                         '</span>'+
@@ -389,7 +389,7 @@ Nui.define(function(){
                 footer:opts.footer
             }))).appendTo(self._container));
 
-            self.element.find('.table-thead .datagrid-checkbox-choose').checkradio(self._checkradio());
+            self.element.find('.table-thead .datagrid-checkbox').checkradio(self._checkradio());
 
             self._body = self.element.children('.datagrid-body');
             self._tableAll = self._body.children('.datagrid-table-all');
@@ -491,7 +491,7 @@ Nui.define(function(){
                         }
                         return opts.rowRender
                     }
-                })).find('.datagrid-checkbox-choose').checkradio(self._checkradio());
+                })).find('.datagrid-checkbox').checkradio(self._checkradio());
             })
             self._resetSize();
             self._callback('Render');
@@ -731,7 +731,7 @@ Nui.define(function(){
             'click .table-tbody .table-row':'_getRowData _active',
             'mouseenter .table-tbody .table-row':function(e, elem){
                 if(this._tableFixed.length){
-                    self._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover');
+                    this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover');
                 }
                 elem.addClass('s-hover');
                 this._callback('RowMouseover', [e, elem]);
