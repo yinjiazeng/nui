@@ -1877,8 +1877,8 @@ Nui.define('events', function(){
         var callMethod = function(method, args, obj){
             //实参大于形参，最后一个实参表示id
             if(args.length > method.length){
-                var id = args[method.length];
-                if(id && obj._options.id !== id && obj.__id !== id){
+                var id = args[args.length-1];
+                if(id && Nui.type(id, ['String', 'Number']) && obj._options.id !== id && obj.__id !== id){
                     return
                 }
             }
@@ -2286,24 +2286,23 @@ Nui.define('events', function(){
                     return callback.call(opts, self)
                 }
             },
-            option:function(){
+            option:function(options, isOriginal){
                 var args = arguments;
-                var options;
-                var defaults = false;
+                var isdef = false;
                 if(args[0] === true){
-                    defaults = true
+                    isdef = true
                 }
                 else if(jQuery.isPlainObject(args[0])){
                     options = args[0]
-                    defaults = args[1]
+                    isdef = args[1]
                 }
                 else if(args.length > 1 && typeof args[0] === 'string'){
                     options = {};
                     options[args[0]] = args[1]
-                    defaults = args[2]
+                    isdef = args[2]
                 }
-                if(options||defaults){
-                    this._options = jQuery.extend(true, {}, this[defaults === true ? '_defaultOptions' : '_options'], options)
+                if(options||isdef){
+                    this._options = jQuery.extend(true, {}, this[isdef === true ? '_defaultOptions' : '_options'], options)
                     this._reset();
                     this._exec();
                 }
