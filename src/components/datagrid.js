@@ -470,11 +470,11 @@ Nui.define(function(){
             return list||[]
         },
         _render:function(){
-            var self = this, opts = self._options, rowHtml = '', rowRender = typeof opts.rowRender === 'function';
+            var self = this, opts = self._options, rowHtml = '';
             self.list = self._getList();
             Nui.each(self._cols, function(v, k){
-                if(self.list.length && rowRender){
-                    rowHtml = rowRender.call(opts, self, self.list, v, k)
+                if(self.list.length && typeof opts.rowRender === 'function'){
+                    rowHtml = opts.rowRender.call(opts, self, self.list, v, k)
                 }
                 else{
                     rowHtml = self._tpl2html('rows', {
