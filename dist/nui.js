@@ -2286,9 +2286,10 @@ Nui.define('events', function(){
                     return callback.call(opts, self)
                 }
             },
-            option:function(options, isOriginal){
+            option:function(opts, isOriginal){
                 var args = arguments;
                 var isdef = false;
+                var options;
                 if(args[0] === true){
                     isdef = true
                 }
