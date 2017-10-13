@@ -473,32 +473,34 @@ Nui.define(function(){
             var self = this, opts = self._options, rowHtml = '';
             self.list = self._getList();
             Nui.each(self._cols, function(v, k){
-                if(self.list.length && typeof opts.rowRender === 'function'){
-                    rowHtml = opts.rowRender.call(opts, self, self.list, v, k)
-                }
-                else{
-                    rowHtml = self._tpl2html('rows', {
-                        type:k,
-                        isFixed:opts.isFixed === true,
-                        cols:v,
-                        fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
-                        list:self.list,
-                        placeholder:opts.placeholder,
-                        checked:self._checked,
-                        stringify:function(val){
-                            if(typeof opts.stringify=== 'function'){
-                                return opts.stringify.call(opts, val)
+                if(v.length){
+                    if(self.list.length && typeof opts.rowRender === 'function'){
+                        rowHtml = opts.rowRender.call(opts, self, self.list, v, k)
+                    }
+                    else{
+                        rowHtml = self._tpl2html('rows', {
+                            type:k,
+                            isFixed:opts.isFixed === true,
+                            cols:v,
+                            fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
+                            list:self.list,
+                            placeholder:opts.placeholder,
+                            checked:self._checked,
+                            stringify:function(val){
+                                if(typeof opts.stringify=== 'function'){
+                                    return opts.stringify.call(opts, val)
+                                }
+                            },
+                            rowRender:function(val, i){
+                                if(typeof opts.onRowRender === 'function'){
+                                    return opts.onRowRender.call(opts, self, val, i)
+                                }
+                                return opts.onRowRender
                             }
-                        },
-                        rowRender:function(val, i){
-                            if(typeof opts.onRowRender === 'function'){
-                                return opts.onRowRender.call(opts, self, val, i)
-                            }
-                            return opts.onRowRender
-                        }
-                    })
+                        })
+                    }
+                    self.element.find('.datagrid-table-'+k+' .datagrid-tbody').html(rowHtml).find('.datagrid-checkbox').checkradio(self._checkradio());
                 }
-                self.element.find('.datagrid-table-'+k+' .datagrid-tbody').html(rowHtml).find('.datagrid-checkbox').checkradio(self._checkradio());
             })
             self._resetSize();
             self._callback('Render');
