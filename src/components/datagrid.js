@@ -166,6 +166,7 @@ Nui.define(function(){
             rowRender:null,
             onActive:null,
             onCancelActive:null,
+            onRowRender:null,
             onRowClick:null,
             onRowDblclick:null,
             onCheckboxChange:null,
@@ -469,29 +470,35 @@ Nui.define(function(){
             return list||[]
         },
         _render:function(){
-            var self = this, opts = self._options;
+            var self = this, opts = self._options, rowHtml = '', rowRender = typeof opts.rowRender === 'function';
             self.list = self._getList();
             Nui.each(self._cols, function(v, k){
-                self.element.find('.datagrid-table-'+k+' .datagrid-tbody').html(self._tpl2html('rows', {
-                    type:k,
-                    isFixed:opts.isFixed === true,
-                    cols:v,
-                    fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
-                    list:self.list,
-                    placeholder:opts.placeholder,
-                    checked:self._checked,
-                    stringify:function(val){
-                        if(typeof opts.stringify=== 'function'){
-                            return opts.stringify.call(opts, val)
+                if(self.list.length && rowRender){
+                    rowHtml = rowRender.call(opts, self, cols, self.list)
+                }
+                else{
+                    rowHtml = self._tpl2html('rows', {
+                        type:k,
+                        isFixed:opts.isFixed === true,
+                        cols:v,
+                        fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
+                        list:self.list,
+                        placeholder:opts.placeholder,
+                        checked:self._checked,
+                        stringify:function(val){
+                            if(typeof opts.stringify=== 'function'){
+                                return opts.stringify.call(opts, val)
+                            }
+                        },
+                        rowRender:function(val, i){
+                            if(typeof opts.onRowRender === 'function'){
+                                return opts.onRowRender.call(opts, self, val, i)
+                            }
+                            return opts.onRowRender
                         }
-                    },
-                    rowRender:function(val, i){
-                        if(typeof opts.rowRender === 'function'){
-                            return opts.rowRender.call(opts, val, i)
-                        }
-                        return opts.rowRender
-                    }
-                })).find('.datagrid-checkbox').checkradio(self._checkradio());
+                    })
+                }
+                self.element.find('.datagrid-table-'+k+' .datagrid-tbody').html(rowHtml).find('.datagrid-checkbox').checkradio(self._checkradio());
             })
             self._resetSize();
             self._callback('Render');
