@@ -112,8 +112,8 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
 
                             var wrapper = opts.element = object._wrapper || self._wrapper;
                             
-                            if(typeof opts.onChange === 'function'){
-                                opts.onChange.call(opts);
+                            if(typeof opts.onChange === 'function' && opts.onChange.call(opts) === false){
+                                return false
                             }
                                 
                             if(_isRender){
@@ -138,7 +138,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts)
                             }
-                            self._initialize = match = true;
+                            self._initialize = true;
                             if(Nui.bsie7){
                                 self._setHistory(_hash);
                             }
@@ -150,7 +150,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                 if(!self._initialize){
                     Nui.each(self.__instances, function(v){
                         if(!self._isEntry && v._options.entry === true){
-                            self._isEntry= true;
+                            self._isEntry = true;
                             if(v.target){
                                 v._render(v.target.eq(0));
                             }
