@@ -1,4 +1,5 @@
-Nui.define(function(){
+
+Nui.define([ '../plugins/paging', '../plugins/checkradio'], function(){
     var module = this;
     var component = module.require('component');
     var util = module.require('util');
@@ -512,7 +513,7 @@ Nui.define(function(){
                 if(elem.hasClass(className)){
                     var checked = elem.prop('checked');
                     if(!elem.closest('.datagrid-table').hasClass('datagrid-table-all')){
-                        self._tableAllBox.find('tr[row-index="'+ elem.closest('tr.table-row').attr('row-index') +'"]').find('.'+className).checkradio('checked', checked)
+                        self._tableAllBox.find('.table-row[row-index="'+ elem.closest('.table-row').attr('row-index') +'"]').find('.'+className).checkradio('checked', checked)
                     }
                     if(elem.attr('name') === 'datagrid-checkbox-all'){
                         self._checked = checked;
@@ -672,7 +673,7 @@ Nui.define(function(){
             }
             else{
                 var input;
-                var elems = td.closest('tr.table-row').children('td.table-cell');
+                var elems = td.closest('.table-row').children('td.table-cell');
                 if(type === 'prev'){
                     $.each($.makeArray(elems).reverse(), function(k, v){
                         var _input = $(v).find('.datagrid-input');
@@ -699,7 +700,7 @@ Nui.define(function(){
         _verticalFocus:function(e, elem, type){
             var td = elem.closest('td.table-cell');
             var index = td.index();
-            var tr = td.closest('tr.table-row')[type]();
+            var tr = td.closest('.table-row')[type]();
             if(tr.length){
                 var _td = tr.children('td.table-cell').eq(index);
                 var input = _td.find('.datagrid-input');
@@ -840,7 +841,7 @@ Nui.define(function(){
             var self = this;
             var data = [];
             self._tableAllBox.find('.datagrid-checkbox-choose:checked').each(function(){
-                var _data = $(this).closest('tr.table-row').data();
+                var _data = $(this).closest('.table-row').data();
                 if(field){
                     data.push(_data[field]);
                 }
