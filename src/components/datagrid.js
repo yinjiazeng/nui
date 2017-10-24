@@ -349,7 +349,7 @@ Nui.define(function(){
             var self = this;
             var tpl = '';
             Nui.each(self._colTemplates, function(v, k){
-                tpl += '<%'+ (tpl ? 'else' : '') +'if val.template === "'+ k +'"%><%include "'+ k +'"%>'
+                tpl += '<%'+ (tpl ? 'else' : '') +'if ("content_"+val.cellid) === "'+ k +'"%><%include "'+ k +'"%>'
             })
             if(tpl){
                 tpl = '<%else%><%_value??%><%/if%>'
@@ -360,18 +360,18 @@ Nui.define(function(){
             self._template.content = tpl;
         },
         //获取表格标题行数
-        _getRowNumber:function(array, index, arr, size, parent){
+        _getRowNumber:function(array, index, arr, cellid, parent){
             var self = this, _class = self.constructor;
             if(!arr[index]){
                 arr[index] = true;
             }
 
-            if(size === undefined){
-                size = 0;
+            if(cellid === undefined){
+                cellid = 0;
             }
             
             Nui.each(array, function(v){
-                v['cellid'] = size++;
+                v.cellid = cellid++;
                 var order = v.order;
                 var className = v.className;
                 if(order === true){
@@ -385,8 +385,8 @@ Nui.define(function(){
                     v.order.field = v.field
                 }
 
-                if(v.template){
-                    var tplid = 'content_'+v.template;
+                if(v.template === true){
+                    var tplid = 'content_'+v.cellid;
                     self._template[tplid] = self._colTemplates[tplid] = v.filter || v.content;
                 }
 
@@ -425,12 +425,12 @@ Nui.define(function(){
                 }
 
                 if(_class._hasChildren(v)){
-                    size = self._getRowNumber(v.children, index+1, arr, size, v)
+                    cellid = self._getRowNumber(v.children, index+1, arr, cellid, v)
                 }
             })
 
             if(parent){
-                return size
+                return cellid
             }
 
             return arr.length
