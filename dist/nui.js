@@ -1635,16 +1635,17 @@ Nui.define('template', ['util'], function(util){
                 });
 
                 var variables = isstr ? '' : [];
-                Nui.each(data, function(v, k){
+
+                for(var k in data){
                     variables = joinSnippet(variables, k+'=$data.'+k+',')
-                })
+                }
 
                 if(!isstr){
                     code = code.join('');
                     variables = variables.join('');
                 }
 
-                code = 'var '+ variables +'$that=this; $that.line=4; $that.code='+ snippet +';\ntry{\n' + code + ';}\ncatch(e){\n$that.error(e, $that.line)\n};';
+                code = 'var '+ variables +'$that=this,$method=$that.methods; $that.line=4; $that.code='+ snippet +';\ntry{\n' + code + ';}\ncatch(e){\n$that.error(e, $that.line)\n};';
                 
                 try{
                     var Rander = new Function('$data', code);
@@ -1770,9 +1771,9 @@ Nui.define('template', ['util'], function(util){
         }
     }
 
-    template.method = function(method, callback){
-        if(!methods[method]){
-            methods[method] = callback
+    template.method = function(name, callback){
+        if(!methods[name]){
+            methods[name] = callback
         }
     }
 

@@ -1,5 +1,5 @@
 
-Nui.define([ '../plugins/paging', '../plugins/checkradio'], function(){
+Nui.define(function(){
     var module = this;
     var component = module.require('component');
     var util = module.require('util');
@@ -47,77 +47,6 @@ Nui.define([ '../plugins/paging', '../plugins/checkradio'], function(){
             },
             _hasChildren:function(value){
                 return Nui.isArray(value.children) && value.children.length
-            },
-            //获取表格标题行数
-            _getRowNumber:function(array, index, arr, id, parent){
-                var self = this;
-                if(!arr[index]){
-                    arr[index] = true;
-                }
-
-                if(id === undefined){
-                    id = 0;
-                }
-                
-                Nui.each(array, function(v){
-                    v['cellid'] = id++;
-                    var order = v.order;
-                    var className = v.className;
-                    if(order === true){
-                        order = 'desc'
-                    }
-                    if(order === 'asc' || order === 'desc'){
-                        v.order = {};
-                        v.order[order] = 1;
-                    }
-                    if(v.order && !v.order.field){
-                        v.order.field = v.field
-                    }
-
-                    if(!v.style){
-                        v.style = {};
-                    }
-                    
-                    if(v.align){
-                        v.style['text-align'] = v.align;
-                    }
-
-                    if(v.valign){
-                        v.style['vertical-align'] = v.valign;
-                    }
-
-                    if(v.width){
-                        v.width = v.width.toString().replace(/px$/, '');
-                    }
-
-                    if(!className){
-                        className = '';
-                    }
-
-                    if(className){
-                        className = ' ' + Nui.trim(className);
-                    }
-
-                    v.className = className;
-
-                    if($.isEmptyObject(v.style)){
-                        delete v.style
-                    }
-
-                    if(parent && parent.fixed){
-                        v.fixed = parent.fixed
-                    }
-
-                    if(self._hasChildren(v)){
-                        id = self._getRowNumber(v.children, index+1, arr, id, v)
-                    }
-                })
-
-                if(parent){
-                    return id
-                }
-
-                return arr.length
             },
             //获取合并单元格数
             _colspan:function(array, count){
@@ -298,7 +227,7 @@ Nui.define([ '../plugins/paging', '../plugins/checkradio'], function(){
                         '<%elseif val.content === "input" && typeof _value === "object"%>'+
                         '<input type="text" autocomplete="off"<%include "_attr"%>>'+
                         '<%else%>'+
-                        '<%_value??%>'+
+                        '<%include "content"%>'+
                         '<%/if%>'+
                         '</span>'+
                         '</span>'+
@@ -375,7 +304,9 @@ Nui.define([ '../plugins/paging', '../plugins/checkradio'], function(){
             var self = this, opts = self._options, _class = self.constructor;
             self._rows = {};
             self._cols = {};
-            self._rowNumber = _class._getRowNumber(opts.columns, 0, []);
+            self._colTemplates = {};
+            self._rowNumber = self._getRowNumber(opts.columns, 0, []);
+            self._setTemplate();
 
             Nui.each(self._columns, function(v, k){
                 self._setRowCol(v, k)
@@ -413,6 +344,96 @@ Nui.define([ '../plugins/paging', '../plugins/checkradio'], function(){
             self._theadHeight();
             self._initList();
             self._bindEvent();
+        },
+        _setTemplate:function(){
+            var self = this;
+            var tpl = '';
+            Nui.each(self._colTemplates, function(v, k){
+                tpl += '<%'+ (tpl ? 'else' : '') +'if val.template === "'+ k +'"%><%include "'+ k +'"%>'
+            })
+            if(tpl){
+                tpl = '<%else%><%_value??%><%/if%>'
+            }
+            else{
+                tpl = '<%_value??%>'
+            }
+            self._template.content = tpl;
+        },
+        //获取表格标题行数
+        _getRowNumber:function(array, index, arr, size, parent){
+            var self = this, _class = self.constructor;
+            if(!arr[index]){
+                arr[index] = true;
+            }
+
+            if(size === undefined){
+                size = 0;
+            }
+            
+            Nui.each(array, function(v){
+                v['cellid'] = size++;
+                var order = v.order;
+                var className = v.className;
+                if(order === true){
+                    order = 'desc'
+                }
+                if(order === 'asc' || order === 'desc'){
+                    v.order = {};
+                    v.order[order] = 1;
+                }
+                if(v.order && !v.order.field){
+                    v.order.field = v.field
+                }
+
+                if(v.template){
+                    var tplid = 'content_'+v.template;
+                    self._template[tplid] = self._colTemplates[tplid] = v.filter || v.content;
+                }
+
+                if(!v.style){
+                    v.style = {};
+                }
+                
+                if(v.align){
+                    v.style['text-align'] = v.align;
+                }
+
+                if(v.valign){
+                    v.style['vertical-align'] = v.valign;
+                }
+
+                if(v.width){
+                    v.width = v.width.toString().replace(/px$/, '');
+                }
+
+                if(!className){
+                    className = '';
+                }
+
+                if(className){
+                    className = ' ' + Nui.trim(className);
+                }
+
+                v.className = className;
+
+                if($.isEmptyObject(v.style)){
+                    delete v.style
+                }
+
+                if(parent && parent.fixed){
+                    v.fixed = parent.fixed
+                }
+
+                if(_class._hasChildren(v)){
+                    size = self._getRowNumber(v.children, index+1, arr, size, v)
+                }
+            })
+
+            if(parent){
+                return size
+            }
+
+            return arr.length
         },
         _initList:function(){
             var self = this, opts = self._options;
