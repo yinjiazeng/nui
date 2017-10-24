@@ -1,4 +1,3 @@
-
 Nui.define(function(){
     var module = this;
     var component = module.require('component');
@@ -352,7 +351,7 @@ Nui.define(function(){
                 tpl += '<%'+ (tpl ? 'else' : '') +'if ("content_"+val.cellid) === "'+ k +'"%><%include "'+ k +'"%>'
             })
             if(tpl){
-                tpl = '<%else%><%_value??%><%/if%>'
+                tpl += '<%else%><%_value??%><%/if%>'
             }
             else{
                 tpl = '<%_value??%>'
