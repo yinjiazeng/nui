@@ -255,7 +255,7 @@ Nui.define(['./a', './b', './c'], function(a, b, c){
 	c() //hello world
 })
 </script>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="exports">exports</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="define_exports">exports</h2>
 			<p class="e-mt15 f-lh22">导出接口，也可直接使用return导出接口，return会覆盖exports。</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(function(){
@@ -277,7 +277,7 @@ Nui.define(function(){
 	
 })
 </script>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="require">require</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="define_require">require</h2>
 			<p class="e-mt15 f-lh22">导入js模块</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(function(){
@@ -302,7 +302,7 @@ Nui.define(function(){
 					<td>是否返回模块全部数据</td>
 				</tr>
 			</table>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="imports">imports</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="define_imports">imports</h2>
 			<p class="e-mt15 f-lh22">导入css/less模块</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(function(){
@@ -322,7 +322,7 @@ Nui.define(function(){
 					<td>模块id，文件后缀.css可省略</td>
 				</tr>
 			</table>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="renders">renders</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="define_renders">renders</h2>
 			<p class="e-mt15 f-lh22">可以直接在js中写html模版，不需要做字符串拼接处理</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(function(){
@@ -368,7 +368,7 @@ Nui.define(function(){
 	)
 })
 </script>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="extend">extend</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="define_extend">extend</h2>
 			<p class="e-mt15 f-lh22">模块继承</p>
 <script type="text/highlight" data-javascript-options>
 Nui.define(function(){
@@ -624,19 +624,19 @@ Nui.doc
                         <a href="#define">define</a>
                         <ul>
                             <li>
-                                <a href="#exports">exports</a>
+                                <a href="#define_exports">exports</a>
                             </li>
                             <li>
-                                <a href="#require">require</a>
+                                <a href="#define_require">require</a>
                             </li>
                             <li>
-                                <a href="#imports">imports</a>
+                                <a href="#define_imports">imports</a>
                             </li>
                             <li>
-                                <a href="#renders">renders</a>
+                                <a href="#define_renders">renders</a>
                             </li>
                             <li>
-                                <a href="#extend">extend</a>
+                                <a href="#define_extend">extend</a>
                             </li>
                         </ul>
                     </li>

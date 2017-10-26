@@ -182,8 +182,8 @@ Nui.define(['template'], function(template){
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 方法调用</h3>
 			<div class="e-mt15 f-lh22">
-				<p>使用时“|”两边必须加空格</p>
 				<p><a href="#method" class="f-corange f-tdu">如何创建方法？</a></p>
+				<p>1、使用时“|”两边必须加空格</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 <% 方法名 | 参数1, 参数2, ... %>
@@ -191,6 +191,12 @@ Nui.define(['template'], function(template){
 <%var num = 0%>
 //表达式中使用时必须用括号括起来
 <% num = (方法名 | 参数1, 参数2, ...) %>
+</script>
+			<div class="e-mt15 f-lh22">
+				<p>2、使用$method</p>
+			</div>
+<script type="text/highlight" data-javascript-options>
+$method.方法名(参数1, 参数2, ...)
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 导入模板</h3>
 <script type="text/highlight" data-javascript-options>
@@ -305,6 +311,7 @@ template.method('filter', function(mobile){
 <% each $list %>
 name:<% $value.name %>
 mobile:<% filter | $value.mobile %>
+mobile:<% $method.filter($value.mobile) %>
 <% /each %>
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 内置方法</h3>

@@ -32,19 +32,19 @@
                         <a href="#define">define</a>
                         <ul>
                             <li>
-                                <a href="#exports">exports</a>
+                                <a href="#define_exports">exports</a>
                             </li>
                             <li>
-                                <a href="#require">require</a>
+                                <a href="#define_require">require</a>
                             </li>
                             <li>
-                                <a href="#imports">imports</a>
+                                <a href="#define_imports">imports</a>
                             </li>
                             <li>
-                                <a href="#renders">renders</a>
+                                <a href="#define_renders">renders</a>
                             </li>
                             <li>
-                                <a href="#extend">extend</a>
+                                <a href="#define_extend">extend</a>
                             </li>
                         </ul>
                     </li>
