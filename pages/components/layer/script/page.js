@@ -1,4 +1,4 @@
-Nui.define(['{com}/layer/layerExt', 'events'], function(layer, events){
+Nui.define(['{com}/layer/layer', 'events'], function(layer, events){
     var renders = this.renders;
     return events({
         element:document,
