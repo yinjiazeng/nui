@@ -3,9 +3,15 @@ Nui.define(['./layer'], function(layer){
         var opts, color = '#f00';
         if(typeof type === 'object'){
             opts = type;
+            type = 'success';
+        }
+        else if(typeof content === 'object'){
+            opts = content;
+        }
+
+        if(opts){
             content = opts.content;
             delete opts.content;
-            type = 'success';
         }
 
         if(type !== 'success' && type !== 'error'){
@@ -29,13 +35,13 @@ Nui.define(['./layer'], function(layer){
             id:'message',
             width:'auto',
             height:'auto',
-            isTips:true,
             timer:1500,
             close:{
                 enable:true
             }
         }, opts || {}, {
-            isMask:false
+            isMask:false,
+            isTips:true
         }))
     }
 })
