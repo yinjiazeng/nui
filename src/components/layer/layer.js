@@ -231,7 +231,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                     self._window = self._container;
                     self._isWindow = false;
                     var pos = self._container.css('position');
-                    if(pos !== 'absolute' && pos !== 'relative'){
+                    if('absolute relative fixed'.indexOf(pos) === -1){
                         self._container.css('position', 'relative')
                     }
                 }
