@@ -155,7 +155,14 @@ Nui.define(function(){
                         '<%var cellLastIndex = $value.length-1%>'+
                         '<%each $value val key%>'+
                         '<%var isTitle = true%>'+
-                        '<th class="table-cell<%val.className%> table-cell-<%key%><%if cellLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
+                        '<%if console.log($value)%><%/if%>'+
+                        '<%var _classNames = val.className%>'+
+                        '<%if typeof _classNames === "function"%>'+
+                            '<%if _classNames = Nui.trim(val.className()||"")%>'+
+                                '<%var _classNames = " " + _classNames%>'+
+                            '<%/if%>'+
+                        '<%/if%>'+
+                        '<th class="table-cell<%_classNames%> table-cell-<%key%><%if cellLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
                             '<span class="cell-wrap"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>>'+
                             '<span class="cell-text">'+
                             '<%if val.title%>'+
@@ -209,7 +216,13 @@ Nui.define(function(){
                     '<%else%>'+
                     '<%var _value=val.content%>'+
                     '<%/if%>'+
-                    '<td class="table-cell<%val.className%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
+                    '<%var _classNames = val.className%>'+
+                    '<%if typeof _classNames === "function"%>'+
+                        '<%if _classNames = Nui.trim(val.className(_value, val.field, $value, $index)||"")%>'+
+                            '<%var _classNames = " " + _classNames%>'+
+                        '<%/if%>'+
+                    '<%/if%>'+
+                    '<td class="table-cell<%_classNames%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
                         '<%if typeof val.filter === "function"%>'+
                         '<%var _value = val.filter(_value, val.field, $value, $index)%>'+
                         '<%/if%>'+
@@ -405,15 +418,17 @@ Nui.define(function(){
                     v.width = v.width.toString().replace(/px$/, '');
                 }
 
-                if(!className){
-                    className = '';
+                if(typeof className !== 'function'){
+                    if(!className){
+                        className = '';
+                    }
+    
+                    if(className){
+                        className = ' ' + Nui.trim(className);
+                    }
+    
+                    v.className = className;
                 }
-
-                if(className){
-                    className = ' ' + Nui.trim(className);
-                }
-
-                v.className = className;
 
                 if($.isEmptyObject(v.style)){
                     delete v.style
@@ -643,7 +658,7 @@ Nui.define(function(){
                 }
 
                 Nui.each(v, function(val, key){
-                    if(key !== 'children' && typeof val !== 'function'){
+                    if(key !== 'children'){
                         data[key] = val
                     }
                 })
