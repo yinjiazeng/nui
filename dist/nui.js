@@ -400,7 +400,7 @@
         }
         else{
             mod.loaded = true;
-            return mod.resolve()
+            return mod.resolve().rootCallback()
         }
     }
 
