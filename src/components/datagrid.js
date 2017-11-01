@@ -155,7 +155,6 @@ Nui.define(function(){
                         '<%var cellLastIndex = $value.length-1%>'+
                         '<%each $value val key%>'+
                         '<%var isTitle = true%>'+
-                        '<%if console.log($value)%><%/if%>'+
                         '<%var _classNames = val.className%>'+
                         '<%if typeof _classNames === "function"%>'+
                             '<%if _classNames = Nui.trim(val.className()||"")%>'+
