@@ -291,6 +291,7 @@ Nui.define(function(){
                     left:[],
                     right:[]
                 }
+                self._checked = false;
                 Nui.each(opts.columns, function(v, k){
                     if(v.fixed === 'left' || v.fixed === true){
                         self._columns.left.push(v)

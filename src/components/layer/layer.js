@@ -257,7 +257,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 bubble:opts.bubble.enable === true ? opts.bubble : null,
                 align:opts.align || 'center',
                 style:{
-                    'z-index':opts.zIndex || self._zIndex,
+                    'z-index':isNaN(parseInt(opts.zIndex)) ? self._zIndex : opts.zIndex,
                     'position':'absolute',
                     'display':'block'
                 }
@@ -504,7 +504,7 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 if(unders.length){
                     Nui.each(unders, function(obj, k){
                         if(obj && obj.element){
-                            obj.element.css('z-index', destroy ? (obj._options.zIndex||obj._zIndex) : _class._maskzIndex-1)
+                            obj.element.css('z-index', destroy ? (isNaN(parseInt(obj._options.zIndex)) ? obj._zIndex : obj._options.zIndex) : _class._maskzIndex-1)
                         }
                     })
                 }
