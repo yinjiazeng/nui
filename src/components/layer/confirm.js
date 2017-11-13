@@ -1,5 +1,5 @@
 Nui.define(['./layer'], function(layer){
-    return function(content, callback, title, width, height){
+    return function(content, callback, title, width, height, align){
         var opts;
         if(typeof content === 'object'){
             opts = content;
@@ -11,7 +11,12 @@ Nui.define(['./layer'], function(layer){
             title:title,
             width:width,
             height:height,
-            align:'right',
+            align:align || 'right',
+            button:[{
+                id:'cancel',
+                text:'取消',
+                enable:true
+            }],
             confirm:{
                 callback:callback||function(){
                     return true

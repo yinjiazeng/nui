@@ -80,6 +80,8 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
         isFixed:true,
         //当内容超过弹出层容器，是否显示滚动条
         scrollbar:true,
+        //是否点击弹窗或者点击遮罩层是否阻止事件冒泡
+        isStopProp:false,
         //按钮对齐方式
         align:'center',
         //是否以气泡形式展示，弹出层边缘会多出箭头
@@ -280,6 +282,9 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 if(opts.isMove === true && isTitle){
                     self._bindMove();
                 }
+                if(opts.isStopProp === true){
+                    self._stopProp();
+                }
                 if(opts.isTop === true){
                     self._bindTop();
                 }
@@ -341,9 +346,12 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
         },
         _createButton:function(){
             var self = this, opts = self._options, defaults = {}, buttons = {}, caches = {};
+            var add = function(id, btn){
+                self._button[id === 'close' ? 'unshift' : 'push'](btn)
+            }
             self._button = [];
             if(opts.isTips !== true){
-                Nui.each(['confirm', 'cancel'], function(id){
+                Nui.each(['close', 'confirm', 'cancel'], function(id){
                     var btn = opts[id];
                     if(btn && btn.enable === true){
                         defaults[id] = {
@@ -357,36 +365,20 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                 });
                 if(opts.button && opts.button.length){
                     Nui.each(opts.button, function(val){
-                        var id = val.id;
+                        var id = val.id, btn = val, def;
                         if(!caches[id]){
                             caches[id] = true;
-                            if(defaults[id]){
-                                if(!val.text){
-                                    if(id === 'cancel'){
-                                        val.text = '取消'
-                                    }
-                                    else if(id === 'confirm'){
-                                        val.text = '确定'
-                                    }
-                                }
+                            if(def = defaults[id]){
+                                btn = $.extend(true, {}, def, val);
                                 delete defaults[id]
                             }
-                            self._button[id === 'close' ? 'unshift' : 'push'](val)
+                            add(id, btn)
                         }
                     })
                 }
-                Nui.each(defaults, function(val){
-                    self._button.push(val)
+                Nui.each(defaults, function(val, id){
+                    add(id, val)
                 });
-            }
-            if(!caches.close && opts.close && opts.close.enable === true){
-                self._button.unshift({
-                    id:'close',
-                    name:opts.close.name,
-                    style:opts.close.style,
-                    text:opts.close.text,
-                    callback:opts.close.callback
-                })
             }
             if(self._button[0] && self._button[0].id === 'close'){
                 buttons.close = self._button[0],
@@ -410,6 +402,11 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                     }
                 })
             })
+        },
+        _stopProp:function(){
+            this._on('click', this.element, function(e){
+                e.stopPropagation()
+            });
         },
         _bindTop:function(){
             var self = this;
@@ -695,6 +692,11 @@ Nui.define(['component', 'util', 'template'], function(component, util, template
                         'height':self._isFixed ? '100%' : self._container.outerHeight()+'px'
                     }
                 })).appendTo(self._container);
+            }
+            if(opts.isStopProp === true){
+                self._on('click', self._containerDOM.__layermask__, function(e){
+                    e.stopPropagation()
+                })
             }
             if(opts.isClickMask === true){
                 self._on('click', self._containerDOM.__layermask__, function(){

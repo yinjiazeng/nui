@@ -41,7 +41,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                 url:url,
                 params:{}
             }
-            var match = url.match(/\?[^\/\s]+/);
+            var match = url.match(/\?[^\/\s]+$/);
             if(match){
                 var params = match[0];
                 ret.url = url.replace(params, '');
@@ -203,8 +203,12 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                     render = data;
                     data = null;
                 }
-                var temp, _router;
-                url = this._replace(url);
+                var temp, _router, query = '';
+                var match = url.match(/\?[^\/\s]+$/);
+                if(match){
+                    query = match[0]
+                }
+                url = this._replace(url.replace(/\?[^\/\s]+$/, ''));
                 Nui.each(this._paths, function(val, rule){
                     if(rule === url || (url.indexOf(val.path) === 0 &&
                                         (temp = url.replace(new RegExp('^'+val.path), '').replace(/^\//, '')) && 
@@ -218,7 +222,7 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
                         data:data
                     }
                     _router._isRender = render;
-                    _router._render(url)
+                    _router._render(url + query)
                 }
             }
             else{
@@ -349,9 +353,13 @@ Nui.define(['component', 'template', 'events'], function(component, template, ev
             var self = this, opts = self._options, href = url instanceof jQuery ? url.attr('href') : url;
             if(href){
                 var trigger = false;
-                var change = function(){
+                var change = function(callback){
                     trigger = true;
-                    location.hash = '#!'+self.constructor._replace(href)
+                    var hash = '#!'+self.constructor._replace(href);
+                    if(typeof callback === 'function'){
+                        hash = callback(hash) || hash;
+                    }
+                    location.hash = hash
                 }
                 if(typeof opts.onBefore === 'function' && opts.onBefore.call(opts, change) === false){
                     return false

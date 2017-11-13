@@ -200,7 +200,7 @@ Nui.define(function(){
                 '<%var rowData = rowRender($value, $index)||{}%>'+
                 '<%var className = (rowData.className ? " "+rowData.className : "")%>'+
                 '<%delete rowData.className%>'+
-                '<tr class="table-row table-row-<%$index%><%className%>" row-index="<%$index%>"<%include "data"%><%each rowData _v _n%> <%_n%>="<%_v%>"<%/each%>>'+
+                '<tr class="table-row table-row-<%$index%><%className%>" row-pagenum="<%pageNum??%>" row-index="<%$index%>"<%include "data"%><%each rowData _v _n%> <%_n%>="<%_v%>"<%/each%>>'+
                     '<%var colLastIndex = cols.length-1%>'+
                     '<%each cols val key%>'+
                     '<%var _value%>'+
@@ -460,7 +460,7 @@ Nui.define(function(){
                 opts.paging.echoData = function(data, type){
                     if(self.element){
                         self.data = data;
-                        self._render();
+                        self._render(type);
                         if(typeof echoData === 'function'){
                             echoData.call(opts, data, type)
                         }
@@ -505,9 +505,12 @@ Nui.define(function(){
             }
             return list||[]
         },
-        _render:function(){
-            var self = this, opts = self._options, rowHtml = '';
+        _render:function(type){
+            var self = this, opts = self._options, rowHtml = '', isScroll = opts.paging.scroll && opts.paging.scroll.enable === true;
             self.list = self._getList();
+            if(isScroll && type === 'reload'){
+                self.element.find('.datagrid-tbody [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
+            }
             Nui.each(self._cols, function(v, k){
                 if(v.length){
                     if(self.list.length && typeof opts.rowRender === 'function'){
@@ -521,6 +524,7 @@ Nui.define(function(){
                             fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
                             list:self.list,
                             placeholder:opts.placeholder,
+                            pageNum:self.paging.current,
                             checked:self._checked,
                             stringify:function(val){
                                 if(typeof opts.stringify=== 'function'){
@@ -535,7 +539,16 @@ Nui.define(function(){
                             }
                         })
                     }
-                    self.element.find('.datagrid-table-'+k+' .datagrid-tbody').html(rowHtml).find('.datagrid-checkbox').checkradio(self._checkradio());
+
+                    var tbody = self.element.find('.datagrid-table-'+k+' .datagrid-tbody');
+                    var elems;
+                    if(isScroll && (type === 'jump' || type === 'reload')){
+                        elems = $(rowHtml).appendTo(tbody);
+                    }
+                    else{
+                        elems = tbody.html(rowHtml);
+                    }
+                    elems.find('.datagrid-checkbox').checkradio(self._checkradio());
                 }
             })
             self._resetSize();

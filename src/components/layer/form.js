@@ -1,6 +1,8 @@
 Nui.define(function(require){
     var layer = require('./layer');
     var util = require('util');
+    var request = require('../../rewrite/request');
+    var validate = require('../../plugins/validate');
     var loading = require('./loading');
 
     return function(options){
@@ -92,7 +94,7 @@ Nui.define(function(require){
                             under:self
                         });
                         
-                        $.ajax($.extend({
+                        request($.extend({
                             url:form.attr('action'),
                             dataType:'json',
                             type:'POST',

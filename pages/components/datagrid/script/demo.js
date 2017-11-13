@@ -1,55 +1,74 @@
-var paging = module.require('./paging');
-var checkradio = module.require('./checkradio');
-
+var paging = require('./paging');
+var checkradio = require('./checkradio');
+var template = require('template');
 var datagrid = require('{com}/datagrid');
 
 var a = datagrid({
     container:'#data',
-    //isFixed:false,
-    isBorder:false,
-    //width:'110%',
-    //height:'500',
-    isDir:true,
     paging:{
-        url:'http://172.30.5.28/data/',
+        url:'http://127.0.0.1:8001/data/',
         pCount:20
     },
-    data:[{
-        buname:'11111',
-    }],
+    width:'110%',
     columns:[{
         title:'名称',
         width:100,
         field:'buname',
-        fixed:'left',
-        nowrap:true,
+        fixed:'left'
     }, {
         title:'名称',
-        width:'200',
-        field:'id',
-        //nowrap:true,
-        content:'input'
-    },{
-        title:'',
-        content:''
+        width:100,
+        field:'buname1',
+        fixed:'left'
     }, {
         title:'名称',
         width:200,
         field:'buname',
-        content:'input'
-        
+        children:[{
+            children:[{
+                title:'名称',
+                width:100,
+                field:'buname'
+            }, {
+                title:'名称',
+                width:100,
+                field:'buname'
+            }]
+        }]
+    }, {
+        title:'名称',
+        width:100,
+        field:'buname',
+        children:[{
+            title:'名称',
+            width:100,
+            field:'buname',
+            children:[{
+                title:'名称',
+                width:100,
+                field:'buname'
+            }]
+        }]
+    }, {
+        title:'名称',
+        width:100,
+        field:'buname'
     }],
-    onRowClick:function(self, e, elem, data){
-        
-    },
-    onRowDblclick:function(self, e, elem, data){
-        //alert()
-    },
-    onRender:function(self){
-        
-    },
-    onFocus:function(self, e, elem, data){
-        
+    rowRender:function(self, list, v, k){
+        return template.render(renders({
+            <%each list%>
+                <tr class="table-row">
+                    <%each cols col%>
+                    <td class="table-cell" width="<%col.width%>">
+                    
+                    </td>
+                    <%/each%>
+                </tr>
+            <%/each%>
+        }), {
+            cols:v,
+            list:list
+        })
     }
 })
 
