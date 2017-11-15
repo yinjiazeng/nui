@@ -466,6 +466,7 @@
         methods.require = function(id, all){
             var _mod;
             if(id){
+                id = replaceExt(id);
                 if(_mod = (mod.depmodules[id] || cacheModules[id] || cacheModules[dirname+id])){
                     if(all){
                         return _mod
