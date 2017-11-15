@@ -6,7 +6,7 @@
  */
 
 Nui.define(function(){
-    return this.extend('component', {
+    return this.extend('../../core/component', {
         _static:{
             _init:function(){
                 var self = this;

@@ -1,18 +1,31 @@
 var gulp = require('gulp');
 var path = require('path');
-var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var nui = require('gulp-nui');
 var nunjucks = require('gulp-nunjucks-render');
 
 gulp.task('concat', function() {
-    return gulp.src(['./src/load.js',
-            './src/util.js',
-            './src/template.js',
-            './src/events.js',
-            './src/component.js'
-        ])
+    gulp.src(['./src/load.js'])
+        .pipe(rename('nui-load.js'))
+        .pipe(gulp.dest('./dist'))
+        .pipe(uglify({
+            mangle: true,
+            output: {
+                keep_quoted_props: true
+            }
+        }))
+        .pipe(rename('nui-load-min.js'))
+        .pipe(gulp.dest('./dist'))
+
+    gulp.src([
+        './src/load.js',
+        './src/core/util.js',
+        './src/core/events.js',
+        './src/core/template.js',
+        './src/core/component.js'
+    ])
         .pipe(concat('nui.js'))
         .pipe(gulp.dest('./dist'))
         .pipe(uglify({

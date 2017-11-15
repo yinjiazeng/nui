@@ -1,4 +1,4 @@
-Nui.define(['component', './layer/layer'], function(component, layer){
+Nui.define(['../core/component', './layer/layer'], function(component, layer){
     var module = this;
     var require = this.require;
     var extend = this.extend;

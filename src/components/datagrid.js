@@ -1,7 +1,7 @@
 Nui.define(function(){
     var module = this;
-    var component = module.require('component');
-    var util = module.require('util');
+    var component = module.require('../core/component');
+    var util = module.require('../core/util');
 
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');

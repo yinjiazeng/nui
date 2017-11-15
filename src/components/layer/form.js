@@ -1,8 +1,6 @@
 Nui.define(function(require){
     var layer = require('./layer');
-    var util = require('util');
-    var request = require('../../rewrite/request');
-    var validate = require('../../plugins/validate');
+    var util = require('../../core/util');
     var loading = require('./loading');
 
     return function(options){

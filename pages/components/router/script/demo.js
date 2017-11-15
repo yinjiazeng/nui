@@ -1,12 +1,8 @@
-Nui.define(['{com}/router'], function(router){
+Nui.define(function(){
 	var renders = this.renders;
 	var require = this.require;
 	var placeholder = require('{com}/placeholder');
-
-	require.async('./a?v=1', function(a){
-		console.log(a)
-	})
-
+	var router = require('{com}/router');
 	router({
 		target:'#home',
 		entry:true,

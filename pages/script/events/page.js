@@ -1,5 +1,4 @@
-Nui.define(['template', 'events', '{com}/layer/layerExt'], function(template, events, layer){
-
+Nui.define(['template', 'events', '{com}/layer/confirm'], function(template, events, confirm){
     var evt = events({
         elem:$('#data'),
         data:['蔬菜', '水果', '苹果'],
@@ -51,7 +50,7 @@ Nui.define(['template', 'events', '{com}/layer/layerExt'], function(template, ev
         },
         update:function(e, elem, data){
             var that = this;
-            layer.confirm('<input type="text" style="border:1px solid #ccc; width:180px; height:24px;" />', function(e, self){
+            confirm('<input type="text" style="border:1px solid #ccc; width:180px; height:24px;" />', function(e, self){
                 var val = Nui.trim(self.main.find('input').val());
                 if(val){
                     Nui.each(data, function(v){

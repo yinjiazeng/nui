@@ -6,7 +6,7 @@
  */
 
 Nui.define(['./javascript', './style'],function(js, css){
-    return this.extend('highlight', {
+    return this.extend('./highlight', {
         _title:'xml',
         _getCode:function(){
             var self = this;

@@ -5,7 +5,7 @@
  * @description 输入框占位符
  */
 
-Nui.define(['component'], function(component){
+Nui.define(['../core/component'], function(component){
     return this.extend(component, {
         _options:{
             /**

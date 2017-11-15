@@ -2,7 +2,7 @@
  * @func 保持输入框中一段文本不可编辑
  */
 
-Nui.define(['component', 'util'], function(component, util){
+Nui.define(['../core/component', '../core/util'], function(component, util){
     return this.extend(component, {
         _options:{
             text:'',

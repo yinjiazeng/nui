@@ -5,7 +5,7 @@
  * @description 路由
  */
 
-Nui.define(['component', 'template', 'events'], function(component, template, events){
+Nui.define(['../core/component', '../core/template', '../core/events'], function(component, template, events){
     var statics = {
         _paths:{},
         _init:function(){
