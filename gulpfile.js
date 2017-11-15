@@ -20,7 +20,7 @@ gulp.task('concat', function() {
         .pipe(gulp.dest('./dist'))
 
     gulp.src([
-        './src/load.js',
+        './src/nui.js',
         './src/core/util.js',
         './src/core/events.js',
         './src/core/template.js',

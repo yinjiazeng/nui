@@ -5,7 +5,7 @@
  * @description 组件基类
  */
 
-Nui.define('component', ['./template', './events'], function(tpl, events){
+Nui.define('component', ['template', 'events'], function(tpl, events){
     var module = this;
     var require = this.require;
     var extend = this.extend;
