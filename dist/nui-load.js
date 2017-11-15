@@ -191,7 +191,7 @@
     var domain = location.protocol+'//'+location.host;
     //获取当前页面的uri
     var getPath = function(){
-        var url = (domain+location.pathname).replace(/\\/g, '/');
+        var url = (domain+location.pathname).replace(/\\/g, '/').replace(/\/+$/, '/');
         var index =  url.lastIndexOf('/');
         return url.substr(0, index+1);
     }

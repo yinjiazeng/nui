@@ -506,7 +506,7 @@ Nui.define(function(){
             return list||[]
         },
         _render:function(type){
-            var self = this, opts = self._options, rowHtml = '', isScroll = opts.paging.scroll && opts.paging.scroll.enable === true;
+            var self = this, opts = self._options, rowHtml = '', isScroll = opts.paging && opts.paging.scroll && opts.paging.scroll.enable === true;
             self.list = self._getList();
             if(isScroll && type === 'reload'){
                 self.element.find('.datagrid-tbody [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
@@ -524,7 +524,7 @@ Nui.define(function(){
                             fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
                             list:self.list,
                             placeholder:opts.placeholder,
-                            pageNum:self.paging.current,
+                            pageNum:opts.paging && self.paging ? self.paging.current : undefined,
                             checked:self._checked,
                             stringify:function(val){
                                 if(typeof opts.stringify=== 'function'){
