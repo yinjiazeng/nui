@@ -477,9 +477,7 @@
         }
 
         methods.require.async = function(id, callback){
-            setTimeout(function(){
-                Module.load(id, callback, getModuleid('async_'), mod.uri)
-            })
+            Module.load(id, callback, getModuleid('async_'), mod.uri)
         }
 
         //继承模块
