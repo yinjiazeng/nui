@@ -134,7 +134,7 @@ Nui.define('util', {
         if(Nui.type(name, 'Object')){
             url = value||location.href;
             Nui.each(name, function(val, key){
-                if(val){
+                if(val || val === 0){
                     url = self.setParam(key, val, url);
                 }
             });
