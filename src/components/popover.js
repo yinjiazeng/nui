@@ -29,7 +29,7 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                 return
             }
             this._event = opts.event;
-            if($.inArray(this._event, ['click', 'mouseenter', 'mouseover']) === -1){
+            if($.inArray(this._event, ['click', 'mouseenter', 'mouseleave']) === -1){
                 this._event = 'mouseenter'
             }
             this._events();
@@ -52,7 +52,8 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
             }
             else{
                 self._on(self._event, self.target, function(e, elem){
-                    self._show(e, elem)
+                    self._show(e, elem);
+                    e.stopPropagation()
                 })
             }
         },
@@ -86,7 +87,6 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                 _opts.id = 'popover';
                 self.layer = layer(_opts)
             }
-            e.stopPropagation()
         },
         _hide:function(){
             if(this.layer && !this._isshow){
