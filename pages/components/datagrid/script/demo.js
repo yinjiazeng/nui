@@ -3,27 +3,6 @@ var checkradio = require('./checkradio');
 var template = require('template');
 var datagrid = require('{com}/datagrid');
 
-import b from './a'
-import * as a from './a'
-import {a} from './a'
-import {a as b} from './a'
-import {default as b, c as d} from './a'
-
-export {a}
-export {a as b, a as default}
-export var a = {}
-export default {a as b,b}
-export default a
-export default {
-    a:1,
-    b:2
-}
-export default a = function(){
-
-}
-export {a as b} from './a';
-export * from './a';
-
 var a = datagrid({
     container:'#data',
     paging:{

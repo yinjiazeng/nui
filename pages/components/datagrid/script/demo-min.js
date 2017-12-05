@@ -1,10 +1,4 @@
 ;(function(__define__){
-__define__('pages/components/datagrid/script/a',function(require,imports,renders,extend,exports){
-	var module=this;
-	return {
-	    
-	}
-});
 /**
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
@@ -2879,43 +2873,6 @@ __define__('./script/demo',function(require,imports,renders,extend,exports){
 	var checkradio = require('pages/components/datagrid/script/checkradio');
 	var template = require('src/core/template');
 	var datagrid = require('src/components/datagrid');
-	
-	var b=require('pages/components/datagrid/script/a').defaults;
-	var a=require('pages/components/datagrid/script/a');
-	var __module_a=require('pages/components/datagrid/script/a');
-	var a=__module_a.a;
-	var __module_a=require('pages/components/datagrid/script/a');
-	var b=__module_a.a;
-	var __module_a=require('pages/components/datagrid/script/a');
-	var b=__module_a.defaults;
-	var d=__module_a.c;
-	exports.a=a;
-	exports.b = a;
-	exports.defaults = a;
-	var a = exports.a = {}
-	exports.defaults = {};
-	exports.b = a;
-	exports.defaults.b=b;
-	exports.defaults = a
-	exports.defaults = {
-	    a:1,
-	    b:2
-	}
-	exports.defaults = a = function(){
-	
-	}
-	var __module_a = require('pages/components/datagrid/script/a');
-	exports.b = __module_a.a;
-	;(function(){
-	    var __module = require('pages/components/datagrid/script/a');
-	    var __object = {};
-	    var __type = __object.toString.call(__module);
-	    if(__type === '[object Object]' || __type === '[object Function]'){
-	        for(var i in __module){
-	            exports[i] = __module[i]
-	        }
-	    }
-	})();
 	
 	var a = datagrid({
 	    container:'#data',
