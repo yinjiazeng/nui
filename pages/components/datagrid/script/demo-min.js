@@ -1527,6 +1527,7 @@ __define__('src/components/datagrid',function(){
                             '</div>'+
                             '<div class="datagrid-box">'+
                                 '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
+                                '<%include "colgroup"%>'+
                                 '<tbody class="table-tbody datagrid-tbody"></tbody>'+
                                 '</table>'+
                             '</div>'+
@@ -1534,7 +1535,16 @@ __define__('src/components/datagrid',function(){
                     '</div>'+
                     '<%/if%>'+
                 '<%/each%>',
+            colgroup:
+                '<%if !rowRender%>'+
+                    '<colgroup>'+
+                        '<%each cols[k] col i%>'+
+                        '<col<%if col.width%> width="<%col.width%>"<%/if%>>'+
+                        '<%/each%>'+
+                    '</colgroup>'+
+                '<%/if%>',
             thead:
+                '<%include "colgroup"%>'+
                 '<colgroup>'+
                     '<%each cols[k] col i%>'+
                     '<col<%if col.width%> width="<%col.width%>"<%/if%>></col>'+
@@ -1722,7 +1732,8 @@ __define__('src/components/datagrid',function(){
                 isFixed:opts.isFixed === true,
                 isBorder:opts.isBorder === true,
                 paging:opts.paging && typeof opts.paging === 'object' && opts.paging.isPage !== false,
-                footer:opts.footer
+                footer:opts.footer,
+                rowRender:typeof opts.rowRender === 'function'
             }))).appendTo(self._container));
 
             self.element.find('.table-thead .datagrid-checkbox').checkradio(self._checkradio());
@@ -2884,11 +2895,11 @@ __define__('./script/demo',function(require,imports,renders,extend,exports){
 	    columns:[{
 	        title:'名称',
 	        width:100,
-	        field:'buname',
+	        field:'buname'
 	    }, {
 	        title:'名称',
 	        width:100,
-	        field:'buname1',
+	        field:'buname1'
 	    }, {
 	        title:'名称',
 	        width:200,

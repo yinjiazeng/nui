@@ -13,11 +13,11 @@ var a = datagrid({
     columns:[{
         title:'名称',
         width:100,
-        field:'buname',
+        field:'buname'
     }, {
         title:'名称',
         width:100,
-        field:'buname1',
+        field:'buname1'
     }, {
         title:'名称',
         width:200,

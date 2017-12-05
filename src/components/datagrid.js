@@ -141,6 +141,7 @@ Nui.define(function(){
                             '</div>'+
                             '<div class="datagrid-box">'+
                                 '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
+                                '<%include "colgroup"%>'+
                                 '<tbody class="table-tbody datagrid-tbody"></tbody>'+
                                 '</table>'+
                             '</div>'+
@@ -148,7 +149,16 @@ Nui.define(function(){
                     '</div>'+
                     '<%/if%>'+
                 '<%/each%>',
+            colgroup:
+                '<%if !rowRender%>'+
+                    '<colgroup>'+
+                        '<%each cols[k] col i%>'+
+                        '<col<%if col.width%> width="<%col.width%>"<%/if%>>'+
+                        '<%/each%>'+
+                    '</colgroup>'+
+                '<%/if%>',
             thead:
+                '<%include "colgroup"%>'+
                 '<colgroup>'+
                     '<%each cols[k] col i%>'+
                     '<col<%if col.width%> width="<%col.width%>"<%/if%>></col>'+
@@ -336,7 +346,8 @@ Nui.define(function(){
                 isFixed:opts.isFixed === true,
                 isBorder:opts.isBorder === true,
                 paging:opts.paging && typeof opts.paging === 'object' && opts.paging.isPage !== false,
-                footer:opts.footer
+                footer:opts.footer,
+                rowRender:typeof opts.rowRender === 'function'
             }))).appendTo(self._container));
 
             self.element.find('.table-thead .datagrid-checkbox').checkradio(self._checkradio());
