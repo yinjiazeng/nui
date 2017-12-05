@@ -149,6 +149,11 @@ Nui.define(function(){
                     '<%/if%>'+
                 '<%/each%>',
             thead:
+                '<colgroup>'+
+                    '<%each cols[k] col i%>'+
+                    '<col<%if col.width%> width="<%col.width%>"<%/if%>></col>'+
+                    '<%/each%>'+
+                '</colgroup>'+
                 '<thead class="table-thead">'+
                     '<%each v%>'+
                     '<tr class="table-row">'+
@@ -319,14 +324,14 @@ Nui.define(function(){
             self._colTemplates = {};
             self._rowNumber = self._getRowNumber(opts.columns, 0, []);
             self._setTemplate();
-
             Nui.each(self._columns, function(v, k){
                 self._setRowCol(v, k)
             })
-
+            
             self._hasLeftRight = this._cols.left.length || this._cols.right.length;
 
             self.element = self._bindComponentName($(self._tpl2html('layout', self._tplData({
+                cols:self._cols,
                 rows:self._rows,
                 isFixed:opts.isFixed === true,
                 isBorder:opts.isBorder === true,

@@ -40,6 +40,8 @@ gulp.task('concat', function() {
 
 var options = {
     url:'./assets/script/config.js',
+    jsmin:null,
+    cssmin:null,
     filterPath: function(src) {
         return src.replace(/^\/nui\//, this.paths.base)
     }

@@ -1,3 +1,2985 @@
-!function(define){Nui[define]('src/core/util',{regex:{mobile:/^0?(13|14|15|17|18)[0-9]{9}$/,tel:/^[0-9-()（）]{7,18}$/,email:/^\w+((-w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,idcard:/^\d{17}[\d|x]|\d{15}$/,cn:/^[\u4e00-\u9fa5]+$/,taxnum:/^[a-zA-Z0-9]{15,20}$/},toFixed:function(e,t,i){if(isNaN(e)||''===e)return e;void 0===i&&(i=2),t=t||0;var a=e.toString(),n=function(e){for(var t='';e>0;)t+='0',e--;return t},r='';a<0&&(a=a.replace('-',''),r='-');var l=a.indexOf('.');if(-1!==l&&t>=0){var o=parseInt(a.substr(0,l)),c='0'+a.substr(l),s='1'+n(t);c=(Math.round(c*s)/s).toFixed(t),c>=1&&(o=(o+1).toString()),a=r+o+c.substr(1)}else t>0&&(a=r+a+'.'+n(t));if(null!==i&&i>=0&&i<t){a=a.replace(/0+$/,'');var l=a.indexOf('.'),d=0;for(-1!==l&&(d=a.substr(l+1).length);d<i;)a+='0',d++;a=a.replace(/\.$/,'')}return a},getParam:function(e,t){var i=decodeURI(t||location.href),a={};if(startIndex=i.indexOf('?'),startIndex++>0){var n,r=i.substr(startIndex).split('&');Nui.each(r,function(e){n=e.split('='),a[n[0]]=n[1]})}return'string'==typeof e&&e&&(a=void 0!==(n=a[e])?n:''),a},setParam:function(e,t,i){var a,n=this;if(Nui.type(e,'Object'))a=t||location.href,Nui.each(e,function(e,t){(e||0===e)&&(a=n.setParam(t,e,a))});else if(a=i||location.href,-1===a.indexOf('?')&&(a+='?'),-1!==a.indexOf(e+'=')){var r=new RegExp('('+e+'=)[^&]*');a=a.replace(r,'$1'+t)}else{var l='';-1!==a.indexOf('=')&&(l='&'),a+=l+e+'='+t}return a},supportCss3:function(e){var t,i=['webkit','Moz','ms','o'],a=[],n=document.documentElement.style,r=function(e){return e.replace(/-(\w)/g,function(e,t){return t.toUpperCase()})};for(t in i)a.push(r(i[t]+'-'+e));a.push(r(e));for(t in a)if(a[t]in n)return!0;return!1},supportHtml5:function(e,t){return e in document.createElement(t)},location:function(e,t){e&&jQuery('<a href="'+e+'"'+(t?'target="'+(t||'_self')+'"':'')+'><span></span></a>').appendTo('body').children().click().end().remove()},formatDate:function(e,t){if(e=parseInt(e)){if(!t)return e;var i=new Date(e),a={'M':i.getMonth()+1,'d':i.getDate(),'h':i.getHours(),'m':i.getMinutes(),'s':i.getSeconds()};return t=t.replace(/([yMdhms])+/g,function(e,t){var n=a[t];return void 0!==n?(e.length>1&&(n='0'+n,n=n.substr(n.length-2)),n):'y'===t?(i.getFullYear()+'').substr(4-e.length):e})}return'-'},getData:function(e,t,i){var a=this,n={'result':{},'voids':0,'total':0};if(e.length){var r=e.serializeArray();r.length||(r=e.find('[name]').serializeArray());var l=',';if(t&&'string'==typeof t&&!i&&(l=t),Nui.each(r,function(e,t){var i=Nui.trim(e.value);n.total++,i||n.voids++;var a=e.name;Nui.isArray(n.result[a])||(n.result[a]=[]),n.result[a].push(i)}),Nui.each(n.result,function(e,t){n.result[t]=e.join(l)}),t&&i){var o=!1;n.result[i]=[],e.find(t).each(function(){var e=a.getData($(this).find('[name]')).result;!0===t||o||(Nui.each(e,function(e,t){delete n.result[t]}),o=!0),n.result[i].push(e)})}}return n},getFocusIndex:function(e){var t=Nui.trim(e.value),i=t.length;if(e.setSelectionRange)i=e.selectionStart;else try{var a=document.selection.createRange(),n=e.createTextRange();n.setEndPoint('endtoend',a),i=n.text.length}catch(e){}return i},isTextSelect:function(){var e='';if(document.selection)e=document.selection.createRange().text;else if(-1!==navigator.userAgent.toLowerCase().indexOf('gecko')){var t=document.activeElement;e=t.value.substring(t.selectionStart,t.selectionEnd)}else window.getSelection?e=window.getSelection().toString():document.getSelection&&(e=document.getSelection().toString());return!!e},isInstallPDF:function(){var i,len,flag=!0;if((Nui.browser.webkit||Nui.browser.mozilla&&Nui.browser.version>19)&&(flag=!1),navigator.plugins&&(len=navigator.plugins.length))for(i=0;i<len;i++)if(/Adobe Reader|Adobe PDF|Acrobat|Chrome PDF Viewer/.test(navigator.plugins[i].name)){flag=!1;break}try{if(window.ActiveXObject||window.ActiveXObject.prototype){for(i=1;i<10;i++)try{if(eval('new ActiveXObject(\'PDF.PdfCtrl.'+i+'\');')){flag=!1;break}}catch(e){flag=!0}var arr=['PDF.PdfCtrl','AcroPDF.PDF.1','FoxitReader.Document','Adobe Acrobat','Adobe PDF Plug-in'];for(len=arr.length,i=0;i<len;i++)try{if(new ActiveXObject(arr[i])){flag=!1;break}}catch(e){flag=!0}}}catch(e){}return flag},isInstallFlash:function(){if(void 0!==window.ActiveXObject)try{if(new ActiveXObject('ShockwaveFlash.ShockwaveFlash'))return!1}catch(e){}else if(navigator.plugins['Shockwave Flash'])return!1;return Nui.browser.msie?'http://rj.baidu.com/soft/detail/17153.html':'http://rj.baidu.com/soft/detail/15432.html'},formatNumber:function(e){var t=parseInt(e);if(!isNaN(t)&&t&&(e=e.toString())){var i=e.indexOf('.'),a='';return i>0&&(a=e.substr(i)),t.toLocaleString().replace(/\.\d+$/,'')+a}return e},numberToCN:function(e){var t,i,a,n=new Array('零','壹','贰','叁','肆','伍','陆','柒','捌','玖'),r=new Array('','拾','佰','仟'),l=new Array('','万','亿','兆'),o=new Array('角','分','毫','厘'),c='';if(''==e)return'';var s=e<0;if((e=Math.abs(parseFloat(e)))>=1e15)return'';if(0==e)return c=n[0]+'元整';if(e=e.toString(),-1==e.indexOf('.')?(t=e,i=''):(a=e.split('.'),t=a[0],i=a[1].substr(0,4)),parseInt(t,10)>0){for(var d=0,u=t.length,f=0;f<u;f++){var h=t.substr(f,1),p=u-f-1,v=p/4,_=p%4;'0'==h?d++:(d>0&&(c+=n[0]),d=0,c+=n[parseInt(h)]+r[_]),0==_&&d<4&&(c+=l[v])}c+='元'}if(''!=i)for(var g=i.length,f=0;f<g;f++){var h=i.substr(f,1);'0'!=h&&(c+=n[Number(h)]+o[f])}return''==c?c+=n[0]+'元整':''==i&&(c+='整'),s&&(c='负'+c),c}}),Nui[define]('src/core/events',function(){return function(e){var t=this,i=e||t,a=i.constructor,n=a&&a.__component_name,r=t.element||i.element||Nui.doc,l=n?i._events:i.events;if(!r||!l)return i;'function'==typeof l&&(l=l.call(i)),r instanceof jQuery||(r=jQuery(r));var o,c,s,d=function(e,a,n){if('function'==typeof n)n.call(i,e,a);else{var r,l;Nui.each(n,function(n,o){if('function'==typeof(r=i[n])?l=i:'function'==typeof(r=t[n])&&(l=t),l)return s=r.call(l,e,a,s)})}};return Nui.each(l,function(e,t){!e||'string'!=typeof e&&'function'!=typeof e||('string'==typeof e&&(e=Nui.trim(e).split(/\s+/)),t=Nui.trim(t).split(/\s+/),o=t.shift().replace(/:/g,' '),c=t.join(' '),n?i._on(o,r,c,function(t,i){d(t,i,e)}):r.on(o,c,function(t){d(t,jQuery(this),e)}))}),i}}),Nui[define]('src/core/template',['src/core/util'],function(e){var t=function(e,t,a){if(this.tplid=e){if(i[e])return h.call(this,i[e],t,a);var n=document.getElementById(e);if(n&&'SCRIPT'===n.nodeName&&'text/html'===n.type)return h.call(this,i[e]=n.innerHTML,t,a)}return''},i={},a={openTag:'<%',closeTag:'%>'},n={trim:Nui.trim,formatDate:e.formatDate,formatNumber:e.formatNumber,setParam:e.setParam,toFixed:e.toFixed,numberToCN:e.numberToCN},r=!!''.trim,l=';$that.out = function(){return $that.code';l=(r?'""'+l:'[]'+l+'.join("")')+'}';var o=function(e){return r?e?function(e){return'$that.code += '+e+';'}:function(e,t){return e+=t}:e?function(e){return'$that.code.push('+e+');'}:function(e,t){return e.push(t),e}},c=o(!0),s=o(),d=function(e,i,a,n){var r=this,l=i.replace(/([^\s])/g,'\\$1'),o=a.replace(/([^\s])/g,'\\$1');return e.replace(new RegExp(l+'\\s*include\\s+[\'"]([^\'"]*)[\'"]\\s*'+o,'g'),function(e,i){if(i){var a=r[i];return'function'==typeof a&&(a=a()),'string'==typeof a?h.call(r,a,null,n):t(i,null,n)}return''})},u='object'==typeof HTMLElement?function(e){return e instanceof HTMLElement}:function(e){return 1===e.nodeType&&'string'==typeof e.nodeName},f=function(e){if(e&&'object'==typeof e){var t=e[0];return u(t?t:e)}},h=function(e,t,i){var o=this;if('string'==typeof e){i=i||{};var c=i.openTag||a.openTag,u=i.closeTag||a.closeTag;if(e=d.call(o,e,c,u),t&&'object'==typeof t){Nui.isArray(t)&&(t={$list:t});var h=r?'':[];e=e.replace(/\s+/g,' '),Nui.each(e.split(c),function(e,t){e=e.split(u),t>=1?h=s(h,v(Nui.trim(e[0]),!0)):e[1]=e[0],h=s(h,v(e[1].replace(/'/g,'\\\'').replace(/"/g,'\\"')))});var _=r?'':[];for(var g in t)_=s(_,g+'=$data.'+g+',');r||(h=h.join(''),_=_.join('')),h='var '+_+'$that=this,$method=$that.methods; $that.line=4; $that.code='+l+';\ntry{\n'+h+';}\ncatch(e){\n$that.error(e, $that.line)\n};';try{var b=new Function('$data',h);b.prototype.methods=n,b.prototype.error=p(h,t,o.tplid),b.prototype.dom=f,e=new b(t).out(),b=null}catch(e){p(h,t,o.tplid)(e)}}return e}return''},p=function(e,t,i){return function(a,n){var r='\n',l=[];e='function anonymous($data){\n'+e+'\n}',e=e.split('\n'),Nui.each(e,function(e,t){l.push(t+1+'      '+e.replace('$that.line++;',''))}),r+='code\n',r+=l.join('\n')+'\n\n',void 0!==typeof JSON&&(r+='data\n',r+=JSON.stringify(t)+'\n\n'),i&&(r+='templateid\n',r+=i+'\n\n'),n&&(r+='line\n',r+=n+'\n\n'),r+='message\n',r+=a.message,console.error(r)}},v=function(e,t){if(!e)return'';var i,a;if(t)if(void 0!==(a=g(e,'if')))i='if('+_(a)+'){';else if(void 0!==(a=g(e,'elseif')))i='\n}\nelse if('+_(a)+'){';else if('else'===e)i='\n}\nelse{';else if('/if'===e)i='}';else if(void 0!==(a=g(e,'each ',/\s+/)))i='Nui.each('+a[0]+', function('+(a[1]||'$value')+','+(a[2]||'$index')+'){';else if('/each'===e)i='});';else if(void 0!==(a=g(e,' | ',/\s*,\s*/))){var n=a[0],r=n.lastIndexOf('('),l='('+_(a.slice(1).toString())+')';if(-1!==r){var o=n.substr(0,r),s=Nui.trimLeft(n.substr(r+1));i=c(o+'($that.methods.'+s+l)}else i=c('$that.methods.'+n+l)}else i=/^(var|let|const|return|delete)\s+/.test(e)?_(e)+';':c(_(e,!0));else i=c('\''+e+'\'');return i+'\n$that.line++;'},_=function(e,t){return e.replace(/([\.\$\w]+\s*(\[[\'\"\[\]\w\.\$\s]+\])?)\?\?/g,function(e,i){var a='(typeof '+i+'!=="undefined"&&'+i+'!==null&&'+i+'!==undefined&&!$that.dom('+i+')';return t&&(a+='?'+i+':""'),a+')'})},g=function(e,t,i){var a;if(0===e.indexOf(t)?a='':' | '===t&&e.indexOf(t)>0&&(a=','),void 0!==a)return e=Nui.trimLeft(e.replace(t,a)),i?e.split(i):e};return t.method=function(e,t){n[e]||(n[e]=t)},t.config=function(){var e=arguments;Nui.type(e[0],'Object')?Nui.each(e[0],function(e,t){a[t]=e}):e.length>1&&'string'==typeof e[0]&&(a[e[0]]=e[1])},t.render=h,t}),Nui[define]('src/core/component',['src/core/template','src/core/events'],function(tpl,events){var module=this,require=this.require,extend=this.extend,callMethod=function(e,t,i){if(t.length>e.length){var a=t[t.length-1];if(a&&Nui.type(a,['String','Number'])&&i._options.id!==a&&i.__id!==a)return}e.apply(i,t)};Nui.bsie7&&Nui.doc.on('focus','button, input[type="button"]',function(){this.blur()});var statics={__id:0,__instances:{},__setMethod:function(apis,components){var self=this;return Nui.each(apis,function(val,methodName){void 0===self[methodName]&&(self[methodName]=function(){var self=this,args=arguments,container=args[0],name=self.__component_name;if(name&&'component'!==name)if(container&&container instanceof jQuery)if('init'===methodName){var mod=components[name];mod&&container.find('[data-'+name+'-options]').each(function(){if(!this.nui||!this.nui[name]){var elem=jQuery(this),options=elem.data(name+'Options'),_mod;options&&'string'==typeof options&&(/^{[\s\S]*}$/.test(options)?options=eval('('+options+')'):(_mod=require(options,!0))&&(options='function'==typeof _mod.exports?_mod.exports(elem):_mod.exports)),'object'!=typeof options&&(options={}),mod(extend(options,{target:elem}))}})}else container.find('[nui_component_'+name+']').each(function(){var e,t;this.nui&&(e=this.nui[name])&&'function'==typeof(t=e[methodName])&&callMethod(t,Array.prototype.slice.call(args,1),e)});else Nui.each(self.__instances,function(e){var t=e[methodName];'function'==typeof t&&callMethod(t,args,e)});else Nui.each(components,function(e,t){'component'!==t&&'function'==typeof e[methodName]&&e[methodName].apply(e,args)})})}),self},_options:{},_init:jQuery.noop,_jquery:function(e){return e instanceof jQuery?e:jQuery(e)},_getSize:function(e,t,i){var a=0;if(i=i||'border',t=t||'tb','all'===i)return this._getSize(e,t)+this._getSize(e,t,'padding')+this._getSize(e,t,'margin');var n={l:['Left'],r:['Right'],lr:['Left','Right'],t:['Top'],b:['Bottom'],tb:['Top','Bottom']},r=[{border:{l:['LeftWidth'],r:['RightWidth'],lr:['LeftWidth','RightWidth'],t:['TopWidth'],b:['BottomWidth'],tb:['TopWidth','BottomWidth']}},{padding:n},{margin:n}];return Nui.each(r,function(n){n[i]&&Nui.each(n[i][t],function(t){var n=parseFloat(e.css(i+t));a+=isNaN(n)?0:n})}),a},_$fn:function(e,t){jQuery.fn[e]=function(){var i=arguments,a=i[0];return this.each(function(){if('string'!=typeof a)Nui.type(a,'Object')?a.target=this:a={target:this},t(a);else if(a){var n;if(this.nui&&(n=this.nui[e])&&0!==a.indexOf('_'))if('options'===a)n.option(i[1],i[2]);else{var r=n[a];'function'==typeof r&&r.apply(n,Array.prototype.slice.call(i,1))}}})}},_$ready:function(e,t){'function'==typeof this.init&&this.init(Nui.doc)},config:function(){var e=arguments,t=(e.length,e[0]);return Nui.type(t,'Object')?this._options=jQuery.extend(!0,this._options,t):Nui.type(t,'String')?1===e.length?this._options[t]:this._options[t]=e[1]:void 0},hasInstance:function(e){var t=!1,a=this.__instances;if(e)Nui.each(a,function(i){if(i._options.id===e)return t=!0,!1});else for(i in a)return!0;return t}};return{_static:statics,_options:{target:null,id:'',skin:'',className:'',onInit:null,onReset:null,onDestroy:null},_template:{},_init:function(){this._exec()},_exec:jQuery.noop,_getTarget:function(){var e=this;if(!e.target){var t=e._options.target,i=e.constructor;if(!t)return null;t=i._jquery(t),e.target=e._bindComponentName(t)}return e.target},_bindComponentName:function(e){var t=this,i=t.constructor,a='nui_component_'+i.__component_name;return e.attr(a,'').each(function(){this.nui||(this.nui={}),this.nui[i.__component_name]=t}),e},_tplData:function(e){var t=this._options,i=this.constructor,a='nui-'+i.__component_name,n=Nui.trim(t.skin),r=function(e,t){if(e.__parent){var i=e.__parent.constructor,a=i.__component_name;if('component'!==a)return n&&t.unshift('nui-'+a+'-'+n),t.unshift('nui-'+a),r(i,t)}return t},l=r(i,[]);return l.push(a),n&&l.push(a+'-'+n),t.id&&l.push(i.__component_name+'-'+t.id),e||(e={}),t.className&&l.push(t.className),e.className=l.join(' '),e},_event:function(){var e=this,t=e._options;return e.element&&t.events&&(t.element=e.element,events.call(e,t)),events.call(e)},_on:function(e,t,i,a,n){var r=this;'function'==typeof i&&(n=a,a=i,i=t,t=null,i=r.constructor._jquery(i));var l=function(e){return a.call(this,e,jQuery(this))};return t?('string'!=typeof i&&((i=i.selector)||(i=r._options.target)),t.on(e,i,l),n&&t.find(i).trigger(e)):(i.on(e,l),n&&i.trigger(e)),r.__eventList.push({dalegate:t,selector:i,type:e,callback:l}),r},_off:function(){var e=this,t=e.__eventList;return Nui.each(t,function(e,i){e.dalegate?e.dalegate.off(e.type,e.selector,e.callback):e.selector.off(e.type,e.callback),t[i]=null,delete t[i]}),e.__eventList=[],e},_delete:function(){var e=this,t=e.constructor;if(e.target){var i='nui_component_'+t.__component_name;e.target.removeAttr(i).each(function(){this.nui&&(this.nui[t.__component_name]=null,delete this.nui[t.__component_name])})}t.__instances[e.__id]=null,delete t.__instances[e.__id]},_reset:function(){return this._off(),this.element&&(this.element.remove(),this.element=null),this},_tpl2html:function(e,t){var i={openTag:'<%',closeTag:'%>'};return 1===arguments.length?tpl.render(this._template,e,i):tpl.render.call(this._template,this._template[e],t,i)},_callback:function(e,t){var i=this,a=i._options,n=a['on'+e];if('function'==typeof n)return t?(Array.prototype.unshift.call(t,i),n.apply(a,t)):n.call(a,i)},option:function(e,t){var i,a=arguments,n=!1;return!0===a[0]?n=!0:jQuery.isPlainObject(a[0])?(i=a[0],n=a[1]):a.length>1&&'string'==typeof a[0]&&(i={},i[a[0]]=a[1],n=a[2]),(i||n)&&(this._options=jQuery.extend(!0,{},this[!0===n?'_defaultOptions':'_options'],i),this._reset(),this._exec()),this},reset:function(){return this.option(!0),this._callback('Reset'),this},destroy:function(){this._delete(),this._reset(),this._callback('Destroy')}}}),Nui[define]('src/components/datagrid',function(){var e=this,t=e.require('src/core/component'),i=e.require('src/core/util'),a=function(){var e,t,i=document.createElement('div');return i.style.cssText='position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;',e=document.body.appendChild(i).clientWidth,i.style.overflowY='scroll',t=i.clientWidth,document.body.removeChild(i),e-t}();return e.extend(t,{_static:{_init:function(){var e=this;Nui.doc.on('click',function(t){var i=$(t.target).closest('tr').hasClass('table-row');Nui.each(e.__instances,function(e){!i&&e.element&&e._activeElem&&(e._callback('CancelActive',[t,e._activeElem]),e._activeElem.removeClass('s-crt'),delete e._activeElem,e._activeFixedElem&&(e._activeFixedElem.removeClass('s-crt'),delete e._activeFixedElem))})});var t=null;Nui.win.on('resize',function(){clearTimeout(t),t=setTimeout(function(){Nui.each(e.__instances,function(e){'100%'===e._options.height&&e.resize()})},80)})},_hasChildren:function(e){return Nui.isArray(e.children)&&e.children.length},_colspan:function(e,t){var i=this;return void 0===t&&(t=0),Nui.each(e,function(e){i._hasChildren(e)?t+=i._colspan(e.children):t+=1}),t}},_options:{container:null,data:null,columns:null,isFixed:!0,isLine:!1,isActive:!0,isBorder:!0,isPaging:!0,isDir:!1,keyCode:[9,13],url:null,paging:null,fields:null,dataField:'list',width:'100%',height:'100%',footer:'',placeholder:'',onFocusin:null,onFocusout:null,onFocus:null,onBlur:null,stringify:null,rowRender:null,onActive:null,onCancelActive:null,onRowRender:null,onRowClick:null,onRowDblclick:null,onCheckboxChange:null,onRender:null,onRenderBefore:null,onScroll:null},_template:{layout:'<div class="<% className %>"><div class="datagrid-body<%if isFixed%> datagrid-fixed<%/if%>"><%include "table"%></div><%if footer || paging%><div class="datagrid-foot"><%if footer%><%footer%><%/if%><%if paging%><div class="datagrid-paging"></div><%/if%></div><%/if%></div>',table:'<%each rows v k%><%if v.length%><div class="datagrid-table<%if k === "left" || k === "right"%> datagrid-table-fixed<%/if%> datagrid-table-<%k%>"><%if !isFixed%><div class="datagrid-box"><table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>"><%include "thead"%><tbody class="table-tbody datagrid-tbody"></tbody></table></div><%else%><div class="datagrid-title"><div class="datagrid-thead"><table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>"><%include "thead"%></table></div></div><div class="datagrid-box"><table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>"><tbody class="table-tbody datagrid-tbody"></tbody></table></div><%/if%></div><%/if%><%/each%>',thead:'<thead class="table-thead"><%each v%><tr class="table-row"><%var cellLastIndex = $value.length-1%><%each $value val key%><%var isTitle = true%><%var _classNames = val.className%><%if typeof _classNames === "function"%><%if _classNames = Nui.trim(val.className()||"")%><%var _classNames = " " + _classNames%><%/if%><%/if%><th class="table-cell<%_classNames%> table-cell-<%key%><%if cellLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>><span class="cell-wrap"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>><span class="cell-text"><%if val.title%><%val.title%><%if typeof val.order === "object"%><%var asc = Nui.type(val.order.asc, ["String", "Number"]), desc = Nui.type(val.order.desc, ["String", "Number"])%><em class="datagrid-order<%if asc && desc%> datagrid-order-both<%/if%>" field="<%val.order.field%>"><%if asc%><b class="datagrid-order-asc" type="asc" value="<%val.order.asc%>"><i></i><s></s></b><%/if%><%if desc%><b class="datagrid-order-desc" value="<%val.order.desc%>"><i></i><s></s></b><%/if%></em><%/if%><%elseif val.content === "checkbox"%><span class="ui-checkradio"><input type="checkbox" name="datagrid-checkbox-all" class="datagrid-checkbox datagrid-checkbox-choose"></span><%/if%></span></span></th><%/each%></tr><%/each%></thead>',rows:'<%if list && list.length%><%var toLower = function(str){return str.replace(/([A-Z])/g, function(a){return "-"+a.toLowerCase()})}%><%each list%><%var rowData = rowRender($value, $index)||{}%><%var className = (rowData.className ? " "+rowData.className : "")%><%delete rowData.className%><tr class="table-row table-row-<%$index%><%className%>" row-pagenum="<%pageNum??%>" row-index="<%$index%>"<%include "data"%><%each rowData _v _n%> <%_n%>="<%_v%>"<%/each%>><%var colLastIndex = cols.length-1%><%each cols val key%><%var _value%><%if val.field && (!val.content || "number checkbox input".indexOf(val.content)===-1)%><%var _value=$value[val.field]%><%elseif val.content === "number"%><%var _value=$index+1%><%elseif val.content === "checkbox"%><%var _value={"name":val.field ? val.field : "datagrid-checkbox", "class":"datagrid-checkbox"+(!val.title ? " datagrid-checkbox-choose" : ""), "value":$value[val.field]!==undefined?$value[val.field]:""}%><%elseif val.content === "input"%><%var _value={"name":val.field ? val.field : "datagrid-input", "class":"datagrid-input", "value":$value[val.field]!==undefined?$value[val.field]:""}%><%else%><%var _value=val.content%><%/if%><%var _classNames = val.className%><%if typeof _classNames === "function"%><%if _classNames = Nui.trim(val.className(_value, val.field, $value, $index)||"")%><%var _classNames = " " + _classNames%><%/if%><%/if%><td class="table-cell<%_classNames%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>><%if typeof val.filter === "function"%><%var _value = val.filter(_value, val.field, $value, $index)%><%/if%><span class="cell-wrap<%if val.nowrap === true%> cell-nowrap<%/if%>"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>><span class="cell-text<%if val.content === "checkbox"%> cell-text-checkbox<%/if%><%if val.content === "input"%> cell-text-input<%/if%>"<%if val.showtitle === true%> title="<%_value%>"<%/if%>><%if val.content === "checkbox" && typeof _value === "object"%><%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%><span class="ui-checkradio"><input type="checkbox"<%include "_attr"%>></span><%elseif val.content === "input" && typeof _value === "object"%><input type="text" autocomplete="off"<%include "_attr"%>><%else%><%include "content"%><%/if%></span></span></td><%/each%></tr><%/each%><%elseif type === "all"%><tr><td class="table-cell table-cell-void" colspan="<%cols.length%>"><span class="ui-void"><%placeholder??%></span></td></tr><%/if%>',_attr:'<%if !_value["class"]%><%var _class = _value["class"] = ""%><%/if%><%if _value.className%><%var _class = (_value["class"]+=" "+Nui.trim(_value.className))%><%delete _value.className%><%/if%><%each _value _v _k%> <%_k%>="<%_v%>"<%/each%>',attr:'<%each val value name%><%if !isTitle?? && name === "style"%>style="<%each value _v _k%><%_k%>:<%_v%>;<%/each%>"<%elseif "width field colspan rowspan cellid".indexOf(name) !== -1%> <%name%>="<%value%>"<%/if%><%/each%>',data:'<%if fields%><%each $value value field%><%if fields === true || $.inArray(field, fields) !== -1%><%var _value = stringify(value)%> data-<%toLower(field)%>=<%if typeof _value !== "undefined"%><%_value%><%else%>"<%value%>"<%/if%><%/if%><%/each%><%/if%>'},_exec:function(){var e=this,t=e._options,i=e.constructor,a=t.container;a&&Nui.isArray(t.columns)&&t.columns.length&&(e._container=i._jquery(a),e._columns={all:[],left:[],right:[]},e._checked=!1,Nui.each(t.columns,function(t,i){'left'===t.fixed||!0===t.fixed?e._columns.left.push(t):'right'===t.fixed&&e._columns.right.push(t),e._columns.all.push(t)}),e._keyCode=[],!0===t.isDir&&(e._keyCode=e._keyCode.concat([37,38,39,40])),t.keyCode&&(e._keyCode=e._keyCode.concat(t.keyCode)),e._create())},_create:function(){var e=this,t=e._options;e.constructor;e._rows={},e._cols={},e._colTemplates={},e._rowNumber=e._getRowNumber(t.columns,0,[]),e._setTemplate(),Nui.each(e._columns,function(t,i){e._setRowCol(t,i)}),e._hasLeftRight=this._cols.left.length||this._cols.right.length,e.element=e._bindComponentName($(e._tpl2html('layout',e._tplData({rows:e._rows,isFixed:!0===t.isFixed,isBorder:!0===t.isBorder,paging:t.paging&&'object'==typeof t.paging&&!1!==t.paging.isPage,footer:t.footer}))).appendTo(e._container)),e.element.find('.table-thead .datagrid-checkbox').checkradio(e._checkradio()),e._body=e.element.children('.datagrid-body'),e._tableAll=e._body.children('.datagrid-table-all'),e._tableAllBox=e._tableAll.find('.datagrid-box'),e._tableAllTitle=e._tableAll.children('.datagrid-title'),e._tableAllThead=e._tableAll.find('.datagrid-thead'),e._tableLeft=e._body.children('.datagrid-table-left'),e._tableRight=e._body.children('.datagrid-table-right'),e._tableFixed=e._body.children('.datagrid-table-fixed'),e._tableFixedBox=e._tableFixed.find('.datagrid-box'),e._foot=e.element.children('.datagrid-foot'),e._tableTbody=e._body.find('.datagrid-tbody'),t.width&&(e._tableAllThead.children().css('width',t.width),e._tableAllBox.children().css('width',t.width)),e._theadHeight(),e._initList(),e._bindEvent()},_setTemplate:function(){var e=this,t='';Nui.each(e._colTemplates,function(e,i){t+='<%'+(t?'else':'')+'if ("content_"+val.cellid) === "'+i+'"%><%include "'+i+'"%>'}),t?t+='<%else%><%_value??%><%/if%>':t='<%_value??%>',e._template.content=t},_getRowNumber:function(e,t,i,a,n){var r=this,l=r.constructor;return i[t]||(i[t]=!0),void 0===a&&(a=0),Nui.each(e,function(e){e.cellid=a++;var o=e.order,c=e.className;if(!0===o&&(o='desc'),'asc'!==o&&'desc'!==o||(e.order={},e.order[o]=1),e.order&&!e.order.field&&(e.order.field=e.field),!0===e.template){var s='content_'+e.cellid;r._template[s]=r._colTemplates[s]=e.filter||e.content}e.style||(e.style={}),e.align&&(e.style['text-align']=e.align),e.valign&&(e.style['vertical-align']=e.valign),e.width&&(e.width=e.width.toString().replace(/px$/,'')),'function'!=typeof c&&(c||(c=''),c&&(c=' '+Nui.trim(c)),e.className=c),$.isEmptyObject(e.style)&&delete e.style,n&&n.fixed&&(e.fixed=n.fixed),l._hasChildren(e)&&(a=r._getRowNumber(e.children,t+1,i,a,e))}),n?a:i.length},_initList:function(){var e=this,t=e._options;if(t.paging){delete t.paging.wrap,t.paging.wrap=e._foot.children('.datagrid-paging'),t.paging.container=e._tableAllBox;var i='paging_'+e.__id,a=t.paging.echoData;t.paging.echoData=function(i,n){e.element&&(e.data=i,e._render(n),'function'==typeof a&&a.call(t,i,n))},e.paging=window[i]=new Paging(t.paging),!0===t.isPaging&&e.paging.query(!0)}else t.data&&(e.data=t.data,e._render())},_bindEvent:function(){var e=this;e._options;e._on('scroll',e._tableAllBox,function(t,i){e._scroll(i),e._callback('Scroll',[t,i,{left:i.scrollLeft(),top:i.scrollTop()}])}),e._event()},_getList:function(){var e,t=this,i=t._options,a=i.dataField,n=t.data;return a&&Nui.type(n,'Object')&&Nui.each(a.split('.'),function(e){if(!n[e])return n=null,!1;n=n[e]}),(e=t._callback('RenderBefore',[n]))&&Nui.type(e,'Array')&&(n=e),n||[]},_render:function(e){var t=this,i=t._options,a='',n=i.paging&&i.paging.scroll&&!0===i.paging.scroll.enable;t.list=t._getList(),n&&'reload'===e&&t.element.find('.datagrid-tbody [row-pagenum="'+t.paging.current+'"]').nextAll().addBack().remove(),Nui.each(t._cols,function(r,l){if(r.length){a=t.list.length&&'function'==typeof i.rowRender?i.rowRender.call(i,t,t.list,r,l):t._tpl2html('rows',{type:l,isFixed:!0===i.isFixed,cols:r,fields:i.fields?!0===i.fields?i.fields:[].concat(i.fields):null,list:t.list,placeholder:i.placeholder,pageNum:i.paging&&t.paging?t.paging.current:void 0,checked:t._checked,stringify:function(e){if('function'==typeof i.stringify)return i.stringify.call(i,e)},rowRender:function(e,a){return'function'==typeof i.onRowRender?i.onRowRender.call(i,t,e,a):i.onRowRender}});var o,c=t.element.find('.datagrid-table-'+l+' .datagrid-tbody');o=!n||'jump'!==e&&'reload'!==e?c.html(a):$(a).appendTo(c),o.find('.datagrid-checkbox').checkradio(t._checkradio())}}),t._resetSize(),t._callback('Render')},_checkradio:function(){var e=this;e._options;return{callback:function(t,i){var a='datagrid-checkbox-choose';if(t.hasClass(a)){var n=t.prop('checked');if(t.closest('.datagrid-table').hasClass('datagrid-table-all')||e._tableAllBox.find('.table-row[row-index="'+t.closest('.table-row').attr('row-index')+'"]').find('.'+a).checkradio('checked',n),'datagrid-checkbox-all'===t.attr('name'))e._checked=n,e._tableTbody.find('.'+a+':enabled').checkradio('checked',n);else{var n=e._tableTbody.find('.'+a+':checked').length===e._tableTbody.find('.'+a).length;e._checked=n,e._body.find('.table-thead .'+a).checkradio('checked',n)}}e._callback('CheckboxChange',[i,t])}}},_resetSize:function(){var e=this,t=e._options,i=e.constructor;if(e._rowHeight(),'auto'!==t.height){var n=e._tableAllBox.scrollTop();e._tableAllBox.css('height','auto');var r=e._container.height();t.height>0&&(r=t.height);var l=r-e._tableAllTitle.outerHeight()-i._getSize(e._tableAllTitle,'tb','margin')-e._foot.outerHeight()-i._getSize(e._foot,'tb','margin');if(e._tableAllBox.height(l),!0===t.isFixed){var o=e._tableAllBox.children(),c=e._tableAllBox.height()>=o.outerHeight()?0:a,s=l;o.outerWidth()>e._tableAllBox.width()&&(s-=a),Nui.browser.msie&&Nui.browser.version<=7&&'100%'===t.width&&o.width(e._tableAllBox.width()-c),e._tableFixedBox.height(s),e._tableAllTitle.css({'margin-right':c}),e._tableRight.css('right',c)}e._tableAllBox.scrollTop(n)}},_theadHeight:function(){var e=this;e._hasLeftRight&&e._tableFixed.find('.table-thead .table-cell').each(function(t){var i=$(this),a=i.attr('cellid'),n=e._tableAll.find('.table-thead .table-cell[cellid="'+a+'"]'),r=n.height(),l=i.height(r).height()-r;i.height(r-l)})},_rowHeight:function(){var e=this;if(e._hasLeftRight){var t=e._tableLeft.find('.table-tbody .table-row'),i=e._tableLeft.find('.table-tbody .table-row');e._tableAll.find('.table-tbody .table-row').each(function(e){var a=$(this).outerHeight();t.eq(e).height(a),i.eq(e).height(a)})}},_setRowCol:function(e,t,i){var a=this,n=(a._options,a.constructor);void 0===i&&(i=0),a._rows[t]||(a._rows[t]=[]),a._cols[t]||(a._cols[t]=[]),e.length&&!a._rows[t][i]&&(a._rows[t][i]=[]),Nui.each(e,function(e){var r=n._hasChildren(e),l={};r&&(l.colspan=n._colspan(e.children),a._setRowCol(e.children,t,i+1)),Nui.each(e,function(e,t){'children'!==t&&(l[t]=e)}),r||(l.rowspan=a._rowNumber-i,a._cols[t].push(e)),a._rows[t][i].push(l)})},_editInput:function(e,t){var a=t.get(0),n=e.keyCode;if(37===n||39===n){var r,l=i.getFocusIndex(a);if(r=37===n?0!==l:l!==a.value.length,i.isTextSelect()||r)return!1}},_horzFocus:function(e,t,i,a){var n=t.closest('td.table-cell'),r=n[i]();if(a&&e.preventDefault(),r.length){var l=r.find('.datagrid-input');!l.length||l.prop('readonly')||l.prop('disabled')?this._horzFocus(e,r.children(),i,a):(l.focus(),setTimeout(function(){l.select()}))}else{var l,o=n.closest('.table-row').children('td.table-cell');'prev'===i?$.each($.makeArray(o).reverse(),function(e,t){var i=$(t).find('.datagrid-input');if(i.length)return l=i,!1}):o.each(function(){var e=$(this).find('.datagrid-input');if(e.length)return l=e,!1}),l&&this._verticalFocus(e,l,i)}},_verticalFocus:function(e,t,i){var a=t.closest('td.table-cell'),n=a.index(),r=a.closest('.table-row')[i]();if(r.length){var l=r.children('td.table-cell').eq(n),o=l.find('.datagrid-input');!o.length||o.prop('readonly')||o.prop('disabled')?this._verticalFocus(e,l.children(),i):(o.focus(),setTimeout(function(){o.select()}))}e.preventDefault()},_dirFocus:function(e,t){var i=this,a=e.keyCode;if(-1!==$.inArray(a,i._keyCode))switch(a){case 37:i._horzFocus(e,t,'prev');break;case 38:i._verticalFocus(e,t,'prev');break;case 39:i._horzFocus(e,t,'next');break;case 40:i._verticalFocus(e,t,'next');break;default:i._horzFocus(e,t,'next',!0)}},_events:{'click .table-tbody .table-row':'_getRowData _active','mouseenter .table-tbody .table-row':function(e,t){this._tableFixed.length&&this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+t.attr('row-index')+'"]').addClass('s-hover'),t.addClass('s-hover'),this._callback('RowMouseover',[e,t])},'mouseleave .table-tbody .table-row':function(e,t){this._tableFixed.length&&this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+t.attr('row-index')+'"]').removeClass('s-hover'),t.removeClass('s-hover'),this._callback('RowMouseout',[e,t])},
-'dblclick .table-tbody .table-row':'_getRowData _rowdblclick','focus .datagrid-input':'_enable _getRowData _focus','blur .datagrid-input':'_enable _getRowData _blur','focusin .table-tbody .table-cell':'_focusin','focusout .table-tbody .table-cell':'_focusout','click .datagrid-order > b':'_order','keydown .datagrid-input':'_editInput _dirFocus'},_order:function(e,t){t.toggleClass('s-crt'),t.siblings().removeClass('s-crt');var i=t.parent(),a=i.attr('field'),n=i.children('b.s-crt').attr('value');this.paging&&(this.paging.condition[a]=n,this.paging.query(!0))},_enable:function(e,t){if(t.prop('readonly')||t.prop('disabled'))return e.stopPropagation(),!1},_active:function(e,t,i){var a=this;a._callback('RowClick',[e,t,i]),!0===a._options.isActive&&(a.cancelActive(),a._activeElem=t.addClass('s-crt'),a._tableFixed.length&&(a._activeFixedElem=a._tableFixed.find('.datagrid-tbody .table-row[row-index="'+t.attr('row-index')+'"]').addClass('s-crt')),a._callback('Active',[e,t,i]))},_getRowData:function(e,t){return t.hasClass('table-row')?t.data():t.closest('.table-row').data()},_focus:function(e,t,i){return this._active(e,t.closest('.table-row'),i),this._callback('Focus',arguments)},_blur:function(e,t,i){return this._callback('Blur',arguments)},_focusin:function(e,t){return t.addClass('s-focus'),this._callback('Focusin',arguments)},_focusout:function(e,t){return t.removeClass('s-focus'),this._callback('Focusout',arguments)},_rowdblclick:function(e,t,i){return this._callback('RowDblclick',arguments)},_scroll:function(e){var t=this,i=e.scrollTop(),a=e.scrollLeft();t._tableFixedBox.scrollTop(i),t._tableAllThead.scrollLeft(a)},resize:function(){this._theadHeight(),this._resetSize(),this._callback('Resize')},scrollTo:function(e,t){var i=this._tableAllBox;i.scrollTop(t||0),i.scrollLeft(e||0)},cancelActive:function(){!0===this._options.isActive&&this._activeElem&&(this._activeElem.removeClass('s-crt'),delete this._activeElem)},checkedData:function(e){var t=this,i=[];return t._tableAllBox.find('.datagrid-checkbox-choose:checked').each(function(){var t=$(this).closest('.table-row').data();e?i.push(t[e]):i.push(t)}),i}})}),Nui[define]('pages/components/datagrid/script/checkradio',function(require,imports,renders,extend){!function(e,t){e.fn.checkradio=function(t,i){if(!t||e.isPlainObject(t)){var a=e.extend({switches:{off:'',on:''},beforeCallback:e.noop,callback:e.noop},t||{});return this.each(function(){var t=e(this),i=t.closest('.ui-checkradio');if(i.length){var n=t.prop('checked')?' s-checked':'',r=t.prop('disabled')?' s-dis':'',l=t.attr('name'),o=e.extend({},a.switches,t.data()||{}),c=i.find('.text'),s='radio';t.is(':checkbox')&&(s='checkbox'),i.children().attr('checkname')?i.children().attr('class','ui-'+s+n+r):(o.off&&o.on&&(i.addClass('ui-switches'),c=e('<s class="text">'+(t.prop('checked')?o.on:o.off)+'</s>').insertBefore(t)),t.css({position:'absolute',top:'-999em',left:'-999em',opacity:0}).wrap('<i></i>'),i.wrapInner('<em class="ui-'+s+n+r+'" checkname="'+l+'"></em>').children().click(function(i){var n=e(this);if(!t.is(':disabled')&&!1!==a.beforeCallback(t,i)){if(t.is(':checkbox')){var r=t.prop('checked');t.prop('checked',!r),n[(r?'remove':'add')+'Class']('s-checked'),c.length&&c.text(r?o.off:o.on)}else{if(t.prop('checked'))return;t.prop('checked',!0),e('.ui-radio[checkname="'+l+'"]').removeClass('s-checked'),n.addClass('s-checked')}a.callback(t,i)}})),a.init&&!t.is(':disabled')&&!1!==a.beforeCallback(t)&&a.callback(t,'init')}})}return e(this).prop(t,1==i).checkradio()}}(jQuery)}),Nui[define]('pages/components/datagrid/script/paging',function(require,imports,renders,extend){!function(e,t,i,a){function n(a){var r=this;r.load=!1,r.instance=function(){for(var t in e)if(e[t]==r)return t.toString()},i.extend(r,i.extend(!0,{url:'',wrap:null,paramJSON:'',pCount:10,current:1,aCount:0,last:!1,allData:!1,isFull:!0,container:e,scroll:{enable:!1},ajax:{},condition:{},loading:{wrap:null,show:function(){var e=this;e.hide();var t=e.wrap;t&&t.append('<i class="ui-loading" style="position:absolute;">正在加载数据...</i>').css({position:'relative'})},hide:function(){i('.ui-loading').remove()}},button:{prev:'«',next:'»',first:'',last:''},extPage:{wrap:null,desc:'',prev:'上一页',next:'下一页'},refreshCallback:null,endCallback:i.noop,jumpCallback:i.noop,echoData:i.noop},n.options,a||{})),r.container=i(r.container||e),!0===r.scroll.enable&&(r.wrap=null,r.children=r.container[0]===e?i(t.body):r.container.children(),r.container.scroll(function(){r.resize()}).resize(function(){r.resize()}))}var r=function(e){return e.dataType='json',i.ajax(e)};n.options={},n.config=function(e){i.extend(!0,n.options,e||{})},n.prototype={constructor:n,jump:function(e){var t,a=this,n=Math.ceil(a.aCount/a.pCount);if(a.showload=!0,a.aCount>0)if('object'==typeof e){var r=i(e).prevAll('input').val();t=r<=n&&r!=a.current?parseInt(r):a.current}else t=e>0&&e<=n?e:e<0?n+e+1:n;else t=e;if(a.current=a.condition.current=t,a.jumpCallback(t),'function'==typeof a.refreshCallback)return a.refreshCallback(t),void a.create();a.getData('jump')},query:function(e){var t=this;t.showload=!0,t.load=!1,'function'!=typeof t.refreshCallback||'refresh'!==e?(e?('noloading'===e?t.showload=!1:'reload'!==e&&(t.current=1),t.filter(),t.condition.current=t.current):t.condition={current:t.current=1},t.getData(e||'')):t.create()},filter:function(){var e=this;for(var t in e.condition)e.condition[t]||delete e.condition[t]},getData:function(t){var a=this;a.condition.pCount=a.pCount,!0===a.allData&&(delete a.condition.pCount,delete a.condition.current);var n=a.condition;if(a.paramJSON){n=[],i.each(a.condition,function(e,t){n.push(e+':'+t)});var l=n.length?'{'+n.join(',')+'}':'';n={},n[a.paramJSON]=l}var o='function'==typeof a.ajax?a.ajax():a.ajax;delete o.success,a.load||(a.load=!0,r(i.extend({},!0,{url:a.url,data:n,success:function(i){try{i.current=a.current}catch(e){}var n,r=0;if(a.container[0]===e||'reload'===t||'noloading'===t||'jump'===t&&('jump'!==t||a.scroll.enable)||(a.container.scrollTop(0),a.container.scrollLeft(0)),'reload'===t){var l=a.container;a.selector?(l=a.container.find(a.selector),r=l.scrollTop()):r=l.scrollTop(),n=l.find('tr.rows.s-crt').index()}if(a.echoData(i,t),a.aCount=i.aCount,a.load=!1,!0===a.scroll.enable&&a.resize(),r>0){var l=a.container;a.selector?(l=a.container.find(a.selector),l.scrollTop(r)):l.scrollTop(r),n>=0&&l.find('tr.rows').eq(n).addClass('s-crt')}if(!0===a.last)return a.last=!1,void a.jump(-1);a.create(),a.endCallback(i)},error:function(){a.showload&&a.loading.hide(),a.load=!1}},o||{})))},trim:function(e){var t=Math.abs(parseInt(i(e).val()));!t&&(t=1),i(e).val(t)},echoList:function(e,t,i){return this.current==t?'<li><span class="s-crt">'+t+'</span></li>':'<li><a href="javascript:'+i+'.jump('+t+');" target="_self">'+t+'</a></li>'},resize:function(){var e=this;try{var t=e.container.scrollTop(),i=e.container.height(),a=e.children.outerHeight();!e.load&&Math.ceil(e.aCount/e.pCount)>e.current&&(0===t&&a<=i||i+t>=a)&&e.jump(++e.current)}catch(e){}},create:function(){var e=this,t=e.button,i=Math.ceil(e.aCount/e.pCount),a=e.current,n='',r=i==a?1:a+1,l=e.instance(),o=e.extPage;if(o.wrap){var c='<div>';c+=a==i||0==i?'<span>'+o.next+'</span>':'<a href="javascript:'+l+'.jump('+(a+1)+');" target="_self">'+o.next+'</a>',c+=1==a?'<span>'+o.prev+'</span>':'<a href="javascript:'+l+'.jump('+(a-1)+');" target="_self">'+o.prev+'</a>',c+='</div><em>'+(0!==i?a:0)+'/'+i+'</em><strong>共'+e.aCount+o.desc+'</strong>',o.wrap.html(c)}if(e.wrap){if(!i)return void e.wrap.empty();if(n+=function(){var i='';return 1==a?(t.first&&(i+='<li><span>'+t.first+'</span></li>'),i+='<li><span>'+t.prev+'</span></li>'):(e.button.first&&(i+='<li><a href="javascript:'+l+'.jump(1);" target="_self">'+t.first+'</a></li>'),i+='<li><a href="javascript:'+l+'.jump('+(a-1)+');" target="_self">'+t.prev+'</a></li>'),i}(),i<=7)for(var s=1;s<=i;s++)n+=e.echoList(n,s,l);else if(a-3>1&&a+3<i){n+='<li><a href="javascript:'+l+'.jump(1);" target="_self">1</a></li>',n+='<li><em>...</em></li>';for(var s=a-2;s<=a+2;s++)n+=e.echoList(n,s,l);n+='<li><em>...</em></li>',n+='<li><a href="javascript:'+l+'.jump('+i+');" target="_self">'+i+'</a></li>'}else if(a-3<=1&&a+3<i){for(var s=1;s<=5;s++)n+=e.echoList(n,s,l);n+='<li><em>...</em></li>',n+='<li><a href="javascript:'+l+'.jump('+i+');" target="_self">'+i+'</a></li>'}else if(a-3>1&&a+3>=i){n+='<li><a href="javascript:'+l+'.jump(1);" target="_self">1</a></li>',n+='<li><em>...</em></li>';for(var s=i-5;s<=i;s++)n+=e.echoList(n,s,l)}n+=function(){var e='';return a==i?(e+='<li><span>'+t.next+'</span></li>',t.last&&(e+='<li><span>'+t.last+'</span></li>')):(e+='<li><a href="javascript:'+l+'.jump('+(a+1)+');" target="_self">'+t.next+'</a></li>',t.last&&(e+='<li><a href="javascript:'+l+'.jump('+i+');" target="_self">'+t.last+'</a></li>')),e}(),e.isFull&&(n+='<li><em>跳转到第</em><input type="text" onblur="'+l+'.trim(this);" value="'+r+'" /><em>页</em><button type="button" onclick="'+l+'.jump(this);">确定</button></li>'),n='<ul class="ui-paging">'+n+'</ul>',e.wrap.html(n)}}},i.extend({paging:function(t,i){void 0===i&&(i=t,t='paging');var a=e[t]=new n(i);return'function'!=typeof e[t].refreshCallback?(a.query(!0),a):(a.query('refresh'),a)}}),e.Paging=n}(window,document,jQuery)}),Nui[define]('./script/demo',function(require,imports,renders,extend){var e=(require('pages/components/datagrid/script/paging'),require('pages/components/datagrid/script/checkradio'),require('src/core/template')),t=require('src/components/datagrid'),i=t({container:'#data',paging:{url:'http://127.0.0.1:8001/data/',pCount:20},width:'110%',columns:[{title:'名称',width:100,field:'buname',fixed:'left'},{title:'名称',width:100,field:'buname1',fixed:'left'},{title:'名称',width:200,field:'buname',children:[{children:[{title:'名称',width:100,field:'buname'},{title:'名称',width:100,field:'buname'}]}]},{title:'名称',width:100,field:'buname',children:[{title:'名称',width:100,field:'buname',children:[{title:'名称',width:100,field:'buname'}]}]},{title:'名称',width:100,field:'buname'}],rowRender:function(t,i,a,n){return e.render(renders('<%each list%><tr class="table-row"><%each cols col%><td class="table-cell" width="<%col.width%>"></td><%/each%></tr><%/each%>'),{cols:a,list:i})}});$('h1').click(function(){i.option('isBorder',!0)})})}('_module_2_define');
-//# sourceMappingURL=demo-min.js.map?v=5a17348
+;(function(__define__){
+__define__('pages/components/datagrid/script/a',function(require,imports,renders,extend,exports){
+	var module=this;
+	return {
+	    
+	}
+});
+/**
+ * @author Aniu[2016-11-11 16:54]
+ * @update Aniu[2016-11-11 16:54]
+ * @version 1.0.1
+ * @description 实用工具集
+ */
+
+__define__('src/core/util', {
+    
+    /**
+     * @func 常用正则表达式
+     */
+    regex:{
+        //手机
+        mobile:/^0?(13|14|15|17|18)[0-9]{9}$/,
+        //电话
+        tel:/^[0-9-()（）]{7,18}$/,
+        //邮箱
+        email:/^\w+((-w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,
+        //身份证
+        idcard:/^\d{17}[\d|x]|\d{15}$/,
+        //中文
+        cn:/^[\u4e00-\u9fa5]+$/,
+        //税号
+        taxnum:/^[a-zA-Z0-9]{15,20}$/
+    },
+
+    /**
+     * @func 四舍五入保留小数，原生toFixed会有精度问题
+     * @return <String>
+     * @param digit <String, Number> 待转换数字
+     * @param decimal <Number> 保留位数
+     * @param number <Number> 小数部分末尾最多显示0的数量
+     */
+    toFixed:function(digit, decimal, number){
+        if(isNaN(digit) || digit === ''){
+            return digit
+        }
+
+        //默认末尾只保留2个0
+        if(number === undefined){
+            number = 2
+        }
+
+        decimal = decimal || 0;
+
+        //将数字转换为字符串，用于分割
+        var value = digit.toString();
+
+        //补零
+        var mend = function(num){
+            var zero = '';
+            while(num > 0){
+                zero += '0';
+                num--
+            }
+            return zero
+        }
+
+        //正负数
+        var pre = '';
+        if(value < 0){
+            value = value.replace('-', '');
+            pre = '-';
+        }
+
+        //获取小数点所在位置
+        var i = value.indexOf('.');
+        //存在小数点
+        if(i !== -1 && decimal >= 0){
+            var integer = parseInt(value.substr(0, i));
+            //小数部分转为0.xxxxx
+            var _decimal = '0' + value.substr(i);
+            var num = '1' + mend(decimal);
+            _decimal = (Math.round(_decimal*num)/num).toFixed(decimal);
+            //小数四舍五入后，若大于等于1，整数部分需要加1
+            if(_decimal >= 1){
+                integer = (integer + 1).toString()
+            }
+            value = pre + integer + _decimal.substr(1)
+        }
+        //整数就直接补零
+        else if(decimal > 0){
+            value = pre + value + '.' + mend(decimal)
+        }
+
+        if(number !== null && number >= 0 && number < decimal){
+            value = value.replace(/0+$/, '');
+            var i = value.indexOf('.'), len = 0;
+            if(i !== -1){
+                len = value.substr(i+1).length;
+            }
+            while(len < number){
+                value = value + '0';
+                len++;
+            }
+            value = value.replace(/\.$/, '');
+        }
+        
+        return value
+    },
+
+    /**
+     * @func 获取url参数值
+     * @return <String, Object>
+     * @param name <String, Undefined> 参数名，不传则以对象形式返回全部参数
+     * @param urls <String, Undefined> url地址，默认为当前访问地址
+     */
+    getParam:function(name, urls){
+        var url = decodeURI(urls||location.href), value = {};
+        startIndex = url.indexOf('?');
+        if(startIndex++ > 0){
+            var param = url.substr(startIndex).split('&'), temp;
+            Nui.each(param, function(val){
+                temp = val.split('=');
+                value[temp[0]] = temp[1];
+            });
+        }
+        if(typeof name === 'string' && name){
+            value = (temp = value[name]) !== undefined ? temp : '';
+        }
+        return value;
+    },
+
+    /**
+     * @func 设置url参数值
+     * @return <String> 设置后的url
+     * @param name <String, Object> 参数名或者{key:value, ...}参数集合
+     * @param value <String> 参数值或者url
+     * @param urls <String, Undefined> url，没有则获取浏览器url
+     */
+    setParam:function(name, value, urls){
+        var self = this, url;
+        if(Nui.type(name, 'Object')){
+            url = value||location.href;
+            Nui.each(name, function(val, key){
+                if(val || val === 0){
+                    url = self.setParam(key, val, url);
+                }
+            });
+        }
+        else{
+            url = urls||location.href;
+            if(url.indexOf('?') === -1){
+                url += '?';
+            }
+            if(url.indexOf(name+'=') !== -1){
+                var reg = new RegExp('('+name+'=)[^&]*');
+                url = url.replace(reg, '$1'+value);
+            }
+            else{
+                var and = '';
+                if(url.indexOf('=') !== -1){
+                    and = '&';
+                }
+                url += and+name+'='+value;
+            }
+        }
+        return url;
+    },
+
+    /**
+     * @func 检测浏览器是否支持CSS3属性
+     * @return <Boolean>
+     * @param style <String> 样式属性
+     */
+    supportCss3:function(style){
+        var prefix = ['webkit', 'Moz', 'ms', 'o'],
+            i, humpString = [],
+            htmlStyle = document.documentElement.style,
+            _toHumb = function (string) {
+                return string.replace(/-(\w)/g, function ($0, $1) {
+                    return $1.toUpperCase();
+                });
+            };
+        for (i in prefix)
+            humpString.push(_toHumb(prefix[i] + '-' + style));
+        humpString.push(_toHumb(style));
+        for (i in humpString)
+            if (humpString[i] in htmlStyle) return true;
+        return false;
+    },
+
+    /**
+     * @func 检测浏览器是否支持Html5属性
+     * @return <Boolean>
+     * @param attr <String> 属性
+     * @param element <String> DOM元素标签
+     */
+    supportHtml5:function(attr, element){
+        return attr in document.createElement(element);
+    },
+
+    /**
+     * @func 模拟location.href跳转
+     * @return <Undefined>
+     * @param url <String> 跳转的url
+     * @param target <String> 跳转类型，默认为_self
+     */
+    location:function(url, target){
+        if(url){
+            jQuery('<a href="'+ url +'"'+ (target ? 'target="'+ (target||'_self') +'"' : '' ) +'><span></span></a>')
+                .appendTo('body').children().click().end().remove();
+        }
+    },
+
+    /**
+     * @func 格式化日期
+     * @return <String>
+     * @param timestamp <String, Number> 时间戳，为空返回横杠“-”
+     * @param format <String, Undefined> 输出格式，为空则返回时间戳
+     */
+    formatDate:function(timestamp, format){
+        if(timestamp = parseInt(timestamp)){
+            if(!format){
+                return timestamp;
+            }
+            var date = new Date(timestamp);
+            var map = {
+                'M':date.getMonth()+1,
+                'd':date.getDate(),
+                'h':date.getHours(),
+                'm':date.getMinutes(),
+                's':date.getSeconds()
+            }
+            format = format.replace(/([yMdhms])+/g, function(all, single){
+                var value = map[single];
+                if(value !== undefined){
+                    if(all.length > 1){
+                       value = '0' + value;
+                       value = value.substr(value.length-2);
+                   }
+                   return value;
+                }
+                else if(single === 'y'){
+                    return (date.getFullYear() + '').substr(4-all.length);
+                }
+                return all;
+            });
+            return format;
+        }
+        return '-';
+    },
+
+    /**
+     * @func 获取表单数据集合
+     * @return <Object>
+     * @param element <jQuery Object> 表单元素集合或者form元素
+     * @param item <String> 将name相同表单元素值分隔，当设置为jquery选择器时，配合field参数使用，用于获取item中表单元素的数据集合
+     * @param field <String> 字段名，配合item参数使用，返回对象中会包含该字段
+     * @example
+     * <form id="form">
+     *  <input type="hidden" name="name0" value="0">
+     * <div>
+     *  <input type="hidden" name="name1" value="1">
+     *  <input type="hidden" name="name2" value="2">
+     * </div>
+     * <div>
+     *  <input type="hidden" name="name1" value="3">
+     *  <input type="hidden" name="name2" value="4">
+     * </div>
+     * <form>
+     * getData($('#form'), 'div', 'list').result => 
+     * {
+     *  name0:'0',
+     *  list:[{
+     *      name1:'1',
+     *      name2:'2'
+     *  }, {
+     *      name1:'3',
+     *      name2:'4'
+     *  }]
+     * }
+     */
+    getData:function(element, item, field){
+        var that = this;
+    	var data = {
+    		'result':{},
+    		'voids':0, //字段中空值数量
+            'total':0 //总计多少个字段
+        }
+        if(element.length){
+            var arr = element.serializeArray();
+            if(!arr.length){
+                arr = element.find('[name]').serializeArray();
+            }
+            var div = ',';
+            if(item && typeof item === 'string' && !field){
+                div = item
+            }
+            Nui.each(arr, function(v, i){
+                var val = Nui.trim(v.value)
+                data.total++;
+                if(!val){
+                    data.voids++
+                }
+                var name = v.name;
+                if(!Nui.isArray(data.result[name])){
+                    data.result[name] = [];
+                }
+                data.result[name].push(val)
+            })
+            Nui.each(data.result, function(v, k){
+                data.result[k] = v.join(div)
+            })
+            if(item && field){
+                var once = false;
+                data.result[field] = [];
+                element.find(item).each(function(){
+                    var result = that.getData($(this).find('[name]')).result;
+                    if(item !== true && !once){
+                        Nui.each(result, function(v, k){
+                            delete data.result[k];
+                        });
+                        once = true
+                    }
+                    data.result[field].push(result)
+                })
+            }
+        }
+        return data;
+    },
+    /**
+     * @func 获取输入框内光标位置
+     * @return <Number>
+     * @param element <DOM Object> 表单元素dom对象
+     */
+    getFocusIndex:function(element){
+        var val = Nui.trim(element.value);
+        var index = val.length;
+        if(element.setSelectionRange){
+            index = element.selectionStart;
+        }
+        else{
+            //ie
+            try{
+                var temp = document.selection.createRange();
+                var textRange = element.createTextRange();
+                textRange.setEndPoint('endtoend', temp);
+                index = textRange.text.length;
+            }
+            catch(e){}
+        }
+        return index;
+    },
+    /**
+     * @func 检测页面是否有文本被选择
+     * @return <Boolean>
+     */
+    isTextSelect:function(){
+        var text = '';
+        //ie10以及以下浏览器
+        if(document.selection){
+            text =  document.selection.createRange().text;
+        }
+        //火狐和ie11浏览器getSelection无法获取表单元素选中文本
+        else if(navigator.userAgent.toLowerCase().indexOf('gecko') !== -1){
+            var textArea = document.activeElement;
+            text = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
+        }
+        //chrome safari opera
+        else if(window.getSelection){
+            text = window.getSelection().toString();
+        }
+        //低版本chrome
+        else if(document.getSelection){
+            text = document.getSelection().toString();
+        }
+        return !!text;
+    },
+    /**
+     * @func 检测是否需要安装PDF阅读器
+     * @return <Boolean>
+     */
+    isInstallPDF:function(){
+        var i, len;
+
+        var flag = true;
+
+        if(Nui.browser.webkit || (Nui.browser.mozilla && Nui.browser.version > 19)){
+            flag = false;
+        }
+
+        if(navigator.plugins && (len = navigator.plugins.length)){
+            for(i = 0; i < len; i++){
+                if(/Adobe Reader|Adobe PDF|Acrobat|Chrome PDF Viewer/.test(navigator.plugins[i].name)){
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        try{
+            if(window.ActiveXObject || window.ActiveXObject.prototype){
+                for(i = 1; i < 10; i++){
+                    try{
+                        if(eval("new ActiveXObject('PDF.PdfCtrl." + i + "');")){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    catch(e){
+                        flag = true;
+                    }
+                }
+
+                var arr = ['PDF.PdfCtrl', 'AcroPDF.PDF.1', 'FoxitReader.Document', 'Adobe Acrobat', 'Adobe PDF Plug-in'];
+                len = arr.length;
+                for(i = 0; i < len; i++){
+                    try{
+                        if(new ActiveXObject(arr[i])){
+                            flag = false;
+                            break;
+                        }
+
+                    }
+                    catch(e){
+                        flag = true;
+                    }
+                }
+            }
+        }
+        catch(e){}
+
+        return flag;
+    },
+    /**
+     * @func 检测是否需要安装flash，没有安装则返回安装路径
+     * @return <Boolean, String>
+     */
+    isInstallFlash:function(){
+        if(typeof window.ActiveXObject != 'undefined'){
+            try{
+                if(!!new ActiveXObject('ShockwaveFlash.ShockwaveFlash')){
+                    return false
+                }
+            }
+            catch(e){}
+        }
+        else{
+            if(!!navigator.plugins['Shockwave Flash']){
+                return false
+            }
+        }
+        if(Nui.browser.msie){
+            return 'http://rj.baidu.com/soft/detail/17153.html'
+        }
+        else{
+            return 'http://rj.baidu.com/soft/detail/15432.html'
+        }
+    },
+    /**
+     * @func 将数字转换为逗号千分位分隔
+     * @param number <String> 数字
+     * @return <String>
+     */
+    formatNumber:function(number){
+        var integer = parseInt(number);
+        if(!isNaN(integer) && integer && (number = number.toString())){
+            var dot = number.indexOf('.');
+            var decimal = '';
+            if(dot > 0){
+                decimal = number.substr(dot);
+            }
+            return integer.toLocaleString().replace(/\.\d+$/, '') + decimal
+        }
+        return number
+    },
+    /**
+     * @func 将数字转换为中文大写
+     * @param number <String> 数字
+     * @return <String>
+     */
+    numberToCN:function(number){
+        //汉字的数字
+        var cnNums = new Array('零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖');
+        //基本单位
+        var cnIntRadice = new Array('', '拾', '佰', '仟');
+        //对应整数部分扩展单位
+        var cnIntUnits = new Array('', '万', '亿', '兆');
+        //对应小数部分单位
+        var cnDecUnits = new Array('角', '分', '毫', '厘');
+        //整数金额时后面跟的字符
+        var cnInteger = '整';
+        //整型完以后的单位
+        var cnIntLast = '元';
+        //最大处理的数字
+        var maxNum = 999999999999999.9999;
+        //金额整数部分
+        var integerNum;
+        //金额小数部分
+        var decimalNum;
+        //输出的中文金额字符串
+        var chineseStr = '';
+        //分离金额后用的数组，预定义
+        var parts;
+        if (number == '') { return ''; }
+        var isMinus = number < 0;
+        number = Math.abs(parseFloat(number));
+        if (number >= maxNum) {
+            //超出最大处理数字
+            return '';
+        }
+        if (number == 0) {
+            chineseStr = cnNums[0] + cnIntLast + cnInteger;
+            return chineseStr;
+        }
+        //转换为字符串
+        number = number.toString();
+        if (number.indexOf('.') == -1) {
+            integerNum = number;
+            decimalNum = '';
+        } else {
+            parts = number.split('.');
+            integerNum = parts[0];
+            decimalNum = parts[1].substr(0, 4);
+        }
+        //获取整型部分转换
+        if (parseInt(integerNum, 10) > 0) {
+            var zeroCount = 0;
+            var IntLen = integerNum.length;
+            for (var i = 0; i < IntLen; i++) {
+            var n = integerNum.substr(i, 1);
+            var p = IntLen - i - 1;
+            var q = p / 4;
+            var m = p % 4;
+            if (n == '0') {
+                zeroCount++;
+            } else {
+                if (zeroCount > 0) {
+                chineseStr += cnNums[0];
+                }
+                //归零
+                zeroCount = 0;
+                chineseStr += cnNums[parseInt(n)] + cnIntRadice[m];
+            }
+            if (m == 0 && zeroCount < 4) {
+                chineseStr += cnIntUnits[q];
+            }
+            }
+            chineseStr += cnIntLast;
+        }
+        //小数部分
+        if (decimalNum != '') {
+            var decLen = decimalNum.length;
+            for (var i = 0; i < decLen; i++) {
+            var n = decimalNum.substr(i, 1);
+            if (n != '0') {
+                chineseStr += cnNums[Number(n)] + cnDecUnits[i];
+            }
+            }
+        }
+        if (chineseStr == '') {
+            chineseStr += cnNums[0] + cnIntLast + cnInteger;
+        } else if (decimalNum == '') {
+            chineseStr += cnInteger;
+        }
+        if(isMinus){
+            chineseStr = '负' + chineseStr
+        }
+        return chineseStr;
+    }
+})
+
+__define__('src/core/events', function(){
+    return function(opts){
+        var self = this, that = opts || self,
+            constr = that.constructor,
+            isComponent = constr && constr.__component_name,
+            elem = self.element || that.element || Nui.doc, 
+            events = isComponent ? that._events : that.events;
+            
+        if(!elem || !events){
+            return that
+        }
+
+        if(typeof events === 'function'){
+            events = events.call(that)
+        }
+
+        if(!(elem instanceof jQuery)){
+            elem = jQuery(elem)
+        }
+
+        var evt, ele, ret;
+        var callback = function(e, elem, cbs){
+            if(typeof cbs === 'function'){
+                cbs.call(that, e, elem);
+            }
+            else{
+                var _cb, _that;
+                Nui.each(cbs, function(cb, i){
+                    if(typeof (_cb = that[cb]) === 'function'){
+                        _that = that;
+                    }
+                    else if(typeof (_cb = self[cb]) === 'function'){
+                        _that = self;
+                    }
+                    if(_that){
+                        return ret = _cb.call(_that, e, elem, ret);
+                    }
+                })
+            }
+        }
+
+        Nui.each(events, function(cbs, evts){
+            if(cbs && (typeof cbs === 'string' || typeof cbs === 'function')){
+                if(typeof cbs === 'string'){
+                    cbs = Nui.trim(cbs).split(/\s+/);
+                }
+                evts = Nui.trim(evts).split(/\s+/);
+                // keyup:kupdown:focus a => elem.on('keyup kupdown focus', 'a', callback)
+                evt = evts.shift().replace(/:/g, ' ');
+                ele = evts.join(' ');
+                //组件内部处理
+                if(isComponent){
+                    that._on(evt, elem, ele, function(e, elem){
+                        callback(e, elem, cbs)
+                    })
+                }
+                else{
+                    elem.on(evt, ele, function(e){
+                        callback(e, jQuery(this), cbs)
+                    })
+                }
+            }
+        })
+        return that
+    }
+})
+/**
+ * @author Aniu[2016-11-11 16:54]
+ * @update Aniu[2016-11-11 16:54]
+ * @version 1.0.1
+ * @description 模版引擎
+ */
+
+__define__('src/core/template', ['src/core/util'], function(util){
+
+    var template = function(tplid, data, opts){
+        if(this.tplid = tplid){
+            if(caches[tplid]){
+                return render.call(this, caches[tplid], data, opts)
+            }
+            var ele = document.getElementById(tplid);
+            if(ele && ele.nodeName==='SCRIPT' && ele.type === 'text/html'){
+                return render.call(this, caches[tplid] = ele.innerHTML, data, opts)
+            }
+        }
+        return ''
+    }
+
+    var caches = {};
+
+    var options = {
+        openTag:'<%',
+        closeTag:'%>'
+    }
+
+    var methods = {
+        trim:Nui.trim,
+        formatDate:util.formatDate,
+        formatNumber:util.formatNumber,
+        setParam:util.setParam,
+        toFixed:util.toFixed,
+        numberToCN:util.numberToCN
+    }
+
+    var isstr = !!''.trim;
+
+    var snippet = ';$that.out = function(){return $that.code';
+
+    //低版本IE用push拼接字符串效率更高
+    snippet = (isstr ? '""'+snippet : '[]'+snippet+'.join("")')+'}';
+
+    var join = function(iscode){
+        if(isstr){
+            if(iscode){
+                return function(code){
+                    return '$that.code += '+code+';'
+                }
+            }
+            return function(code, snippet){
+                return code += snippet
+            }
+        }
+        if(iscode){
+            return function(code){
+                return '$that.code.push('+code+');'
+            }
+        }
+        return function(code, snippet){
+            code.push(snippet);
+            return code
+        }
+    }
+
+    var joinCode = join(true);
+
+    var joinSnippet = join();
+
+    var replaceInclude = function(tpl, openTag, closeTag, opts){
+        var that = this;
+        var regs = openTag.replace(/([^\s])/g, '\\$1');
+        var rege = closeTag.replace(/([^\s])/g, '\\$1');
+        return tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tid){
+            if(tid){
+                var tmp = that[tid];
+                if(typeof tmp === 'function'){
+                    tmp = tmp();
+                }
+                if(typeof tmp === 'string'){
+                    return render.call(that, tmp, null, opts)
+                }
+                else{
+                    return template(tid, null, opts)
+                }
+            }
+            return ''
+        })
+    }
+
+    //部分浏览器中表单对象name属性如果和模版中需要使用的变量重名，而这个变量又不存在，返回值就会变成该dom....
+    var isNode = typeof HTMLElement === 'object' ? 
+    function(obj){
+        return obj instanceof HTMLElement;
+    } : 
+    function(obj){
+        return obj.nodeType === 1 && typeof obj.nodeName === 'string';
+    };
+    var isDom = function(obj){
+        if(obj && typeof obj === 'object'){
+            //元素集合
+            var ele = obj[0];
+            if(ele){
+                return isNode(ele)
+            }
+            //元素
+            return isNode(obj)
+        }
+    }
+
+    var render = function(tpl, data, opts){
+        var that = this;
+        if(typeof tpl === 'string'){
+            opts = opts || {};
+            var openTag = opts.openTag || options.openTag, closeTag = opts.closeTag || options.closeTag;
+            tpl = replaceInclude.call(that, tpl, openTag, closeTag);
+            if(data && typeof data === 'object'){
+                if(Nui.isArray(data)){
+                    data = {
+                        $list:data
+                    }
+                }
+                var code = isstr ? '' : [];
+                tpl = tpl.replace(/\s+/g, ' ');
+                Nui.each(tpl.split(openTag), function(val, key){
+                    val = val.split(closeTag);
+                    if(key >= 1){
+                        code = joinSnippet(code, compile(Nui.trim(val[0]), true))
+                    }
+                    else{
+                        val[1] = val[0];
+                    }
+                    code = joinSnippet(code, compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"')))
+                });
+
+                var variables = isstr ? '' : [];
+
+                for(var k in data){
+                    variables = joinSnippet(variables, k+'=$data.'+k+',')
+                }
+
+                if(!isstr){
+                    code = code.join('');
+                    variables = variables.join('');
+                }
+
+                code = 'var '+ variables +'$that=this,$method=$that.methods; $that.line=4; $that.code='+ snippet +';\ntry{\n' + code + ';}\ncatch(e){\n$that.error(e, $that.line)\n};';
+                
+                try{
+                    var Rander = new Function('$data', code);
+                    Rander.prototype.methods = methods;
+                    Rander.prototype.error = error(code, data, that.tplid);
+                    Rander.prototype.dom = isDom;
+                    tpl = new Rander(data).out();
+                    Rander = null
+                }
+                catch(e){
+                    error(code, data, that.tplid)(e)
+                }
+                
+            }
+            return tpl
+        }
+        return ''
+    }
+
+    var error = function(code, data, tplid){
+        return function(e, line){
+            var msg = '\n';
+            var codes = [];
+            code = 'function anonymous($data){\n'+code+'\n}';
+            code = code.split('\n');
+            Nui.each(code, function(v, k){
+                codes.push((k+1)+ '      ' +v.replace('$that.line++;', ''))
+            })
+            msg += 'code\n';
+            msg += codes.join('\n')+'\n\n';
+            if(typeof JSON !== undefined){
+                msg += 'data\n';
+                msg += JSON.stringify(data)+'\n\n'
+            }
+            if(tplid){
+                msg += 'templateid\n';
+                msg += tplid+'\n\n'
+            }
+            if(line){
+                msg += 'line\n';
+                msg += line+'\n\n'
+            }
+            msg += 'message\n';
+            msg += e.message;
+            console.error(msg)
+        }
+    }
+
+    var compile = function(tpl, logic){
+        if(!tpl){
+            return ''
+        }
+        var code,res;
+        if(logic){
+            if((res = match(tpl, 'if')) !== undefined){
+                code = 'if('+exists(res)+'){'
+            }
+            else if((res = match(tpl, 'elseif')) !== undefined){
+                code = '\n}\nelse if('+exists(res)+'){'
+            }
+            else if(tpl === 'else'){
+                code = '\n}\nelse{'
+            }
+            else if(tpl === '/if'){
+                code = '}'
+            }
+            else if((res = match(tpl, 'each ', /\s+/)) !== undefined){
+                code = 'Nui.each('+ res[0] +', function('+(res[1]||'$value')+','+(res[2]||'$index')+'){'
+            }
+            else if(tpl === '/each'){
+                code = '});'
+            }
+            else if((res = match(tpl, ' | ', /\s*,\s*/)) !== undefined){
+                var str = res[0];
+                var i = str.lastIndexOf('(');
+                var _call = '(' +exists(res.slice(1).toString()) +')';
+                //赋值操作必须要用括号包裹起来
+                if(i !== -1){
+                    var start = str.substr(0, i);
+                    var end = Nui.trimLeft(str.substr(i+1));
+                    code = joinCode(start+'($that.methods.' + end + _call)
+                }
+                else{
+                    code = joinCode('$that.methods.'+ str + _call)
+                }
+            }
+            else if(/^(var|let|const|return|delete)\s+/.test(tpl)){
+                code = exists(tpl)+';'
+            }
+            else{
+                code = joinCode(exists(tpl, true))
+            }
+        }
+        else{
+            code = joinCode('\''+tpl+'\'')
+        }
+        return code + '\n' + '$that.line++;'
+    }
+
+    //判断变量是否存在
+    //a.b??  a[b]??  a['b']??  a[b['c']]??
+    var exists = function(code, isVal){
+        return code.replace(/([\.\$\w]+\s*(\[[\'\"\[\]\w\.\$\s]+\])?)\?\?/g, function(a, b){
+            var rep = '(typeof '+ b + '!=="undefined"&&'+ b +'!==null&&'+ b +'!==undefined&&!$that.dom('+ b +')';
+            if(isVal){
+                rep += '?' + b + ':' + '""';
+            }
+            return rep + ')'
+        })
+    }
+
+    var match = function(str, syntax, regexp){
+        var replace;
+        if(str.indexOf(syntax) === 0){
+            replace = ''
+        }
+        else if(syntax === ' | ' && str.indexOf(syntax) > 0){
+            replace = ','
+        }
+        if(replace !== undefined){
+            str = Nui.trimLeft(str.replace(syntax, replace));
+            return regexp ? str.split(regexp) : str
+        }
+    }
+
+    template.method = function(name, callback){
+        if(!methods[name]){
+            methods[name] = callback
+        }
+    }
+
+    template.config = function(){
+        var args = arguments;
+        if(Nui.type(args[0], 'Object')){
+            Nui.each(args[0], function(v, k){
+                options[k] = v
+            })
+        }
+        else if(args.length > 1 && typeof args[0] === 'string'){
+            options[args[0]] = args[1]
+        }
+    }
+
+    template.render = render;
+
+    return template
+})
+
+/**
+ * @author Aniu[2016-11-11 16:54]
+ * @update Aniu[2016-11-11 16:54]
+ * @version 1.0.1
+ * @description 组件基类
+ */
+
+__define__('src/core/component', ['src/core/template', 'src/core/events'], function(tpl, events){
+    var module = this;
+    var require = this.require;
+    var extend = this.extend;
+    var callMethod = function(method, args, obj){
+        //实参大于形参，最后一个实参表示id
+        if(args.length > method.length){
+            var id = args[args.length-1];
+            if(id && Nui.type(id, ['String', 'Number']) && obj._options.id !== id && obj.__id !== id){
+                return
+            }
+        }
+        method.apply(obj, args)
+    }
+    //去除IE67按钮点击黑边
+    if(Nui.bsie7){
+        Nui.doc.on('focus', 'button, input[type="button"]', function(){
+            this.blur()
+        })
+    }
+    /**
+     * 单和双下划线开头表示私有方法或者属性，只能在内部使用，
+     * 单下划线继承后可重写或修改，双下划线为系统预置无法修改
+     * 系统预置属性方法：__id, __instances, __eventList, __parent, __component_name, __setMethod
+     */
+    var statics = {
+        //实例对象唯一标记
+        __id:0,
+        //实例对象容器
+        __instances:{},
+        /*
+        * 将实例方法接口设置为静态方法，这样可以操作多个实例，
+        * 默认有 init, option, reset, destroy
+        * init表示初始化组件，会查询容器内包含属性为 data-组件名-options的dom元素，并调用组件
+        */
+        __setMethod:function(apis, components){
+            var self = this;
+            Nui.each(apis, function(val, methodName){
+                if(self[methodName] === undefined){
+                    self[methodName] = function(){
+                        var self = this, args = arguments, container = args[0], name = self.__component_name;
+                        if(name && name !== 'component'){
+                            if(container && container instanceof jQuery){
+                                if(methodName === 'init'){
+                                    var mod = components[name];
+                                    if(mod){
+                                        container.find('[data-'+name+'-options]').each(function(){
+                                            //不能重复调用
+                                            if(this.nui && this.nui[name]){
+                                                return
+                                            }
+                                            var elem = jQuery(this);
+                                            var options = elem.data(name+'Options');
+                                            var _mod;
+                                            if(options && typeof options === 'string'){
+                                                if(/^{[\s\S]*}$/.test(options)){
+                                                    options = eval('('+ options +')');
+                                                }
+                                                else if(_mod = require(options, true)){
+                                                    if(typeof _mod.exports === 'function'){
+                                                        options = _mod.exports(elem)
+                                                    }
+                                                    else{
+                                                        options = _mod.exports;
+                                                    }
+                                                }
+                                            }
+                                            if(typeof options !== 'object'){
+                                                options = {};
+                                            }
+                                            mod(extend(options, {
+                                                target:elem
+                                            }))
+                                        })
+                                    }
+                                }
+                                else{
+                                    container.find('[nui_component_'+ name +']').each(function(){
+                                        var obj, method;
+                                        if(this.nui && (obj = this.nui[name]) && typeof (method = obj[methodName]) === 'function'){
+                                            callMethod(method, Array.prototype.slice.call(args, 1), obj)
+                                        }
+                                    })
+                                }
+                            }
+                            else{
+                                Nui.each(self.__instances, function(obj){
+                                    var method = obj[methodName];
+                                    if(typeof method === 'function'){
+                                        callMethod(method, args, obj)
+                                    }
+                                })
+                            }
+                        }
+                        else{
+                            Nui.each(components, function(v, k){
+                                if(k !== 'component' && typeof v[methodName] === 'function'){
+                                    v[methodName].apply(v, args)
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+            return self
+        },
+        //对所有实例设置默认选项
+        _options:{},
+        //创建组件模块时会调用一次，可用于在document上绑定事件操作实例
+        _init:jQuery.noop,
+        _jquery:function(elem){
+            if(elem instanceof jQuery){
+                return elem
+            }
+            return jQuery(elem)
+        },
+        _getSize:function(selector, dir, attr){
+            var size = 0;
+            attr = attr || 'border';
+            dir = dir || 'tb';
+            if(attr === 'all'){
+                return (this._getSize(selector, dir) + 
+                        this._getSize(selector, dir, 'padding') +
+                        this._getSize(selector, dir, 'margin'))
+            }
+            var group = {
+                l:['Left'],
+                r:['Right'],
+                lr:['Left', 'Right'],
+                t:['Top'],
+                b:['Bottom'],
+                tb:['Top', 'Bottom']
+            }
+            var arr = [{
+                border:{
+                    l:['LeftWidth'],
+                    r:['RightWidth'],
+                    lr:['LeftWidth', 'RightWidth'],
+                    t:['TopWidth'],
+                    b:['BottomWidth'],
+                    tb:['TopWidth', 'BottomWidth']
+                }
+            }, {
+                padding:group
+            }, {
+                margin:group
+            }];
+            Nui.each(arr, function(val){
+                if(val[attr]){
+                    Nui.each(val[attr][dir], function(v){
+                        var value = parseFloat(selector.css(attr+v));
+                        size += isNaN(value) ? 0 : value
+                    });
+                }
+            });
+            return size
+        },
+        _$fn:function(name, mod){
+            jQuery.fn[name] = function(){
+                var args = arguments;
+                var options = args[0];
+                return this.each(function(){
+                    if(typeof options !== 'string'){
+                        if(Nui.type(options, 'Object')){
+                            options.target = this
+                        }
+                        else{
+                            options = {
+                                target:this
+                            }
+                        }
+                        mod(options);
+                    }
+                    else if(options){
+                        var object;
+                        if(this.nui && (object=this.nui[name]) && options.indexOf('_') !== 0){
+                            if(options === 'options'){
+                                object.option(args[1], args[2])
+                            }
+                            else{
+                                var attr = object[options];
+                                if(typeof attr === 'function'){
+                                    attr.apply(object, Array.prototype.slice.call(args, 1))
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+        },
+        _$ready:function(name, mod){
+            if(typeof this.init === 'function'){
+                this.init(Nui.doc)
+            }
+        },
+        config:function(){
+            var args = arguments;
+            var len = args.length;
+            var attr = args[0];
+            if(Nui.type(attr, 'Object')){
+                return this._options = jQuery.extend(true, this._options, attr)
+            }
+            else if(Nui.type(attr, 'String')){
+                if(args.length === 1){
+                    return this._options[attr]
+                }
+                return this._options[attr] = args[1]
+            }
+        },
+        hasInstance:function(id){
+            var exist = false;
+            var instances = this.__instances;
+            if(id){
+                Nui.each(instances, function(v){
+                    if(v._options.id === id){
+                        exist = true;
+                        return false
+                    }
+                })
+            }
+            else{
+                for(i in instances){
+                    return true
+                }
+            }
+            return exist
+        }
+    }
+
+    return ({
+        _static:statics,
+        _options:{
+            target:null,
+            //组件id，element会增加class 组件名-组件id
+            id:'',
+            //组件皮肤，element会增加class nui-组件名-皮肤名
+            skin:'',
+            //element增加一个或多个类
+            className:'',
+            onInit:null,
+            onReset:null,
+            onDestroy:null
+        },
+        _template:{},
+        _init:function(){
+            this._exec()
+        },
+        _exec:jQuery.noop,
+        _getTarget:function(){
+            var self = this;
+            if(!self.target){
+                var target = self._options.target;
+                var _class = self.constructor;
+                if(!target){
+                    return null
+                }
+                target = _class._jquery(target);
+                self.target = self._bindComponentName(target);
+            }
+            return self.target
+        },
+        _bindComponentName:function(element){
+            var self = this, _class = self.constructor;
+            var attr = 'nui_component_'+_class.__component_name;
+            element.attr(attr, '').each(function(){
+                if(!this.nui){
+                    this.nui = {};
+                }
+                this.nui[_class.__component_name] = self
+            })
+            return element
+        },
+        _tplData:function(data){
+            var opts = this._options, 
+                _class = this.constructor,
+                name = 'nui-' + _class.__component_name, 
+                skin = Nui.trim(opts.skin),
+                getName = function(_class, arrs){
+                    if(_class.__parent){
+                        var _pclass = _class.__parent.constructor;
+                        var _name = _pclass.__component_name;
+                        if(_name !== 'component'){
+                            if(skin){
+                                arrs.unshift('nui-'+_name+'-'+skin);
+                            }
+                            arrs.unshift('nui-'+_name);
+                            return getName(_pclass, arrs)
+                        }
+                    }
+                    return arrs
+                }, className = getName(_class, []);
+
+            className.push(name);
+            if(skin){
+                className.push(name+'-'+skin)
+            }
+            if(opts.id){
+                className.push(_class.__component_name + '-' + opts.id)
+            }
+            if(!data){
+                data = {}
+            }
+            if(opts.className){
+                className.push(opts.className)
+            }
+            data.className = className.join(' ');
+            return data
+        },
+        _event:function(){
+            var self = this, opts = self._options;
+            if(self.element && opts.events){
+                opts.element = self.element;
+                events.call(self, opts)
+            }
+            return events.call(self)
+        },
+        _on:function(type, dalegate, selector, callback, trigger){
+            var self = this;
+            if(typeof selector === 'function'){
+                trigger = callback;
+                callback = selector;
+                selector = dalegate;
+                dalegate = null;
+                selector = self.constructor._jquery(selector)
+            }
+
+            var _callback = function(e){
+                return callback.call(this, e, jQuery(this))
+            }
+
+            if(dalegate){
+                if(typeof selector !== 'string'){
+                    selector = selector.selector;
+                    if(!selector){
+                        selector = self._options.target
+                    }
+                }
+                dalegate.on(type, selector, _callback);
+                if(trigger){
+                    dalegate.find(selector).trigger(type)
+                }
+            }
+            else{
+                selector.on(type, _callback);
+                if(trigger){
+                    selector.trigger(type)
+                }
+            }
+
+            self.__eventList.push({
+                dalegate:dalegate,
+                selector:selector,
+                type:type,
+                callback:_callback
+            });
+
+            return self
+        },
+        _off:function(){
+            var self = this, _eventList = self.__eventList;
+            Nui.each(_eventList, function(val, key){
+                if(val.dalegate){
+                    val.dalegate.off(val.type, val.selector, val.callback)
+                }
+                else{
+                    val.selector.off(val.type, val.callback)
+                }
+                _eventList[key] = null;
+                delete _eventList[key]
+            });
+            self.__eventList = [];
+            return self
+        },
+        _delete:function(){
+            var self = this, _class = self.constructor;
+            if(self.target){
+                var attr = 'nui_component_'+_class.__component_name;
+                self.target.removeAttr(attr).each(function(){
+                    if(this.nui){
+                        this.nui[_class.__component_name] = null;
+                        delete this.nui[_class.__component_name];
+                    }
+                })
+            }
+            _class.__instances[self.__id] = null;
+            delete _class.__instances[self.__id]
+        },
+        _reset:function(){
+            this._off();
+            if(this.element){
+                this.element.remove();
+                this.element = null;
+            }
+            return this
+        },
+        _tpl2html:function(id, data){
+            var opts = {
+                openTag:'<%',
+                closeTag:'%>'
+            }
+            if(arguments.length === 1){
+                return tpl.render(this._template, id, opts)
+            }
+            return tpl.render.call(this._template, this._template[id], data, opts)
+        },
+        _callback:function(method, args){
+            var self = this, opts = self._options;
+            var callback = opts['on'+method];
+            if(typeof callback === 'function'){
+                if(args){
+                    Array.prototype.unshift.call(args, self);
+                    return callback.apply(opts, args);
+                }
+                return callback.call(opts, self)
+            }
+        },
+        option:function(opts, isOriginal){
+            var args = arguments;
+            var isdef = false;
+            var options;
+            if(args[0] === true){
+                isdef = true
+            }
+            else if(jQuery.isPlainObject(args[0])){
+                options = args[0]
+                isdef = args[1]
+            }
+            else if(args.length > 1 && typeof args[0] === 'string'){
+                options = {};
+                options[args[0]] = args[1]
+                isdef = args[2]
+            }
+            if(options||isdef){
+                this._options = jQuery.extend(true, {}, this[isdef === true ? '_defaultOptions' : '_options'], options)
+                this._reset();
+                this._exec();
+            }
+            return this
+        },
+        reset:function(){
+            this.option(true);
+            this._callback('Reset');
+            return this;
+        },
+        destroy:function(){
+            this._delete();
+            this._reset();
+            this._callback('Destroy');
+        }
+    })
+})
+
+__define__('src/components/datagrid',function(){
+    var module = this;
+    var component = module.require('src/core/component');
+    var util = module.require('src/core/util');
+
+    var scrollBarWidth = (function(){
+        var oldWidth, newWidth, div = document.createElement('div');
+        div.style.cssText = 'position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;';
+        oldWidth = document.body.appendChild(div).clientWidth;
+        div.style.overflowY = 'scroll';
+        newWidth = div.clientWidth;
+        document.body.removeChild(div);
+        return oldWidth - newWidth;
+    })()
+
+    return module.extend(component, {
+        _static:{
+            _init:function(){
+                var self = this;
+                Nui.doc.on('click', function(e){
+                    var isRow = $(e.target).closest('tr').hasClass('table-row');
+                    Nui.each(self.__instances, function(val){
+                        if(!isRow && val.element && val._activeElem){
+                            val._callback('CancelActive', [e, val._activeElem])
+                            val._activeElem.removeClass('s-crt');
+                            delete val._activeElem;
+                            if(val._activeFixedElem){
+                                val._activeFixedElem.removeClass('s-crt');
+                                delete val._activeFixedElem
+                            }
+                        }
+                    })
+                });
+
+                var timer = null;
+                Nui.win.on('resize', function(){
+                    clearTimeout(timer);
+                    timer = setTimeout(function(){
+                        Nui.each(self.__instances, function(val){
+                            if(val._options.height === '100%'){
+                                val.resize()
+                            }
+                        })
+                    }, 80)
+                })
+            },
+            _hasChildren:function(value){
+                return Nui.isArray(value.children) && value.children.length
+            },
+            //获取合并单元格数
+            _colspan:function(array, count){
+                var self = this;
+                if(count === undefined){
+                    count = 0
+                }
+                Nui.each(array, function(v){
+                    if(self._hasChildren(v)){
+                        count += self._colspan(v.children)
+                    }
+                    else{
+                        count += 1
+                    }
+                })
+                return count
+            }
+        },
+        _options:{
+            container:null,
+            data:null,
+            columns:null,
+            isFixed:true,
+            isLine:false,
+            isActive:true,
+            isBorder:true,
+            //初始化时是否调用分页
+            isPaging:true,
+            isDir:false,
+            keyCode:[9, 13],
+            url:null,
+            //分页配置
+            paging:null,
+            fields:null,
+            dataField:'list',
+            width:'100%',
+            height:'100%',
+            footer:'',
+            placeholder:'',
+
+            onFocusin:null,
+            onFocusout:null,
+            onFocus:null,
+            onBlur:null,
+
+            stringify:null,
+            rowRender:null,
+            onActive:null,
+            onCancelActive:null,
+            onRowRender:null,
+            onRowClick:null,
+            onRowDblclick:null,
+            onCheckboxChange:null,
+            onRender:null,
+            onRenderBefore:null,
+            onScroll:null
+        },
+        _template:{
+            layout:
+                '<div class="<% className %>">'+
+                    '<div class="datagrid-body<%if isFixed%> datagrid-fixed<%/if%>">'+
+                        '<%include "table"%>'+
+                    '</div>'+
+                    '<%if footer || paging%>'+
+                    '<div class="datagrid-foot">'+
+                        '<%if footer%>'+
+                        '<%footer%>'+
+                        '<%/if%>'+
+                        '<%if paging%>'+
+                        '<div class="datagrid-paging"></div>'+
+                        '<%/if%>'+
+                    '</div>'+
+                    '<%/if%>'+
+                '</div>',
+            table:
+                '<%each rows v k%>'+
+                    '<%if v.length%>'+
+                    '<div class="datagrid-table<%if k === "left" || k === "right"%> datagrid-table-fixed<%/if%> datagrid-table-<%k%>">'+
+                        '<%if !isFixed%>'+
+                            '<div class="datagrid-box">'+
+                            '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
+                                '<%include "thead"%>'+
+                                '<tbody class="table-tbody datagrid-tbody"></tbody>'+
+                            '</table>'+
+                            '</div>'+
+                        '<%else%>'+
+                            '<div class="datagrid-title">'+
+                                '<div class="datagrid-thead">'+
+                                '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
+                                    '<%include "thead"%>'+
+                                '</table>'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="datagrid-box">'+
+                                '<table class="ui-table<%if !isBorder%> ui-table-nobd<%/if%>">'+
+                                '<tbody class="table-tbody datagrid-tbody"></tbody>'+
+                                '</table>'+
+                            '</div>'+
+                        '<%/if%>'+
+                    '</div>'+
+                    '<%/if%>'+
+                '<%/each%>',
+            thead:
+                '<colgroup>'+
+                    '<%each cols[k] col i%>'+
+                    '<col<%if col.width%> width="<%col.width%>"<%/if%>></col>'+
+                    '<%/each%>'+
+                '</colgroup>'+
+                '<thead class="table-thead">'+
+                    '<%each v%>'+
+                    '<tr class="table-row">'+
+                        '<%var cellLastIndex = $value.length-1%>'+
+                        '<%each $value val key%>'+
+                        '<%var isTitle = true%>'+
+                        '<%var _classNames = val.className%>'+
+                        '<%if typeof _classNames === "function"%>'+
+                            '<%if _classNames = Nui.trim(val.className()||"")%>'+
+                                '<%var _classNames = " " + _classNames%>'+
+                            '<%/if%>'+
+                        '<%/if%>'+
+                        '<th class="table-cell<%_classNames%> table-cell-<%key%><%if cellLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
+                            '<span class="cell-wrap"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>>'+
+                            '<span class="cell-text">'+
+                            '<%if val.title%>'+
+                            '<%val.title%>'+
+                            '<%if typeof val.order === "object"%>'+
+                            '<%var asc = Nui.type(val.order.asc, ["String", "Number"]), desc = Nui.type(val.order.desc, ["String", "Number"])%>'+
+                            '<em class="datagrid-order<%if asc && desc%> datagrid-order-both<%/if%>" field="<%val.order.field%>">'+
+                            '<%if asc%>'+
+                            '<b class="datagrid-order-asc" type="asc" value="<%val.order.asc%>"><i></i><s></s></b>'+
+                            '<%/if%>'+
+                            '<%if desc%>'+
+                            '<b class="datagrid-order-desc" value="<%val.order.desc%>"><i></i><s></s></b>'+
+                            '<%/if%>'+
+                            '</em>'+
+                            '<%/if%>'+
+                            '<%elseif val.content === "checkbox"%>'+
+                            '<span class="ui-checkradio">'+
+                            '<input type="checkbox" name="datagrid-checkbox-all" class="datagrid-checkbox datagrid-checkbox-choose">'+
+                            '</span>'+
+                            '<%/if%>'+
+                            '</span>'+
+                            '</span>'+
+                        '</th>'+
+                        '<%/each%>'+
+                    '</tr>'+
+                    '<%/each%>'+
+                '</thead>',
+            rows:
+                '<%if list && list.length%>'+
+                '<%var toLower = function(str){'+
+                    'return str.replace(/([A-Z])/g, function(a){'+
+                        'return "-"+a.toLowerCase()'+
+                    '})'+
+                '}%>'+
+                '<%each list%>'+
+                '<%var rowData = rowRender($value, $index)||{}%>'+
+                '<%var className = (rowData.className ? " "+rowData.className : "")%>'+
+                '<%delete rowData.className%>'+
+                '<tr class="table-row table-row-<%$index%><%className%>" row-pagenum="<%pageNum??%>" row-index="<%$index%>"<%include "data"%><%each rowData _v _n%> <%_n%>="<%_v%>"<%/each%>>'+
+                    '<%var colLastIndex = cols.length-1%>'+
+                    '<%each cols val key%>'+
+                    '<%var _value%>'+
+                    '<%if val.field && (!val.content || "number checkbox input".indexOf(val.content)===-1)%>'+
+                    '<%var _value=$value[val.field]%>'+
+                    '<%elseif val.content === "number"%>'+
+                    '<%var _value=$index+1%>'+
+                    '<%elseif val.content === "checkbox"%>'+
+                    '<%var _value={"name":val.field ? val.field : "datagrid-checkbox", "class":"datagrid-checkbox"+(!val.title ? " datagrid-checkbox-choose" : ""), "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
+                    '<%elseif val.content === "input"%>'+
+                    '<%var _value={"name":val.field ? val.field : "datagrid-input", "class":"datagrid-input", "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
+                    '<%else%>'+
+                    '<%var _value=val.content%>'+
+                    '<%/if%>'+
+                    '<%var _classNames = val.className%>'+
+                    '<%if typeof _classNames === "function"%>'+
+                        '<%if _classNames = Nui.trim(val.className(_value, val.field, $value, $index)||"")%>'+
+                            '<%var _classNames = " " + _classNames%>'+
+                        '<%/if%>'+
+                    '<%/if%>'+
+                    '<td class="table-cell<%_classNames%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
+                        '<%if typeof val.filter === "function"%>'+
+                        '<%var _value = val.filter(_value, val.field, $value, $index)%>'+
+                        '<%/if%>'+
+                        '<span class="cell-wrap<%if val.nowrap === true%> cell-nowrap<%/if%>"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>>'+
+                        '<span class="cell-text'+
+                            '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
+                            '<%if val.content === "input"%> cell-text-input<%/if%>"'+
+                            '<%if val.showtitle === true%> title="<%_value%>"<%/if%>>'+
+                        '<%if val.content === "checkbox" && typeof _value === "object"%>'+
+                        '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
+                        '<span class="ui-checkradio">'+
+                        '<input type="checkbox"<%include "_attr"%>>'+
+                        '</span>'+
+                        '<%elseif val.content === "input" && typeof _value === "object"%>'+
+                        '<input type="text" autocomplete="off"<%include "_attr"%>>'+
+                        '<%else%>'+
+                        '<%include "content"%>'+
+                        '<%/if%>'+
+                        '</span>'+
+                        '</span>'+
+                    '</td>'+
+                    '<%/each%>'+
+                '</tr>'+
+                '<%/each%>'+
+                '<%elseif type === "all"%>'+
+                '<tr>'+
+                    '<td class="table-cell table-cell-void" colspan="<%cols.length%>">'+
+                        '<span class="ui-void"><%placeholder??%></span>'+
+                    '</td>'+
+                '</tr>'+
+                '<%/if%>',
+            _attr:
+                '<%if !_value["class"]%>'+
+                '<%var _class = _value["class"] = ""%>'+
+                '<%/if%>'+
+                '<%if _value.className%>'+
+                '<%var _class = (_value["class"]+=" "+Nui.trim(_value.className))%>'+
+                '<%delete _value.className%>'+
+                '<%/if%>'+
+                '<%each _value _v _k%>'+
+                ' <%_k%>="<%_v%>"'+
+                '<%/each%>',
+            attr:
+                '<%each val value name%>'+
+                '<%if !isTitle?? && name === "style"%>'+
+                'style="<%each value _v _k%><%_k%>:<%_v%>;<%/each%>"'+
+                '<%elseif "width field colspan rowspan cellid".indexOf(name) !== -1%>'+
+                ' <%name%>="<%value%>"'+
+                '<%/if%>'+
+                '<%/each%>',
+            data:
+                '<%if fields%>'+
+                '<%each $value value field%>'+
+                '<%if fields === true || $.inArray(field, fields) !== -1%>'+
+                '<%var _value = stringify(value)%>'+
+                ' data-<%toLower(field)%>=<%if typeof _value !== "undefined"%><%_value%><%else%>"<%value%>"<%/if%>'+
+                '<%/if%>'+
+                '<%/each%>'+
+                '<%/if%>'
+        },
+        _exec:function(){
+            var self = this, opts = self._options, _class = self.constructor, container = opts.container;
+            if(container && Nui.isArray(opts.columns) && opts.columns.length){
+                self._container = _class._jquery(container);
+                self._columns = {
+                    all:[],
+                    left:[],
+                    right:[]
+                }
+                self._checked = false;
+                Nui.each(opts.columns, function(v, k){
+                    if(v.fixed === 'left' || v.fixed === true){
+                        self._columns.left.push(v)
+                    }
+                    else if(v.fixed === 'right'){
+                        self._columns.right.push(v)
+                    }
+                    self._columns.all.push(v)
+                })
+                self._keyCode = [];
+                if(opts.isDir === true){
+                    self._keyCode = self._keyCode.concat([37, 38, 39, 40]);
+                }
+                if(opts.keyCode){
+                    self._keyCode = self._keyCode.concat(opts.keyCode);
+                }
+                
+                self._create()
+            }
+        },
+        _create:function(){
+            var self = this, opts = self._options, _class = self.constructor;
+            self._rows = {};
+            self._cols = {};
+            self._colTemplates = {};
+            self._rowNumber = self._getRowNumber(opts.columns, 0, []);
+            self._setTemplate();
+            Nui.each(self._columns, function(v, k){
+                self._setRowCol(v, k)
+            })
+            
+            self._hasLeftRight = this._cols.left.length || this._cols.right.length;
+
+            self.element = self._bindComponentName($(self._tpl2html('layout', self._tplData({
+                cols:self._cols,
+                rows:self._rows,
+                isFixed:opts.isFixed === true,
+                isBorder:opts.isBorder === true,
+                paging:opts.paging && typeof opts.paging === 'object' && opts.paging.isPage !== false,
+                footer:opts.footer
+            }))).appendTo(self._container));
+
+            self.element.find('.table-thead .datagrid-checkbox').checkradio(self._checkradio());
+
+            self._body = self.element.children('.datagrid-body');
+            self._tableAll = self._body.children('.datagrid-table-all');
+            self._tableAllBox =  self._tableAll.find('.datagrid-box');
+            self._tableAllTitle = self._tableAll.children('.datagrid-title');
+            self._tableAllThead = self._tableAll.find('.datagrid-thead');
+            self._tableLeft = self._body.children('.datagrid-table-left');
+            self._tableRight = self._body.children('.datagrid-table-right');
+            self._tableFixed = self._body.children('.datagrid-table-fixed');
+            self._tableFixedBox = self._tableFixed.find('.datagrid-box');
+            self._foot = self.element.children('.datagrid-foot');
+            self._tableTbody = self._body.find('.datagrid-tbody');
+
+            if(opts.width){
+                self._tableAllThead.children().css('width', opts.width);
+                self._tableAllBox.children().css('width', opts.width);
+            }
+
+            self._theadHeight();
+            self._initList();
+            self._bindEvent();
+        },
+        _setTemplate:function(){
+            var self = this;
+            var tpl = '';
+            Nui.each(self._colTemplates, function(v, k){
+                tpl += '<%'+ (tpl ? 'else' : '') +'if ("content_"+val.cellid) === "'+ k +'"%><%include "'+ k +'"%>'
+            })
+            if(tpl){
+                tpl += '<%else%><%_value??%><%/if%>'
+            }
+            else{
+                tpl = '<%_value??%>'
+            }
+            self._template.content = tpl;
+        },
+        //获取表格标题行数
+        _getRowNumber:function(array, index, arr, cellid, parent){
+            var self = this, _class = self.constructor;
+            if(!arr[index]){
+                arr[index] = true;
+            }
+
+            if(cellid === undefined){
+                cellid = 0;
+            }
+            
+            Nui.each(array, function(v){
+                v.cellid = cellid++;
+                var order = v.order;
+                var className = v.className;
+                if(order === true){
+                    order = 'desc'
+                }
+                if(order === 'asc' || order === 'desc'){
+                    v.order = {};
+                    v.order[order] = 1;
+                }
+                if(v.order && !v.order.field){
+                    v.order.field = v.field
+                }
+
+                if(v.template === true){
+                    var tplid = 'content_'+v.cellid;
+                    self._template[tplid] = self._colTemplates[tplid] = v.filter || v.content;
+                }
+
+                if(!v.style){
+                    v.style = {};
+                }
+                
+                if(v.align){
+                    v.style['text-align'] = v.align;
+                }
+
+                if(v.valign){
+                    v.style['vertical-align'] = v.valign;
+                }
+
+                if(v.width){
+                    v.width = v.width.toString().replace(/px$/, '');
+                }
+
+                if(typeof className !== 'function'){
+                    if(!className){
+                        className = '';
+                    }
+    
+                    if(className){
+                        className = ' ' + Nui.trim(className);
+                    }
+    
+                    v.className = className;
+                }
+
+                if($.isEmptyObject(v.style)){
+                    delete v.style
+                }
+
+                if(parent && parent.fixed){
+                    v.fixed = parent.fixed
+                }
+
+                if(_class._hasChildren(v)){
+                    cellid = self._getRowNumber(v.children, index+1, arr, cellid, v)
+                }
+            })
+
+            if(parent){
+                return cellid
+            }
+
+            return arr.length
+        },
+        _initList:function(){
+            var self = this, opts = self._options;
+            if(opts.paging){
+                delete opts.paging.wrap;
+                opts.paging.wrap = self._foot.children('.datagrid-paging');
+                opts.paging.container = self._tableAllBox;
+                var pagingId = 'paging_'+self.__id;
+                var echoData = opts.paging.echoData;
+                opts.paging.echoData = function(data, type){
+                    if(self.element){
+                        self.data = data;
+                        self._render(type);
+                        if(typeof echoData === 'function'){
+                            echoData.call(opts, data, type)
+                        }
+                    }
+                }
+                self.paging = window[pagingId] = new Paging(opts.paging);
+
+                if(opts.isPaging === true){
+                    self.paging.query(true)
+                }
+            }
+            else if(opts.data){
+                self.data = opts.data;
+                self._render();
+            }
+        },
+        _bindEvent:function(){
+            var self = this, opts = self._options;
+            self._on('scroll', self._tableAllBox, function(e, elem){
+                self._scroll(elem);
+                self._callback('Scroll', [e, elem, {left:elem.scrollLeft(), top:elem.scrollTop()}]);
+            })
+            self._event()
+        },
+        _getList:function(){
+            var self = this, opts = self._options, field = opts.dataField, list = self.data, _list;
+            if(field && Nui.type(list, 'Object')){
+                Nui.each(field.split('.'), function(v){
+                    if(list[v]){
+                        list = list[v]
+                    }
+                    else{
+                        list = null;
+                        return false;
+                    }
+                })
+            }
+            if(_list = self._callback('RenderBefore', [list])){
+                if(Nui.type(_list, 'Array')){
+                    list = _list
+                }
+            }
+            return list||[]
+        },
+        _render:function(type){
+            var self = this, opts = self._options, rowHtml = '', isScroll = opts.paging && opts.paging.scroll && opts.paging.scroll.enable === true;
+            self.list = self._getList();
+            if(isScroll && type === 'reload'){
+                self.element.find('.datagrid-tbody [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
+            }
+            Nui.each(self._cols, function(v, k){
+                if(v.length){
+                    if(self.list.length && typeof opts.rowRender === 'function'){
+                        rowHtml = opts.rowRender.call(opts, self, self.list, v, k)
+                    }
+                    else{
+                        rowHtml = self._tpl2html('rows', {
+                            type:k,
+                            isFixed:opts.isFixed === true,
+                            cols:v,
+                            fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
+                            list:self.list,
+                            placeholder:opts.placeholder,
+                            pageNum:opts.paging && self.paging ? self.paging.current : undefined,
+                            checked:self._checked,
+                            stringify:function(val){
+                                if(typeof opts.stringify=== 'function'){
+                                    return opts.stringify.call(opts, val)
+                                }
+                            },
+                            rowRender:function(val, i){
+                                if(typeof opts.onRowRender === 'function'){
+                                    return opts.onRowRender.call(opts, self, val, i)
+                                }
+                                return opts.onRowRender
+                            }
+                        })
+                    }
+
+                    var tbody = self.element.find('.datagrid-table-'+k+' .datagrid-tbody');
+                    var elems;
+                    if(isScroll && (type === 'jump' || type === 'reload')){
+                        elems = $(rowHtml).appendTo(tbody);
+                    }
+                    else{
+                        elems = tbody.html(rowHtml);
+                    }
+                    elems.find('.datagrid-checkbox').checkradio(self._checkradio());
+                }
+            })
+            self._resetSize();
+            self._callback('Render');
+        },
+        _checkradio:function(){
+            var self = this, opts = self._options;
+            var callback = function(elem, e){
+                var className = 'datagrid-checkbox-choose';
+                if(elem.hasClass(className)){
+                    var checked = elem.prop('checked');
+                    if(!elem.closest('.datagrid-table').hasClass('datagrid-table-all')){
+                        self._tableAllBox.find('.table-row[row-index="'+ elem.closest('.table-row').attr('row-index') +'"]').find('.'+className).checkradio('checked', checked)
+                    }
+                    if(elem.attr('name') === 'datagrid-checkbox-all'){
+                        self._checked = checked;
+                        self._tableTbody.find('.'+ className +':enabled').checkradio('checked', checked)
+                    }
+                    else{
+                        var checked = self._tableTbody.find('.'+ className +':checked').length === self._tableTbody.find('.'+className).length;
+                        self._checked = checked;
+                        self._body.find('.table-thead .'+className).checkradio('checked', checked)
+                    }
+                }
+                self._callback('CheckboxChange', [e, elem]);
+            }
+            var _opts = {
+                callback:callback
+            }
+            return _opts;
+        },
+        _resetSize:function(){
+            var self = this, opts = self._options, _class = self.constructor;
+            self._rowHeight();
+            if(opts.height !== 'auto'){
+                var stop = self._tableAllBox.scrollTop();
+                self._tableAllBox.css('height', 'auto');
+                var conntailerHeight = self._container.height();
+                if(opts.height > 0){
+                    conntailerHeight = opts.height
+                }
+                var height = conntailerHeight - 
+                    self._tableAllTitle.outerHeight() - 
+                    _class._getSize(self._tableAllTitle, 'tb', 'margin') - 
+                    self._foot.outerHeight() - 
+                    _class._getSize(self._foot, 'tb', 'margin');
+                self._tableAllBox.height(height);
+                if(opts.isFixed === true){
+                    var table = self._tableAllBox.children();
+                    var barWidth = self._tableAllBox.height() >= table.outerHeight() ? 0 : scrollBarWidth;
+                    var fixedHeight = height;
+
+                    if(table.outerWidth() > self._tableAllBox.width()){
+                        fixedHeight -= scrollBarWidth;
+                    }
+                    
+                    if(Nui.browser.msie && Nui.browser.version <= 7 && opts.width === '100%'){
+                        table.width(self._tableAllBox.width() - barWidth)
+                    }
+
+                    self._tableFixedBox.height(fixedHeight);
+
+                    self._tableAllTitle.css({'margin-right':barWidth});
+
+                    self._tableRight.css('right', barWidth)
+                }
+                self._tableAllBox.scrollTop(stop);
+            }
+        },
+        _theadHeight:function(){
+            var self = this;
+            if(self._hasLeftRight){
+                self._tableFixed.find('.table-thead .table-cell').each(function(i){
+                    var item = $(this), cellid = item.attr('cellid');
+                    var elem = self._tableAll.find('.table-thead .table-cell[cellid="'+ cellid +'"]');
+                    var height = elem.height();
+                    var _height = item.height(height).height() - height;
+                    item.height(height - _height);
+                })
+            }
+        },
+        _rowHeight:function(){
+            var self = this;
+            if(self._hasLeftRight){
+                var LeftRow = self._tableLeft.find('.table-tbody .table-row');
+                var RightRow = self._tableLeft.find('.table-tbody .table-row');
+
+                self._tableAll.find('.table-tbody .table-row').each(function(i){
+                    var height = $(this).outerHeight();
+                    LeftRow.eq(i).height(height);
+                    RightRow.eq(i).height(height);
+                })
+            }
+        },
+        _setRowCol:function(array, type, row){
+            var self = this, opts = self._options, _class = self.constructor;
+            if(row === undefined){
+                row = 0;
+            }
+
+            if(!self._rows[type]){
+                self._rows[type] = []
+            }
+
+            if(!self._cols[type]){
+                self._cols[type] = []
+            }
+
+            if(array.length && !self._rows[type][row]){
+                self._rows[type][row] = []
+            }
+
+            Nui.each(array, function(v){
+                var hasChild = _class._hasChildren(v);
+                var data = {};
+
+                if(hasChild){
+                    data.colspan = _class._colspan(v.children);
+                    self._setRowCol(v.children, type, row + 1)
+                }
+
+                Nui.each(v, function(val, key){
+                    if(key !== 'children'){
+                        data[key] = val
+                    }
+                })
+
+                if(!hasChild){
+                    data.rowspan = self._rowNumber - row;
+                    self._cols[type].push(v)
+                }
+
+                self._rows[type][row].push(data)
+            })
+        },
+        _editInput:function(e, elem){
+            var dom = elem.get(0);
+            var keycode = e.keyCode;
+            if(keycode === 37 || keycode === 39){
+                var index = util.getFocusIndex(dom);
+                var edge;
+                if(keycode === 37){
+                    edge = index !== 0;
+                }
+                else{
+                    edge = index !== dom.value.length;
+                }
+                if(util.isTextSelect() || edge){
+                    return false
+                }
+            }
+        },
+        _horzFocus:function(e, elem, type, isTab){
+            var td = elem.closest('td.table-cell');
+            var _td = td[type]();
+            if(isTab){
+                e.preventDefault();
+            }
+            if(_td.length){
+                var input = _td.find('.datagrid-input');
+                if(input.length && !input.prop('readonly') && !input.prop('disabled')){
+                    input.focus();
+                    setTimeout(function(){
+                        input.select();
+                    })
+                }
+                else{
+                    this._horzFocus(e, _td.children(), type, isTab)
+                }
+            }
+            else{
+                var input;
+                var elems = td.closest('.table-row').children('td.table-cell');
+                if(type === 'prev'){
+                    $.each($.makeArray(elems).reverse(), function(k, v){
+                        var _input = $(v).find('.datagrid-input');
+                        if(_input.length){
+                            input = _input;
+                            return false;
+                        }
+                    });
+                }
+                else{
+                    elems.each(function(){
+                        var _input = $(this).find('.datagrid-input');
+                        if(_input.length){
+                            input = _input;
+                            return false;
+                        }
+                    })
+                }
+                if(input){
+                    this._verticalFocus(e, input, type)
+                }
+            }
+        },
+        _verticalFocus:function(e, elem, type){
+            var td = elem.closest('td.table-cell');
+            var index = td.index();
+            var tr = td.closest('.table-row')[type]();
+            if(tr.length){
+                var _td = tr.children('td.table-cell').eq(index);
+                var input = _td.find('.datagrid-input');
+                if(input.length && !input.prop('readonly') && !input.prop('disabled')){
+                    input.focus();
+                    setTimeout(function(){
+                        input.select();
+                    })
+                }
+                else{
+                    this._verticalFocus(e, _td.children(), type)
+                }
+            }
+            e.preventDefault();
+        },
+        _dirFocus:function(e, elem){
+            var self = this, keycode = e.keyCode;
+            if($.inArray(keycode, self._keyCode) !== -1){
+                switch(keycode){
+                    case 37:
+                        self._horzFocus(e, elem, 'prev')
+                        break;
+                    case 38:
+                        self._verticalFocus(e, elem, 'prev')
+                        break;
+                    case 39:
+                        self._horzFocus(e, elem, 'next')
+                        break;
+                    case 40:
+                        self._verticalFocus(e, elem, 'next')
+                        break;
+                    default:
+                        self._horzFocus(e, elem, 'next', true)
+                }
+            }
+        },
+        _events:{
+            'click .table-tbody .table-row':'_getRowData _active',
+            'mouseenter .table-tbody .table-row':function(e, elem){
+                if(this._tableFixed.length){
+                    this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover');
+                }
+                elem.addClass('s-hover');
+                this._callback('RowMouseover', [e, elem]);
+            },
+            'mouseleave .table-tbody .table-row':function(e, elem){
+                if(this._tableFixed.length){
+                    this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').removeClass('s-hover');
+                }
+                elem.removeClass('s-hover');
+                this._callback('RowMouseout', [e, elem]);
+            },
+            'dblclick .table-tbody .table-row':'_getRowData _rowdblclick',
+            'focus .datagrid-input':'_enable _getRowData _focus',
+            'blur .datagrid-input':'_enable _getRowData _blur',
+            'focusin .table-tbody .table-cell':'_focusin',
+            'focusout .table-tbody .table-cell':'_focusout',
+            'click .datagrid-order > b':'_order',
+            'keydown .datagrid-input':'_editInput _dirFocus'
+        },
+        _order:function(e, elem){
+            elem.toggleClass('s-crt');
+            elem.siblings().removeClass('s-crt');
+            var parent = elem.parent();
+            var field = parent.attr('field');
+            var value = parent.children('b.s-crt').attr('value');
+            if(this.paging){
+                this.paging.condition[field] = value;
+                this.paging.query(true)
+            }
+        },
+        _enable:function(e, elem){
+            if(elem.prop('readonly') || elem.prop('disabled')){
+                e.stopPropagation();
+                return false
+            }
+        },
+        _active:function(e, elem, data){
+            var self = this;
+            self._callback('RowClick', [e, elem, data]);
+            if(self._options.isActive === true){
+                self.cancelActive();
+                self._activeElem = elem.addClass('s-crt');
+                if(self._tableFixed.length){
+                    self._activeFixedElem = self._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-crt');
+                }
+                self._callback('Active', [e, elem, data]);
+            }
+        },
+        _getRowData:function(e, elem){
+            if(elem.hasClass('table-row')){
+                return elem.data()
+            }
+            return elem.closest('.table-row').data()
+        },
+        _focus:function(e, elem, data){
+            this._active(e, elem.closest('.table-row'), data)
+            return this._callback('Focus', arguments)
+        },
+        _blur:function(e, elem, data){
+            return this._callback('Blur', arguments)
+        },
+        _focusin:function(e, elem){
+            elem.addClass('s-focus');
+            return this._callback('Focusin', arguments)
+        },
+        _focusout:function(e, elem){
+            elem.removeClass('s-focus');
+            return this._callback('Focusout', arguments)
+        },
+        _rowdblclick:function(e, elem, data){
+            return this._callback('RowDblclick', arguments)
+        },
+        _scroll:function(elem){
+            var self = this;
+            var scrollTop = elem.scrollTop();
+            var scrollLeft = elem.scrollLeft();
+            self._tableFixedBox.scrollTop(scrollTop);
+            self._tableAllThead.scrollLeft(scrollLeft);
+        },
+        resize:function(){
+            this._theadHeight();
+            this._resetSize();
+            this._callback('Resize')
+        },
+        scrollTo:function(x, y){
+            var elem = this._tableAllBox;
+            elem.scrollTop(y||0);
+            elem.scrollLeft(x||0);
+        },
+        cancelActive:function(){
+            if(this._options.isActive === true && this._activeElem){
+                this._activeElem.removeClass('s-crt');
+                delete this._activeElem
+            }
+        },
+        checkedData:function(field){
+            var self = this;
+            var data = [];
+            self._tableAllBox.find('.datagrid-checkbox-choose:checked').each(function(){
+                var _data = $(this).closest('.table-row').data();
+                if(field){
+                    data.push(_data[field]);
+                }
+                else{
+                    data.push(_data);
+                }
+            })
+            return data;
+        }
+    })
+})
+__define__('pages/components/datagrid/script/checkradio',function(require,imports,renders,extend,exports){
+	var module=this;
+	/**
+	 * @filename jquery.checkradio.js
+	 * @author Aniu[2016-04-27 14:00]
+	 * @update Aniu[2016-08-23 22:44]
+	 * @version v1.4
+	 * @description 模拟单选复选框
+	 */
+	
+	;!(function($, undefined){
+	    $.fn.checkradio = function(attr, value){
+			if(!attr || $.isPlainObject(attr)){
+				var o = $.extend({
+					/**
+					 * @func 配置开关按钮
+					 * @type <Object>
+					 */
+					switches:{
+						off:'',
+						on:''
+					},
+					/**
+					 * @func 点击元素状态改变前回调，如返回值为false则将阻止状态改变
+					 * @type <Function>
+					 * @return <undefined, Boolean>
+					 */
+					beforeCallback:$.noop,
+					/**
+					 * @func 点击元素状态改变后回调
+					 * @type <Function>
+					 */
+					callback:$.noop
+				}, attr||{});
+				return this.each(function(){
+					var me = $(this);
+					var checkradio = me.closest('.ui-checkradio');
+					if(!checkradio.length){
+						return;
+					}
+					var checked = me.prop('checked') ? ' s-checked' : '';
+					var disabled = me.prop('disabled') ? ' s-dis' : '';
+					var name = me.attr('name');
+					var switches = $.extend({}, o.switches, me.data()||{});
+					var switchElem = checkradio.find('.text');
+					var type = 'radio';
+					if(me.is(':checkbox')){
+						type = 'checkbox';
+					}
+					if(checkradio.children().attr('checkname')){
+						checkradio.children().attr('class', 'ui-'+ type + checked + disabled);
+					}
+					else{
+						if(switches.off && switches.on){
+							checkradio.addClass('ui-switches');
+							switchElem = $('<s class="text">'+ (me.prop('checked') ? switches.on : switches.off) +'</s>').insertBefore(me);
+						}
+						me.css({position:'absolute', top:'-999em', left:'-999em', opacity:0}).wrap('<i></i>');
+						checkradio.wrapInner('<em class="ui-'+ type + checked + disabled +'" checkname="'+ name +'"></em>')
+						.children().click(function(e){
+							var ele = $(this);
+							if(me.is(':disabled') || o.beforeCallback(me, e) === false){
+								return;
+							}
+							if(me.is(':checkbox')){
+								var checked = me.prop('checked');
+								me.prop('checked', !checked);
+								ele[(checked ? 'remove' : 'add') + 'Class']('s-checked');
+								if(switchElem.length){
+									switchElem.text(checked ? switches.off : switches.on);
+								}
+							}
+							else{
+								if(me.prop('checked')){
+									return
+								}
+								me.prop('checked', true);
+								$('.ui-radio[checkname="'+ name +'"]').removeClass('s-checked');
+								ele.addClass('s-checked');
+							}
+							o.callback(me, e)
+						});
+					}
+					if(o.init && !me.is(':disabled') && o.beforeCallback(me) !== false){
+						o.callback(me, 'init')
+					}
+				});
+			}
+			else{
+				return $(this).prop(attr, value == true).checkradio();
+			}
+	    }
+	})(jQuery);
+});
+__define__('pages/components/datagrid/script/paging',function(require,imports,renders,extend,exports){
+	var module=this;
+	/**
+	 * @filename jquery.paging.js
+	 * @author Aniu[2014-03-29 10:07]
+	 * @update Aniu[2016-12-06 11:23]
+	 * @version v2.9.1
+	 * @description 分页组件
+	 */
+	
+	;!(function(window, document, $, undefined){
+	    var resize = function(){
+	        
+	    };
+	    var request = function(op){
+	        op.dataType = 'json';
+	        return $.ajax(op)
+	    };
+	    
+	    function Paging(options){
+	        var that = this;
+	        that.load = false;
+	        //获取实例对象的名称
+	        that.instance = function(){
+	            for(var attr in window){
+	                if(window[attr] == that){
+	                    return attr.toString();
+	                }
+	            }
+	        }
+	        $.extend(that, $.extend(true, {
+	            /**
+	             * @function ajax请求url
+	             * @type <String>
+	             */
+	            url:'',
+	            /**
+	             * @function 页码容器
+	             * @type <Object>
+	             */
+	            wrap:null,
+	            /**
+	             * @function 传递参数值
+	             * @type <String>
+	             * @desc 将传递参数封装为json字符串，后台接收该参数来获取该json
+	             */
+	            paramJSON:'',
+	            /**
+	             * @function 当页显示数量
+	             * @type <Number>
+	             */
+	            pCount:10,
+	            /**
+	             * @function 当前页码
+	             * @type <Number>
+	             */
+	            current:1,
+	            /**
+	             * @function 列表数据总数
+	             * @type <Number>
+	             */
+	            aCount:0,
+	            /**
+	             * @function 是否初始化展示最后一页
+	             * @type <Boolean>
+	             */
+	            last:false,
+	            /**
+	             * @function 是否读取全部数据
+	             * @type <Boolean>
+	             * @desc 该参数启用后，接口将无法接收到pCount和current参数，前后端约定好，若没接收到这2个参数，将返回全部数据
+	             */
+	            allData:false,
+	            /**
+	             * @function 是否完整形式展示分页
+	             * @type <Boolean>
+	             */
+	            isFull:true,
+				/**
+	             * @function 滚动分页配置
+	             * @type <Obejct>
+	             */
+	            container:window,
+				scroll:{
+					enable:false
+				},
+	            /**
+	             * @function ajax配置信息
+	             * @type <JSON Obejct, Function>
+	             */
+	            ajax:{},
+	            /**
+	             * @function 接口接收参数
+	             * @type <JSON Obejct>
+	             */
+	            condition:{},
+	            /**
+	             * @function loading加载效果
+	             * @type <JSON Obejct>
+	             */
+	            loading:{
+	                //loading容器
+	                wrap:null,
+	                //显示loading
+	                show:function(){
+	                    var that = this;
+	                    that.hide();
+	                    var wrap = that.wrap;
+	                    wrap && wrap.append('<i class="ui-loading" style="position:absolute;">正在加载数据...</i>').css({position:'relative'});
+	                },
+	                //隐藏loading
+	                hide:function(){
+	                    $('.ui-loading').remove();
+	                }
+	            },
+	            /**
+	             * @function 上一页下一页按钮文字
+	             * @type <JSON Obejct>
+	             */
+	            button:{
+	                prev:'«',
+	                next:'»',
+	                first:'',
+	                last:''
+	            },
+	            /**
+	             * @function 拓展分页部分
+	             * @type <JSON Obejct>
+	             */
+	            extPage:{
+	                wrap:null,
+	                desc:'',
+	                prev:'上一页',
+	                next:'下一页'
+	            },
+	            /**
+	             * @function 传统页面刷新方式
+	             * @type <Null, Function>
+	             * @param current <Number> 目标页码
+	             * @desc 值为函数将启用
+	             */
+	            refreshCallback:null,
+	            /**
+	             * @function ajax响应数据并且分页创建完毕后回调函数
+	             * @type <Function>
+	             * @param data <JSON Object> 响应数据
+	             */
+	            endCallback:$.noop,
+	            /**
+	             * @function 点击分页按钮回调函数
+	             * @type <Function>
+	             * @param current <Number> 目标页码
+	             */
+	            jumpCallback:$.noop,
+	            /**
+	             * @function 分页数据处理
+	             * @type <Function>
+	             * @param data <JSON Object> 响应数据
+	             */
+	            echoData:$.noop
+	        }, Paging.options, options||{}));
+	        that.container = $(that.container||window);
+			if(that.scroll.enable === true){
+				that.wrap = null;
+				that.children = that.container[0] === window ? $(document.body) : that.container.children();
+				that.container.scroll(function(){
+					that.resize();
+				}).resize(function(){
+					that.resize();
+				});
+			}
+	    }
+	    
+	    Paging.options = {};
+	    Paging.config = function(options){
+	    	$.extend(true, Paging.options, options||{})
+	    }
+	
+	    Paging.prototype = {
+	        constructor:Paging,
+	        //页面跳转
+	        jump:function(page){
+	            var that = this, count = Math.ceil(that.aCount/that.pCount), current;
+	            that.showload = true;
+	            if(that.aCount > 0){
+	                if(typeof(page) === 'object'){
+	                    var val = $(page).prevAll('input').val();
+	                    if(val <= count && val != that.current){
+	                        current = parseInt(val);
+	                    }
+	                    else{
+	                        current = that.current;
+	                    }
+	                }
+	                else if(page > 0 && page <= count){
+	                    current = page;
+	                }
+	                else if(page < 0){
+	                    current = count + page + 1;
+	                }
+	                else{
+	                    current = count;
+	                }
+	            }
+	            else{
+	                current = page;
+	            }
+	            that.current = that.condition.current = current;
+	            that.jumpCallback(current);
+	            if(typeof that.refreshCallback === 'function'){
+	                that.refreshCallback(current);
+	                that.create();
+	                return;
+	            }
+	            that.getData('jump');
+	        },
+	        query:function(type){
+	            var that = this;
+	            that.showload = true;
+	            that.load = false;
+	            if(typeof that.refreshCallback !== 'function' || type !== 'refresh'){
+	                if(type){
+	                    if(type === 'noloading'){
+	                        that.showload = false;
+	                    }
+	                    else if(type !== 'reload'){
+	                        that.current = 1;
+	                    }
+	                    that.filter();
+	                    that.condition.current = that.current;
+	                }
+	                else{
+	                    that.condition = {current:that.current = 1};
+	                }
+	                that.getData(type||'');
+	            }
+	            else{
+	                that.create();
+	            }
+	            
+	        },
+	        filter:function(){
+	            var that = this;
+	            for(var i in that.condition){
+	                if(!that.condition[i]){
+	                    delete that.condition[i];
+	                }
+	            }
+	        },
+	        //ajax请求数据
+	        getData:function(type){
+	            var that = this;
+	            //that.showload && that.loading.show(type);
+	            that.condition.pCount = that.pCount;
+	            if(that.allData === true){
+	                delete that.condition.pCount;
+	                delete that.condition.current;
+	            }
+	            var param = that.condition;
+	            if(that.paramJSON){
+	                param = [];
+	                $.each(that.condition, function(key, val){
+	                    param.push(key+':'+val);
+	                });
+	                var temp = param.length ? '{'+param.join(',')+'}' : '';
+	                param = {};
+	                param[that.paramJSON] = temp;
+	            }
+	            
+	            var ajax = typeof that.ajax === 'function' ? that.ajax() : that.ajax;
+	            delete ajax.success;
+	
+	            if(!that.load){
+	            	that.load = true;
+	            	request($.extend({}, true, {
+	                    url:that.url,
+	                    data:param,
+	                    success:function(data){
+	                        //that.showload && that.loading.hide();
+	                        try{
+	                            data.current = that.current;
+	                        }
+	                        catch(e){}
+	                        var stop = 0, index;
+	                        if(that.container[0] !== window && type !== 'reload' && type !== 'noloading' && (type !== 'jump' || (type === 'jump' && !that.scroll.enable))){
+	                        	that.container.scrollTop(0)
+	                        	that.container.scrollLeft(0)
+	                        }
+	                        if(type === 'reload'){
+	                            var box = that.container;
+	                            if(that.selector){
+	                                box = that.container.find(that.selector);
+	                                stop = box.scrollTop()
+	                            }
+	                            else{
+	                                stop = box.scrollTop()
+	                            }
+	                            index = box.find('tr.rows.s-crt').index();
+	                        }
+	                        that.echoData(data, type);
+	
+	                        that.aCount = data.aCount;
+	                        that.load = false;
+							if(that.scroll.enable === true){
+								that.resize();
+							}
+	                        resize();
+	                        if(stop > 0){
+	                            var box = that.container;
+	                            if(that.selector){
+	                                box = that.container.find(that.selector);
+	                                box.scrollTop(stop)
+	                            }
+	                            else{
+	                                box.scrollTop(stop)
+	                            }
+	                            if(index >= 0){
+	                                box.find('tr.rows').eq(index).addClass('s-crt');
+	                            }
+	                        }
+	                        if(that.last === true){
+	                            that.last = false;
+	                            that.jump(-1);
+	                            return;
+	                        }
+	                        that.create();
+	                        that.endCallback(data);
+	                    },
+	                    error:function(){
+	                        that.showload && that.loading.hide();
+	                        that.load = false;
+	                    }
+	                }, ajax||{}));
+	            }
+	        },
+	        //过滤分页中input值
+	        trim:function(o){
+	            var val = Math.abs(parseInt($(o).val()));
+	            !val && (val = 1);
+	            $(o).val(val);
+	        },
+	        echoList:function(html, i, instance){
+	            var that = this;
+	            if(that.current == i){
+	                html = '<li><span class="s-crt">'+ i +'</span></li>';
+	            }
+	            else{
+	                html = '<li><a href="javascript:'+ instance +'.jump('+ i +');" target="_self">'+ i +'</a></li>';
+	            }
+	            return html;
+	        },
+			resize:function(){
+				var that = this;
+				try{
+					var stop = that.container.scrollTop();
+					var height = that.container.height();
+					var cheight = that.children.outerHeight();
+					if(!that.load && Math.ceil(that.aCount/that.pCount) > that.current && ((stop === 0 && cheight <= height) || (height + stop >= cheight))){
+						that.jump(++that.current);
+					}
+				}
+				catch(e){
+					
+				}
+			},
+	        //创建分页骨架
+	        create:function(){
+	            var that = this, button = that.button,
+	                count = Math.ceil(that.aCount/that.pCount), current = that.current,
+	                html = '', next = count == current ? 1 : current+1,
+	                instance = that.instance(), extPage = that.extPage;
+	
+	            if(extPage.wrap){
+	                var page = '<div>';
+	                page += current == count || count == 0 ?
+	                     '<span>'+ extPage.next +'</span>' : '<a href="javascript:'+ instance +'.jump('+ (current+1) +');" target="_self">'+ extPage.next +'</a>';
+	                page += current == 1 ?
+	                     '<span>'+ extPage.prev +'</span>' : '<a href="javascript:'+ instance +'.jump('+ (current-1) +');" target="_self">'+ extPage.prev +'</a>';
+	                page += '</div><em>'+ (count !== 0 ? current : 0) +'/'+ count +'</em><strong>共'+ that.aCount + extPage.desc +'</strong>';
+	                extPage.wrap.html(page);
+	            }
+	            
+	            if(!that.wrap){
+	                return;
+	            }
+	            
+	            if(!count){
+	                that.wrap.empty();
+	                return;
+	            }
+	
+	            html += (function(){
+	                var tpl = '';
+	                if(current == 1){
+	                    if(button.first){
+	                        tpl += '<li><span>'+ button.first +'</span></li>';
+	                    }
+	                    tpl += '<li><span>'+ button.prev +'</span></li>';
+	                }
+	                else{
+	                    if(that.button.first){
+	                        tpl += '<li><a href="javascript:'+ instance +'.jump(1);" target="_self">'+ button.first +'</a></li>';
+	                    }
+	                    tpl += '<li><a href="javascript:'+ instance +'.jump('+ (current-1) +');" target="_self">'+ button.prev +'</a></li>';
+	                }
+	                return tpl;
+	            })();
+	            if(count <= 7){
+	                for(var i = 1; i <= count; i++){
+	                    html += that.echoList(html, i, instance);
+	                }
+	            }
+	            else{
+	                if(current-3 > 1 && current+3 < count){
+	                    html += '<li><a href="javascript:'+ instance +'.jump(1);" target="_self">1</a></li>';
+	                    html += '<li><em>...</em></li>';
+	                    for(var i = current-2; i <= current+2; i++){
+	                        html += that.echoList(html, i, instance);
+	                    }
+	                    html += '<li><em>...</em></li>';
+	                    html += '<li><a href="javascript:'+ instance +'.jump('+ count +');" target="_self">'+ count +'</a></li>';
+	                }
+	                else if(current-3 <= 1 && current+3 < count){
+	                    for(var i = 1; i <= 5; i++){
+	                        html += that.echoList(html, i, instance);
+	                    }
+	                    html += '<li><em>...</em></li>';
+	                    html += '<li><a href="javascript:'+ instance +'.jump('+ count +');" target="_self">'+ count +'</a></li>';
+	                }
+	                else if(current-3 > 1 && current+3 >= count){
+	                    html += '<li><a href="javascript:'+ instance +'.jump(1);" target="_self">1</a></li>';
+	                    html += '<li><em>...</em></li>';
+	                    for(var i = count-5; i <= count; i++){
+	                        html += that.echoList(html, i, instance);
+	                    }
+	                }
+	            }
+	            html += (function(){
+	                var tpl = '';
+	                if(current == count){
+	                    tpl += '<li><span>'+ button.next +'</span></li>';
+	                    if(button.last){
+	                        tpl += '<li><span>'+ button.last +'</span></li>';
+	                    }
+	                }
+	                else{
+	                    tpl += '<li><a href="javascript:'+ instance +'.jump('+ (current+1) +');" target="_self">'+ button.next +'</a></li>';
+	                    if(button.last){
+	                        tpl += '<li><a href="javascript:'+ instance +'.jump('+ count +');" target="_self">'+ button.last +'</a></li>';
+	                    }
+	                }
+	                return tpl;
+	            })();
+	            if(that.isFull){
+	                html += '<li><em>跳转到第</em><input type="text" onblur="'+ instance +'.trim(this);" value="'+ next +'" /><em>页</em><button type="button" onclick="'+ instance +'.jump(this);">确定</button></li>';
+	            }
+	            html = '<ul class="ui-paging">' + html + '</ul>';
+	            that.wrap.html(html);
+	        }
+	    }
+	    
+	    $.extend({
+	        paging:function(name, options){
+	            if(options === undefined){
+	                options = name;
+	                name = 'paging';
+	            }
+	            var page = window[name] = new Paging(options);
+	            if(typeof window[name].refreshCallback !== 'function'){
+	                page.query(true);
+	                return page;
+	            }
+	            page.query('refresh');
+	            return page
+	        }
+	    });
+	    
+	    window.Paging = Paging;
+	    
+	})(window, document, jQuery);
+});
+__define__('./script/demo',function(require,imports,renders,extend,exports){
+	var module=this;
+	var paging = require('pages/components/datagrid/script/paging');
+	var checkradio = require('pages/components/datagrid/script/checkradio');
+	var template = require('src/core/template');
+	var datagrid = require('src/components/datagrid');
+	
+	var b=require('pages/components/datagrid/script/a').defaults;
+	var a=require('pages/components/datagrid/script/a');
+	var __module_a=require('pages/components/datagrid/script/a');
+	var a=__module_a.a;
+	var __module_a=require('pages/components/datagrid/script/a');
+	var b=__module_a.a;
+	var __module_a=require('pages/components/datagrid/script/a');
+	var b=__module_a.defaults;
+	var d=__module_a.c;
+	exports.a=a;
+	exports.b = a;
+	exports.defaults = a;
+	var a = exports.a = {}
+	exports.defaults = {};
+	exports.b = a;
+	exports.defaults.b=b;
+	exports.defaults = a
+	exports.defaults = {
+	    a:1,
+	    b:2
+	}
+	exports.defaults = a = function(){
+	
+	}
+	var __module_a = require('pages/components/datagrid/script/a');
+	exports.b = __module_a.a;
+	;(function(){
+	    var __module = require('pages/components/datagrid/script/a');
+	    var __object = {};
+	    var __type = __object.toString.call(__module);
+	    if(__type === '[object Object]' || __type === '[object Function]'){
+	        for(var i in __module){
+	            exports[i] = __module[i]
+	        }
+	    }
+	})();
+	
+	var a = datagrid({
+	    container:'#data',
+	    paging:{
+	        url:'http://127.0.0.1:8001/data/',
+	        pCount:20
+	    },
+	    width:'110%',
+	    columns:[{
+	        title:'名称',
+	        width:100,
+	        field:'buname',
+	    }, {
+	        title:'名称',
+	        width:100,
+	        field:'buname1',
+	    }, {
+	        title:'名称',
+	        width:200,
+	        field:'buname',
+	        children:[{
+	            title:'名称',
+	            width:100,
+	            field:'buname'
+	        }, {
+	            title:'名称',
+	            width:100,
+	            field:'buname'
+	        }]
+	    }, {
+	        title:'名称',
+	        width:100,
+	        field:'buname',
+	        children:[{
+	            title:'名称',
+	            width:100,
+	            field:'buname'
+	        }]
+	    }, {
+	        title:'名称',
+	        width:100,
+	        field:'buname'
+	    }],
+	    rowRender:function(self, list, v, k){
+	        return template.render(renders(''+''
+	            +'<%each list%>'+''
+	                +'<tr class="table-row">'+''
+	                    +'<%each cols col%>'+''
+	                    +'<td class="table-cell" width="<%col.width%>">'+''
+	                    
+	                    +'</td>'+''
+	                    +'<%/each%>'+''
+	                +'</tr>'+''
+	            +'<%/each%>'+''
+	        +''), {
+	            cols:v,
+	            list:list
+	        })
+	    }
+	})
+	
+	$('h1').click(function(){
+	    a.option('isBorder', true)
+	})
+});
+
+})(Nui['_module_2_define']);

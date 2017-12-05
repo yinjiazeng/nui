@@ -1,2 +1,1775 @@
-!function(define){Nui[define]('src/core/events',function(){return function(t){var e=this,n=t||e,i=n.constructor,r=i&&i.__component_name,o=e.element||n.element||Nui.doc,s=r?n._events:n.events;if(!o||!s)return n;'function'==typeof s&&(s=s.call(n)),o instanceof jQuery||(o=jQuery(o));var a,c,l,u=function(t,i,r){if('function'==typeof r)r.call(n,t,i);else{var o,s;Nui.each(r,function(r,a){if('function'==typeof(o=n[r])?s=n:'function'==typeof(o=e[r])&&(s=e),s)return l=o.call(s,t,i,l)})}};return Nui.each(s,function(t,e){!t||'string'!=typeof t&&'function'!=typeof t||('string'==typeof t&&(t=Nui.trim(t).split(/\s+/)),e=Nui.trim(e).split(/\s+/),a=e.shift().replace(/:/g,' '),c=e.join(' '),r?n._on(a,o,c,function(e,n){u(e,n,t)}):o.on(a,c,function(e){u(e,jQuery(this),t)}))}),n}}),Nui[define]('src/core/util',{regex:{mobile:/^0?(13|14|15|17|18)[0-9]{9}$/,tel:/^[0-9-()（）]{7,18}$/,email:/^\w+((-w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,idcard:/^\d{17}[\d|x]|\d{15}$/,cn:/^[\u4e00-\u9fa5]+$/,taxnum:/^[a-zA-Z0-9]{15,20}$/},toFixed:function(t,e,n){if(isNaN(t)||''===t)return t;void 0===n&&(n=2),e=e||0;var i=t.toString(),r=function(t){for(var e='';t>0;)e+='0',t--;return e},o='';i<0&&(i=i.replace('-',''),o='-');var s=i.indexOf('.');if(-1!==s&&e>=0){var a=parseInt(i.substr(0,s)),c='0'+i.substr(s),l='1'+r(e);c=(Math.round(c*l)/l).toFixed(e),c>=1&&(a=(a+1).toString()),i=o+a+c.substr(1)}else e>0&&(i=o+i+'.'+r(e));if(null!==n&&n>=0&&n<e){i=i.replace(/0+$/,'');var s=i.indexOf('.'),u=0;for(-1!==s&&(u=i.substr(s+1).length);u<n;)i+='0',u++;i=i.replace(/\.$/,'')}return i},getParam:function(t,e){var n=decodeURI(e||location.href),i={};if(startIndex=n.indexOf('?'),startIndex++>0){var r,o=n.substr(startIndex).split('&');Nui.each(o,function(t){r=t.split('='),i[r[0]]=r[1]})}return'string'==typeof t&&t&&(i=void 0!==(r=i[t])?r:''),i},setParam:function(t,e,n){var i,r=this;if(Nui.type(t,'Object'))i=e||location.href,Nui.each(t,function(t,e){(t||0===t)&&(i=r.setParam(e,t,i))});else if(i=n||location.href,-1===i.indexOf('?')&&(i+='?'),-1!==i.indexOf(t+'=')){var o=new RegExp('('+t+'=)[^&]*');i=i.replace(o,'$1'+e)}else{var s='';-1!==i.indexOf('=')&&(s='&'),i+=s+t+'='+e}return i},supportCss3:function(t){var e,n=['webkit','Moz','ms','o'],i=[],r=document.documentElement.style,o=function(t){return t.replace(/-(\w)/g,function(t,e){return e.toUpperCase()})};for(e in n)i.push(o(n[e]+'-'+t));i.push(o(t));for(e in i)if(i[e]in r)return!0;return!1},supportHtml5:function(t,e){return t in document.createElement(e)},location:function(t,e){t&&jQuery('<a href="'+t+'"'+(e?'target="'+(e||'_self')+'"':'')+'><span></span></a>').appendTo('body').children().click().end().remove()},formatDate:function(t,e){if(t=parseInt(t)){if(!e)return t;var n=new Date(t),i={'M':n.getMonth()+1,'d':n.getDate(),'h':n.getHours(),'m':n.getMinutes(),'s':n.getSeconds()};return e=e.replace(/([yMdhms])+/g,function(t,e){var r=i[e];return void 0!==r?(t.length>1&&(r='0'+r,r=r.substr(r.length-2)),r):'y'===e?(n.getFullYear()+'').substr(4-t.length):t})}return'-'},getData:function(t,e,n){var i=this,r={'result':{},'voids':0,'total':0};if(t.length){var o=t.serializeArray();o.length||(o=t.find('[name]').serializeArray());var s=',';if(e&&'string'==typeof e&&!n&&(s=e),Nui.each(o,function(t,e){var n=Nui.trim(t.value);r.total++,n||r.voids++;var i=t.name;Nui.isArray(r.result[i])||(r.result[i]=[]),r.result[i].push(n)}),Nui.each(r.result,function(t,e){r.result[e]=t.join(s)}),e&&n){var a=!1;r.result[n]=[],t.find(e).each(function(){var t=i.getData($(this).find('[name]')).result;!0===e||a||(Nui.each(t,function(t,e){delete r.result[e]}),a=!0),r.result[n].push(t)})}}return r},getFocusIndex:function(t){var e=Nui.trim(t.value),n=e.length;if(t.setSelectionRange)n=t.selectionStart;else try{var i=document.selection.createRange(),r=t.createTextRange();r.setEndPoint('endtoend',i),n=r.text.length}catch(t){}return n},isTextSelect:function(){var t='';if(document.selection)t=document.selection.createRange().text;else if(-1!==navigator.userAgent.toLowerCase().indexOf('gecko')){var e=document.activeElement;t=e.value.substring(e.selectionStart,e.selectionEnd)}else window.getSelection?t=window.getSelection().toString():document.getSelection&&(t=document.getSelection().toString());return!!t},isInstallPDF:function(){var i,len,flag=!0;if((Nui.browser.webkit||Nui.browser.mozilla&&Nui.browser.version>19)&&(flag=!1),navigator.plugins&&(len=navigator.plugins.length))for(i=0;i<len;i++)if(/Adobe Reader|Adobe PDF|Acrobat|Chrome PDF Viewer/.test(navigator.plugins[i].name)){flag=!1;break}try{if(window.ActiveXObject||window.ActiveXObject.prototype){for(i=1;i<10;i++)try{if(eval('new ActiveXObject(\'PDF.PdfCtrl.'+i+'\');')){flag=!1;break}}catch(t){flag=!0}var arr=['PDF.PdfCtrl','AcroPDF.PDF.1','FoxitReader.Document','Adobe Acrobat','Adobe PDF Plug-in'];for(len=arr.length,i=0;i<len;i++)try{if(new ActiveXObject(arr[i])){flag=!1;break}}catch(t){flag=!0}}}catch(t){}return flag},isInstallFlash:function(){if(void 0!==window.ActiveXObject)try{if(new ActiveXObject('ShockwaveFlash.ShockwaveFlash'))return!1}catch(t){}else if(navigator.plugins['Shockwave Flash'])return!1;return Nui.browser.msie?'http://rj.baidu.com/soft/detail/17153.html':'http://rj.baidu.com/soft/detail/15432.html'},formatNumber:function(t){var e=parseInt(t);if(!isNaN(e)&&e&&(t=t.toString())){var n=t.indexOf('.'),i='';return n>0&&(i=t.substr(n)),e.toLocaleString().replace(/\.\d+$/,'')+i}return t},numberToCN:function(t){var e,n,i,r=new Array('零','壹','贰','叁','肆','伍','陆','柒','捌','玖'),o=new Array('','拾','佰','仟'),s=new Array('','万','亿','兆'),a=new Array('角','分','毫','厘'),c='';if(''==t)return'';var l=t<0;if((t=Math.abs(parseFloat(t)))>=1e15)return'';if(0==t)return c=r[0]+'元整';if(t=t.toString(),-1==t.indexOf('.')?(e=t,n=''):(i=t.split('.'),e=i[0],n=i[1].substr(0,4)),parseInt(e,10)>0){for(var u=0,f=e.length,h=0;h<f;h++){var p=e.substr(h,1),d=f-h-1,g=d/4,m=d%4;'0'==p?u++:(u>0&&(c+=r[0]),u=0,c+=r[parseInt(p)]+o[m]),0==m&&u<4&&(c+=s[g])}c+='元'}if(''!=n)for(var _=n.length,h=0;h<_;h++){var p=n.substr(h,1);'0'!=p&&(c+=r[Number(p)]+a[h])}return''==c?c+=r[0]+'元整':''==n&&(c+='整'),l&&(c='负'+c),c}}),Nui[define]('src/core/template',['src/core/util'],function(t){var e=function(t,e,i){if(this.tplid=t){if(n[t])return p.call(this,n[t],e,i);var r=document.getElementById(t);if(r&&'SCRIPT'===r.nodeName&&'text/html'===r.type)return p.call(this,n[t]=r.innerHTML,e,i)}return''},n={},i={openTag:'<%',closeTag:'%>'},r={trim:Nui.trim,formatDate:t.formatDate,formatNumber:t.formatNumber,setParam:t.setParam,toFixed:t.toFixed,numberToCN:t.numberToCN},o=!!''.trim,s=';$that.out = function(){return $that.code';s=(o?'""'+s:'[]'+s+'.join("")')+'}';var a=function(t){return o?t?function(t){return'$that.code += '+t+';'}:function(t,e){return t+=e}:t?function(t){return'$that.code.push('+t+');'}:function(t,e){return t.push(e),t}},c=a(!0),l=a(),u=function(t,n,i,r){var o=this,s=n.replace(/([^\s])/g,'\\$1'),a=i.replace(/([^\s])/g,'\\$1');return t.replace(new RegExp(s+'\\s*include\\s+[\'"]([^\'"]*)[\'"]\\s*'+a,'g'),function(t,n){if(n){var i=o[n];return'function'==typeof i&&(i=i()),'string'==typeof i?p.call(o,i,null,r):e(n,null,r)}return''})},f='object'==typeof HTMLElement?function(t){return t instanceof HTMLElement}:function(t){return 1===t.nodeType&&'string'==typeof t.nodeName},h=function(t){if(t&&'object'==typeof t){var e=t[0];return f(e?e:t)}},p=function(t,e,n){var a=this;if('string'==typeof t){n=n||{};var c=n.openTag||i.openTag,f=n.closeTag||i.closeTag;if(t=u.call(a,t,c,f),e&&'object'==typeof e){Nui.isArray(e)&&(e={$list:e});var p=o?'':[];t=t.replace(/\s+/g,' '),Nui.each(t.split(c),function(t,e){t=t.split(f),e>=1?p=l(p,g(Nui.trim(t[0]),!0)):t[1]=t[0],p=l(p,g(t[1].replace(/'/g,'\\\'').replace(/"/g,'\\"')))});var m=o?'':[];for(var _ in e)m=l(m,_+'=$data.'+_+',');o||(p=p.join(''),m=m.join('')),p='var '+m+'$that=this,$method=$that.methods; $that.line=4; $that.code='+s+';\ntry{\n'+p+';}\ncatch(e){\n$that.error(e, $that.line)\n};';try{var v=new Function('$data',p);v.prototype.methods=r,v.prototype.error=d(p,e,a.tplid),v.prototype.dom=h,t=new v(e).out(),v=null}catch(t){d(p,e,a.tplid)(t)}}return t}return''},d=function(t,e,n){return function(i,r){var o='\n',s=[];t='function anonymous($data){\n'+t+'\n}',t=t.split('\n'),Nui.each(t,function(t,e){s.push(e+1+'      '+t.replace('$that.line++;',''))}),o+='code\n',o+=s.join('\n')+'\n\n',void 0!==typeof JSON&&(o+='data\n',o+=JSON.stringify(e)+'\n\n'),n&&(o+='templateid\n',o+=n+'\n\n'),r&&(o+='line\n',o+=r+'\n\n'),o+='message\n',o+=i.message,console.error(o)}},g=function(t,e){if(!t)return'';var n,i;if(e)if(void 0!==(i=_(t,'if')))n='if('+m(i)+'){';else if(void 0!==(i=_(t,'elseif')))n='\n}\nelse if('+m(i)+'){';else if('else'===t)n='\n}\nelse{';else if('/if'===t)n='}';else if(void 0!==(i=_(t,'each ',/\s+/)))n='Nui.each('+i[0]+', function('+(i[1]||'$value')+','+(i[2]||'$index')+'){';else if('/each'===t)n='});';else if(void 0!==(i=_(t,' | ',/\s*,\s*/))){var r=i[0],o=r.lastIndexOf('('),s='('+m(i.slice(1).toString())+')';if(-1!==o){var a=r.substr(0,o),l=Nui.trimLeft(r.substr(o+1));n=c(a+'($that.methods.'+l+s)}else n=c('$that.methods.'+r+s)}else n=/^(var|let|const|return|delete)\s+/.test(t)?m(t)+';':c(m(t,!0));else n=c('\''+t+'\'');return n+'\n$that.line++;'},m=function(t,e){return t.replace(/([\.\$\w]+\s*(\[[\'\"\[\]\w\.\$\s]+\])?)\?\?/g,function(t,n){var i='(typeof '+n+'!=="undefined"&&'+n+'!==null&&'+n+'!==undefined&&!$that.dom('+n+')';return e&&(i+='?'+n+':""'),i+')'})},_=function(t,e,n){var i;if(0===t.indexOf(e)?i='':' | '===e&&t.indexOf(e)>0&&(i=','),void 0!==i)return t=Nui.trimLeft(t.replace(e,i)),n?t.split(n):t};return e.method=function(t,e){r[t]||(r[t]=e)},e.config=function(){var t=arguments;Nui.type(t[0],'Object')?Nui.each(t[0],function(t,e){i[e]=t}):t.length>1&&'string'==typeof t[0]&&(i[t[0]]=t[1])},e.render=p,e}),Nui[define]('src/core/component',['src/core/template','src/core/events'],function(tpl,events){var module=this,require=this.require,extend=this.extend,callMethod=function(t,e,n){if(e.length>t.length){var i=e[e.length-1];if(i&&Nui.type(i,['String','Number'])&&n._options.id!==i&&n.__id!==i)return}t.apply(n,e)};Nui.bsie7&&Nui.doc.on('focus','button, input[type="button"]',function(){this.blur()});var statics={__id:0,__instances:{},__setMethod:function(apis,components){var self=this;return Nui.each(apis,function(val,methodName){void 0===self[methodName]&&(self[methodName]=function(){var self=this,args=arguments,container=args[0],name=self.__component_name;if(name&&'component'!==name)if(container&&container instanceof jQuery)if('init'===methodName){var mod=components[name];mod&&container.find('[data-'+name+'-options]').each(function(){if(!this.nui||!this.nui[name]){var elem=jQuery(this),options=elem.data(name+'Options'),_mod;options&&'string'==typeof options&&(/^{[\s\S]*}$/.test(options)?options=eval('('+options+')'):(_mod=require(options,!0))&&(options='function'==typeof _mod.exports?_mod.exports(elem):_mod.exports)),'object'!=typeof options&&(options={}),mod(extend(options,{target:elem}))}})}else container.find('[nui_component_'+name+']').each(function(){var t,e;this.nui&&(t=this.nui[name])&&'function'==typeof(e=t[methodName])&&callMethod(e,Array.prototype.slice.call(args,1),t)});else Nui.each(self.__instances,function(t){var e=t[methodName];'function'==typeof e&&callMethod(e,args,t)});else Nui.each(components,function(t,e){'component'!==e&&'function'==typeof t[methodName]&&t[methodName].apply(t,args)})})}),self},_options:{},_init:jQuery.noop,_jquery:function(t){return t instanceof jQuery?t:jQuery(t)},_getSize:function(t,e,n){var i=0;if(n=n||'border',e=e||'tb','all'===n)return this._getSize(t,e)+this._getSize(t,e,'padding')+this._getSize(t,e,'margin');var r={l:['Left'],r:['Right'],lr:['Left','Right'],t:['Top'],b:['Bottom'],tb:['Top','Bottom']},o=[{border:{l:['LeftWidth'],r:['RightWidth'],lr:['LeftWidth','RightWidth'],t:['TopWidth'],b:['BottomWidth'],tb:['TopWidth','BottomWidth']}},{padding:r},{margin:r}];return Nui.each(o,function(r){r[n]&&Nui.each(r[n][e],function(e){var r=parseFloat(t.css(n+e));i+=isNaN(r)?0:r})}),i},_$fn:function(t,e){jQuery.fn[t]=function(){var n=arguments,i=n[0];return this.each(function(){if('string'!=typeof i)Nui.type(i,'Object')?i.target=this:i={target:this},e(i);else if(i){var r;if(this.nui&&(r=this.nui[t])&&0!==i.indexOf('_'))if('options'===i)r.option(n[1],n[2]);else{var o=r[i];'function'==typeof o&&o.apply(r,Array.prototype.slice.call(n,1))}}})}},_$ready:function(t,e){'function'==typeof this.init&&this.init(Nui.doc)},config:function(){var t=arguments,e=(t.length,t[0]);return Nui.type(e,'Object')?this._options=jQuery.extend(!0,this._options,e):Nui.type(e,'String')?1===t.length?this._options[e]:this._options[e]=t[1]:void 0},hasInstance:function(t){var e=!1,n=this.__instances;if(t)Nui.each(n,function(n){if(n._options.id===t)return e=!0,!1});else for(i in n)return!0;return e}};return{_static:statics,_options:{target:null,id:'',skin:'',className:'',onInit:null,onReset:null,onDestroy:null},_template:{},_init:function(){this._exec()},_exec:jQuery.noop,_getTarget:function(){var t=this;if(!t.target){var e=t._options.target,n=t.constructor;if(!e)return null;e=n._jquery(e),t.target=t._bindComponentName(e)}return t.target},_bindComponentName:function(t){var e=this,n=e.constructor,i='nui_component_'+n.__component_name;return t.attr(i,'').each(function(){this.nui||(this.nui={}),this.nui[n.__component_name]=e}),t},_tplData:function(t){var e=this._options,n=this.constructor,i='nui-'+n.__component_name,r=Nui.trim(e.skin),o=function(t,e){if(t.__parent){var n=t.__parent.constructor,i=n.__component_name;if('component'!==i)return r&&e.unshift('nui-'+i+'-'+r),e.unshift('nui-'+i),o(n,e)}return e},s=o(n,[]);return s.push(i),r&&s.push(i+'-'+r),e.id&&s.push(n.__component_name+'-'+e.id),t||(t={}),e.className&&s.push(e.className),t.className=s.join(' '),t},_event:function(){var t=this,e=t._options;return t.element&&e.events&&(e.element=t.element,events.call(t,e)),events.call(t)},_on:function(t,e,n,i,r){var o=this;'function'==typeof n&&(r=i,i=n,n=e,e=null,n=o.constructor._jquery(n));var s=function(t){return i.call(this,t,jQuery(this))};return e?('string'!=typeof n&&((n=n.selector)||(n=o._options.target)),e.on(t,n,s),r&&e.find(n).trigger(t)):(n.on(t,s),r&&n.trigger(t)),o.__eventList.push({dalegate:e,selector:n,type:t,callback:s}),o},_off:function(){var t=this,e=t.__eventList;return Nui.each(e,function(t,n){t.dalegate?t.dalegate.off(t.type,t.selector,t.callback):t.selector.off(t.type,t.callback),e[n]=null,delete e[n]}),t.__eventList=[],t},_delete:function(){var t=this,e=t.constructor;if(t.target){var n='nui_component_'+e.__component_name;t.target.removeAttr(n).each(function(){this.nui&&(this.nui[e.__component_name]=null,delete this.nui[e.__component_name])})}e.__instances[t.__id]=null,delete e.__instances[t.__id]},_reset:function(){return this._off(),this.element&&(this.element.remove(),this.element=null),this},_tpl2html:function(t,e){var n={openTag:'<%',closeTag:'%>'};return 1===arguments.length?tpl.render(this._template,t,n):tpl.render.call(this._template,this._template[t],e,n)},_callback:function(t,e){var n=this,i=n._options,r=i['on'+t];if('function'==typeof r)return e?(Array.prototype.unshift.call(e,n),r.apply(i,e)):r.call(i,n)},option:function(t,e){var n,i=arguments,r=!1;return!0===i[0]?r=!0:jQuery.isPlainObject(i[0])?(n=i[0],r=i[1]):i.length>1&&'string'==typeof i[0]&&(n={},n[i[0]]=i[1],r=i[2]),(n||r)&&(this._options=jQuery.extend(!0,{},this[!0===r?'_defaultOptions':'_options'],n),this._reset(),this._exec()),this},reset:function(){return this.option(!0),this._callback('Reset'),this},destroy:function(){this._delete(),this._reset(),this._callback('Destroy')}}}),Nui[define]('src/components/highlight/highlight',function(){return this.extend('src/core/component',{_static:{_init:function(){var t=this;Nui.doc.on('click',function(){t._active&&Nui.each(t.__instances,function(t){t._active&&(t.element.find('tr.s-crt').removeClass('s-crt'),t._active=!1)}),t._active=!1})},_getcode:function(t,e){return'<code class="'+t+'">'+e+'</code>'},_getarr:function(t,e){var n=[];return t?(Nui.each(t,function(t){var i=e.indexOf(t),r=e.substr(0,i);e=e.substr(i+t.length),n.push(r),n.push(t)}),n.push(e)):n.push(e),n},_comment:function(t){return/\/\*/.test(t)?t=t.replace(/(\/\*(.|\s)*?\*\/)/g,this._getcode('comment','$1')):/\/\//.test(t)&&(t=t.replace(/(\/\/.*)$/g,this._getcode('comment','$1'))),t}},_options:{tools:{copy:!0},isLight:!0,isLine:!1,isTitle:!0},_exec:function(){var t=this,e=t._getTarget();if(e){var n=e.get(0);'SCRIPT'===n.tagName&&'text/highlight'==n.type&&(t.code=e.html().replace(/^[\r\n]+|[\r\n]+$/g,'').replace(/</g,'&lt;').replace(/>/g,'&gt;'),t._create(),t._event())}},_title:'',_template:'<div class="<% className %>"><%if tools%><div class="tools"><%if tools.copy%><em class="copy">复制</em><%/if%></div><%/if%><div class="body"><table><%each list val key%><tr><%if isLine === true%><td class="line" number="<%key+1%>"><%if bsie7%><%key+1%><%/if%></td><%/if%><td class="code"><%val%></td></tr><%/each%></table></div><%if isTitle%><em class="title"><%title%></em><%/if%></div>',_events:{'click tr':function(t,e){!0===this._options.isLight&&(this.constructor._active=this._active=!0,e.addClass('s-crt').siblings().removeClass('s-crt'),t.stopPropagation())},'click .copy':function(){alert('傻帽！逗你玩呢。')}},_create:function(){var t=this,e=t._options,n=$.extend({bsie7:Nui.bsie7,list:t._list(),title:t._title,isLine:e.isLine,tools:e.tools,isTitle:e.isTitle},t._tplData());t.element=$(t._tpl2html(n)).insertAfter(t.target)},_getCode:function(){return this.code},_list:function(){return this._getCode().split('\n')}})}),Nui[define]('src/components/highlight/style',function(){return this.extend('src/components/highlight/highlight',{_title:'css',_getCode:function(){var t=this,e=t.code,n=t.constructor,i='',r=e.match(/(\/\*(.|\s)*?\*\/)|(\{[^\{\}\/]*\})/g),o=n._getarr(r,e);return Nui.each(o,function(t){Nui.trim(t)&&(t=/^\s*\/\*/.test(t)?t.replace(/(.+)/g,n._getcode('comment','$1')):/\}\s*$/.test(t)?t.replace(/(\s*)([^:;\{\}\/\*]+)(:)([^:;\{\}\/\*]+)/g,'$1'+n._getcode('attr','$2')+'$3'+n._getcode('string','$4')).replace(/([\:\;\{\}])/g,n._getcode('symbol','$1')):t.replace(/([^\:\{\}\@\#\s\.]+)/g,n._getcode('selector','$1')).replace(/([\:\{\}\@\#\.])/g,n._getcode('symbol','$1'))),i+=t}),i}})}),Nui[define]('src/components/highlight/javascript',function(){return this.extend('src/components/highlight/highlight',{_title:'js',_getCode:function(){var t=this,e=t.code,n=t.constructor,i='',r=e.match(/(\/\/.*)|(\/\*(.|\s)*?\*\/)|('[^']*')|("[^"]*")/g),o=n._getarr(r,e);return Nui.each(o,function(t){$.trim(t)&&(/^\s*\/\//.test(t)?t=n._getcode('comment',t):/^\s*\/\*/.test(t)?t=t.replace(/(.+)/g,n._getcode('comment','$1')):(t=/'|"/.test(t)?t.replace(/(.+)/g,n._getcode('string','$1')):t.replace(new RegExp('(&lt;|&gt;|;|!|%|\\|\\[|\\]|\\(|\\)|\\{|\\}|\\=|\\/|-|\\+|,|\\.|\\:|\\?|~|\\*|&)','g'),n._getcode('symbol','$1')).replace(new RegExp('(abstract|arguments|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|elseif|each|enum|eval|export|extends|false|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|include|interface|let|long|native|new|null|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|true|try|typeof|var)(\\s+|\\<code)','g'),n._getcode('keyword','$1')+'$2').replace(/(\/code>\s*)(\d+)/g,'$1'+n._getcode('number','$2')).replace(/(\/code>\s*)?([^<>\s]+)(\s*<code)/g,'$1'+n._getcode('word','$2')+'$3'),t=n._comment(t))),i+=t}),i}})}),Nui[define]('src/components/highlight/xml',['src/components/highlight/javascript','src/components/highlight/style'],function(t,e){return this.extend('src/components/highlight/highlight',{_title:'xml',_getCode:function(){var n=this,i=n.code,r=n.constructor,o='';return i=i.replace(/&lt;\s*![^!]+-\s*&gt;/g,function(t){return t.replace(/&lt;/g,'<<').replace(/&gt;/g,'>>')}),Nui.each(i.split('&lt;'),function(i){i=i.split('&gt;');var s=i.length;Nui.each(i,function(a,c){if(Nui.trim(a)){if(0==c){var l=!1;if(/^\s*\//.test(a))a=a.replace(/([^\r\n\/]+)/g,r._getcode('tag','$1')).replace(/^(\s*\/+)/,r._getcode('symbol','$1'));else{var u=a.match(/^\s+/)||'';/\=\s*['"]$/.test(a)&&(l=!0),a=a.replace(/^\s+/,'').replace(/(\s+)([^'"\/\s\=]+)((\s*=\s*)(['"]?[^'"]*['"]?))?/g,'$1'+r._getcode('attr','$2')+r._getcode('symbol','$4')+r._getcode('string','$5')).replace(/<code class="\w+">(\s*((<<\s*![-\s]+)|([-\s]+>>))?)<\/code>/g,'$1').replace(/^([^\s]+)/,r._getcode('tag','$1')).replace(/(\/+\s*)$/,r._getcode('symbol','$1')),a=u+a}a=r._getcode('symbol','&lt;')+a,l||(a+=r._getcode('symbol','&gt;'))}else if(3===s&&1===c&&/\s*['"]\s*/.test(a))a=a.replace(/(\s*['"]\s*)/,r._getcode('symbol','$1'))+r._getcode('symbol','&gt;');else{var f=$.trim(i[0]).toLowerCase();a='style'==f?e.exports._getCode.call(n,a):'script'==f?t.exports._getCode.call(n,a):a.replace(/(.+)/g,r._getcode('text','$1'))}a=a.replace(/<<\s*![^!]+-\s*>>/g,function(t){return t.replace(/([^\r\n]+)/g,r._getcode('comment','$1')).replace(/<</g,'&lt;').replace(/>>/g,'&gt;')})}o+=a})}),o}})}),Nui[define]('{script}/base',['src/components/highlight/xml','src/core/events'],function(t,e){this.imports('../style/base');var n=location.hash.replace('#',''),i=$('.g-main'),r=i.find('h2'),o=(r.length,$('.m-menu ul'));return{init:function(){this.setYear(),i.find('h2[id]').length&&(this.event(),this.position()),Nui.bsie7&&this.bsie7()},setYear:function(){$('#nowyear').text('-'+(new Date).getFullYear())},position:function(){if(n){var t=$('[id="'+n+'"]');t.length&&i.scrollTop(t.position().top)}},event:function(){i.scroll(function(){var t=i.scrollTop();r.each(function(e){var n=$(this),i=this.id,s=n.position().top-20,a=0,c=r.eq(e+1);if(a=c.length?c.position().top-20:$('.mainbox').outerHeight(),o.find('a.s-crt').removeClass('s-crt'),t>=s&&t<a)return o.find('a[href="#'+i+'"]').addClass('s-crt'),n.removeAttr('id'),location.hash=i,n.attr('id',i),!1})})},bsie7:function(){var t=$('.g-html .g-content'),e=$('.g-header').outerHeight(),n=null,i=function(){t.height(Nui.win.height()-e)};Nui.win.resize(function(){clearTimeout(n),n=setTimeout(i,100)}),i()}}})}('_module_1_define');
-//# sourceMappingURL=base-min.js.map?v=88ed564
+;(function(__define__){
+__define__('src/core/events', function(){
+    return function(opts){
+        var self = this, that = opts || self,
+            constr = that.constructor,
+            isComponent = constr && constr.__component_name,
+            elem = self.element || that.element || Nui.doc, 
+            events = isComponent ? that._events : that.events;
+            
+        if(!elem || !events){
+            return that
+        }
+
+        if(typeof events === 'function'){
+            events = events.call(that)
+        }
+
+        if(!(elem instanceof jQuery)){
+            elem = jQuery(elem)
+        }
+
+        var evt, ele, ret;
+        var callback = function(e, elem, cbs){
+            if(typeof cbs === 'function'){
+                cbs.call(that, e, elem);
+            }
+            else{
+                var _cb, _that;
+                Nui.each(cbs, function(cb, i){
+                    if(typeof (_cb = that[cb]) === 'function'){
+                        _that = that;
+                    }
+                    else if(typeof (_cb = self[cb]) === 'function'){
+                        _that = self;
+                    }
+                    if(_that){
+                        return ret = _cb.call(_that, e, elem, ret);
+                    }
+                })
+            }
+        }
+
+        Nui.each(events, function(cbs, evts){
+            if(cbs && (typeof cbs === 'string' || typeof cbs === 'function')){
+                if(typeof cbs === 'string'){
+                    cbs = Nui.trim(cbs).split(/\s+/);
+                }
+                evts = Nui.trim(evts).split(/\s+/);
+                // keyup:kupdown:focus a => elem.on('keyup kupdown focus', 'a', callback)
+                evt = evts.shift().replace(/:/g, ' ');
+                ele = evts.join(' ');
+                //组件内部处理
+                if(isComponent){
+                    that._on(evt, elem, ele, function(e, elem){
+                        callback(e, elem, cbs)
+                    })
+                }
+                else{
+                    elem.on(evt, ele, function(e){
+                        callback(e, jQuery(this), cbs)
+                    })
+                }
+            }
+        })
+        return that
+    }
+})
+/**
+ * @author Aniu[2016-11-11 16:54]
+ * @update Aniu[2016-11-11 16:54]
+ * @version 1.0.1
+ * @description 实用工具集
+ */
+
+__define__('src/core/util', {
+    
+    /**
+     * @func 常用正则表达式
+     */
+    regex:{
+        //手机
+        mobile:/^0?(13|14|15|17|18)[0-9]{9}$/,
+        //电话
+        tel:/^[0-9-()（）]{7,18}$/,
+        //邮箱
+        email:/^\w+((-w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/,
+        //身份证
+        idcard:/^\d{17}[\d|x]|\d{15}$/,
+        //中文
+        cn:/^[\u4e00-\u9fa5]+$/,
+        //税号
+        taxnum:/^[a-zA-Z0-9]{15,20}$/
+    },
+
+    /**
+     * @func 四舍五入保留小数，原生toFixed会有精度问题
+     * @return <String>
+     * @param digit <String, Number> 待转换数字
+     * @param decimal <Number> 保留位数
+     * @param number <Number> 小数部分末尾最多显示0的数量
+     */
+    toFixed:function(digit, decimal, number){
+        if(isNaN(digit) || digit === ''){
+            return digit
+        }
+
+        //默认末尾只保留2个0
+        if(number === undefined){
+            number = 2
+        }
+
+        decimal = decimal || 0;
+
+        //将数字转换为字符串，用于分割
+        var value = digit.toString();
+
+        //补零
+        var mend = function(num){
+            var zero = '';
+            while(num > 0){
+                zero += '0';
+                num--
+            }
+            return zero
+        }
+
+        //正负数
+        var pre = '';
+        if(value < 0){
+            value = value.replace('-', '');
+            pre = '-';
+        }
+
+        //获取小数点所在位置
+        var i = value.indexOf('.');
+        //存在小数点
+        if(i !== -1 && decimal >= 0){
+            var integer = parseInt(value.substr(0, i));
+            //小数部分转为0.xxxxx
+            var _decimal = '0' + value.substr(i);
+            var num = '1' + mend(decimal);
+            _decimal = (Math.round(_decimal*num)/num).toFixed(decimal);
+            //小数四舍五入后，若大于等于1，整数部分需要加1
+            if(_decimal >= 1){
+                integer = (integer + 1).toString()
+            }
+            value = pre + integer + _decimal.substr(1)
+        }
+        //整数就直接补零
+        else if(decimal > 0){
+            value = pre + value + '.' + mend(decimal)
+        }
+
+        if(number !== null && number >= 0 && number < decimal){
+            value = value.replace(/0+$/, '');
+            var i = value.indexOf('.'), len = 0;
+            if(i !== -1){
+                len = value.substr(i+1).length;
+            }
+            while(len < number){
+                value = value + '0';
+                len++;
+            }
+            value = value.replace(/\.$/, '');
+        }
+        
+        return value
+    },
+
+    /**
+     * @func 获取url参数值
+     * @return <String, Object>
+     * @param name <String, Undefined> 参数名，不传则以对象形式返回全部参数
+     * @param urls <String, Undefined> url地址，默认为当前访问地址
+     */
+    getParam:function(name, urls){
+        var url = decodeURI(urls||location.href), value = {};
+        startIndex = url.indexOf('?');
+        if(startIndex++ > 0){
+            var param = url.substr(startIndex).split('&'), temp;
+            Nui.each(param, function(val){
+                temp = val.split('=');
+                value[temp[0]] = temp[1];
+            });
+        }
+        if(typeof name === 'string' && name){
+            value = (temp = value[name]) !== undefined ? temp : '';
+        }
+        return value;
+    },
+
+    /**
+     * @func 设置url参数值
+     * @return <String> 设置后的url
+     * @param name <String, Object> 参数名或者{key:value, ...}参数集合
+     * @param value <String> 参数值或者url
+     * @param urls <String, Undefined> url，没有则获取浏览器url
+     */
+    setParam:function(name, value, urls){
+        var self = this, url;
+        if(Nui.type(name, 'Object')){
+            url = value||location.href;
+            Nui.each(name, function(val, key){
+                if(val || val === 0){
+                    url = self.setParam(key, val, url);
+                }
+            });
+        }
+        else{
+            url = urls||location.href;
+            if(url.indexOf('?') === -1){
+                url += '?';
+            }
+            if(url.indexOf(name+'=') !== -1){
+                var reg = new RegExp('('+name+'=)[^&]*');
+                url = url.replace(reg, '$1'+value);
+            }
+            else{
+                var and = '';
+                if(url.indexOf('=') !== -1){
+                    and = '&';
+                }
+                url += and+name+'='+value;
+            }
+        }
+        return url;
+    },
+
+    /**
+     * @func 检测浏览器是否支持CSS3属性
+     * @return <Boolean>
+     * @param style <String> 样式属性
+     */
+    supportCss3:function(style){
+        var prefix = ['webkit', 'Moz', 'ms', 'o'],
+            i, humpString = [],
+            htmlStyle = document.documentElement.style,
+            _toHumb = function (string) {
+                return string.replace(/-(\w)/g, function ($0, $1) {
+                    return $1.toUpperCase();
+                });
+            };
+        for (i in prefix)
+            humpString.push(_toHumb(prefix[i] + '-' + style));
+        humpString.push(_toHumb(style));
+        for (i in humpString)
+            if (humpString[i] in htmlStyle) return true;
+        return false;
+    },
+
+    /**
+     * @func 检测浏览器是否支持Html5属性
+     * @return <Boolean>
+     * @param attr <String> 属性
+     * @param element <String> DOM元素标签
+     */
+    supportHtml5:function(attr, element){
+        return attr in document.createElement(element);
+    },
+
+    /**
+     * @func 模拟location.href跳转
+     * @return <Undefined>
+     * @param url <String> 跳转的url
+     * @param target <String> 跳转类型，默认为_self
+     */
+    location:function(url, target){
+        if(url){
+            jQuery('<a href="'+ url +'"'+ (target ? 'target="'+ (target||'_self') +'"' : '' ) +'><span></span></a>')
+                .appendTo('body').children().click().end().remove();
+        }
+    },
+
+    /**
+     * @func 格式化日期
+     * @return <String>
+     * @param timestamp <String, Number> 时间戳，为空返回横杠“-”
+     * @param format <String, Undefined> 输出格式，为空则返回时间戳
+     */
+    formatDate:function(timestamp, format){
+        if(timestamp = parseInt(timestamp)){
+            if(!format){
+                return timestamp;
+            }
+            var date = new Date(timestamp);
+            var map = {
+                'M':date.getMonth()+1,
+                'd':date.getDate(),
+                'h':date.getHours(),
+                'm':date.getMinutes(),
+                's':date.getSeconds()
+            }
+            format = format.replace(/([yMdhms])+/g, function(all, single){
+                var value = map[single];
+                if(value !== undefined){
+                    if(all.length > 1){
+                       value = '0' + value;
+                       value = value.substr(value.length-2);
+                   }
+                   return value;
+                }
+                else if(single === 'y'){
+                    return (date.getFullYear() + '').substr(4-all.length);
+                }
+                return all;
+            });
+            return format;
+        }
+        return '-';
+    },
+
+    /**
+     * @func 获取表单数据集合
+     * @return <Object>
+     * @param element <jQuery Object> 表单元素集合或者form元素
+     * @param item <String> 将name相同表单元素值分隔，当设置为jquery选择器时，配合field参数使用，用于获取item中表单元素的数据集合
+     * @param field <String> 字段名，配合item参数使用，返回对象中会包含该字段
+     * @example
+     * <form id="form">
+     *  <input type="hidden" name="name0" value="0">
+     * <div>
+     *  <input type="hidden" name="name1" value="1">
+     *  <input type="hidden" name="name2" value="2">
+     * </div>
+     * <div>
+     *  <input type="hidden" name="name1" value="3">
+     *  <input type="hidden" name="name2" value="4">
+     * </div>
+     * <form>
+     * getData($('#form'), 'div', 'list').result => 
+     * {
+     *  name0:'0',
+     *  list:[{
+     *      name1:'1',
+     *      name2:'2'
+     *  }, {
+     *      name1:'3',
+     *      name2:'4'
+     *  }]
+     * }
+     */
+    getData:function(element, item, field){
+        var that = this;
+    	var data = {
+    		'result':{},
+    		'voids':0, //字段中空值数量
+            'total':0 //总计多少个字段
+        }
+        if(element.length){
+            var arr = element.serializeArray();
+            if(!arr.length){
+                arr = element.find('[name]').serializeArray();
+            }
+            var div = ',';
+            if(item && typeof item === 'string' && !field){
+                div = item
+            }
+            Nui.each(arr, function(v, i){
+                var val = Nui.trim(v.value)
+                data.total++;
+                if(!val){
+                    data.voids++
+                }
+                var name = v.name;
+                if(!Nui.isArray(data.result[name])){
+                    data.result[name] = [];
+                }
+                data.result[name].push(val)
+            })
+            Nui.each(data.result, function(v, k){
+                data.result[k] = v.join(div)
+            })
+            if(item && field){
+                var once = false;
+                data.result[field] = [];
+                element.find(item).each(function(){
+                    var result = that.getData($(this).find('[name]')).result;
+                    if(item !== true && !once){
+                        Nui.each(result, function(v, k){
+                            delete data.result[k];
+                        });
+                        once = true
+                    }
+                    data.result[field].push(result)
+                })
+            }
+        }
+        return data;
+    },
+    /**
+     * @func 获取输入框内光标位置
+     * @return <Number>
+     * @param element <DOM Object> 表单元素dom对象
+     */
+    getFocusIndex:function(element){
+        var val = Nui.trim(element.value);
+        var index = val.length;
+        if(element.setSelectionRange){
+            index = element.selectionStart;
+        }
+        else{
+            //ie
+            try{
+                var temp = document.selection.createRange();
+                var textRange = element.createTextRange();
+                textRange.setEndPoint('endtoend', temp);
+                index = textRange.text.length;
+            }
+            catch(e){}
+        }
+        return index;
+    },
+    /**
+     * @func 检测页面是否有文本被选择
+     * @return <Boolean>
+     */
+    isTextSelect:function(){
+        var text = '';
+        //ie10以及以下浏览器
+        if(document.selection){
+            text =  document.selection.createRange().text;
+        }
+        //火狐和ie11浏览器getSelection无法获取表单元素选中文本
+        else if(navigator.userAgent.toLowerCase().indexOf('gecko') !== -1){
+            var textArea = document.activeElement;
+            text = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
+        }
+        //chrome safari opera
+        else if(window.getSelection){
+            text = window.getSelection().toString();
+        }
+        //低版本chrome
+        else if(document.getSelection){
+            text = document.getSelection().toString();
+        }
+        return !!text;
+    },
+    /**
+     * @func 检测是否需要安装PDF阅读器
+     * @return <Boolean>
+     */
+    isInstallPDF:function(){
+        var i, len;
+
+        var flag = true;
+
+        if(Nui.browser.webkit || (Nui.browser.mozilla && Nui.browser.version > 19)){
+            flag = false;
+        }
+
+        if(navigator.plugins && (len = navigator.plugins.length)){
+            for(i = 0; i < len; i++){
+                if(/Adobe Reader|Adobe PDF|Acrobat|Chrome PDF Viewer/.test(navigator.plugins[i].name)){
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        try{
+            if(window.ActiveXObject || window.ActiveXObject.prototype){
+                for(i = 1; i < 10; i++){
+                    try{
+                        if(eval("new ActiveXObject('PDF.PdfCtrl." + i + "');")){
+                            flag = false;
+                            break;
+                        }
+                    }
+                    catch(e){
+                        flag = true;
+                    }
+                }
+
+                var arr = ['PDF.PdfCtrl', 'AcroPDF.PDF.1', 'FoxitReader.Document', 'Adobe Acrobat', 'Adobe PDF Plug-in'];
+                len = arr.length;
+                for(i = 0; i < len; i++){
+                    try{
+                        if(new ActiveXObject(arr[i])){
+                            flag = false;
+                            break;
+                        }
+
+                    }
+                    catch(e){
+                        flag = true;
+                    }
+                }
+            }
+        }
+        catch(e){}
+
+        return flag;
+    },
+    /**
+     * @func 检测是否需要安装flash，没有安装则返回安装路径
+     * @return <Boolean, String>
+     */
+    isInstallFlash:function(){
+        if(typeof window.ActiveXObject != 'undefined'){
+            try{
+                if(!!new ActiveXObject('ShockwaveFlash.ShockwaveFlash')){
+                    return false
+                }
+            }
+            catch(e){}
+        }
+        else{
+            if(!!navigator.plugins['Shockwave Flash']){
+                return false
+            }
+        }
+        if(Nui.browser.msie){
+            return 'http://rj.baidu.com/soft/detail/17153.html'
+        }
+        else{
+            return 'http://rj.baidu.com/soft/detail/15432.html'
+        }
+    },
+    /**
+     * @func 将数字转换为逗号千分位分隔
+     * @param number <String> 数字
+     * @return <String>
+     */
+    formatNumber:function(number){
+        var integer = parseInt(number);
+        if(!isNaN(integer) && integer && (number = number.toString())){
+            var dot = number.indexOf('.');
+            var decimal = '';
+            if(dot > 0){
+                decimal = number.substr(dot);
+            }
+            return integer.toLocaleString().replace(/\.\d+$/, '') + decimal
+        }
+        return number
+    },
+    /**
+     * @func 将数字转换为中文大写
+     * @param number <String> 数字
+     * @return <String>
+     */
+    numberToCN:function(number){
+        //汉字的数字
+        var cnNums = new Array('零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖');
+        //基本单位
+        var cnIntRadice = new Array('', '拾', '佰', '仟');
+        //对应整数部分扩展单位
+        var cnIntUnits = new Array('', '万', '亿', '兆');
+        //对应小数部分单位
+        var cnDecUnits = new Array('角', '分', '毫', '厘');
+        //整数金额时后面跟的字符
+        var cnInteger = '整';
+        //整型完以后的单位
+        var cnIntLast = '元';
+        //最大处理的数字
+        var maxNum = 999999999999999.9999;
+        //金额整数部分
+        var integerNum;
+        //金额小数部分
+        var decimalNum;
+        //输出的中文金额字符串
+        var chineseStr = '';
+        //分离金额后用的数组，预定义
+        var parts;
+        if (number == '') { return ''; }
+        var isMinus = number < 0;
+        number = Math.abs(parseFloat(number));
+        if (number >= maxNum) {
+            //超出最大处理数字
+            return '';
+        }
+        if (number == 0) {
+            chineseStr = cnNums[0] + cnIntLast + cnInteger;
+            return chineseStr;
+        }
+        //转换为字符串
+        number = number.toString();
+        if (number.indexOf('.') == -1) {
+            integerNum = number;
+            decimalNum = '';
+        } else {
+            parts = number.split('.');
+            integerNum = parts[0];
+            decimalNum = parts[1].substr(0, 4);
+        }
+        //获取整型部分转换
+        if (parseInt(integerNum, 10) > 0) {
+            var zeroCount = 0;
+            var IntLen = integerNum.length;
+            for (var i = 0; i < IntLen; i++) {
+            var n = integerNum.substr(i, 1);
+            var p = IntLen - i - 1;
+            var q = p / 4;
+            var m = p % 4;
+            if (n == '0') {
+                zeroCount++;
+            } else {
+                if (zeroCount > 0) {
+                chineseStr += cnNums[0];
+                }
+                //归零
+                zeroCount = 0;
+                chineseStr += cnNums[parseInt(n)] + cnIntRadice[m];
+            }
+            if (m == 0 && zeroCount < 4) {
+                chineseStr += cnIntUnits[q];
+            }
+            }
+            chineseStr += cnIntLast;
+        }
+        //小数部分
+        if (decimalNum != '') {
+            var decLen = decimalNum.length;
+            for (var i = 0; i < decLen; i++) {
+            var n = decimalNum.substr(i, 1);
+            if (n != '0') {
+                chineseStr += cnNums[Number(n)] + cnDecUnits[i];
+            }
+            }
+        }
+        if (chineseStr == '') {
+            chineseStr += cnNums[0] + cnIntLast + cnInteger;
+        } else if (decimalNum == '') {
+            chineseStr += cnInteger;
+        }
+        if(isMinus){
+            chineseStr = '负' + chineseStr
+        }
+        return chineseStr;
+    }
+})
+
+/**
+ * @author Aniu[2016-11-11 16:54]
+ * @update Aniu[2016-11-11 16:54]
+ * @version 1.0.1
+ * @description 模版引擎
+ */
+
+__define__('src/core/template', ['src/core/util'], function(util){
+
+    var template = function(tplid, data, opts){
+        if(this.tplid = tplid){
+            if(caches[tplid]){
+                return render.call(this, caches[tplid], data, opts)
+            }
+            var ele = document.getElementById(tplid);
+            if(ele && ele.nodeName==='SCRIPT' && ele.type === 'text/html'){
+                return render.call(this, caches[tplid] = ele.innerHTML, data, opts)
+            }
+        }
+        return ''
+    }
+
+    var caches = {};
+
+    var options = {
+        openTag:'<%',
+        closeTag:'%>'
+    }
+
+    var methods = {
+        trim:Nui.trim,
+        formatDate:util.formatDate,
+        formatNumber:util.formatNumber,
+        setParam:util.setParam,
+        toFixed:util.toFixed,
+        numberToCN:util.numberToCN
+    }
+
+    var isstr = !!''.trim;
+
+    var snippet = ';$that.out = function(){return $that.code';
+
+    //低版本IE用push拼接字符串效率更高
+    snippet = (isstr ? '""'+snippet : '[]'+snippet+'.join("")')+'}';
+
+    var join = function(iscode){
+        if(isstr){
+            if(iscode){
+                return function(code){
+                    return '$that.code += '+code+';'
+                }
+            }
+            return function(code, snippet){
+                return code += snippet
+            }
+        }
+        if(iscode){
+            return function(code){
+                return '$that.code.push('+code+');'
+            }
+        }
+        return function(code, snippet){
+            code.push(snippet);
+            return code
+        }
+    }
+
+    var joinCode = join(true);
+
+    var joinSnippet = join();
+
+    var replaceInclude = function(tpl, openTag, closeTag, opts){
+        var that = this;
+        var regs = openTag.replace(/([^\s])/g, '\\$1');
+        var rege = closeTag.replace(/([^\s])/g, '\\$1');
+        return tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tid){
+            if(tid){
+                var tmp = that[tid];
+                if(typeof tmp === 'function'){
+                    tmp = tmp();
+                }
+                if(typeof tmp === 'string'){
+                    return render.call(that, tmp, null, opts)
+                }
+                else{
+                    return template(tid, null, opts)
+                }
+            }
+            return ''
+        })
+    }
+
+    //部分浏览器中表单对象name属性如果和模版中需要使用的变量重名，而这个变量又不存在，返回值就会变成该dom....
+    var isNode = typeof HTMLElement === 'object' ? 
+    function(obj){
+        return obj instanceof HTMLElement;
+    } : 
+    function(obj){
+        return obj.nodeType === 1 && typeof obj.nodeName === 'string';
+    };
+    var isDom = function(obj){
+        if(obj && typeof obj === 'object'){
+            //元素集合
+            var ele = obj[0];
+            if(ele){
+                return isNode(ele)
+            }
+            //元素
+            return isNode(obj)
+        }
+    }
+
+    var render = function(tpl, data, opts){
+        var that = this;
+        if(typeof tpl === 'string'){
+            opts = opts || {};
+            var openTag = opts.openTag || options.openTag, closeTag = opts.closeTag || options.closeTag;
+            tpl = replaceInclude.call(that, tpl, openTag, closeTag);
+            if(data && typeof data === 'object'){
+                if(Nui.isArray(data)){
+                    data = {
+                        $list:data
+                    }
+                }
+                var code = isstr ? '' : [];
+                tpl = tpl.replace(/\s+/g, ' ');
+                Nui.each(tpl.split(openTag), function(val, key){
+                    val = val.split(closeTag);
+                    if(key >= 1){
+                        code = joinSnippet(code, compile(Nui.trim(val[0]), true))
+                    }
+                    else{
+                        val[1] = val[0];
+                    }
+                    code = joinSnippet(code, compile(val[1].replace(/'/g, "\\'").replace(/"/g, '\\"')))
+                });
+
+                var variables = isstr ? '' : [];
+
+                for(var k in data){
+                    variables = joinSnippet(variables, k+'=$data.'+k+',')
+                }
+
+                if(!isstr){
+                    code = code.join('');
+                    variables = variables.join('');
+                }
+
+                code = 'var '+ variables +'$that=this,$method=$that.methods; $that.line=4; $that.code='+ snippet +';\ntry{\n' + code + ';}\ncatch(e){\n$that.error(e, $that.line)\n};';
+                
+                try{
+                    var Rander = new Function('$data', code);
+                    Rander.prototype.methods = methods;
+                    Rander.prototype.error = error(code, data, that.tplid);
+                    Rander.prototype.dom = isDom;
+                    tpl = new Rander(data).out();
+                    Rander = null
+                }
+                catch(e){
+                    error(code, data, that.tplid)(e)
+                }
+                
+            }
+            return tpl
+        }
+        return ''
+    }
+
+    var error = function(code, data, tplid){
+        return function(e, line){
+            var msg = '\n';
+            var codes = [];
+            code = 'function anonymous($data){\n'+code+'\n}';
+            code = code.split('\n');
+            Nui.each(code, function(v, k){
+                codes.push((k+1)+ '      ' +v.replace('$that.line++;', ''))
+            })
+            msg += 'code\n';
+            msg += codes.join('\n')+'\n\n';
+            if(typeof JSON !== undefined){
+                msg += 'data\n';
+                msg += JSON.stringify(data)+'\n\n'
+            }
+            if(tplid){
+                msg += 'templateid\n';
+                msg += tplid+'\n\n'
+            }
+            if(line){
+                msg += 'line\n';
+                msg += line+'\n\n'
+            }
+            msg += 'message\n';
+            msg += e.message;
+            console.error(msg)
+        }
+    }
+
+    var compile = function(tpl, logic){
+        if(!tpl){
+            return ''
+        }
+        var code,res;
+        if(logic){
+            if((res = match(tpl, 'if')) !== undefined){
+                code = 'if('+exists(res)+'){'
+            }
+            else if((res = match(tpl, 'elseif')) !== undefined){
+                code = '\n}\nelse if('+exists(res)+'){'
+            }
+            else if(tpl === 'else'){
+                code = '\n}\nelse{'
+            }
+            else if(tpl === '/if'){
+                code = '}'
+            }
+            else if((res = match(tpl, 'each ', /\s+/)) !== undefined){
+                code = 'Nui.each('+ res[0] +', function('+(res[1]||'$value')+','+(res[2]||'$index')+'){'
+            }
+            else if(tpl === '/each'){
+                code = '});'
+            }
+            else if((res = match(tpl, ' | ', /\s*,\s*/)) !== undefined){
+                var str = res[0];
+                var i = str.lastIndexOf('(');
+                var _call = '(' +exists(res.slice(1).toString()) +')';
+                //赋值操作必须要用括号包裹起来
+                if(i !== -1){
+                    var start = str.substr(0, i);
+                    var end = Nui.trimLeft(str.substr(i+1));
+                    code = joinCode(start+'($that.methods.' + end + _call)
+                }
+                else{
+                    code = joinCode('$that.methods.'+ str + _call)
+                }
+            }
+            else if(/^(var|let|const|return|delete)\s+/.test(tpl)){
+                code = exists(tpl)+';'
+            }
+            else{
+                code = joinCode(exists(tpl, true))
+            }
+        }
+        else{
+            code = joinCode('\''+tpl+'\'')
+        }
+        return code + '\n' + '$that.line++;'
+    }
+
+    //判断变量是否存在
+    //a.b??  a[b]??  a['b']??  a[b['c']]??
+    var exists = function(code, isVal){
+        return code.replace(/([\.\$\w]+\s*(\[[\'\"\[\]\w\.\$\s]+\])?)\?\?/g, function(a, b){
+            var rep = '(typeof '+ b + '!=="undefined"&&'+ b +'!==null&&'+ b +'!==undefined&&!$that.dom('+ b +')';
+            if(isVal){
+                rep += '?' + b + ':' + '""';
+            }
+            return rep + ')'
+        })
+    }
+
+    var match = function(str, syntax, regexp){
+        var replace;
+        if(str.indexOf(syntax) === 0){
+            replace = ''
+        }
+        else if(syntax === ' | ' && str.indexOf(syntax) > 0){
+            replace = ','
+        }
+        if(replace !== undefined){
+            str = Nui.trimLeft(str.replace(syntax, replace));
+            return regexp ? str.split(regexp) : str
+        }
+    }
+
+    template.method = function(name, callback){
+        if(!methods[name]){
+            methods[name] = callback
+        }
+    }
+
+    template.config = function(){
+        var args = arguments;
+        if(Nui.type(args[0], 'Object')){
+            Nui.each(args[0], function(v, k){
+                options[k] = v
+            })
+        }
+        else if(args.length > 1 && typeof args[0] === 'string'){
+            options[args[0]] = args[1]
+        }
+    }
+
+    template.render = render;
+
+    return template
+})
+
+/**
+ * @author Aniu[2016-11-11 16:54]
+ * @update Aniu[2016-11-11 16:54]
+ * @version 1.0.1
+ * @description 组件基类
+ */
+
+__define__('src/core/component', ['src/core/template', 'src/core/events'], function(tpl, events){
+    var module = this;
+    var require = this.require;
+    var extend = this.extend;
+    var callMethod = function(method, args, obj){
+        //实参大于形参，最后一个实参表示id
+        if(args.length > method.length){
+            var id = args[args.length-1];
+            if(id && Nui.type(id, ['String', 'Number']) && obj._options.id !== id && obj.__id !== id){
+                return
+            }
+        }
+        method.apply(obj, args)
+    }
+    //去除IE67按钮点击黑边
+    if(Nui.bsie7){
+        Nui.doc.on('focus', 'button, input[type="button"]', function(){
+            this.blur()
+        })
+    }
+    /**
+     * 单和双下划线开头表示私有方法或者属性，只能在内部使用，
+     * 单下划线继承后可重写或修改，双下划线为系统预置无法修改
+     * 系统预置属性方法：__id, __instances, __eventList, __parent, __component_name, __setMethod
+     */
+    var statics = {
+        //实例对象唯一标记
+        __id:0,
+        //实例对象容器
+        __instances:{},
+        /*
+        * 将实例方法接口设置为静态方法，这样可以操作多个实例，
+        * 默认有 init, option, reset, destroy
+        * init表示初始化组件，会查询容器内包含属性为 data-组件名-options的dom元素，并调用组件
+        */
+        __setMethod:function(apis, components){
+            var self = this;
+            Nui.each(apis, function(val, methodName){
+                if(self[methodName] === undefined){
+                    self[methodName] = function(){
+                        var self = this, args = arguments, container = args[0], name = self.__component_name;
+                        if(name && name !== 'component'){
+                            if(container && container instanceof jQuery){
+                                if(methodName === 'init'){
+                                    var mod = components[name];
+                                    if(mod){
+                                        container.find('[data-'+name+'-options]').each(function(){
+                                            //不能重复调用
+                                            if(this.nui && this.nui[name]){
+                                                return
+                                            }
+                                            var elem = jQuery(this);
+                                            var options = elem.data(name+'Options');
+                                            var _mod;
+                                            if(options && typeof options === 'string'){
+                                                if(/^{[\s\S]*}$/.test(options)){
+                                                    options = eval('('+ options +')');
+                                                }
+                                                else if(_mod = require(options, true)){
+                                                    if(typeof _mod.exports === 'function'){
+                                                        options = _mod.exports(elem)
+                                                    }
+                                                    else{
+                                                        options = _mod.exports;
+                                                    }
+                                                }
+                                            }
+                                            if(typeof options !== 'object'){
+                                                options = {};
+                                            }
+                                            mod(extend(options, {
+                                                target:elem
+                                            }))
+                                        })
+                                    }
+                                }
+                                else{
+                                    container.find('[nui_component_'+ name +']').each(function(){
+                                        var obj, method;
+                                        if(this.nui && (obj = this.nui[name]) && typeof (method = obj[methodName]) === 'function'){
+                                            callMethod(method, Array.prototype.slice.call(args, 1), obj)
+                                        }
+                                    })
+                                }
+                            }
+                            else{
+                                Nui.each(self.__instances, function(obj){
+                                    var method = obj[methodName];
+                                    if(typeof method === 'function'){
+                                        callMethod(method, args, obj)
+                                    }
+                                })
+                            }
+                        }
+                        else{
+                            Nui.each(components, function(v, k){
+                                if(k !== 'component' && typeof v[methodName] === 'function'){
+                                    v[methodName].apply(v, args)
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+            return self
+        },
+        //对所有实例设置默认选项
+        _options:{},
+        //创建组件模块时会调用一次，可用于在document上绑定事件操作实例
+        _init:jQuery.noop,
+        _jquery:function(elem){
+            if(elem instanceof jQuery){
+                return elem
+            }
+            return jQuery(elem)
+        },
+        _getSize:function(selector, dir, attr){
+            var size = 0;
+            attr = attr || 'border';
+            dir = dir || 'tb';
+            if(attr === 'all'){
+                return (this._getSize(selector, dir) + 
+                        this._getSize(selector, dir, 'padding') +
+                        this._getSize(selector, dir, 'margin'))
+            }
+            var group = {
+                l:['Left'],
+                r:['Right'],
+                lr:['Left', 'Right'],
+                t:['Top'],
+                b:['Bottom'],
+                tb:['Top', 'Bottom']
+            }
+            var arr = [{
+                border:{
+                    l:['LeftWidth'],
+                    r:['RightWidth'],
+                    lr:['LeftWidth', 'RightWidth'],
+                    t:['TopWidth'],
+                    b:['BottomWidth'],
+                    tb:['TopWidth', 'BottomWidth']
+                }
+            }, {
+                padding:group
+            }, {
+                margin:group
+            }];
+            Nui.each(arr, function(val){
+                if(val[attr]){
+                    Nui.each(val[attr][dir], function(v){
+                        var value = parseFloat(selector.css(attr+v));
+                        size += isNaN(value) ? 0 : value
+                    });
+                }
+            });
+            return size
+        },
+        _$fn:function(name, mod){
+            jQuery.fn[name] = function(){
+                var args = arguments;
+                var options = args[0];
+                return this.each(function(){
+                    if(typeof options !== 'string'){
+                        if(Nui.type(options, 'Object')){
+                            options.target = this
+                        }
+                        else{
+                            options = {
+                                target:this
+                            }
+                        }
+                        mod(options);
+                    }
+                    else if(options){
+                        var object;
+                        if(this.nui && (object=this.nui[name]) && options.indexOf('_') !== 0){
+                            if(options === 'options'){
+                                object.option(args[1], args[2])
+                            }
+                            else{
+                                var attr = object[options];
+                                if(typeof attr === 'function'){
+                                    attr.apply(object, Array.prototype.slice.call(args, 1))
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+        },
+        _$ready:function(name, mod){
+            if(typeof this.init === 'function'){
+                this.init(Nui.doc)
+            }
+        },
+        config:function(){
+            var args = arguments;
+            var len = args.length;
+            var attr = args[0];
+            if(Nui.type(attr, 'Object')){
+                return this._options = jQuery.extend(true, this._options, attr)
+            }
+            else if(Nui.type(attr, 'String')){
+                if(args.length === 1){
+                    return this._options[attr]
+                }
+                return this._options[attr] = args[1]
+            }
+        },
+        hasInstance:function(id){
+            var exist = false;
+            var instances = this.__instances;
+            if(id){
+                Nui.each(instances, function(v){
+                    if(v._options.id === id){
+                        exist = true;
+                        return false
+                    }
+                })
+            }
+            else{
+                for(i in instances){
+                    return true
+                }
+            }
+            return exist
+        }
+    }
+
+    return ({
+        _static:statics,
+        _options:{
+            target:null,
+            //组件id，element会增加class 组件名-组件id
+            id:'',
+            //组件皮肤，element会增加class nui-组件名-皮肤名
+            skin:'',
+            //element增加一个或多个类
+            className:'',
+            onInit:null,
+            onReset:null,
+            onDestroy:null
+        },
+        _template:{},
+        _init:function(){
+            this._exec()
+        },
+        _exec:jQuery.noop,
+        _getTarget:function(){
+            var self = this;
+            if(!self.target){
+                var target = self._options.target;
+                var _class = self.constructor;
+                if(!target){
+                    return null
+                }
+                target = _class._jquery(target);
+                self.target = self._bindComponentName(target);
+            }
+            return self.target
+        },
+        _bindComponentName:function(element){
+            var self = this, _class = self.constructor;
+            var attr = 'nui_component_'+_class.__component_name;
+            element.attr(attr, '').each(function(){
+                if(!this.nui){
+                    this.nui = {};
+                }
+                this.nui[_class.__component_name] = self
+            })
+            return element
+        },
+        _tplData:function(data){
+            var opts = this._options, 
+                _class = this.constructor,
+                name = 'nui-' + _class.__component_name, 
+                skin = Nui.trim(opts.skin),
+                getName = function(_class, arrs){
+                    if(_class.__parent){
+                        var _pclass = _class.__parent.constructor;
+                        var _name = _pclass.__component_name;
+                        if(_name !== 'component'){
+                            if(skin){
+                                arrs.unshift('nui-'+_name+'-'+skin);
+                            }
+                            arrs.unshift('nui-'+_name);
+                            return getName(_pclass, arrs)
+                        }
+                    }
+                    return arrs
+                }, className = getName(_class, []);
+
+            className.push(name);
+            if(skin){
+                className.push(name+'-'+skin)
+            }
+            if(opts.id){
+                className.push(_class.__component_name + '-' + opts.id)
+            }
+            if(!data){
+                data = {}
+            }
+            if(opts.className){
+                className.push(opts.className)
+            }
+            data.className = className.join(' ');
+            return data
+        },
+        _event:function(){
+            var self = this, opts = self._options;
+            if(self.element && opts.events){
+                opts.element = self.element;
+                events.call(self, opts)
+            }
+            return events.call(self)
+        },
+        _on:function(type, dalegate, selector, callback, trigger){
+            var self = this;
+            if(typeof selector === 'function'){
+                trigger = callback;
+                callback = selector;
+                selector = dalegate;
+                dalegate = null;
+                selector = self.constructor._jquery(selector)
+            }
+
+            var _callback = function(e){
+                return callback.call(this, e, jQuery(this))
+            }
+
+            if(dalegate){
+                if(typeof selector !== 'string'){
+                    selector = selector.selector;
+                    if(!selector){
+                        selector = self._options.target
+                    }
+                }
+                dalegate.on(type, selector, _callback);
+                if(trigger){
+                    dalegate.find(selector).trigger(type)
+                }
+            }
+            else{
+                selector.on(type, _callback);
+                if(trigger){
+                    selector.trigger(type)
+                }
+            }
+
+            self.__eventList.push({
+                dalegate:dalegate,
+                selector:selector,
+                type:type,
+                callback:_callback
+            });
+
+            return self
+        },
+        _off:function(){
+            var self = this, _eventList = self.__eventList;
+            Nui.each(_eventList, function(val, key){
+                if(val.dalegate){
+                    val.dalegate.off(val.type, val.selector, val.callback)
+                }
+                else{
+                    val.selector.off(val.type, val.callback)
+                }
+                _eventList[key] = null;
+                delete _eventList[key]
+            });
+            self.__eventList = [];
+            return self
+        },
+        _delete:function(){
+            var self = this, _class = self.constructor;
+            if(self.target){
+                var attr = 'nui_component_'+_class.__component_name;
+                self.target.removeAttr(attr).each(function(){
+                    if(this.nui){
+                        this.nui[_class.__component_name] = null;
+                        delete this.nui[_class.__component_name];
+                    }
+                })
+            }
+            _class.__instances[self.__id] = null;
+            delete _class.__instances[self.__id]
+        },
+        _reset:function(){
+            this._off();
+            if(this.element){
+                this.element.remove();
+                this.element = null;
+            }
+            return this
+        },
+        _tpl2html:function(id, data){
+            var opts = {
+                openTag:'<%',
+                closeTag:'%>'
+            }
+            if(arguments.length === 1){
+                return tpl.render(this._template, id, opts)
+            }
+            return tpl.render.call(this._template, this._template[id], data, opts)
+        },
+        _callback:function(method, args){
+            var self = this, opts = self._options;
+            var callback = opts['on'+method];
+            if(typeof callback === 'function'){
+                if(args){
+                    Array.prototype.unshift.call(args, self);
+                    return callback.apply(opts, args);
+                }
+                return callback.call(opts, self)
+            }
+        },
+        option:function(opts, isOriginal){
+            var args = arguments;
+            var isdef = false;
+            var options;
+            if(args[0] === true){
+                isdef = true
+            }
+            else if(jQuery.isPlainObject(args[0])){
+                options = args[0]
+                isdef = args[1]
+            }
+            else if(args.length > 1 && typeof args[0] === 'string'){
+                options = {};
+                options[args[0]] = args[1]
+                isdef = args[2]
+            }
+            if(options||isdef){
+                this._options = jQuery.extend(true, {}, this[isdef === true ? '_defaultOptions' : '_options'], options)
+                this._reset();
+                this._exec();
+            }
+            return this
+        },
+        reset:function(){
+            this.option(true);
+            this._callback('Reset');
+            return this;
+        },
+        destroy:function(){
+            this._delete();
+            this._reset();
+            this._callback('Destroy');
+        }
+    })
+})
+
+/**
+ * @author Aniu[2017-03-02 08:44]
+ * @update Aniu[2017-03-02 08:44]
+ * @version 1.0.1
+ * @description 语法高亮组件
+ */
+
+__define__('src/components/highlight/highlight',function(){
+    return this.extend('src/core/component', {
+        _static:{
+            _init:function(){
+                var self = this;
+                Nui.doc.on('click', function(){
+                    if(self._active){
+                        Nui.each(self.__instances, function(val){
+                            if(val._active){
+                                val.element.find('tr.s-crt').removeClass('s-crt');
+                                val._active = false;
+                            }
+                        })
+                    }
+                    self._active = false;
+                })
+            },
+            _getcode:function(type, text){
+                return '<code class="'+ type +'">'+ text +'</code>'
+            },
+            _getarr:function(match, code){
+                var array = [];
+                if(!match){
+                    array.push(code)
+                }
+                else{
+                    Nui.each(match, function(v){
+                        var index = code.indexOf(v);
+                        var sub = code.substr(0, index);
+                        code = code.substr(index+v.length);
+                        array.push(sub);
+                        array.push(v);
+                    })
+                    array.push(code);
+                }
+                return array
+            },
+            _comment:function(code){
+                //多行注释
+                if(/\/\*/.test(code)){
+                    code = code.replace(/(\/\*(.|\s)*?\*\/)/g, this._getcode('comment', '$1'))
+                }
+                //单行注释
+                else if(/\/\//.test(code)){
+                    code = code.replace(/(\/\/.*)$/g, this._getcode('comment', '$1'))
+                }
+                return code
+            }
+        },
+        _options:{
+            //工具栏
+            tools:{
+                //复制
+                copy:true
+            },
+            //点击代码那一行高亮
+            isLight:true,
+            //是否显示行号
+            isLine:false,
+            //是否显示语法标题
+            isTitle:true
+        },
+        _exec:function(){
+            var self = this, target = self._getTarget();
+            if(target){
+                var dom = target.get(0);
+                if(dom.tagName === 'SCRIPT' && dom.type == 'text/highlight'){
+                    self.code = target.html()
+                                .replace(/^[\r\n]+|[\r\n]+$/g, '')
+                                .replace(/</g, '&lt;')
+                                .replace(/>/g, '&gt;');
+                    self._create();
+                    self._event();
+                }
+            }
+        },
+        _title:'',
+        _template:
+            '<div class="<% className %>">'
+                +'<%if tools%>'
+                +'<div class="tools">'
+                    +'<%if tools.copy%>'
+                    +'<em class="copy">复制</em>'
+                    +'<%/if%>'
+                +'</div>'
+                +'<%/if%>'
+                +'<div class="body">'
+                    +'<table>'
+                        +'<%each list val key%>'
+                            +'<tr>'
+                                +'<%if isLine === true%><td class="line" number="<%key+1%>"><%if bsie7%><%key+1%><%/if%></td><%/if%>'
+                                +'<td class="code"><%val%></td>'
+                            +'</tr>'
+                        +'<%/each%>'
+                    +'</table>'
+                +'</div>'
+                +'<%if isTitle%>'
+                +'<em class="title"><%title%></em>'
+                +'<%/if%>'
+            +'</div>',
+        _events:{
+            'click tr':function(e, elem){
+                if(this._options.isLight === true){
+                    this.constructor._active = this._active = true;
+                    elem.addClass('s-crt').siblings().removeClass('s-crt');
+                    e.stopPropagation()
+                }
+            },
+            'click .copy':function(){
+                alert('傻帽！逗你玩呢。')
+            }
+        },
+        _create:function(){
+            var self = this;
+            var opts = self._options;
+            var data = $.extend({
+                bsie7:Nui.bsie7,
+                list:self._list(),
+                title:self._title,
+                isLine:opts.isLine,
+                tools:opts.tools,
+                isTitle:opts.isTitle
+            }, self._tplData())
+            self.element = $(self._tpl2html(data)).insertAfter(self.target);
+        },
+        _getCode:function(){
+            return this.code
+        },
+        _list:function(){
+            return this._getCode().split('\n')
+        }
+    })
+})
+
+/**
+ * @author Aniu[2017-03-02 08:44]
+ * @update Aniu[2017-03-02 08:44]
+ * @version 1.0.1
+ * @description css语法高亮组件
+ */
+
+__define__('src/components/highlight/style',function(){
+    return this.extend('src/components/highlight/highlight', {
+        _title:'css',
+        _getCode:function(){
+            var self = this;
+            var code = self.code;
+            var _class = self.constructor;
+            var str = '';
+            var match = code.match(/(\/\*(.|\s)*?\*\/)|(\{[^\{\}\/]*\})/g);
+            var array = _class._getarr(match, code);
+            Nui.each(array, function(v){
+                if(Nui.trim(v)){
+                    //多行注释
+                    if(/^\s*\/\*/.test(v)){
+                        v = v.replace(/(.+)/g, _class._getcode('comment', '$1'))
+                    }
+                    else{
+                        //匹配属性
+                        if(/\}\s*$/.test(v)){
+                            v = v.replace(/(\s*)([^:;\{\}\/\*]+)(:)([^:;\{\}\/\*]+)/g, '$1'+_class._getcode('attr', '$2')+'$3'+_class._getcode('string', '$4'))
+                                .replace(/([\:\;\{\}])/g, _class._getcode('symbol', '$1'));
+                        }
+                        //选择器
+                        else{
+                            v = v.replace(/([^\:\{\}\@\#\s\.]+)/g, _class._getcode('selector', '$1'))
+                                .replace(/([\:\{\}\@\#\.])/g, _class._getcode('symbol', '$1'));
+                        }
+                    }
+                }
+                str += v;
+            })
+            return str
+        }
+    })
+})
+
+/**
+ * @author Aniu[2017-03-02 08:44]
+ * @update Aniu[2017-03-02 08:44]
+ * @version 1.0.1
+ * @description javascript语法高亮组件
+ */
+
+__define__('src/components/highlight/javascript',function(){
+    return this.extend('src/components/highlight/highlight', {
+        _title:'js',
+        _getCode:function(){
+            var self = this;
+            var code = self.code;
+            var _class = self.constructor;
+            var str = '';
+            var kws = 'abstract|arguments|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|elseif|each|enum|eval|export|'+
+                      'extends|false|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|include|interface|let|long|native|new|null|'+
+                      'package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|true|try|typeof|var';
+            var symbol = '&lt;|&gt;|;|!|%|\\\|\\\[|\\\]|\\\(|\\\)|\\\{|\\\}|\\\=|\\\/|-|\\\+|,|\\\.|\\\:|\\\?|~|\\\*|&';
+            var match = code.match(/(\/\/.*)|(\/\*(.|\s)*?\*\/)|('[^']*')|("[^"]*")/g);
+            var array = _class._getarr(match, code);
+            Nui.each(array, function(v){
+                if($.trim(v)){
+                    //单行注释
+                    if(/^\s*\/\//.test(v)){
+                        v = _class._getcode('comment', v);
+                    }
+                    //多行注释
+                    else if(/^\s*\/\*/.test(v)){
+                        v = v.replace(/(.+)/g, _class._getcode('comment', '$1'))
+                    }
+                    else{
+                        //字符串
+                        if(/'|"/.test(v)){
+                            v = v.replace(/(.+)/g, _class._getcode('string', '$1'))
+                        }
+                        //关键字、符号、单词
+                        else{
+                            v = v.replace(new RegExp('('+ symbol +')', 'g'), _class._getcode('symbol', '$1'))
+                                .replace(new RegExp('('+ kws +')(\\s+|\\\<code)', 'g'), _class._getcode('keyword', '$1')+'$2')
+                                .replace(/(\/code>\s*)(\d+)/g, '$1'+_class._getcode('number', '$2'))
+                                .replace(/(\/code>\s*)?([^<>\s]+)(\s*<code)/g, '$1'+_class._getcode('word', '$2')+'$3')
+
+                        }
+                        v = _class._comment(v);
+                    }
+                }
+                str += v;
+            })
+            return str
+        }
+    })
+})
+
+/**
+ * @author Aniu[2017-03-02 08:44]
+ * @update Aniu[2017-03-02 08:44]
+ * @version 1.0.1
+ * @description xml语法高亮组件
+ */
+
+__define__('src/components/highlight/xml',['src/components/highlight/javascript', 'src/components/highlight/style'],function(js, css){
+    return this.extend('src/components/highlight/highlight', {
+        _title:'xml',
+        _getCode:function(){
+            var self = this;
+            var code = self.code;
+            var _class = self.constructor;
+            var str = '';
+            code = code.replace(/&lt;\s*![^!]+-\s*&gt;/g, function(res){
+                return res.replace(/&lt;/g, '<<').replace(/&gt;/g, '>>')
+            });
+            Nui.each(code.split('&lt;'), function(v1){
+                v1 = v1.split('&gt;');
+                var length = v1.length;
+                Nui.each(v1, function(v2, k2){
+                    if(Nui.trim(v2)){
+                        if(k2 == 0){
+                            var istag = false;
+                            if(/^\s*\//.test(v2)){
+                                v2 = v2.replace(/([^\r\n\/]+)/g, _class._getcode('tag', '$1'))
+                                       .replace(/^(\s*\/+)/, _class._getcode('symbol', '$1'))
+                            }
+                            else{
+                                var preBlank = v2.match(/^\s+/)||'';
+                                if(/\=\s*['"]$/.test(v2)){
+                                    istag = true
+                                }
+                                v2 = v2.replace(/^\s+/, '')
+                                       .replace(/(\s+)([^'"\/\s\=]+)((\s*=\s*)(['"]?[^'"]*['"]?))?/g, '$1'+_class._getcode('attr', '$2')+_class._getcode('symbol', '$4')+_class._getcode('string', '$5'))
+                                       .replace(/<code class="\w+">(\s*((<<\s*![-\s]+)|([-\s]+>>))?)<\/code>/g, '$1')
+                                       .replace(/^([^\s]+)/, _class._getcode('tag', '$1'))
+                                       .replace(/(\/+\s*)$/, _class._getcode('symbol', '$1'))
+                                v2 = preBlank + v2;
+                            }
+                            v2 = _class._getcode('symbol', '&lt;') + v2;
+                            if(!istag){
+                                v2 += _class._getcode('symbol', '&gt;');
+                            }
+                        }
+                        else{
+                            //闭合标签
+                            if(length === 3 && k2 === 1 && /\s*['"]\s*/.test(v2)){
+                                v2 = v2.replace(/(\s*['"]\s*)/, _class._getcode('symbol', '$1')) + _class._getcode('symbol', '&gt;');
+                            }
+                            //内容
+                            else{
+                                var tagname = $.trim(v1[0]).toLowerCase();
+                                if(tagname == 'style'){
+                                    v2 = css.exports._getCode.call(self, v2)
+                                }
+                                else if(tagname == 'script'){
+                                    v2 = js.exports._getCode.call(self, v2)
+                                }
+                                else{
+                                    v2 = v2.replace(/(.+)/g, _class._getcode('text', '$1'))
+                                }
+                            }
+                        }
+                        //注释
+                        v2 = v2.replace(/<<\s*![^!]+-\s*>>/g, function(res){
+                            return res.replace(/([^\r\n]+)/g, _class._getcode('comment', '$1')).replace(/<</g, '&lt;').replace(/>>/g, '&gt;')
+                        })
+                    }
+                    str += v2
+                })
+            })
+
+            return str
+        }
+    })
+})
+
+__define__('{script}/base',['src/components/highlight/xml', 'src/core/events'], function(xml, events){
+    this.imports('../style/base');
+    var hash = location.hash.replace('#', '');
+    var main = $('.g-main');
+    var items = main.find('h2');
+    var length = items.length;
+    var menus = $('.m-menu ul');
+    return ({
+        init:function(){
+            this.setYear();
+            if(main.find('h2[id]').length){
+                this.event();
+                this.position();
+            }
+            if(Nui.bsie7){
+                this.bsie7();
+            }
+        },
+        setYear:function(){
+            $('#nowyear').text('-'+new Date().getFullYear());
+        },
+        position:function(){
+            if(hash){
+                var elem = $('[id="'+ hash +'"]');
+                elem.length && main.scrollTop(elem.position().top)
+            }
+        },
+        event:function(){
+            main.scroll(function(){
+                var stop = main.scrollTop();
+                items.each(function(i){
+                    var item = $(this);
+                    var id = this.id;
+                    var itop = item.position().top - 20;
+                    var ntop = 0;
+                    var next = items.eq(i+1);
+                    if(next.length){
+                        ntop = next.position().top - 20
+                    }
+                    else{
+                        ntop = $('.mainbox').outerHeight()
+                    }
+                    menus.find('a.s-crt').removeClass('s-crt');
+                    if(stop >= itop && stop < ntop){
+                        menus.find('a[href="#'+ id +'"]').addClass('s-crt');
+                        //为了阻止设置location.hash时，浏览器会自行定位到该id的起始位置
+                        item.removeAttr('id');
+                        location.hash = id;
+                        item.attr('id', id);
+                        return false;
+                    }
+                })
+            })
+        },
+        bsie7:function(){
+            var box = $('.g-html .g-content');
+            var height = $('.g-header').outerHeight();
+            var timer = null;
+            var resize = function(){
+                box.height(Nui.win.height() - height)
+            }
+            Nui.win.resize(function(){
+                clearTimeout(timer);
+                timer = setTimeout(resize, 100)
+            })
+            resize();
+        }
+    })
+})
+
+
+})(Nui['_module_1_define']);

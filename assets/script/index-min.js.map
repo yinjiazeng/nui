@@ -1,1 +1,0 @@
-{"version":3,"sources":["index-debug.js"],"names":["define","Nui","this","imports"],"mappings":"CAAC,SAAUA,GACXC,IAAU,iBAAE,iBAAiB,WACzBC,KAAKC,QAAQ","file":"index-min.js.map?v=2a02fa7","sourcesContent":[";(function(define){\nNui[define]('{script}/index',function(){\r\n    this.imports('../style/index')\r\n})\r\n\n\n})('_module_2_define');"]}

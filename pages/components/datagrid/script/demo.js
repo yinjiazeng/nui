@@ -3,6 +3,27 @@ var checkradio = require('./checkradio');
 var template = require('template');
 var datagrid = require('{com}/datagrid');
 
+import b from './a'
+import * as a from './a'
+import {a} from './a'
+import {a as b} from './a'
+import {default as b, c as d} from './a'
+
+export {a}
+export {a as b, a as default}
+export var a = {}
+export default {a as b,b}
+export default a
+export default {
+    a:1,
+    b:2
+}
+export default a = function(){
+
+}
+export {a as b} from './a';
+export * from './a';
+
 var a = datagrid({
     container:'#data',
     paging:{
@@ -14,26 +35,22 @@ var a = datagrid({
         title:'名称',
         width:100,
         field:'buname',
-        fixed:'left'
     }, {
         title:'名称',
         width:100,
         field:'buname1',
-        fixed:'left'
     }, {
         title:'名称',
         width:200,
         field:'buname',
         children:[{
-            children:[{
-                title:'名称',
-                width:100,
-                field:'buname'
-            }, {
-                title:'名称',
-                width:100,
-                field:'buname'
-            }]
+            title:'名称',
+            width:100,
+            field:'buname'
+        }, {
+            title:'名称',
+            width:100,
+            field:'buname'
         }]
     }, {
         title:'名称',
@@ -42,12 +59,7 @@ var a = datagrid({
         children:[{
             title:'名称',
             width:100,
-            field:'buname',
-            children:[{
-                title:'名称',
-                width:100,
-                field:'buname'
-            }]
+            field:'buname'
         }]
     }, {
         title:'名称',
