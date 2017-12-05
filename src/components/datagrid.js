@@ -159,11 +159,6 @@ Nui.define(function(){
                 '<%/if%>',
             thead:
                 '<%include "colgroup"%>'+
-                '<colgroup>'+
-                    '<%each cols[k] col i%>'+
-                    '<col<%if col.width%> width="<%col.width%>"<%/if%>></col>'+
-                    '<%/each%>'+
-                '</colgroup>'+
                 '<thead class="table-thead">'+
                     '<%each v%>'+
                     '<tr class="table-row">'+
