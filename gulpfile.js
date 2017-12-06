@@ -39,7 +39,7 @@ gulp.task('concat', function() {
 });
 
 var options = {
-    url:'./assets/script/config.js',
+    url:'./config.js',
     jsmin:null,
     cssmin:null,
     filterPath: function(src) {

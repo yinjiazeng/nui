@@ -5,8 +5,7 @@ Nui.config({
         "script": "/assets/script",
         "style": "/assets/style",
         "com": "/src/components",
-        "light": "/src/components/highlight",
-        "aaa": "/pages/components/router/script"
+        "light": "/src/components/highlight"
     },
     "alias": {
         "util": "{core}/util",
@@ -14,8 +13,7 @@ Nui.config({
         "events": "{core}/events",
         "component": "{core}/component",
         "placeholder": "{com}/placeholder",
-        "highlight": "{light}/highlight",
-        "baa": "{aaa}/a"
+        "highlight": "{light}/highlight"
     },
     "maps": {
         "{script}/base": "9e1405d",
