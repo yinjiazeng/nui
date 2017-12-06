@@ -36,6 +36,8 @@ Nui.define(['./layer'], function(layer){
             width:'auto',
             height:'auto',
             timer:1500,
+            //将层级设置的足够大，使其永远在最顶部展示
+            zIndex:19920604,
             close:{
                 enable:true
             }
