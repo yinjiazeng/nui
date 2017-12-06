@@ -345,41 +345,43 @@ Nui.define(['../../core/component', '../../core/util', '../../core/template'], f
             })
         },
         _createButton:function(){
-            var self = this, opts = self._options, defaults = {}, buttons = {}, caches = {};
+            var self = this, opts = self._options, defaults = {}, buttons = {}, caches = {}, isTips = opts.isTips === true;
             var add = function(id, btn){
                 self._button[id === 'close' ? 'unshift' : 'push'](btn)
             }
             self._button = [];
-            if(opts.isTips !== true){
-                Nui.each(['close', 'confirm', 'cancel'], function(id){
-                    var btn = opts[id];
-                    if(btn && btn.enable === true){
-                        defaults[id] = {
-                            id:id,
-                            name:btn.name,
-                            style:btn.style,
-                            text:btn.text,
-                            callback:btn.callback
-                        }
+
+            Nui.each(['close', 'confirm', 'cancel'], function(id){
+                var btn = opts[id];
+                if(btn && btn.enable === true && (!isTips || id === 'close')){
+                    defaults[id] = {
+                        id:id,
+                        name:btn.name,
+                        style:btn.style,
+                        text:btn.text,
+                        callback:btn.callback
                     }
-                });
-                if(opts.button && opts.button.length){
-                    Nui.each(opts.button, function(val){
-                        var id = val.id, btn = val, def;
-                        if(!caches[id]){
-                            caches[id] = true;
-                            if(def = defaults[id]){
-                                btn = $.extend(true, {}, def, val);
-                                delete defaults[id]
-                            }
-                            add(id, btn)
-                        }
-                    })
                 }
-                Nui.each(defaults, function(val, id){
-                    add(id, val)
-                });
+            });
+
+            if(!isTips && opts.button && opts.button.length){
+                Nui.each(opts.button, function(val){
+                    var id = val.id, btn = val, def;
+                    if(!caches[id]){
+                        caches[id] = true;
+                        if(def = defaults[id]){
+                            btn = $.extend(true, {}, def, val);
+                            delete defaults[id]
+                        }
+                        add(id, btn)
+                    }
+                })
             }
+
+            Nui.each(defaults, function(val, id){
+                add(id, val)
+            });
+
             if(self._button[0] && self._button[0].id === 'close'){
                 buttons.close = self._button[0],
                 buttons.button = self._button.slice(1);
@@ -387,6 +389,7 @@ Nui.define(['../../core/component', '../../core/util', '../../core/template'], f
             else{
                 buttons.button = self._button
             }
+
             return buttons
         },
         _buttonEvent:function(){
