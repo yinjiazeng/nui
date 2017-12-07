@@ -1,6 +1,6 @@
 Nui.define(['{light}/xml', 'events'], function(xml, events){
     this.imports('../style/base');
-    var hash = location.hash.replace('#', '');
+    var hash = location.hash ? location.hash.replace('#', '') : '';
     var main = $('.g-main');
     var items = main.find('h2');
     var length = items.length;

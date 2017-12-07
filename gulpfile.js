@@ -5,6 +5,7 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var nui = require('gulp-nui');
 var nunjucks = require('gulp-nunjucks-render');
+var babel = require('babel-core');
 
 gulp.task('concat', function() {
     gulp.src(['./src/load.js'])
@@ -42,6 +43,11 @@ var options = {
     url:'./config.js',
     jsmin:null,
     cssmin:null,
+    babel:[babel, {
+        presets:[
+            'es2015', 'stage-2'
+        ]
+    }],
     filterPath: function(src) {
         return src.replace(/^\/nui\//, this.paths.base)
     }
