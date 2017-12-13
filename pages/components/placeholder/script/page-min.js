@@ -1,9 +1,13 @@
-'use strict';
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-;(function (__define__) {
-    __define__('src/core/events', function () {
+;(function (__define) {
+    function __requireDefaultModule(module) {
+        if (module && module.defaults !== undefined) {
+            return module.defaults;
+        }
+        return module;
+    }
+    __define('src/core/events', function () {
         return function (opts) {
             var self = this,
                 that = opts || self,
@@ -74,7 +78,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 实用工具集
      */
 
-    __define__('src/core/util', {
+    __define('src/core/util', {
 
         /**
          * @func 常用正则表达式
@@ -631,7 +635,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 模版引擎
      */
 
-    __define__('src/core/template', ['src/core/util'], function (util) {
+    __define('src/core/template', ['src/core/util'], function (util) {
 
         var template = function template(tplid, data, opts) {
             if (this.tplid = tplid) {
@@ -911,7 +915,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 组件基类
      */
 
-    __define__('src/core/component', ['src/core/template', 'src/core/events'], function (tpl, events) {
+    __define('src/core/component', ['src/core/template', 'src/core/events'], function (tpl, events) {
         var module = this;
         var require = this.require;
         var extend = this.extend;
@@ -1363,7 +1367,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 输入框占位符
      */
 
-    __define__('src/components/placeholder', ['src/core/component'], function (component) {
+    __define('src/components/placeholder', ['src/core/component'], function (component) {
         return this.extend(component, {
             _options: {
                 /**
@@ -1550,7 +1554,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         });
     });
 
-    __define__('./script/page', ['src/components/placeholder', 'src/core/events'], function (placeholder, events) {
+    __define('./script/page', ['src/components/placeholder', 'src/core/events'], function (placeholder, events) {
         events({
             events: {
                 'focus :text': function focusText(e, elem) {

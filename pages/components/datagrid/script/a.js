@@ -1,3 +1,1 @@
-return {
-    
-}
+export default undefined

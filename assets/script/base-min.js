@@ -1,9 +1,13 @@
-'use strict';
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-;(function (__define__) {
-    __define__('src/core/events', function () {
+;(function (__define) {
+    function __requireDefaultModule(module) {
+        if (module && module.defaults !== undefined) {
+            return module.defaults;
+        }
+        return module;
+    }
+    __define('src/core/events', function () {
         return function (opts) {
             var self = this,
                 that = opts || self,
@@ -74,7 +78,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 实用工具集
      */
 
-    __define__('src/core/util', {
+    __define('src/core/util', {
 
         /**
          * @func 常用正则表达式
@@ -631,7 +635,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 模版引擎
      */
 
-    __define__('src/core/template', ['src/core/util'], function (util) {
+    __define('src/core/template', ['src/core/util'], function (util) {
 
         var template = function template(tplid, data, opts) {
             if (this.tplid = tplid) {
@@ -911,7 +915,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 组件基类
      */
 
-    __define__('src/core/component', ['src/core/template', 'src/core/events'], function (tpl, events) {
+    __define('src/core/component', ['src/core/template', 'src/core/events'], function (tpl, events) {
         var module = this;
         var require = this.require;
         var extend = this.extend;
@@ -1363,7 +1367,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 语法高亮组件
      */
 
-    __define__('src/components/highlight/highlight', function () {
+    __define('src/components/highlight/highlight', function () {
         return this.extend('src/core/component', {
             _static: {
                 _init: function _init() {
@@ -1479,7 +1483,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description css语法高亮组件
      */
 
-    __define__('src/components/highlight/style', function () {
+    __define('src/components/highlight/style', function () {
         return this.extend('src/components/highlight/highlight', {
             _title: 'css',
             _getCode: function _getCode() {
@@ -1519,7 +1523,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description javascript语法高亮组件
      */
 
-    __define__('src/components/highlight/javascript', function () {
+    __define('src/components/highlight/javascript', function () {
         return this.extend('src/components/highlight/highlight', {
             _title: 'js',
             _getCode: function _getCode() {
@@ -1566,7 +1570,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description xml语法高亮组件
      */
 
-    __define__('src/components/highlight/xml', ['src/components/highlight/javascript', 'src/components/highlight/style'], function (js, css) {
+    __define('src/components/highlight/xml', ['src/components/highlight/javascript', 'src/components/highlight/style'], function (js, css) {
         return this.extend('src/components/highlight/highlight', {
             _title: 'xml',
             _getCode: function _getCode() {
@@ -1629,7 +1633,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         });
     });
 
-    __define__('{script}/base', ['src/components/highlight/xml', 'src/core/events'], function (xml, events) {
+    __define('{script}/base', ['src/components/highlight/xml', 'src/core/events'], function (xml, events) {
         this.imports('../style/base');
         var hash = location.hash ? location.hash.replace('#', '') : '';
         var main = $('.g-main');

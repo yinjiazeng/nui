@@ -1,16 +1,20 @@
-'use strict';
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-;(function (__define__) {
+;(function (__define) {
+    function __requireDefaultModule(module) {
+        if (module && module.defaults !== undefined) {
+            return module.defaults;
+        }
+        return module;
+    }
     /**
-     * @author Aniu[2016-11-11 16:54]
-     * @update Aniu[2016-11-11 16:54]
-     * @version 1.0.1
-     * @description 实用工具集
-     */
+    * @author Aniu[2016-11-11 16:54]
+    * @update Aniu[2016-11-11 16:54]
+    * @version 1.0.1
+    * @description 实用工具集
+    */
 
-    __define__('src/core/util', {
+    __define('src/core/util', {
 
         /**
          * @func 常用正则表达式
@@ -567,7 +571,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 模版引擎
      */
 
-    __define__('src/core/template', ['src/core/util'], function (util) {
+    __define('src/core/template', ['src/core/util'], function (util) {
 
         var template = function template(tplid, data, opts) {
             if (this.tplid = tplid) {
@@ -840,7 +844,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return template;
     });
 
-    __define__('./script/template/page', ['src/core/template'], function (tpl) {
+    __define('./script/template/page', ['src/core/template'], function (tpl) {
         var renders = this.renders;
         var chart = echarts.init(document.getElementById('data'));
         var setOption = function setOption() {

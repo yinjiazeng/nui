@@ -1,16 +1,20 @@
-'use strict';
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-;(function (__define__) {
+;(function (__define) {
+    function __requireDefaultModule(module) {
+        if (module && module.defaults !== undefined) {
+            return module.defaults;
+        }
+        return module;
+    }
     /**
-     * @author Aniu[2016-11-11 16:54]
-     * @update Aniu[2016-11-11 16:54]
-     * @version 1.0.1
-     * @description 实用工具集
-     */
+    * @author Aniu[2016-11-11 16:54]
+    * @update Aniu[2016-11-11 16:54]
+    * @version 1.0.1
+    * @description 实用工具集
+    */
 
-    __define__('src/core/util', {
+    __define('src/core/util', {
 
         /**
          * @func 常用正则表达式
@@ -567,7 +571,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 模版引擎
      */
 
-    __define__('src/core/template', ['src/core/util'], function (util) {
+    __define('src/core/template', ['src/core/util'], function (util) {
 
         var template = function template(tplid, data, opts) {
             if (this.tplid = tplid) {
@@ -840,7 +844,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return template;
     });
 
-    __define__('src/core/events', function () {
+    __define('src/core/events', function () {
         return function (opts) {
             var self = this,
                 that = opts || self,
@@ -911,7 +915,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 组件基类
      */
 
-    __define__('src/core/component', ['src/core/template', 'src/core/events'], function (tpl, events) {
+    __define('src/core/component', ['src/core/template', 'src/core/events'], function (tpl, events) {
         var module = this;
         var require = this.require;
         var extend = this.extend;
@@ -1363,7 +1367,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description layer弹出层
      */
 
-    __define__('src/components/layer/layer', ['src/core/component', 'src/core/util', 'src/core/template'], function (component, util, template) {
+    __define('src/components/layer/layer', ['src/core/component', 'src/core/util', 'src/core/template'], function (component, util, template) {
         var module = this;
 
         var statics = {
@@ -2121,7 +2125,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
         });
     });
-    __define__('src/components/layer/confirm', ['src/components/layer/layer'], function (layer) {
+    __define('src/components/layer/confirm', ['src/components/layer/layer'], function (layer) {
         return function (content, callback, title, width, height, align) {
             var opts;
             if ((typeof content === 'undefined' ? 'undefined' : _typeof(content)) === 'object') {
@@ -2152,7 +2156,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }));
         };
     });
-    __define__('./script/events/page', ['src/core/template', 'src/core/events', 'src/components/layer/confirm'], function (template, events, confirm) {
+    __define('./script/events/page', ['src/core/template', 'src/core/events', 'src/components/layer/confirm'], function (template, events, confirm) {
         var evt = events({
             elem: $('#data'),
             data: ['蔬菜', '水果', '苹果'],

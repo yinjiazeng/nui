@@ -1,20 +1,20 @@
-'use strict';
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-;(function (__define__) {
-    __define__('pages/components/datagrid/script/a', function (require, imports, renders, extend, exports) {
-        var module = this;
-        return {};
-    });
+;(function (__define) {
+    function __requireDefaultModule(module) {
+        if (module && module.defaults !== undefined) {
+            return module.defaults;
+        }
+        return module;
+    }
     /**
-     * @author Aniu[2016-11-11 16:54]
-     * @update Aniu[2016-11-11 16:54]
-     * @version 1.0.1
-     * @description 实用工具集
-     */
+    * @author Aniu[2016-11-11 16:54]
+    * @update Aniu[2016-11-11 16:54]
+    * @version 1.0.1
+    * @description 实用工具集
+    */
 
-    __define__('src/core/util', {
+    __define('src/core/util', {
 
         /**
          * @func 常用正则表达式
@@ -564,7 +564,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }
     });
 
-    __define__('src/core/events', function () {
+    __define('src/core/events', function () {
         return function (opts) {
             var self = this,
                 that = opts || self,
@@ -635,7 +635,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 模版引擎
      */
 
-    __define__('src/core/template', ['src/core/util'], function (util) {
+    __define('src/core/template', ['src/core/util'], function (util) {
 
         var template = function template(tplid, data, opts) {
             if (this.tplid = tplid) {
@@ -915,7 +915,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @description 组件基类
      */
 
-    __define__('src/core/component', ['src/core/template', 'src/core/events'], function (tpl, events) {
+    __define('src/core/component', ['src/core/template', 'src/core/events'], function (tpl, events) {
         var module = this;
         var require = this.require;
         var extend = this.extend;
@@ -1360,7 +1360,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         };
     });
 
-    __define__('src/components/datagrid', function () {
+    __define('src/components/datagrid', function () {
         var module = this;
         var component = module.require('src/core/component');
         var util = module.require('src/core/util');
@@ -2101,7 +2101,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
         });
     });
-    __define__('pages/components/datagrid/script/checkradio', function (require, imports, renders, extend, exports) {
+    __define('pages/components/datagrid/script/checkradio', function (require, imports, renders, extend, exports) {
         var module = this;
         /**
          * @filename jquery.checkradio.js
@@ -2191,7 +2191,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             };
         }(jQuery);
     });
-    __define__('pages/components/datagrid/script/paging', function (require, imports, renders, extend, exports) {
+    __define('pages/components/datagrid/script/paging', function (require, imports, renders, extend, exports) {
         var module = this;
         /**
          * @filename jquery.paging.js
@@ -2653,23 +2653,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             window.Paging = Paging;
         }(window, document, jQuery);
     });
-    __define__('./script/demo', function (require, imports, renders, extend, exports) {
+    __define('./script/demo', function (require, imports, renders, extend, exports) {
         var module = this;
         var paging = require('pages/components/datagrid/script/paging');
         var checkradio = require('pages/components/datagrid/script/checkradio');
         var template = require('src/core/template');
         var datagrid = require('src/components/datagrid');
 
-        var __module_a = require('pages/components/datagrid/script/a');
-        var a = __module_a.a;
-        function getRequest(url) {
-            // do something
-
-            var timeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2000;
-            var callback = arguments[2];
-        }
-
-        var a = 1;
+        var a = __requireDefaultModule(imports('./a.css'));
+        console.log(a);
 
         var a = datagrid({
             container: '#data',

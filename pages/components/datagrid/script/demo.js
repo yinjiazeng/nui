@@ -3,14 +3,9 @@ var checkradio = require('./checkradio');
 var template = require('template');
 var datagrid = require('{com}/datagrid');
 
-import {a} from './a';
+import a from './a.css';
 
-function getRequest(url, timeout = 2000, callback) {
-    // do something
-}
-
-var a = 1;
-
+console.log(a)
 
 var a = datagrid({
     container:'#data',
