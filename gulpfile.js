@@ -43,13 +43,6 @@ var options = {
     url:'./config.js',
     jsmin:null,
     cssmin:null,
-    babel:[babel, {
-        presets:[
-            ['es2015', {
-                modules:false
-            }], 'stage-2'
-        ]
-    }],
     filterPath: function(src) {
         return src.replace(/^\/nui\//, this.paths.base)
     }
