@@ -1454,7 +1454,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
             }
         },
         _control:function(e, elem){
-            Nui.trim(elem.val()) ? this.$text.hide() : this.$text.show()
+            elem.val() ? this.$text.hide() : this.$text.show()
         },
         _exec:function(){
             var self = this, opts = self._options, target = self._getTarget();
