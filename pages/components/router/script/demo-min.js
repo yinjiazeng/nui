@@ -1866,14 +1866,13 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 if(self._val === undefined){
                     self._val = Nui.trim(target.val());
                 }
-                if(self._text = Nui.trim(text || '')){
-                    self._create()
-                }
+                self._text = Nui.trim(text || '');
+                self._create()
             }
         },
         _create:function(){
             var self = this, opts = self._options, _class = self.constructor;
-            if(opts.animate || (!opts.animate && !('placeholder' in document.createElement('input')))){
+            if(self._condition()){
                 if(opts.animate){
                     self.target.removeAttr('placeholder')
                 }
@@ -1886,14 +1885,21 @@ __define('src/components/placeholder',['src/core/component'], function(component
                     'cursor':'text'
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
-                if(self._text){
-                    self._createText();
-                }
                 self._setPLeft();
+                self._createElem();
                 self._event()
             }
-            else{
+            else if(self._text && opts.color){
                 self._setStyle()
+            }
+        },
+        _condition:function(){
+            var opts = this._options;
+            return opts.animate || (!opts.animate && !('placeholder' in document.createElement('input')))
+        },
+        _createElem:function(){
+            if(this._text){
+                this._createText();
             }
         },
         _createText:function(){
