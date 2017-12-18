@@ -43,6 +43,7 @@ var options = {
     url:'./config.js',
     jsmin:null,
     cssmin:null,
+    syncAsset:'node',
     filterPath: function(src) {
         return src.replace(/^\/nui\//, this.paths.base)
     }

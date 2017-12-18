@@ -1,5 +1,10 @@
 Nui.define(['{com}/placeholder', 'events'], function(placeholder, events){
-    events({
+    $(':text').placeholder({
+        text:'19920604',
+        restore:false,
+        color:'#f00'
+    })
+    /*events({
         events:{
             'focus :text':function(e, elem){
                 elem.placeholder({
@@ -11,5 +16,5 @@ Nui.define(['{com}/placeholder', 'events'], function(placeholder, events){
                 elem.placeholder('destroy')
             }
         }
-    })
+    })*/
 })

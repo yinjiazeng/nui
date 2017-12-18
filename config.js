@@ -5,7 +5,8 @@ Nui.config({
         "script": "/assets/script",
         "style": "/assets/style",
         "com": "/src/components",
-        "light": "/src/components/highlight"
+        "light": "/src/components/highlight",
+        "node": "/node_modules"
     },
     "alias": {
         "util": "{core}/util",
@@ -19,7 +20,7 @@ Nui.config({
         "{script}/base": "b9e0299",
         "./script/events/page": "3eebfd8",
         "./script/template/page": "da4e9f0",
-        "./script/demo": "404b250",
-        "./script/page": "3b1c72e"
+        "./script/demo": "3d8064a",
+        "./script/page": "48a9b29"
     }
 })

@@ -3,6 +3,10 @@ var require = this.require;
 var placeholder = require('{com}/placeholder');
 var router = require('{com}/router');
 
+import '../style/a.css'
+
+import a from '{node}/aa';
+
 renders({
 	<form class="aaaa import lay liumm" data-current="2" method="post" action="<%basePath%><%typeof(url)==="undefined"?'':url %>" target="uploadfile" enctype="multipart/form-data">
 })

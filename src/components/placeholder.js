@@ -44,6 +44,26 @@ Nui.define(['../core/component'], function(component){
             wrap:'<strong class="<% className %>" style="<%include \'list\'%>" />',
             elem:'<b style="<%include \'list\'%>"><%text%></b>'
         },
+        _events:{
+            'click b':'_focus',
+            'focus :input':'_indent',
+            'blur:change :input':'_value',
+            'keyup:keydown :input':'_control'
+        },
+        _focus:function(){
+            this.target.focus()
+        },
+        _value:function(){
+            this.value()
+        },
+        _indent:function(){
+            if(this._options.animate){
+                this.$text.stop(true, false).animate({left:this._pLeft+10, opacity:'0.5'});
+            }
+        },
+        _control:function(e, elem){
+            Nui.trim(elem.val()) ? this.$text.hide() : this.$text.show()
+        },
         _exec:function(){
             var self = this, opts = self._options, target = self._getTarget();
             if(target){
@@ -54,7 +74,7 @@ Nui.define(['../core/component'], function(component){
                 if(self._val === undefined){
                     self._val = Nui.trim(target.val());
                 }
-                if(self._text = Nui.trim(text)){
+                if(self._text = Nui.trim(text || '')){
                     self._create()
                 }
             }
@@ -73,33 +93,39 @@ Nui.define(['../core/component'], function(component){
                     'overflow':'hidden',
                     'cursor':'text'
                 }
-                self.target.wrap(self._tpl2html('wrap', data))
-                self.element = $(self._tpl2html('elem', {
-                        text:self._text,
-                        style:(function(){
-                            var height = self.target.outerHeight();
-                            var isText = self.target.is('textarea');
-                            return ({
-                                'display':Nui.trim(self.target.val()) ? 'none' : 'inline',
-                                'position':'absolute',
-                                'left':_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
-                                'top':_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
-                                'height':isText ? 'auto' : height+'px',
-                                'line-height':isText ? 'normal' : height+'px',
-                                'color':opts.color
-                            })
-                        })()
-                    })).insertAfter(self.target)
-
-                self._events()
+                self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
+                if(self._text){
+                    self._createText();
+                }
+                self._setPLeft();
+                self._event()
             }
             else{
                 self._setStyle()
             }
         },
+        _createText:function(){
+            var self = this, opts = self._options, _class = self.constructor;
+            self.$text = $(self._tpl2html('elem', {
+                text:self._text,
+                style:(function(){
+                    var height = self.target.height();
+                    var isText = self.target.is('textarea');
+                    return ({
+                        'display':Nui.trim(self.target.val()) ? 'none' : 'inline',
+                        'position':'absolute',
+                        'left':_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
+                        'top':_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
+                        'height':isText ? 'auto' : height+'px',
+                        'line-height':isText ? 'normal' : height+'px',
+                        'color':opts.color
+                    })
+                })()
+            })).insertAfter(self.target)
+        },
         _setStyle:function(){
             var self = this, opts = self._options;
-            self.className = '_placeholder-'+self.__id;
+            self.className = '_nui_'+ self.constructor.__component_name +'_'+self.__id;
             self.target.addClass(self.className);
             if(!self.constructor.style){
                 self._createStyle()
@@ -134,31 +160,18 @@ Nui.define(['../core/component'], function(component){
                 catch(e){}
             })
         },
-        _events:function(){
-            var self = this, opts = self._options, _class = self.constructor;
-            var pleft = _class._getSize(self.target, 'l', 'padding') + _class._getSize(self.target, 'l');
-            self._on('click', self.element, function(){
-                self.target.focus()
-            })
-
-            self._on('focus', self.target, function(){
-                opts.animate && self.element.stop(true, false).animate({left:pleft+10, opacity:'0.5'});
-            })
-
-            self._on('blur change', self.target, function(e, elem){
-                self.value();
-            })
-
-            self._on('keyup keydown', self.target, function(e, elem){
-                Nui.trim(elem.val()) ? self.element.hide() : self.element.show()
-            })
+        _setPLeft:function(){
+            var _class = this.constructor;
+            this._pLeft = _class._getSize(this.target, 'l', 'padding') + _class._getSize(this.target, 'l');
         },
         _reset:function(){
             var self = this;
             self._off();
             if(self.element){
-                self.element.remove();
                 self.target.unwrap();
+            }
+            if(self.$text){
+                self.$text.remove()
             }
             if(self._options.restore === true){
                 self.target.val(self._val)
@@ -173,17 +186,18 @@ Nui.define(['../core/component'], function(component){
         },
         value:function(val){
             var _class = this.constructor, target = this.target;
-            var pleft = _class._getSize(target, 'l', 'padding') + _class._getSize(target, 'l');
             var v = Nui.trim(!arguments.length ? target.val() : target.val(val).val());
-            if((!this._options.equal && v === this.text) || !v){
+            if((!this._options.equal && v === this._text) || !v){
                 target.val('');
-                this.element && this.element.show();
-                if(this._options.animate){
-                    this.element.stop(true, false).animate({left:pleft, opacity:'1'})
+                if(this.$text){
+                    this.$text.show();
+                    if(this._options.animate){
+                        this.$text.stop(true, false).animate({left:this._pLeft, opacity:'1'})
+                    }
                 }
             }
-            else if(this.element){
-                this.element.hide()
+            else if(this.$text){
+                this.$text.hide()
             }
             this._callback('Change');
         }
