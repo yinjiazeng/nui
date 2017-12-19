@@ -50,6 +50,7 @@ Nui.define(['../core/component'], function(component){
             'blur:change :input':'_value',
             'keyup:keydown :input':'_control'
         },
+        _data:{},
         _focus:function(){
             this.target.focus()
         },
@@ -75,7 +76,19 @@ Nui.define(['../core/component'], function(component){
                     self._val = Nui.trim(target.val());
                 }
                 self._text = Nui.trim(text || '');
+                self._setData();
                 self._create()
+            }
+        },
+        _setData:function(){
+            var self = this, _class = self.constructor;
+            var isText = self.target.is('textarea');
+            var height = self.target.height();
+            self._data = {
+                top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
+                height:isText ? 'auto' : height+'px',
+                position:'absolute',
+                'line-height':isText ? 'normal' : height+'px',
             }
         },
         _create:function(){
@@ -94,7 +107,7 @@ Nui.define(['../core/component'], function(component){
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._setPLeft();
-                self._createElem();
+                self._createElems();
                 self._event()
             }
             else if(self._text && opts.color){
@@ -105,7 +118,7 @@ Nui.define(['../core/component'], function(component){
             var opts = this._options;
             return opts.animate || (!opts.animate && !('placeholder' in document.createElement('input')))
         },
-        _createElem:function(){
+        _createElems:function(){
             if(this._text){
                 this._createText();
             }
@@ -114,20 +127,11 @@ Nui.define(['../core/component'], function(component){
             var self = this, opts = self._options, _class = self.constructor;
             self.$text = $(self._tpl2html('elem', {
                 text:self._text,
-                style:(function(){
-                    var height = self.target.height();
-                    var isText = self.target.is('textarea');
-                    return ({
-                        'display':Nui.trim(self.target.val()) ? 'none' : 'inline',
-                        'position':'absolute',
-                        'left':_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
-                        'top':_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
-                        'height':isText ? 'auto' : height+'px',
-                        'line-height':isText ? 'normal' : height+'px',
-                        'color':opts.color
-                    })
-                })()
-            })).insertAfter(self.target)
+                style:Nui.extend({
+                    left:_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
+                    color:opts.color
+                }, self._data)
+            })).appendTo(self.element)
         },
         _setStyle:function(){
             var self = this, opts = self._options;

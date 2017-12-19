@@ -1,8 +1,26 @@
-Nui.define(['{com}/placeholder', 'events'], function(placeholder, events){
-    $(':text').placeholder({
+Nui.define(['{com}/placeholder', '{com}/input', 'events'], function(placeholder, input, events){
+    $(':text').css('padding-right', '55px').input({
         text:'19920604',
         restore:false,
-        color:'#f00'
+        color:'#f00',
+        iconfont:true,
+        clear:{
+            content:'11',
+            callback:function(){
+
+            }
+        },
+        reveal:{
+            content:{
+                text:'22',
+                password:'33'
+            },
+            value:false,
+            title:true,
+            callback:function(){
+
+            }
+        }
     })
     /*events({
         events:{

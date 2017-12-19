@@ -11,7 +11,14 @@
         color:'#f60'
     }
 })
-
+__define('node_modules/aa/index',function(require,imports,renders,extend,exports){
+	var module=this;
+	imports('./a.css');
+	
+	exports.defaults = function(){
+	    
+	}
+});
 __define('src/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
@@ -1842,6 +1849,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
             'blur:change :input':'_value',
             'keyup:keydown :input':'_control'
         },
+        _data:{},
         _focus:function(){
             this.target.focus()
         },
@@ -1867,7 +1875,19 @@ __define('src/components/placeholder',['src/core/component'], function(component
                     self._val = Nui.trim(target.val());
                 }
                 self._text = Nui.trim(text || '');
+                self._setData();
                 self._create()
+            }
+        },
+        _setData:function(){
+            var self = this, _class = self.constructor;
+            var isText = self.target.is('textarea');
+            var height = self.target.height();
+            self._data = {
+                top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
+                height:isText ? 'auto' : height+'px',
+                position:'absolute',
+                'line-height':isText ? 'normal' : height+'px',
             }
         },
         _create:function(){
@@ -1886,7 +1906,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._setPLeft();
-                self._createElem();
+                self._createElems();
                 self._event()
             }
             else if(self._text && opts.color){
@@ -1897,7 +1917,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
             var opts = this._options;
             return opts.animate || (!opts.animate && !('placeholder' in document.createElement('input')))
         },
-        _createElem:function(){
+        _createElems:function(){
             if(this._text){
                 this._createText();
             }
@@ -1906,20 +1926,11 @@ __define('src/components/placeholder',['src/core/component'], function(component
             var self = this, opts = self._options, _class = self.constructor;
             self.$text = $(self._tpl2html('elem', {
                 text:self._text,
-                style:(function(){
-                    var height = self.target.height();
-                    var isText = self.target.is('textarea');
-                    return ({
-                        'display':Nui.trim(self.target.val()) ? 'none' : 'inline',
-                        'position':'absolute',
-                        'left':_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
-                        'top':_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
-                        'height':isText ? 'auto' : height+'px',
-                        'line-height':isText ? 'normal' : height+'px',
-                        'color':opts.color
-                    })
-                })()
-            })).insertAfter(self.target)
+                style:Nui.extend({
+                    left:_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
+                    color:opts.color
+                }, self._data)
+            })).appendTo(self.element)
         },
         _setStyle:function(){
             var self = this, opts = self._options;
@@ -2011,7 +2022,7 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	
 	imports('../style/a.css')
 	
-	var a=__requireDefaultModule(require('node_modules/aa'));
+	var a=__requireDefaultModule(require('node_modules/aa/index'));
 	
 	renders(''+''
 		+'<form class="aaaa import lay liumm" data-current="2" method="post" action="<%basePath%><%typeof(url)==="undefined"?\'\':url %>" target="uploadfile" enctype="multipart/form-data">'+''

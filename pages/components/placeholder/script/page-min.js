@@ -1442,6 +1442,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
             'blur:change :input':'_value',
             'keyup:keydown :input':'_control'
         },
+        _data:{},
         _focus:function(){
             this.target.focus()
         },
@@ -1467,7 +1468,19 @@ __define('src/components/placeholder',['src/core/component'], function(component
                     self._val = Nui.trim(target.val());
                 }
                 self._text = Nui.trim(text || '');
+                self._setData();
                 self._create()
+            }
+        },
+        _setData:function(){
+            var self = this, _class = self.constructor;
+            var isText = self.target.is('textarea');
+            var height = self.target.height();
+            self._data = {
+                top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
+                height:isText ? 'auto' : height+'px',
+                position:'absolute',
+                'line-height':isText ? 'normal' : height+'px',
             }
         },
         _create:function(){
@@ -1486,7 +1499,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._setPLeft();
-                self._createElem();
+                self._createElems();
                 self._event()
             }
             else if(self._text && opts.color){
@@ -1497,7 +1510,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
             var opts = this._options;
             return opts.animate || (!opts.animate && !('placeholder' in document.createElement('input')))
         },
-        _createElem:function(){
+        _createElems:function(){
             if(this._text){
                 this._createText();
             }
@@ -1506,20 +1519,11 @@ __define('src/components/placeholder',['src/core/component'], function(component
             var self = this, opts = self._options, _class = self.constructor;
             self.$text = $(self._tpl2html('elem', {
                 text:self._text,
-                style:(function(){
-                    var height = self.target.height();
-                    var isText = self.target.is('textarea');
-                    return ({
-                        'display':Nui.trim(self.target.val()) ? 'none' : 'inline',
-                        'position':'absolute',
-                        'left':_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
-                        'top':_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
-                        'height':isText ? 'auto' : height+'px',
-                        'line-height':isText ? 'normal' : height+'px',
-                        'color':opts.color
-                    })
-                })()
-            })).insertAfter(self.target)
+                style:Nui.extend({
+                    left:_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
+                    color:opts.color
+                }, self._data)
+            })).appendTo(self.element)
         },
         _setStyle:function(){
             var self = this, opts = self._options;
@@ -1602,11 +1606,217 @@ __define('src/components/placeholder',['src/core/component'], function(component
     })
 })
 
-__define('./script/page',['src/components/placeholder', 'src/core/events'], function(placeholder, events){
-    $(':text').placeholder({
+__define('src/components/input',['src/components/placeholder'], function(placeholder){
+    return this.extend(placeholder, {
+        _options:{
+            /**
+             * @func 按钮文本是否是图标编码
+             * @type <Boolean>
+             */
+            iconfont:false,
+            /**
+             * @func 是否默认隐藏，鼠标悬停时才显示
+             * @type <Boolean>
+             */
+            hover:false,
+            /**
+             * @func 是否有值时才显示
+             * @type <Boolean>
+             */
+            value:true,
+            /**
+             * @func 是否显示查看密码按钮
+             * @type <Boolean,String,Object>
+             */
+            reveal:false,
+            /**
+             * @func 是否显示清除按钮
+             * @type <Boolean,String,Object>
+             */
+            clear:false,
+            /**
+             * @func 按钮集合
+             * @type <Array>
+             */
+            button:null
+        },
+        _template:{
+            'button':
+                '<span style="<%include \'list\'%>">'+
+                '<%each button%>'+
+                    '<%var style = $value.style%>'+
+                    '<i style="<%include \'list\'%>"<%if btn.value !== false%> input-hide="true"<%/if%> class="input-button input-<%$value.id%>'+
+                    '<%if $value.iconfont%> '+
+                    '<%$value.iconfont === true ? "iconfont" : $value.iconfont%>'+
+                    '<%/if%>'+
+                    '"'+
+                    '<%if $value.title%> title="'+
+                        '<%if $value.title === true%>'+
+                            '<%include \'content\'%>'+
+                        '<%elseif typeof $value.title === "object"%>'+
+                            '<%$value.title[type]||""%>'+
+                        '<%else%>'+
+                            '<%$value.title%>'+
+                        '<%/if%>"'+
+                    '<%/if%>'+
+                    '>'+
+                    '<%include \'content\'%>'+
+                    '</i>'+
+                '<%/each%>'+
+                '</span>',
+            'content':
+                '<%if $value.content && typeof $value.content === "object"%>'+
+                '<%$value.content[type]||""%>'+
+                '<%else%>'+
+                '<%$value.content||""%>'+
+                '<%/if%>'
+        },
+        _events:{
+            'click .input-clear':'_clear',
+            'click .input-reveal':'_reveal',
+            'mouseenter':'_mouseover',
+            'mouseleave':'_mouseout'
+        },
+        _mouseover:function(e, elem){
+            if(this.target.val()){
+                elem.find('[input-hide="true"]').show()
+            }
+        },
+        _mouseout:function(e, elem){
+            elem.find('[input-hide="true"]').hide()
+        },
+        _condition:function(){
+            var opts = this._options;
+            if(
+                placeholder.exports._condition.call(this) || 
+                opts.clear || 
+                opts.reveal ||
+                opts.button
+            ){
+                this._createButton();
+                return true
+            }
+        },
+        _createButton:function(){
+            var self = this, opts = self._options, button = [], defaults = {}, buttons = {}, caches = {};
+
+            Nui.each(['reveal', 'clear'], function(id){
+                var btn = opts[id];
+                if(btn){
+                    if(typeof btn === 'boolean'){
+                        btn = {}
+                    }
+                    else if(typeof btn === 'string'){
+                        btn = {
+                            content:btn
+                        }
+                    }
+                    defaults[id] = Nui.extend(true, {}, btn, {id:id})
+                }
+            })
+
+            if(Nui.type(opts.button, 'Array')){
+                Nui.each(opts.button, function(val){
+                    if(val){
+                        if(typeof val === 'string'){
+                            val = {
+                                id:val
+                            }
+                        }
+                        var id = val.id, btn = val, def;
+                        if(!caches[id]){
+                            caches[id] = true;
+                            if(def = defaults[id]){
+                                btn = $.extend(true, {}, def, val);
+                                delete defaults[id]
+                            }
+                            button.push(btn)
+                        }
+                    }
+                })
+            }
+
+            Nui.each(defaults, function(val, id){
+                button.push(val)
+            })
+
+            var value = !!self.target.val();
+            Nui.each(button, function(btn){
+                if(btn.iconfont === undefined){
+                    btn.iconfont = opts.iconfont
+                }
+                if(btn.hover === undefined){
+                    btn.hover = opts.hover
+                }
+                if(btn.value === undefined){
+                    btn.value = opts.value
+                }
+                if(!btn.style){
+                    btn.style = {};
+                }
+                delete btn.style.display;
+                btn.style.display = (value && btn.value || btn.value === false) ? 'inline' : 'none';
+                self._bindEvent(btn)
+            })
+            self._button = button
+        },
+        _bindEvent:function(btn){
+            var self = this, opts = self._options;
+            if(typeof btn.callback === 'function'){
+                var method = '_callback_'+btn.id;
+                self[method] = function(e, elem){
+                    btn.callback.call(opts, self, e, elem)
+                }
+                var methods = self._events['click .input-'+btn.id];
+                if(methods){
+                    method = Nui.trim(methods.split(method)[0]) + ' ' + method
+                }
+                self._events['click .input-'+btn.id] = method;
+            }
+        },
+        _createElems:function(){
+            var self = this, opts = self._options, _class = self.constructor;
+            placeholder.exports._createElems.call(self);
+            $(self._tpl2html('button', {
+                button:self._button,
+                iconfont:opts.iconfont,
+                type:self.target.attr('type') === 'password' ? 'password' : 'text',
+                style:Nui.extend({
+                    right:_class._getSize(self.target, 'r')+'px',
+                }, self._data)
+            })).appendTo(self.element)
+        },
+        _clear:function(){
+            
+        },
+        _reveal:function(){
+
+        }
+    })
+}); 
+__define('./script/page',['src/components/placeholder', 'src/components/input', 'src/core/events'], function(placeholder, input, events){
+    $(':text').css('padding-right', '55px').input({
         text:'19920604',
         restore:false,
-        color:'#f00'
+        color:'#f00',
+        iconfont:true,
+        clear:{
+            content:'11',
+            callback:function(){
+
+            }
+        },
+        reveal:{
+            content:{
+                text:'22',
+                password:'33'
+            },
+            value:false,
+            title:true,
+            callback:function(){
+
+            }
+        }
     })
     /*events({
         events:{
