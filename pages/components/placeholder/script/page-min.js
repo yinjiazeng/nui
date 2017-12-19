@@ -1620,10 +1620,10 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
              */
             hover:false,
             /**
-             * @func 是否有值时才显示
+             * @func 不论是否有值都显示
              * @type <Boolean>
              */
-            value:true,
+            show:false,
             /**
              * @func 是否显示查看密码按钮
              * @type <Boolean,String,Object>
@@ -1645,7 +1645,7 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                 '<span style="<%include \'list\'%>">'+
                 '<%each button%>'+
                     '<%var style = $value.style%>'+
-                    '<i style="<%include \'list\'%>"<%if btn.value !== false%> input-hide="true"<%/if%> class="input-button input-<%$value.id%>'+
+                    '<i style="<%include \'list\'%>" class="input-button input-<%$value.id%>'+
                     '<%if $value.iconfont%> '+
                     '<%$value.iconfont === true ? "iconfont" : $value.iconfont%>'+
                     '<%/if%>'+
@@ -1673,17 +1673,7 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
         },
         _events:{
             'click .input-clear':'_clear',
-            'click .input-reveal':'_reveal',
-            'mouseenter':'_mouseover',
-            'mouseleave':'_mouseout'
-        },
-        _mouseover:function(e, elem){
-            if(this.target.val()){
-                elem.find('[input-hide="true"]').show()
-            }
-        },
-        _mouseout:function(e, elem){
-            elem.find('[input-hide="true"]').hide()
+            'click .input-reveal':'_reveal'
         },
         _condition:function(){
             var opts = this._options;
@@ -1748,14 +1738,14 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                 if(btn.hover === undefined){
                     btn.hover = opts.hover
                 }
-                if(btn.value === undefined){
-                    btn.value = opts.value
+                if(btn.show === undefined){
+                    btn.show = opts.show
                 }
                 if(!btn.style){
                     btn.style = {};
                 }
                 delete btn.style.display;
-                btn.style.display = (value && btn.value || btn.value === false) ? 'inline' : 'none';
+                btn.style.display = value || btn.show === true ? 'inline' : 'none';
                 self._bindEvent(btn)
             })
             self._button = button
@@ -1772,6 +1762,9 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                     method = Nui.trim(methods.split(method)[0]) + ' ' + method
                 }
                 self._events['click .input-'+btn.id] = method;
+            }
+            if(btn.hover === true && btn.show !== true){
+                
             }
         },
         _createElems:function(){

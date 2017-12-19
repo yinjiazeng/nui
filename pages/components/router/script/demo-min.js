@@ -11,14 +11,7 @@
         color:'#f60'
     }
 })
-__define('node_modules/aa/index',function(require,imports,renders,extend,exports){
-	var module=this;
-	imports('./a.css');
-	
-	exports.defaults = function(){
-	    
-	}
-});
+
 __define('src/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
@@ -2022,7 +2015,7 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	
 	imports('../style/a.css')
 	
-	var a=__requireDefaultModule(require('node_modules/aa/index'));
+	var a=__requireDefaultModule(require('node_modules/aa'));
 	
 	renders(''+''
 		+'<form class="aaaa import lay liumm" data-current="2" method="post" action="<%basePath%><%typeof(url)==="undefined"?\'\':url %>" target="uploadfile" enctype="multipart/form-data">'+''
