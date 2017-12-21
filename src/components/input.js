@@ -1,4 +1,11 @@
-Nui.define(['../core/component', './placeholder'], function(component, placeholder){
+/**
+ * @author Aniu[2017-12-21 15:12]
+ * @update Aniu[2017-12-21 15:12]
+ * @version 1.0.1
+ * @description input增强
+ */
+
+Nui.define(['./placeholder'], function(placeholder){
     return this.extend(placeholder, {
         _options:{
             /**

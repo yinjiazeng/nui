@@ -1620,7 +1620,14 @@ __define('src/components/placeholder',['src/core/component'], function(component
     })
 })
 
-__define('src/components/input',['src/core/component', 'src/components/placeholder'], function(component, placeholder){
+/**
+ * @author Aniu[2017-12-21 15:12]
+ * @update Aniu[2017-12-21 15:12]
+ * @version 1.0.1
+ * @description input增强
+ */
+
+__define('src/components/input',['src/components/placeholder'], function(placeholder){
     return this.extend(placeholder, {
         _options:{
             /**
