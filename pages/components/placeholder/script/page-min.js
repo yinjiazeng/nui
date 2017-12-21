@@ -1892,7 +1892,7 @@ __define('./script/page',['src/components/placeholder', 'src/components/input', 
                 'margin-left':'5px;'
             },
             callback:function(self){
-                
+                self.value('阿牛真帅')
             }
         }]
     })
