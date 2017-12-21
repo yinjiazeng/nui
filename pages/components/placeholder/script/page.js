@@ -24,7 +24,6 @@ Nui.define(['{com}/placeholder', '{com}/input', 'events'], function(placeholder,
                 'margin-left':'5px;'
             },
             callback:function(){
-
             }
         },
         button:[{

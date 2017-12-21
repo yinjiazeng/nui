@@ -125,7 +125,9 @@ Nui.define(['../core/component'], function(component){
                     'overflow':'hidden',
                     'cursor':'text'
                 }
-                self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
+                if(!self.element){
+                    self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
+                }
                 self._setPLeft();
                 self._createElems();
                 self._event()
@@ -205,6 +207,7 @@ Nui.define(['../core/component'], function(component){
                 self.target.removeClass(self.className);
                 if(self.element){
                     self.target.unwrap();
+                    delete self.element
                 }
                 if(self._options.restore === true){
                     self.target.val(self._defaultValue)

@@ -26,7 +26,6 @@ __define('src/core/events', function(){
             isComponent = constr && constr.__component_name,
             elem = self.element || that.element || Nui.doc, 
             events = isComponent ? that._events : that.events;
-            
         if(!elem || !events){
             return that
         }
@@ -1924,7 +1923,9 @@ __define('src/components/placeholder',['src/core/component'], function(component
                     'overflow':'hidden',
                     'cursor':'text'
                 }
-                self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
+                if(!self.element){
+                    self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
+                }
                 self._setPLeft();
                 self._createElems();
                 self._event()
@@ -2004,6 +2005,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 self.target.removeClass(self.className);
                 if(self.element){
                     self.target.unwrap();
+                    delete self.element
                 }
                 if(self._options.restore === true){
                     self.target.val(self._defaultValue)

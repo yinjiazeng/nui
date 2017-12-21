@@ -12,7 +12,6 @@
             isComponent = constr && constr.__component_name,
             elem = self.element || that.element || Nui.doc, 
             events = isComponent ? that._events : that.events;
-            
         if(!elem || !events){
             return that
         }

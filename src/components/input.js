@@ -210,19 +210,24 @@ Nui.define(['./placeholder'], function(placeholder){
             }
         },
         _reveal:function(e, elem){
-            var type = 'text', data = this._option('reveal');
+            var self = this, type = 'text', data = this._option('reveal');
             if(this.target.attr('type') === 'text'){
                 type = 'password'
             }
-            //IE8-不允许修改type，因此重新
+            //IE8-不允许修改type，因此重新创建新元素
             if(Nui.browser.msie && Nui.browser.version <= 8){
-                var newInput = $(this.target.prop('outerHTML').replace(/(type=['"]?)(text|password)(['"]?)/i, '$1'+type+'$3')).appendTo(this.element);
-                newInput.val(this.target.val());
-                this._reset();
-                this.target.remove();
-                delete this._options.target;
-                delete this.target;
-                this.option('target', newInput);
+                var newInput = $(self.target.prop('outerHTML').replace(/(type=['"]?)(text|password)(['"]?)/i, '$1'+type+'$3')).appendTo(self.element);
+                newInput.val(self._val = self.target.val());
+                self._off();
+                self.target.remove();
+                self.target = self._options.target = newInput;
+                if(self.$text){
+                    self.$text.remove()
+                }
+                if(self.$button){
+                    self.$button.remove()
+                }
+                self._create()
             }
             else{
                 this.target.attr('type', type);
