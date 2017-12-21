@@ -1923,9 +1923,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                     'overflow':'hidden',
                     'cursor':'text'
                 }
-                if(!self.element){
-                    self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
-                }
+                self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._setPLeft();
                 self._createElems();
                 self._event()
@@ -2005,7 +2003,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 self.target.removeClass(self.className);
                 if(self.element){
                     self.target.unwrap();
-                    this.element = null;
+                    self.element = null
                 }
                 if(self._options.restore === true){
                     self.target.val(self._defaultValue)

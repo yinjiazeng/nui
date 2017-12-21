@@ -1516,9 +1516,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                     'overflow':'hidden',
                     'cursor':'text'
                 }
-                if(!self.element){
-                    self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
-                }
+                self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._setPLeft();
                 self._createElems();
                 self._event()
@@ -1598,7 +1596,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 self.target.removeClass(self.className);
                 if(self.element){
                     self.target.unwrap();
-                    this.element = null;
+                    self.element = null
                 }
                 if(self._options.restore === true){
                     self.target.val(self._defaultValue)
@@ -1787,7 +1785,7 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                 self._events['click .input-'+btn.id] = method;
             }
             if(btn.show !== true){
-                self._on('keyup change', self.target, function(e, elem){
+                self._on('keyup change', self.element, ':input', function(e, elem){
                     var val = elem.val();
                     var isHide = (!opts.equal && val === self._text) || !val;
                     self.element.find('.input-'+btn.id)[!isHide ? 'show' : 'hide']()
@@ -1840,28 +1838,20 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
             }
             //IE8-不允许修改type，因此重新创建新元素
             if(Nui.browser.msie && Nui.browser.version <= 8){
-                var newInput = $(self.target.prop('outerHTML').replace(/(type=['"]?)(text|password)(['"]?)/i, '$1'+type+'$3')).appendTo(self.element);
-                newInput.val(self._val = self.target.val());
-                self._off();
+                var newInput = $(self.target.prop('outerHTML').replace(/(type=['"]?)(text|password)(['"]?)/i, '$1'+type+'$3')).insertAfter(self.target);
+                newInput.val(self.target.val());
                 self.target.remove();
-                self.target = self._options.target = newInput;
-                if(self.$text){
-                    self.$text.remove()
-                }
-                if(self.$button){
-                    self.$button.remove()
-                }
-                self._create()
+                self.target = newInput;
             }
             else{
                 this.target.attr('type', type);
-                elem.removeClass('input-button-text input-button-password').addClass('input-button-' + type);
-                if(data.content && typeof data.content === 'object'){
-                    elem.html(data.content[type]||'')
-                }
-                if(data.title && typeof data.title === 'object'){
-                    elem.attr('title', data.title[type]||'')
-                }
+            }
+            elem.removeClass('input-button-text input-button-password').addClass('input-button-' + type);
+            if(data.content && typeof data.content === 'object'){
+                elem.html(data.content[type]||'')
+            }
+            if(data.title && typeof data.title === 'object'){
+                elem.attr('title', data.title[type]||'')
             }
         },
         _reset:function(){
