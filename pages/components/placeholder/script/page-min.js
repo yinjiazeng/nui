@@ -1598,7 +1598,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 self.target.removeClass(self.className);
                 if(self.element){
                     self.target.unwrap();
-                    delete self.element
+                    this.element = null;
                 }
                 if(self._options.restore === true){
                     self.target.val(self._defaultValue)
