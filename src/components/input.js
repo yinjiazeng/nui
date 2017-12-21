@@ -37,7 +37,7 @@ Nui.define(['../core/component', './placeholder'], function(component, placehold
                 '<span style="<%include \'list\'%>">'+
                 '<%each button%>'+
                     '<%var style = $value.style%>'+
-                    '<i style="<%include \'list\'%>" class="input-button input-<%$value.id%>'+
+                    '<i style="<%include \'list\'%>" class="input-button input-<%$value.id%> input-button-<%type%>'+
                     '<%if $value.iconfont%> '+
                     '<%$value.iconfont === true ? "iconfont" : $value.iconfont%>'+
                     '<%/if%>'+
@@ -197,6 +197,7 @@ Nui.define(['../core/component', './placeholder'], function(component, placehold
         },
         _clear:function(e, elem){
             this.value('');
+            this.target.focus();
             if(this._option('clear').show !== true){
                 elem.hide();
             }
@@ -218,6 +219,7 @@ Nui.define(['../core/component', './placeholder'], function(component, placehold
             }
             else{
                 this.target.attr('type', type);
+                elem.removeClass('input-button-text input-button-password').addClass('input-button-' + type);
                 if(data.content && typeof data.content === 'object'){
                     elem.html(data.content[type]||'')
                 }
