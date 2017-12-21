@@ -1439,23 +1439,42 @@ __define('src/components/placeholder',['src/core/component'], function(component
         _events:{
             'click b':'_focus',
             'focus :input':'_indent',
-            'blur:change :input':'_value',
-            'keyup:keydown :input':'_control'
+            'blur :input':'_blur _control',
+            'keyup:change :input':'_control'
         },
         _data:{},
         _focus:function(){
             this.target.focus()
         },
-        _value:function(){
-            this.value()
+        _blur:function(){
+            delete this.constructor._active;
         },
         _indent:function(){
-            if(this._options.animate){
+            var _class = this.constructor;
+            if(this._options.animate && this.$text){
+                _class._active = this.target;
                 this.$text.stop(true, false).animate({left:this._pLeft+10, opacity:'0.5'});
             }
         },
-        _control:function(e, elem){
-            elem.val() ? this.$text.hide() : this.$text.show()
+        _control:function(){
+            var val = this.target.val(), _class = this.constructor;
+            if((!this._options.equal && val === this._text) || !val){
+                this.target.val('');
+                if(this.$text){
+                    this.$text.show();
+                    if(this._options.animate){
+                        if(_class._active){
+                            this.$text.css({left:this._pLeft+10, opacity:'0.5'})
+                        }
+                        else{
+                            this.$text.stop(true, false).animate({left:this._pLeft, opacity:'1'})
+                        }
+                    }
+                }
+            }
+            else if(this.$text){
+                this.$text.hide()
+            }
         },
         _exec:function(){
             var self = this, opts = self._options, target = self._getTarget();
@@ -1464,8 +1483,9 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 if(!self._deftext && opts.text){
                     target.attr('placeholder', text = opts.text)
                 }
-                if(self._val === undefined){
-                    self._val = Nui.trim(target.val());
+                self._val = target.val();
+                if(self._defaultValue === undefined){
+                    self._defaultValue = self._val;
                 }
                 self._text = Nui.trim(text || '');
                 self._setData();
@@ -1480,7 +1500,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
                 height:isText ? 'auto' : height+'px',
                 position:'absolute',
-                'line-height':isText ? 'normal' : height+'px',
+                'line-height':isText ? 'normal' : height+'px'
             }
         },
         _create:function(){
@@ -1521,7 +1541,8 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 text:self._text,
                 style:Nui.extend({
                     left:_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
-                    color:opts.color
+                    color:opts.color,
+                    display:self._val ? 'none' : 'inline'
                 }, self._data)
             })).appendTo(self.element)
         },
@@ -1569,49 +1590,42 @@ __define('src/components/placeholder',['src/core/component'], function(component
         _reset:function(){
             var self = this;
             self._off();
-            if(self.element){
-                self.target.unwrap();
-            }
             if(self.$text){
                 self.$text.remove()
             }
-            if(self._options.restore === true){
-                self.target.val(self._val)
-            }
-            self.target.removeClass(self.className);
-            if(self._deftext){
-                self.target.attr('placeholder', self._deftext)
-            }
-            else{
-                self.target.removeAttr('placeholder')
+            if(self.target){
+                self.target.removeClass(self.className);
+                if(self.element){
+                    self.target.unwrap();
+                }
+                if(self._options.restore === true){
+                    self.target.val(self._defaultValue)
+                }
+                if(self._deftext){
+                    self.target.attr('placeholder', self._deftext)
+                }
+                else{
+                    self.target.removeAttr('placeholder')
+                }
             }
         },
         value:function(val){
             var _class = this.constructor, target = this.target;
-            var v = Nui.trim(!arguments.length ? target.val() : target.val(val).val());
-            if((!this._options.equal && v === this._text) || !v){
-                target.val('');
-                if(this.$text){
-                    this.$text.show();
-                    if(this._options.animate){
-                        this.$text.stop(true, false).animate({left:this._pLeft, opacity:'1'})
-                    }
-                }
+            if(arguments.length){
+                target.val(val)
             }
-            else if(this.$text){
-                this.$text.hide()
-            }
+            target.keyup();
             this._callback('Change');
         }
     })
 })
 
-__define('src/components/input',['src/components/placeholder'], function(placeholder){
+__define('src/components/input',['src/core/component', 'src/components/placeholder'], function(component, placeholder){
     return this.extend(placeholder, {
         _options:{
             /**
              * @func 按钮文本是否是图标编码
-             * @type <Boolean>
+             * @type <Boolean,String>
              */
             iconfont:false,
             /**
@@ -1620,7 +1634,7 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
              */
             hover:false,
             /**
-             * @func 不论是否有值都显示
+             * @func 按钮始终显示
              * @type <Boolean>
              */
             show:false,
@@ -1683,12 +1697,12 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                 opts.reveal ||
                 opts.button
             ){
-                this._createButton();
                 return true
             }
         },
         _createButton:function(){
             var self = this, opts = self._options, button = [], defaults = {}, buttons = {}, caches = {};
+            var readonly = self.target.prop('readonly') || self.target.prop('disabled');
 
             Nui.each(['reveal', 'clear'], function(id){
                 var btn = opts[id];
@@ -1730,7 +1744,6 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                 button.push(val)
             })
 
-            var value = !!self.target.val();
             Nui.each(button, function(btn){
                 if(btn.iconfont === undefined){
                     btn.iconfont = opts.iconfont
@@ -1745,10 +1758,11 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                     btn.style = {};
                 }
                 delete btn.style.display;
-                btn.style.display = value || btn.show === true ? 'inline' : 'none';
+                btn.style.display = btn.show === true || (self._val && !readonly) ? 'inline' : 'none';
                 self._bindEvent(btn)
             })
-            self._button = button
+
+            return self._button = button
         },
         _bindEvent:function(btn){
             var self = this, opts = self._options;
@@ -1763,53 +1777,117 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                 }
                 self._events['click .input-'+btn.id] = method;
             }
-            if(btn.hover === true && btn.show !== true){
-                
+            if(btn.show !== true){
+                self._on('keyup change', self.target, function(e, elem){
+                    var val = elem.val();
+                    var isHide = (!opts.equal && val === self._text) || !val;
+                    self.element.find('.input-'+btn.id)[!isHide ? 'show' : 'hide']()
+                })
+                if(btn.hover === true){
+                    self._on('mouseenter', self.element, function(){
+                        if(!self.target.prop('readonly') && !self.target.prop('disabled') && self.target.val()){
+                            self.element.find('.input-'+btn.id).show()
+                        }
+                    })
+                    self._on('mouseleave', self.element, function(){
+                        self.element.find('.input-'+btn.id).hide()
+                    })
+                }
             }
         },
         _createElems:function(){
             var self = this, opts = self._options, _class = self.constructor;
             placeholder.exports._createElems.call(self);
-            $(self._tpl2html('button', {
-                button:self._button,
+            self.$button = $(self._tpl2html('button', {
+                button:self._createButton(),
                 iconfont:opts.iconfont,
                 type:self.target.attr('type') === 'password' ? 'password' : 'text',
                 style:Nui.extend({
-                    right:_class._getSize(self.target, 'r')+'px',
+                    right:_class._getSize(self.target, 'r')+'px'
                 }, self._data)
             })).appendTo(self.element)
         },
-        _clear:function(){
-            
+        _option:function(type){
+            var data = {};
+            Nui.each(this._button, function(v){
+                if(v.id === type){
+                    data = v;
+                    return false
+                }
+            })
+            return data
         },
-        _reveal:function(){
-
+        _clear:function(e, elem){
+            this.value('');
+            if(this._option('clear').show !== true){
+                elem.hide();
+            }
+        },
+        _reveal:function(e, elem){
+            var type = 'text', data = this._option('reveal');
+            if(this.target.attr('type') === 'text'){
+                type = 'password'
+            }
+            //IE8-不允许修改type，因此重新
+            if(Nui.browser.msie && Nui.browser.version <= 8){
+                var newInput = $(this.target.prop('outerHTML').replace(/(type=['"]?)(text|password)(['"]?)/i, '$1'+type+'$3')).appendTo(this.element);
+                newInput.val(this.target.val());
+                this._reset();
+                this.target.remove();
+                delete this._options.target;
+                delete this.target;
+                this.option('target', newInput);
+            }
+            else{
+                this.target.attr('type', type);
+                if(data.content && typeof data.content === 'object'){
+                    elem.html(data.content[type]||'')
+                }
+                if(data.title && typeof data.title === 'object'){
+                    elem.attr('title', data.title[type]||'')
+                }
+            }
+        },
+        _reset:function(){
+            if(this.$button){
+                this.$button.remove()
+            }
+            placeholder.exports._reset.call(this)
         }
     })
 }); 
 __define('./script/page',['src/components/placeholder', 'src/components/input', 'src/core/events'], function(placeholder, input, events){
-    $(':text').css('padding-right', '55px').input({
+    $('.ui-input').input({
         text:'19920604',
         restore:false,
-        color:'#f00',
         iconfont:true,
+        //animate:true,
+        equal:false,
         clear:{
             content:'11',
+            callback:function(self, e, elem){
+                
+            }
+        },
+        reveal:{
+            content:'11111',
+            title:{
+                text:'22',
+                password:'33'
+            },
             callback:function(){
 
             }
         },
-        reveal:{
-            content:{
-                text:'22',
-                password:'33'
-            },
-            value:false,
-            title:true,
-            callback:function(){
-
+        button:[{
+            id:'aaa',
+            content:'aaa',
+            show:true,
+            callback:function(self){
+                self.target.prop('readonly', false);
+                self.value('1111111')
             }
-        }
+        }]
     })
     /*events({
         events:{

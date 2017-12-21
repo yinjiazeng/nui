@@ -1846,23 +1846,42 @@ __define('src/components/placeholder',['src/core/component'], function(component
         _events:{
             'click b':'_focus',
             'focus :input':'_indent',
-            'blur:change :input':'_value',
-            'keyup:keydown :input':'_control'
+            'blur :input':'_blur _control',
+            'keyup:change :input':'_control'
         },
         _data:{},
         _focus:function(){
             this.target.focus()
         },
-        _value:function(){
-            this.value()
+        _blur:function(){
+            delete this.constructor._active;
         },
         _indent:function(){
-            if(this._options.animate){
+            var _class = this.constructor;
+            if(this._options.animate && this.$text){
+                _class._active = this.target;
                 this.$text.stop(true, false).animate({left:this._pLeft+10, opacity:'0.5'});
             }
         },
-        _control:function(e, elem){
-            elem.val() ? this.$text.hide() : this.$text.show()
+        _control:function(){
+            var val = this.target.val(), _class = this.constructor;
+            if((!this._options.equal && val === this._text) || !val){
+                this.target.val('');
+                if(this.$text){
+                    this.$text.show();
+                    if(this._options.animate){
+                        if(_class._active){
+                            this.$text.css({left:this._pLeft+10, opacity:'0.5'})
+                        }
+                        else{
+                            this.$text.stop(true, false).animate({left:this._pLeft, opacity:'1'})
+                        }
+                    }
+                }
+            }
+            else if(this.$text){
+                this.$text.hide()
+            }
         },
         _exec:function(){
             var self = this, opts = self._options, target = self._getTarget();
@@ -1871,8 +1890,9 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 if(!self._deftext && opts.text){
                     target.attr('placeholder', text = opts.text)
                 }
-                if(self._val === undefined){
-                    self._val = Nui.trim(target.val());
+                self._val = target.val();
+                if(self._defaultValue === undefined){
+                    self._defaultValue = self._val;
                 }
                 self._text = Nui.trim(text || '');
                 self._setData();
@@ -1887,7 +1907,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
                 height:isText ? 'auto' : height+'px',
                 position:'absolute',
-                'line-height':isText ? 'normal' : height+'px',
+                'line-height':isText ? 'normal' : height+'px'
             }
         },
         _create:function(){
@@ -1928,7 +1948,8 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 text:self._text,
                 style:Nui.extend({
                     left:_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
-                    color:opts.color
+                    color:opts.color,
+                    display:self._val ? 'none' : 'inline'
                 }, self._data)
             })).appendTo(self.element)
         },
@@ -1976,38 +1997,31 @@ __define('src/components/placeholder',['src/core/component'], function(component
         _reset:function(){
             var self = this;
             self._off();
-            if(self.element){
-                self.target.unwrap();
-            }
             if(self.$text){
                 self.$text.remove()
             }
-            if(self._options.restore === true){
-                self.target.val(self._val)
-            }
-            self.target.removeClass(self.className);
-            if(self._deftext){
-                self.target.attr('placeholder', self._deftext)
-            }
-            else{
-                self.target.removeAttr('placeholder')
+            if(self.target){
+                self.target.removeClass(self.className);
+                if(self.element){
+                    self.target.unwrap();
+                }
+                if(self._options.restore === true){
+                    self.target.val(self._defaultValue)
+                }
+                if(self._deftext){
+                    self.target.attr('placeholder', self._deftext)
+                }
+                else{
+                    self.target.removeAttr('placeholder')
+                }
             }
         },
         value:function(val){
             var _class = this.constructor, target = this.target;
-            var v = Nui.trim(!arguments.length ? target.val() : target.val(val).val());
-            if((!this._options.equal && v === this._text) || !v){
-                target.val('');
-                if(this.$text){
-                    this.$text.show();
-                    if(this._options.animate){
-                        this.$text.stop(true, false).animate({left:this._pLeft, opacity:'1'})
-                    }
-                }
+            if(arguments.length){
+                target.val(val)
             }
-            else if(this.$text){
-                this.$text.hide()
-            }
+            target.keyup();
             this._callback('Change');
         }
     })

@@ -1,9 +1,9 @@
-Nui.define(['./placeholder'], function(placeholder){
+Nui.define(['../core/component', './placeholder'], function(component, placeholder){
     return this.extend(placeholder, {
         _options:{
             /**
              * @func 按钮文本是否是图标编码
-             * @type <Boolean>
+             * @type <Boolean,String>
              */
             iconfont:false,
             /**
@@ -12,7 +12,7 @@ Nui.define(['./placeholder'], function(placeholder){
              */
             hover:false,
             /**
-             * @func 不论是否有值都显示
+             * @func 按钮始终显示
              * @type <Boolean>
              */
             show:false,
@@ -75,12 +75,12 @@ Nui.define(['./placeholder'], function(placeholder){
                 opts.reveal ||
                 opts.button
             ){
-                this._createButton();
                 return true
             }
         },
         _createButton:function(){
             var self = this, opts = self._options, button = [], defaults = {}, buttons = {}, caches = {};
+            var readonly = self.target.prop('readonly') || self.target.prop('disabled');
 
             Nui.each(['reveal', 'clear'], function(id){
                 var btn = opts[id];
@@ -122,7 +122,6 @@ Nui.define(['./placeholder'], function(placeholder){
                 button.push(val)
             })
 
-            var value = !!self.target.val();
             Nui.each(button, function(btn){
                 if(btn.iconfont === undefined){
                     btn.iconfont = opts.iconfont
@@ -137,10 +136,11 @@ Nui.define(['./placeholder'], function(placeholder){
                     btn.style = {};
                 }
                 delete btn.style.display;
-                btn.style.display = value || btn.show === true ? 'inline' : 'none';
+                btn.style.display = btn.show === true || (self._val && !readonly) ? 'inline' : 'none';
                 self._bindEvent(btn)
             })
-            self._button = button
+
+            return self._button = button
         },
         _bindEvent:function(btn){
             var self = this, opts = self._options;
@@ -155,27 +155,82 @@ Nui.define(['./placeholder'], function(placeholder){
                 }
                 self._events['click .input-'+btn.id] = method;
             }
-            if(btn.hover === true && btn.show !== true){
-                
+            if(btn.show !== true){
+                self._on('keyup change', self.target, function(e, elem){
+                    var val = elem.val();
+                    var isHide = (!opts.equal && val === self._text) || !val;
+                    self.element.find('.input-'+btn.id)[!isHide ? 'show' : 'hide']()
+                })
+                if(btn.hover === true){
+                    self._on('mouseenter', self.element, function(){
+                        if(!self.target.prop('readonly') && !self.target.prop('disabled') && self.target.val()){
+                            self.element.find('.input-'+btn.id).show()
+                        }
+                    })
+                    self._on('mouseleave', self.element, function(){
+                        self.element.find('.input-'+btn.id).hide()
+                    })
+                }
             }
         },
         _createElems:function(){
             var self = this, opts = self._options, _class = self.constructor;
             placeholder.exports._createElems.call(self);
-            $(self._tpl2html('button', {
-                button:self._button,
+            self.$button = $(self._tpl2html('button', {
+                button:self._createButton(),
                 iconfont:opts.iconfont,
                 type:self.target.attr('type') === 'password' ? 'password' : 'text',
                 style:Nui.extend({
-                    right:_class._getSize(self.target, 'r')+'px',
+                    right:_class._getSize(self.target, 'r')+'px'
                 }, self._data)
             })).appendTo(self.element)
         },
-        _clear:function(){
-            
+        _option:function(type){
+            var data = {};
+            Nui.each(this._button, function(v){
+                if(v.id === type){
+                    data = v;
+                    return false
+                }
+            })
+            return data
         },
-        _reveal:function(){
-
+        _clear:function(e, elem){
+            this.value('');
+            if(this._option('clear').show !== true){
+                elem.hide();
+            }
+        },
+        _reveal:function(e, elem){
+            var type = 'text', data = this._option('reveal');
+            if(this.target.attr('type') === 'text'){
+                type = 'password'
+            }
+            //IE8-不允许修改type，因此重新
+            if(Nui.browser.msie && Nui.browser.version <= 8){
+                var newInput = $(this.target.prop('outerHTML').replace(/(type=['"]?)(text|password)(['"]?)/i, '$1'+type+'$3')).appendTo(this.element);
+                newInput.val(this.target.val());
+                this._reset();
+                this.target.remove();
+                delete this._options.target;
+                delete this.target;
+                this.option('target', newInput);
+            }
+            else{
+                this.target.attr('type', type);
+                if(data.content && typeof data.content === 'object'){
+                    elem.html(data.content[type]||'')
+                }
+                if(data.title && typeof data.title === 'object'){
+                    elem.attr('title', data.title[type]||'')
+                }
+            }
+        },
+        _reset:function(){
+            if(this.$button){
+                this.$button.remove()
+            }
+            placeholder.exports._reset.call(this)
         }
     })
 }); 

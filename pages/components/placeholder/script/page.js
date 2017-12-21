@@ -1,26 +1,35 @@
 Nui.define(['{com}/placeholder', '{com}/input', 'events'], function(placeholder, input, events){
-    $(':text').css('padding-right', '55px').input({
+    $('.ui-input').input({
         text:'19920604',
         restore:false,
-        color:'#f00',
         iconfont:true,
+        //animate:true,
+        equal:false,
         clear:{
             content:'11',
+            callback:function(self, e, elem){
+                
+            }
+        },
+        reveal:{
+            content:'11111',
+            title:{
+                text:'22',
+                password:'33'
+            },
             callback:function(){
 
             }
         },
-        reveal:{
-            content:{
-                text:'22',
-                password:'33'
-            },
-            value:false,
-            title:true,
-            callback:function(){
-
+        button:[{
+            id:'aaa',
+            content:'aaa',
+            show:true,
+            callback:function(self){
+                self.target.prop('readonly', false);
+                self.value('1111111')
             }
-        }
+        }]
     })
     /*events({
         events:{
