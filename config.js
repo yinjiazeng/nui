@@ -21,6 +21,6 @@ Nui.config({
         "./script/events/page": "5d1e64d",
         "./script/template/page": "da4e9f0",
         "./script/demo": "ffc0bb0",
-        "./script/page": "90ca92d"
+        "./script/page": "96ae7e1"
     }
 })

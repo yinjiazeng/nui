@@ -1860,32 +1860,39 @@ __define('./script/page',['src/components/placeholder', 'src/components/input', 
     $('.ui-input').input({
         text:'19920604',
         restore:false,
-        iconfont:true,
-        //animate:true,
-        equal:false,
         clear:{
-            content:'11',
+            content:'清空',
+            style:{
+                'margin-left':'5px;'
+            },
             callback:function(self, e, elem){
                 
             }
         },
         reveal:{
-            content:'11111',
+            content:{
+                text:'隐藏',
+                password:'显示'
+            },
             title:{
-                text:'22',
-                password:'33'
+                text:'隐藏',
+                password:'显示'
+            },
+            style:{
+                'margin-left':'5px;'
             },
             callback:function(){
 
             }
         },
         button:[{
-            id:'aaa',
-            content:'aaa',
-            show:true,
+            id:'auto',
+            content:'自定义',
+            style:{
+                'margin-left':'5px;'
+            },
             callback:function(self){
-                self.target.prop('readonly', false);
-                self.value('1111111')
+                
             }
         }]
     })
