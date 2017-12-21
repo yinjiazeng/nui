@@ -219,8 +219,8 @@ Nui.define('component', ['template', 'events'], function(tpl, events){
             var instances = this.__instances;
             if(id){
                 Nui.each(instances, function(v){
-                    if(v._options.id === id){
-                        exist = true;
+                    if(v.__id === id || v._options.id === id){
+                        exist = v;
                         return false
                     }
                 })

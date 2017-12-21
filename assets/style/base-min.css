@@ -2,8 +2,8 @@
 /** * Copyright(C), 2013-2014 ZheJiang Aisino Spaceflight Technology Co., Ltd. * FileName: base.css * Author: Aniu[date:2013-10-16 15:31] * Update: Aniu[date:2014-04-08 13:37] * Version: v2.0.1 * Description: CSS Reset & Public Components */
 @font-face {
   font-family: "iconfont";
-  src: url("iconfont.eot");
-  src: url("iconfont.eot") format('embedded-opentype'), url("iconfont.woff") format('woff'), url("iconfont.ttf") format('truetype'), url("iconfont.svg") format('svg');
+  src: url("iconfont.eot?v=25d929d#iefix");
+  src: url("iconfont.eot?v=25d929d#iefix") format('embedded-opentype'), url("iconfont.woff?v=2941e9f") format('woff'), url("iconfont.ttf?v=8a1053b") format('truetype'), url("iconfont.svg?v=982834f#iconfont") format('svg');
 }
 /* reset */
 html,

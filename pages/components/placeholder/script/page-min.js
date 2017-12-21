@@ -1152,8 +1152,8 @@ __define('src/core/component', ['src/core/template', 'src/core/events'], functio
             var instances = this.__instances;
             if(id){
                 Nui.each(instances, function(v){
-                    if(v._options.id === id){
-                        exist = true;
+                    if(v.__id === id || v._options.id === id){
+                        exist = v;
                         return false
                     }
                 })
