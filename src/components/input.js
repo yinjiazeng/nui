@@ -1,6 +1,6 @@
 /**
  * @author Aniu[2017-12-21 15:12]
- * @update Aniu[2017-12-21 15:12]
+ * @update Aniu[2017-12-22 10:17]
  * @version 1.0.1
  * @description input增强
  */
@@ -216,7 +216,16 @@ Nui.define(['./placeholder'], function(placeholder){
             }
             //IE8-不允许修改type，因此重新创建新元素
             if(Nui.browser.msie && Nui.browser.version <= 8){
-                var newInput = $(self.target.prop('outerHTML').replace(/(type=['"]?)(text|password)(['"]?)/i, '$1'+type+'$3')).insertAfter(self.target);
+                var html = self.target.prop('outerHTML');
+                var regexp = /(type=['"]?)(text|password)(['"]?)/i;
+                //IE6下input没有type="text"属性
+                if(!regexp.test(html)){
+                    html = html.replace(/^(<input)/i, '$1 type="'+ type +'"')
+                }   
+                else{
+                    html = html.replace(regexp, '$1'+type+'$3')
+                }
+                var newInput = $(html).insertAfter(self.target);
                 newInput.val(self.target.val());
                 self.target.remove();
                 self.target = newInput;

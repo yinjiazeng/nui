@@ -20,7 +20,7 @@ Nui.config({
         "{script}/base": "5d710a5",
         "./script/events/page": "a5a92f6",
         "./script/template/page": "da4e9f0",
-        "./script/demo": "4dbe9d9",
-        "./script/page": "1f20620"
+        "./script/demo": "9218aca",
+        "./script/page": "a554f12"
     }
 })

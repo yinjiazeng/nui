@@ -1798,12 +1798,13 @@ __define('src/components/router',['src/core/component', 'src/core/template', 'sr
 })
 /**
  * @author Aniu[2016-11-10 22:39]
- * @update Aniu[2016-11-10 22:39]
+ * @update Aniu[2017-12-22 10:17]
  * @version 1.0.1
  * @description 输入框占位符
  */
 
-__define('src/components/placeholder',['src/core/component'], function(component){
+__define('src/components/placeholder',['src/core/component', 'src/core/util'], function(component, util){
+    var supportPlaceholder = util.supportHtml5('placeholder', 'input');
     return this.extend(component, {
         _options:{
             /**
@@ -1820,7 +1821,7 @@ __define('src/components/placeholder',['src/core/component'], function(component
              * @func 输入框值是否可以和占位符相同
              * @type <Boolean>
              */
-            equal:false,
+            equal:true,
             /**
              * @func 销毁或者重置组件是否还原默认值
              * @type <Boolean>
@@ -1849,6 +1850,52 @@ __define('src/components/placeholder',['src/core/component'], function(component
             'keyup:change :input':'_control'
         },
         _data:{},
+        _exec:function(){
+            var self = this, opts = self._options, target = self._getTarget();
+            if(target){
+                var text = self._defaultText = target.attr('placeholder');
+                if(!self._defaultText && opts.text){
+                    target.attr('placeholder', text = opts.text)
+                }
+                self._val = target.val();
+                if(self._defaultValue === undefined){
+                    self._defaultValue = self._val;
+                }
+                self._text = Nui.trim(text||'');
+                self._setData();
+                self._create()
+            }
+        },
+        _setData:function(){
+            var self = this, _class = self.constructor;
+            var isText = self.target.is('textarea');
+            var height = self.target.height();
+            self._data = {
+                top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
+                height:isText ? 'auto' : height+'px',
+                position:'absolute',
+                'line-height':isText ? 'normal' : height+'px'
+            }
+        },
+        _create:function(){
+            var self = this, opts = self._options, _class = self.constructor;
+            if(self._condition()){
+                var data = self._tplData();
+                data.style = {
+                    'position':'relative',
+                    'display':'inline-block',
+                    'width':self.target.outerWidth()+'px',
+                    'overflow':'hidden',
+                    'cursor':'text'
+                }
+                self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
+                self._createElems();
+                self._event()
+            }
+            else if(self._text && opts.color){
+                self._setStyle()
+            }
+        },
         _focus:function(){
             this.target.focus()
         },
@@ -1882,67 +1929,24 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 this.$text.hide()
             }
         },
-        _exec:function(){
-            var self = this, opts = self._options, target = self._getTarget();
-            if(target){
-                var text = self._deftext = target.attr('placeholder');
-                if(!self._deftext && opts.text){
-                    target.attr('placeholder', text = opts.text)
-                }
-                self._val = target.val();
-                if(self._defaultValue === undefined){
-                    self._defaultValue = self._val;
-                }
-                self._text = Nui.trim(text || '');
-                self._setData();
-                self._create()
-            }
-        },
-        _setData:function(){
-            var self = this, _class = self.constructor;
-            var isText = self.target.is('textarea');
-            var height = self.target.height();
-            self._data = {
-                top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
-                height:isText ? 'auto' : height+'px',
-                position:'absolute',
-                'line-height':isText ? 'normal' : height+'px'
-            }
-        },
-        _create:function(){
-            var self = this, opts = self._options, _class = self.constructor;
-            if(self._condition()){
-                if(opts.animate){
-                    self.target.removeAttr('placeholder')
-                }
-                var data = self._tplData();
-                data.style = {
-                    'position':'relative',
-                    'display':'inline-block',
-                    'width':self.target.outerWidth()+'px',
-                    'overflow':'hidden',
-                    'cursor':'text'
-                }
-                self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
-                self._setPLeft();
-                self._createElems();
-                self._event()
-            }
-            else if(self._text && opts.color){
-                self._setStyle()
-            }
-        },
         _condition:function(){
-            var opts = this._options;
-            return opts.animate || (!opts.animate && !('placeholder' in document.createElement('input')))
+            return this._options.animate || !supportPlaceholder
         },
         _createElems:function(){
+            var opts = this._options;
             if(this._text){
-                this._createText();
+                if(opts.animate || !supportPlaceholder){
+                    this.target.removeAttr('placeholder');
+                    this._createText();
+                }
+                else if(opts.color){
+                    this._setStyle()
+                }
             }
         },
         _createText:function(){
             var self = this, opts = self._options, _class = self.constructor;
+            self._pLeft = _class._getSize(this.target, 'l', 'padding') + _class._getSize(this.target, 'l');
             self.$text = $(self._tpl2html('elem', {
                 text:self._text,
                 style:Nui.extend({
@@ -1989,10 +1993,6 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 catch(e){}
             })
         },
-        _setPLeft:function(){
-            var _class = this.constructor;
-            this._pLeft = _class._getSize(this.target, 'l', 'padding') + _class._getSize(this.target, 'l');
-        },
         _reset:function(){
             var self = this;
             self._off();
@@ -2008,8 +2008,8 @@ __define('src/components/placeholder',['src/core/component'], function(component
                 if(self._options.restore === true){
                     self.target.val(self._defaultValue)
                 }
-                if(self._deftext){
-                    self.target.attr('placeholder', self._deftext)
+                if(self._defaultText){
+                    self.target.attr('placeholder', self._defaultText)
                 }
                 else{
                     self.target.removeAttr('placeholder')
