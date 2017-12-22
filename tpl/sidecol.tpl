@@ -239,6 +239,9 @@
                         <a{%if page == 'placeholder' %} class="s-crt"{% endif %} href="/nui/pages/components/placeholder/">占位符</a>
                     </li>
                     <li>
+                        <a{%if page == 'input' %} class="s-crt"{% endif %} href="/nui/pages/components/input/">输入框</a>
+                    </li>
+                    <li>
                         <a{%if page == 'popover' %} class="s-crt"{% endif %} href="/nui/pages/components/popover/">提示框</a>
                     </li>
                     <li>

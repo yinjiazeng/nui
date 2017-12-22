@@ -1449,7 +1449,7 @@ __define('src/components/highlight/highlight',function(){
             //工具栏
             tools:{
                 //复制
-                copy:true
+                copy:false
             },
             //点击代码那一行高亮
             isLight:true,

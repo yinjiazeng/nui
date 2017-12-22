@@ -52,7 +52,7 @@ var options = {
 gulp.task('nunjucks', function() {
     return gulp.src('./html/**/*.html')
         .pipe(nunjucks({
-            path: './tpl'
+            path: ['./tpl', './html']
         }))
         .pipe(gulp.dest('./'))
 });

@@ -27,12 +27,12 @@ Nui.define(['./placeholder'], function(placeholder){
              * @func 是否显示查看密码按钮
              * @type <Boolean,String,Object>
              */
-            reveal:false,
+            reveal:null,
             /**
              * @func 是否显示清除按钮
              * @type <Boolean,String,Object>
              */
-            clear:false,
+            clear:null,
             /**
              * @func 按钮集合
              * @type <Array>
@@ -140,7 +140,7 @@ Nui.define(['./placeholder'], function(placeholder){
                     btn.show = opts.show
                 }
                 if(!btn.style){
-                    btn.style = {};
+                    btn.style = {}
                 }
                 delete btn.style.display;
                 btn.style.display = btn.show === true || (self._val && !readonly) ? 'inline' : 'none';

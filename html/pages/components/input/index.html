@@ -1,0 +1,278 @@
+{% extends "layout.tpl" %}
+
+{% block title %}{% endblock %}
+
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('study')}}
+{% endblock %}
+
+{% block subpage %} class="g-html"{% endblock %}
+
+{% block content %}
+	<div class="g-main f-fr">
+		<div class="mainbox">
+			<h1 class="e-pt20 e-pb20 f-fs28">输入框</h1>
+			<p>模块继承 <a class="f-cblue" href="../placeholder/">placeholder</a> 模块，包含其所有功能，增加清除输入框内容按钮以及密码框显示明文按钮，也可自定义按钮</p>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">案例</h2>
+			<div class="e-mt15">
+				<input type="password" class="ui-input" id="demo" placeholder="请输入密码">
+			</div>
+<script type="text/highlight" data-xml-options>
+&lt;input type="password" id="demo" placeholder="请输入密码"&gt;
+</script>
+<script type="text/highlight" data-javascript-options>
+Nui.define(['input'], function(input){
+	$('#demo').input({
+		clear:'清除',
+		reveal:{
+			content:{
+				text:'隐藏',
+				password:'显示'
+			}
+		},
+		button:[{
+			id:'click',
+			content:'点我',
+			show:true,
+			callback:function(){
+				alert('让你点你就点，你是不是傻？')
+			}
+		}]
+	})
+
+	//或
+
+	input({
+		target:'#demo',
+		clear:'清除',
+		reveal:{
+			content:{
+				text:'隐藏',
+				password:'显示'
+			}
+		},
+		....
+	})
+})
+</script>
+
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">选项参数</h2>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> iconfont</h3>
+			<div class="e-mt15 f-lh22">
+				<p>默认值：false</p>
+				<p>类型：{String} 设置字体图标类名，会在按钮上添加上该类</p>
+				<p>类型：{Boolean} 值为true是类名默认是iconfont</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> hover</h3>
+			<div class="e-mt15 f-lh22">
+				<p>默认值：false</p>
+				<p>类型：{Boolean} 在输入框有值的情况下，是否鼠标悬停在输入框上时再显示按钮</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> show</h3>
+			<div class="e-mt15 f-lh22">
+				<p>默认值：false</p>
+				<p>类型：{Boolean} 是否一直显示按钮，当输入框值为空时也显示</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> reveal</h3>
+			<div class="e-mt15 f-lh22">
+				<p>默认值：null</p>
+				<p>类型：{String} 设置密码框显示隐藏按钮内容，配合iconfont参数值可设置为字体图标编码</p>
+				<p>类型：{Object} </p>
+				<table class="data e-mt5">
+					<tr>
+						<th width="80">属性</th>
+						<th width="80">默认值</th>
+						<th width="80">类型</th>
+						<th>说明</th>
+					</tr>
+					<tr>
+						<td rowspan="2">content</td>
+						<td rowspan="2">null</td>
+						<td>{String}</td>
+						<td>设置按钮内容</td>
+					</tr>
+					<tr>
+						<td>{Object}</td>
+						<td>
+							<table class="data e-mt5">
+								<tr>
+									<th width="80">属性</th>
+									<th width="80">默认值</th>
+									<th width="80">类型</th>
+									<th>说明</th>
+								</tr>
+								<tr>
+									<td>text</td>
+									<td>null</td>
+									<td>{String}</td>
+									<td>当输入框为text类型时按钮内容</td>
+								</tr>
+								<tr>
+									<td>password</td>
+									<td>null</td>
+									<td>{String}</td>
+									<td>当输入框为password类型时按钮内容</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td rowspan="3">title</td>
+						<td rowspan="3">null</td>
+						<td>{String}</td>
+						<td>设置按钮提示文本</td>
+					</tr>
+					<tr>
+						<td>{Boolean}</td>
+						<td>当值为true时，去按钮内容作为提示文本，false则不启用提示功能</td>
+					</tr>
+					<tr>
+						<td>{Object}</td>
+						<td>
+							<table class="data e-mt5">
+								<tr>
+									<th width="80">属性</th>
+									<th width="80">默认值</th>
+									<th width="80">类型</th>
+									<th>说明</th>
+								</tr>
+								<tr>
+									<td>text</td>
+									<td>null</td>
+									<td>{String}</td>
+									<td>当输入框为text类型时提示文本</td>
+								</tr>
+								<tr>
+									<td>password</td>
+									<td>null</td>
+									<td>{String}</td>
+									<td>当输入框为password类型时提示文本</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td>iconfont</td>
+						<td>null</td>
+						<td>{Boolean}</td>
+						<td>功能等同选项参数</td>
+					</tr>
+					<tr>
+						<td>hover</td>
+						<td>null</td>
+						<td>{Boolean}</td>
+						<td>功能等同选项参数</td>
+					</tr>
+					<tr>
+						<td>show</td>
+						<td>null</td>
+						<td>{Boolean}</td>
+						<td>功能等同选项参数</td>
+					</tr>
+					<tr>
+						<td>callback</td>
+						<td>null</td>
+						<td>{Function}</td>
+						<td>按钮触发回调，接收3个参数依次是self:实例对象，event:事件对象，elem:按钮jQuery对象</td>
+					</tr>
+				</table>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> clear</h3>
+			<div class="e-mt15 f-lh22">
+				<p>默认值：null</p>
+				<p>类型：{String} 设置清除内容按钮内容，配合iconfont参数值可设置为字体图标编码</p>
+				<p>类型：{Object} </p>
+				<table class="data e-mt5">
+					<tr>
+						<th width="80">属性</th>
+						<th width="80">默认值</th>
+						<th width="80">类型</th>
+						<th>说明</th>
+					</tr>
+					<tr>
+						<td>content</td>
+						<td>null</td>
+						<td>{String}</td>
+						<td>设置按钮内容</td>
+					</tr>
+					<tr>
+						<td rowspan="2">title</td>
+						<td rowspan="2">null</td>
+						<td>{String}</td>
+						<td>设置按钮提示文本</td>
+					</tr>
+					<tr>
+						<td>{Boolean}</td>
+						<td>当值为true时，去按钮内容作为提示文本，false则不启用提示功能</td>
+					</tr>
+					<tr>
+						<td>iconfont</td>
+						<td>null</td>
+						<td>{Boolean}</td>
+						<td>功能等同选项参数</td>
+					</tr>
+					<tr>
+						<td>hover</td>
+						<td>null</td>
+						<td>{Boolean}</td>
+						<td>功能等同选项参数</td>
+					</tr>
+					<tr>
+						<td>show</td>
+						<td>null</td>
+						<td>{Boolean}</td>
+						<td>功能等同选项参数</td>
+					</tr>
+					<tr>
+						<td>callback</td>
+						<td>null</td>
+						<td>{Function}</td>
+						<td>按钮触发回调，接收3个参数依次是self:实例对象，event:事件对象，elem:按钮jQuery对象</td>
+					</tr>
+				</table>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> button</h3>
+			<div class="e-mt15 f-lh22">
+				<p>默认值：null</p>
+				<p>类型：{Array} 设置多按钮，参数等同clear配置</p>
+			</div>
+<script type="text/highlight" data-javascript-options>
+[{
+	id:'clear',
+	content:'清除'
+}, {
+	id:'reveal',
+	content:'显示密码'
+}, {
+	id:'btn1',
+	content:'自定义1',
+	callback:function(){
+	}
+}, {
+	id:'btn2',
+	content:'自定义2',
+	callback:function(){
+	}
+}, ...]
+</script>
+			{% include "../html/pages/components/placeholder/options.html" %}
+
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10">实例属性与方法</h2>
+			
+			{% include "../html/pages/components/placeholder/instance.html" %}
+		</div>	
+	</div>
+	{% import 'sidecol.tpl' as side %}
+	{{side.active('cpns', 'input')}}
+{% endblock %}
+
+{% block script %}
+Nui.load('./page')
+{% endblock %}
