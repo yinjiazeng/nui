@@ -67,6 +67,19 @@ Nui.define(['../core/component'], function(component){
              */
             style:null,
             /**
+             * @func jQuery ajax配置
+             * @type <Object>
+             */
+            ajax:null,
+            /**
+             * @func 列表原始数据
+             * @type <Array>
+             * @type <Function>
+             * @param self <Object> 组件实例对象
+             * @return <Array> 返回原始数据
+             */
+            data:null,
+            /**
              * @func 过滤数据
              * @type <Function>
              * @param self <Object> 组件实例对象
@@ -81,12 +94,20 @@ Nui.define(['../core/component'], function(component){
              */
             render:null,
             /**
+             * @func 请求返回数据时触发回调
+             * @type <Function>
+             * @param self <Object> 组件实例对象
+             * @param response <Anything> 接口返回数据
+             * @return <Array> 返回列表数据
+             */
+            onRequest:null,
+            /**
              * @func 选择前触发回调
              * @type <Function>
              * @param self <Object> 组件实例对象
              * @return <Boolean> 返回false则不会触发onSelect
              */
-            onBefore:null,
+            onSelectBefore:null,
             /**
              * @func 选择后触发回调
              * @type <Function>
@@ -118,18 +139,86 @@ Nui.define(['../core/component'], function(component){
         _events:{
             
         },
+        _filter:function(){
+            
+        },
+        _setData:function(data){
+            if(!Nui.type(data, 'Array')){
+                data = []
+            }
+            self.data = data
+        },
         _bindEvent:function(){
-            var self = this, opts = self._options;
+            var self = this, opts = self._options, req = !!opts.url, data = opts.data;
+            if(!req){
+                if(typeof data === 'function'){
+                    data = opts.data.call(opts, self)
+                }
+                self._setData(data);
+            }
             self._on('keydown', self.target, function(e, elem){
-                clearTimeout(self._timer);
-                self._timer = setTimeout(function(){
-                    self.value = elem.val();
-                    
-                }, 50)
+                self.value = Nui.trim(elem.val());
+                if(req){
+                    self._request()
+                }
+                else if(opts.data){
+                    self._filter()
+                }
             })
             self._on('focus', self.target, function(e, elem){
                 self.show()
             })
+        },
+        _request:function(){
+            var self = this, opts = self._options, data = {};
+            if(opts.query && typeof opts.query === 'string'){
+                data[opts.query] = value
+            }
+            else if(typeof opts.query === 'function'){
+                var ret = opts.query.call(opts, self, self.value);
+                if(ret){
+                    if(typeof ret === 'object'){
+                        data = ret
+                    }
+                    else if(typeof ret === 'string'){
+                        data[ret] = value
+                    }
+                }
+            }
+            
+            var success;
+            if(typeof opts.ajax === 'function'){
+                success = opts.ajax.success;
+                delete opts.ajax.success
+            }
+
+            clearTimeout(self._timer);
+
+            if(self._ajax){
+                self._ajax.abart()
+            }
+
+            self._timer = setTimeout(function(){
+                self._ajax = jQuery.ajax(jQuery.extend(true, {
+                    url:opts.url,
+                    data:data,
+                    type:'get',
+                    dataType:'json',
+                    cache:false,
+                    async:true,
+                    success:function(res, status, xhr){
+                        var _data = res;
+                        if(typeof success === 'function'){
+                            success.call(this, res, status, xhr)
+                        }
+                        if(typeof opts.onRequest === 'function'){
+                            _data = opts.onRequest.call(opts, self, res)
+                        }
+                        self._setData(_data);
+                        self._filter()
+                    }
+                }, opts.ajax||{}))
+            }, 50)
         },
         _create:function(){
             var self = this;
