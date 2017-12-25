@@ -41,10 +41,10 @@ Nui.define(['./placeholder'], function(placeholder){
         },
         _template:{
             'button':
-                '<span style="<%include \'list\'%>">'+
+                '<span style="<%include \'style\'%>">'+
                 '<%each button%>'+
                     '<%var style = $value.style%>'+
-                    '<i style="<%include \'list\'%>" class="input-button input-<%$value.id%> input-button-<%type%>'+
+                    '<i style="<%include \'style\'%>" class="input-button input-<%$value.id%> input-button-<%type%>'+
                     '<%if $value.iconfont%> '+
                     '<%$value.iconfont === true ? "iconfont" : $value.iconfont%>'+
                     '<%/if%>'+

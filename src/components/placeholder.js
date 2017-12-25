@@ -41,9 +41,8 @@ Nui.define(['../core/component', '../core/util'], function(component, util){
             onChange:null
         },
         _template:{
-            list:'<%each style%><%$index%>:<%$value%>;<%/each%>',
-            wrap:'<strong class="<% className %>" style="<%include \'list\'%>" />',
-            elem:'<b style="<%include \'list\'%>"><%text%></b>'
+            wrap:'<strong class="<% className %>" style="<%include \'style\'%>" />',
+            elem:'<b style="<%include \'style\'%>"><%text%></b>'
         },
         _events:{
             'click b':'_focus',

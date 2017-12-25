@@ -162,12 +162,28 @@ Nui.define('component', ['template', 'events'], function(tpl, events){
             });
             return size
         },
-        _$fn:function(name, mod){
+        _$fn:function(name, module){
             jQuery.fn[name] = function(){
                 var args = arguments;
-                var options = args[0];
                 return this.each(function(){
-                    if(typeof options !== 'string'){
+                    var object, options = args[0];
+                    var execMethod = function(){
+                        if(typeof options === 'string'){
+                            if(options === 'options'){
+                                object.option(args[1], args[2])
+                            }
+                            else if(options.indexOf('_') !== 0){
+                                var attr = object[options];
+                                if(typeof attr === 'function'){
+                                    attr.apply(object, Array.prototype.slice.call(args, 1))
+                                }
+                            }
+                        }
+                    }
+                    if(this.nui && (object = this.nui[name])){
+                        execMethod()
+                    }
+                    else if(!object){
                         if(Nui.type(options, 'Object')){
                             options.target = this
                         }
@@ -176,26 +192,13 @@ Nui.define('component', ['template', 'events'], function(tpl, events){
                                 target:this
                             }
                         }
-                        mod(options);
-                    }
-                    else if(options){
-                        var object;
-                        if(this.nui && (object=this.nui[name]) && options.indexOf('_') !== 0){
-                            if(options === 'options'){
-                                object.option(args[1], args[2])
-                            }
-                            else{
-                                var attr = object[options];
-                                if(typeof attr === 'function'){
-                                    attr.apply(object, Array.prototype.slice.call(args, 1))
-                                }
-                            }
-                        }
+                        object = module(options);
+                        execMethod()
                     }
                 })
             }
         },
-        _$ready:function(name, mod){
+        _$ready:function(name, module){
             if(typeof this.init === 'function'){
                 this.init(Nui.doc)
             }
@@ -248,7 +251,9 @@ Nui.define('component', ['template', 'events'], function(tpl, events){
             onReset:null,
             onDestroy:null
         },
-        _template:{},
+        _template:{
+            style:'<%each style%><%$index%>:<%$value%>;<%/each%>'
+        },
         _init:function(){
             this._exec()
         },
