@@ -1443,8 +1443,8 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
         _events:{
             'click b':'_focus',
             'focus :input':'_indent',
-            'blur :input':'_blur _control',
-            'keyup:change :input':'_control'
+            'blur :input':'_blur _input',
+            'keyup :input':'_input'
         },
         _data:{},
         _exec:function(){
@@ -1506,7 +1506,7 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
                 this.$text.stop(true, false).animate({left:this._pLeft+10, opacity:'0.5'});
             }
         },
-        _control:function(){
+        _input:function(){
             var val = this.target.val(), _class = this.constructor;
             if((!this._options.equal && val === this._text) || !val){
                 this.target.val('');
@@ -1618,7 +1618,7 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
             if(arguments.length){
                 target.val(val)
             }
-            target.keyup();
+            this._input();
             this._callback('Change');
         }
     })

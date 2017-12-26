@@ -11,14 +11,7 @@
         color:'#f60'
     }
 })
-__define('node_modules/aa/index',function(require,imports,renders,extend,exports){
-	var module=this;
-	imports('./a.css');
-	
-	exports.defaults = function(){
-	    
-	}
-});
+
 __define('src/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
@@ -1850,8 +1843,8 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
         _events:{
             'click b':'_focus',
             'focus :input':'_indent',
-            'blur :input':'_blur _control',
-            'keyup:change :input':'_control'
+            'blur :input':'_blur _input',
+            'keyup :input':'_input'
         },
         _data:{},
         _exec:function(){
@@ -1913,7 +1906,7 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
                 this.$text.stop(true, false).animate({left:this._pLeft+10, opacity:'0.5'});
             }
         },
-        _control:function(){
+        _input:function(){
             var val = this.target.val(), _class = this.constructor;
             if((!this._options.equal && val === this._text) || !val){
                 this.target.val('');
@@ -2025,7 +2018,7 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
             if(arguments.length){
                 target.val(val)
             }
-            target.keyup();
+            this._input();
             this._callback('Change');
         }
     })
@@ -2040,7 +2033,7 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	
 	imports('../style/a.css')
 	
-	var a=__requireDefaultModule(require('node_modules/aa/index'));
+	var a=__requireDefaultModule(require('node_modules/aa'));
 	
 	renders(''+''
 		+'<form class="aaaa import lay liumm" data-current="2" method="post" action="<%basePath%><%typeof(url)==="undefined"?\'\':url %>" target="uploadfile" enctype="multipart/form-data">'+''

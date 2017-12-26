@@ -2247,8 +2247,8 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
         _events:{
             'click b':'_focus',
             'focus :input':'_indent',
-            'blur :input':'_blur _control',
-            'keyup:change :input':'_control'
+            'blur :input':'_blur _input',
+            'keyup :input':'_input'
         },
         _data:{},
         _exec:function(){
@@ -2310,7 +2310,7 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
                 this.$text.stop(true, false).animate({left:this._pLeft+10, opacity:'0.5'});
             }
         },
-        _control:function(){
+        _input:function(){
             var val = this.target.val(), _class = this.constructor;
             if((!this._options.equal && val === this._text) || !val){
                 this.target.val('');
@@ -2422,7 +2422,7 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
             if(arguments.length){
                 target.val(val)
             }
-            target.keyup();
+            this._input();
             this._callback('Change');
         }
     })
@@ -2502,7 +2502,26 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
         },
         _events:{
             'click .input-clear':'_clear',
-            'click .input-reveal':'_reveal'
+            'click .input-reveal':'_reveal',
+            'keyup :input':'_input',
+            'mouseenter':'_mouseover',
+            'mouseleave':'_mouseout'
+        },
+        _input:function(){
+            placeholder.exports._input.call(this);
+            var self = this, opts = this._options, val = self.target.val();
+            var isHide = (!opts.equal && val === self._text) || !val;
+            var type = !isHide ? 'show' : 'hide';
+            self._hideElem[type]()
+        },
+        _mouseover:function(){
+            var target = this.target;
+            if(!target.prop('readonly') && !target.prop('disabled') && target.val()){
+                this._hoverElem.show()
+            }
+        },
+        _mouseout:function(){
+            this._hoverElem.hide()
         },
         _condition:function(){
             var opts = this._options;
@@ -2515,7 +2534,7 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                 return true
             }
         },
-        _createButton:function(){
+        _createButton:function(hides, hovers){
             var self = this, opts = self._options, button = [], defaults = {}, buttons = {}, caches = {};
             var readonly = self.target.prop('readonly') || self.target.prop('disabled');
 
@@ -2574,6 +2593,12 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                 }
                 delete btn.style.display;
                 btn.style.display = btn.show === true || (self._val && !readonly) ? 'inline' : 'none';
+                if(btn.show !== true){
+                    hides.push('.input-'+btn.id)
+                    if(btn.hover === true){
+                        hovers.push('.input-'+btn.id)
+                    }
+                }
                 self._bindEvent(btn)
             })
 
@@ -2592,35 +2617,20 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
                 }
                 self._events['click .input-'+btn.id] = method;
             }
-            if(btn.show !== true){
-                self._on('keyup change', self.element, ':input', function(e, elem){
-                    var val = elem.val();
-                    var isHide = (!opts.equal && val === self._text) || !val;
-                    self.element.find('.input-'+btn.id)[!isHide ? 'show' : 'hide']()
-                })
-                if(btn.hover === true){
-                    self._on('mouseenter', self.element, function(){
-                        if(!self.target.prop('readonly') && !self.target.prop('disabled') && self.target.val()){
-                            self.element.find('.input-'+btn.id).show()
-                        }
-                    })
-                    self._on('mouseleave', self.element, function(){
-                        self.element.find('.input-'+btn.id).hide()
-                    })
-                }
-            }
         },
         _createElems:function(){
-            var self = this, opts = self._options, _class = self.constructor;
+            var self = this, opts = self._options, _class = self.constructor, hides = [], hovers = [];
             placeholder.exports._createElems.call(self);
             self.$button = $(self._tpl2html('button', {
-                button:self._createButton(),
+                button:self._createButton(hides, hovers),
                 iconfont:opts.iconfont,
                 type:self.target.attr('type') === 'password' ? 'password' : 'text',
                 style:Nui.extend({
                     right:_class._getSize(self.target, 'r')+'px'
                 }, self._data)
-            })).appendTo(self.element)
+            })).appendTo(self.element);
+            self._hideElem = self.element.find(hides.toString());
+            self._hoverElem = self.element.find(hovers.toString());
         },
         _option:function(type){
             var data = {};
