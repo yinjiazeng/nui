@@ -55,10 +55,16 @@ Nui.define(['../core/component'], function(component){
             field:'',
             /**
              * @func 是否在文本框获取焦点时展示下拉
-             * @type <Boolean>
+             * @type <Boolean> 
              * @desc 如果组件本身是在focus事件时初始化的，不得设置该参数
              */
             focus:false,
+            /**
+             * @func 是否在文本框获取焦点并且文本框为空时展示下拉
+             * @type <Boolean> 
+             * @desc focus参数为true时才启用该功能
+             */
+            nullable:false,
             /**
              * @func 异步请求数据时，是否缓存
              * @type <Boolean>
@@ -95,6 +101,11 @@ Nui.define(['../core/component'], function(component){
             data:null,
             /**
              * @func 
+             * @type <Object>
+             * {
+             *     field:'name',
+             *     like:/^\d/
+             * }
              * @type <Array>
              * [{
              *     field:'name',
@@ -142,7 +153,7 @@ Nui.define(['../core/component'], function(component){
                 '<div class="suggest-body">'+
                     '<%if data && data.length%>'+
                         '<%include "list"%>'+
-                    '<%else%>'+
+                    '<%elseif value%>'+
                         '<%include "empty"%>'+
                     '<%/if%>'+
                 '</div>'+
@@ -160,9 +171,11 @@ Nui.define(['../core/component'], function(component){
             
         },
         _caches:{},
+        queryData:[],
+        data:[],
         _match:function(data){
             var self = this, opts = self._options, match = false;
-            Nui.each(opts.match, function(val){
+            Nui.each(self._matchs, function(val){
                 var field = val.field, like = val.like, fieldValue;
                 if(field && like && (fieldValue = data[field])){
                     if(Nui.type(like, 'RegExp') && fieldValue.match(like)){
@@ -196,29 +209,29 @@ Nui.define(['../core/component'], function(component){
             self.show()
         },
         _filter:function(){
-            var self = this, opts = self._options, data = [];
+            var self = this, opts = self._options, data = [], _data = self._data();
             if(typeof opts.filter === 'function'){
-                data = opts.filter.call(opts, self, self.value, self.data);
+                data = opts.filter.call(opts, self, self.value, _data);
             }
-            else if(self.data.length && opts.match && opts.match.length){
-                Nui.each(self.data, function(value){
-                    if(self._match(value)){
+            else if(_data.length && self._matchs && self._matchs.length){
+                Nui.each(_data, function(val){
+                    if(self._match(val)){
                         data.push(val)
                     }
                 })
             }
             else{
-                data = self.data
+                data = _data
             }
             self._storage(data)
         },
         _request:function(){
-            var self = this, opts = self._options, data = {};
+            var self = this, opts = self._options, data = {}, value = self.value;
             if(opts.query && typeof opts.query === 'string'){
                 data[opts.query] = value
             }
             else if(typeof opts.query === 'function'){
-                var ret = opts.query.call(opts, self, self.value);
+                var ret = opts.query.call(opts, self, value);
                 if(ret){
                     if(typeof ret === 'object'){
                         data = ret
@@ -238,7 +251,7 @@ Nui.define(['../core/component'], function(component){
             clearTimeout(self._timer);
 
             if(self._ajax){
-                self._ajax.abart()
+                self._ajax.abort()
             }
 
             self._timer = setTimeout(function(){
@@ -262,29 +275,39 @@ Nui.define(['../core/component'], function(component){
                 }, opts.ajax||{}))
             }, 50)
         },
+        _nullable:function(){
+            var self = this, opts = self._options;
+            if(!opts.url){
+                self.queryData = self._data();
+            }
+            self.show()
+        },
         _bindEvent:function(){
             var self = this, opts = self._options, req = !!opts.url;
-            self._on('keydown', self.target, function(e, elem){
+            self._on('keyup', self.target, function(e, elem){
                 self.value = Nui.trim(elem.val());
                 if(self.value){
                     var cache;
-                    if(opts.cache === true && (cache = self._caches[self.value])){
+                    if(self.value && opts.cache === true && (cache = self._caches[self.value])){
                         self._storage(cache);
                     }
+                    else if(req){
+                        self._request()
+                    }
                     else{
-                        if(req){
-                            self._request()
-                        }
-                        else if(opts.data){
-                            self._filter()
-                        }
+                        self._filter()
                     }
                 }
+                else{
+                    //self._nullable()
+                }
             })
-            self._on('focus', self.target, function(e, elem){
-                self.queryData = self.data;
-                self.show()
-            })
+
+            if(opts.focus === true){
+                self._on('focus', self.target, function(e, elem){
+                    self._nullable()
+                })
+            }
         },
         _create:function(){
             var self = this, data = self._tplData();
@@ -314,13 +337,8 @@ Nui.define(['../core/component'], function(component){
 
             self._template[name] = content;
         },
-        _initData:function(){
+        _data:function(){
             var self = this, opts = self._options, data = opts.data;
-
-            Nui.each(['item', 'empty', 'foot'], function(name){
-                self._initTemplate(name);
-            })
-
             if(typeof opts.data === 'function'){
                 data = opts.data.call(opts, self)
             }
@@ -329,7 +347,22 @@ Nui.define(['../core/component'], function(component){
                 data = []
             }
 
-            self.data = data;
+            return self.data = data
+        },
+        _initData:function(){
+            var self = this, opts = self._options, data = opts.data, match = opts.match;
+
+            Nui.each(['item', 'empty', 'foot'], function(name){
+                self._initTemplate(name);
+            })
+
+            if(match && Nui.type(match, 'Object')){
+                match = [match]
+            }
+
+            if(Nui.type(match, 'Array')){
+                self._matchs = match
+            }
         },
         _render:function(){
             var self = this, opts = self._options;
@@ -344,13 +377,13 @@ Nui.define(['../core/component'], function(component){
             var self = this, opts = self._options, _class = self.constructor;
             self._container = _class._jquery(opts.container);
             if(self._getTarget() && (self._container = _class._jquery(opts.container))){
-                self.value = self.target.val();
+                self.value = Nui.trim(self.target.val());
                 self._initData();
                 self._bindEvent();
             }
         },
         resize:function(){
-            self.element.css({})
+            //self.element.css({})
         },
         show:function(){
             var self = this, opts = self._options;
