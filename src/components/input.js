@@ -73,7 +73,6 @@ Nui.define(['./placeholder'], function(placeholder){
         _events:{
             'click .input-clear':'_clear',
             'click .input-reveal':'_reveal',
-            'keyup :input':'_input',
             'mouseenter':'_mouseover',
             'mouseleave':'_mouseout'
         },

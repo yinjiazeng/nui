@@ -2503,7 +2503,6 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
         _events:{
             'click .input-clear':'_clear',
             'click .input-reveal':'_reveal',
-            'keyup :input':'_input',
             'mouseenter':'_mouseover',
             'mouseleave':'_mouseout'
         },
