@@ -1460,7 +1460,7 @@ __define('src/components/suggest',['src/core/component'], function(component){
             /**
              * @func 是否在文本框获取焦点并且文本框为空时展示下拉
              * @type <Boolean> 
-             * @desc focus参数为true时才启用该功能
+             * @desc event属性值不为false时才启用该功能
              */
             nullable:false,
             /**
