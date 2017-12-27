@@ -9,13 +9,7 @@
  * Description: CSS Reset & Public Components
  */
 
- @font-face {font-family: "iconfont";
-   src: url("iconfont.eot?v=25d929d#iefix");
-   src: url("iconfont.eot?v=25d929d#iefix") format('embedded-opentype'),
-   url("iconfont.woff?v=2941e9f") format('woff'),
-   url("iconfont.ttf?v=8a1053b") format('truetype'),
-   url("iconfont.svg?v=982834f#iconfont") format('svg');
- }
+@import './font/iconfont';
 
 /* reset */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre,

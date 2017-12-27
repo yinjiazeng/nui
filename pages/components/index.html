@@ -10,7 +10,7 @@
     <link rel="icon" type="image/vnd.microsoft.icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
 	<link rel="icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
 	<link rel="shortcut icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
-	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css?v=8b4b4d8"/>
+	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css?v=f045e55"/>
     
 </head>
 <body class="g-body">
@@ -110,6 +110,11 @@
 				<p>参数：attr {String, Object} 选项参数名或者集合</p>
 				<p>参数：value 选项参数值</p>
 				<p>说明：设置组件默认参数</p>
+			</div>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> hasInstance</h3>
+			<div class="e-mt15 f-lh22">
+				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
+				<p>说明：校验包含该id的实例是否存在，如果存在则返回实例对象，否则返回false</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> init</h3>
 			<div class="e-mt15 f-lh22">
@@ -472,7 +477,7 @@ Nui.define(['./helloworld'], function(helloworld){
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
 <script type="text/javascript" src="/nui/dist/nui-load-min.js?v=0ff9310"></script>
-<script type="text/javascript" src="/nui/config.js?v=f7430e4"></script>
+<script type="text/javascript" src="/nui/config.js?v=7c29991"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){

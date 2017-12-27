@@ -2081,7 +2081,7 @@ Nui.define('component', ['template', 'events'], function(tpl, events){
         hasInstance:function(id){
             var exist = false;
             var instances = this.__instances;
-            if(id){
+            if(id !== undefined){
                 Nui.each(instances, function(v){
                     if(v.__id === id || v._options.id === id){
                         exist = v;

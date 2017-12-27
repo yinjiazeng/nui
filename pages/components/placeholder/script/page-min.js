@@ -1152,7 +1152,7 @@ __define('src/core/component', ['src/core/template', 'src/core/events'], functio
         hasInstance:function(id){
             var exist = false;
             var instances = this.__instances;
-            if(id){
+            if(id !== undefined){
                 Nui.each(instances, function(v){
                     if(v.__id === id || v._options.id === id){
                         exist = v;
