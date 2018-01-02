@@ -47,7 +47,7 @@ Nui.define(function(){
             _hasChildren:function(value){
                 return Nui.isArray(value.children) && value.children.length
             },
-            //鑾峰彇鍚堝苟鍗曞厓鏍兼暟
+            //获取合并单元格数
             _colspan:function(array, count){
                 var self = this;
                 if(count === undefined){
@@ -72,12 +72,13 @@ Nui.define(function(){
             isLine:false,
             isActive:true,
             isBorder:true,
-            //鍒濆鍖栨椂鏄惁璋冪敤鍒嗛〉
+            option:null,
+            //初始化时是否调用分页
             isPaging:true,
             isDir:false,
             keyCode:[9, 13],
             url:null,
-            //鍒嗛〉閰嶇疆
+            //分页配置
             paging:null,
             fields:null,
             dataField:'list',
@@ -239,7 +240,7 @@ Nui.define(function(){
                         '<span class="cell-text'+
                             '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
                             '<%if val.content === "input"%> cell-text-input<%/if%>"'+
-                            '<%if val.showtitle === true%> title="<%_value%>"<%/if%>>'+
+                            '<%if val.showtitle === true || val.showtitle === "data"%> <%if val.showtitle !==true%>data-<%/if%>title="<%$value[val.field]??%>"<%/if%>>'+
                         '<%if val.content === "checkbox" && typeof _value === "object"%>'+
                         '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
                         '<span class="ui-checkradio">'+
@@ -382,9 +383,9 @@ Nui.define(function(){
             }
             self._template.content = tpl;
         },
-        //鑾峰彇琛ㄦ牸鏍囬琛屾暟
+        //获取表格标题行数
         _getRowNumber:function(array, index, arr, cellid, parent){
-            var self = this, _class = self.constructor;
+            var self = this, opts = self._options, _class = self.constructor;
             if(!arr[index]){
                 arr[index] = true;
             }
@@ -392,8 +393,15 @@ Nui.define(function(){
             if(cellid === undefined){
                 cellid = 0;
             }
+
+            var opts = opts.option || {};
             
             Nui.each(array, function(v){
+                for(var i in opts){
+                    if(v[i] === undefined){
+                        v[i] = opts[i]
+                    }
+                }
                 v.cellid = cellid++;
                 var order = v.order;
                 var className = v.className;

@@ -1443,7 +1443,7 @@ __define('src/components/datagrid',function(){
             _hasChildren:function(value){
                 return Nui.isArray(value.children) && value.children.length
             },
-            //获取合并单元格数
+            //��ȡ�ϲ���Ԫ����
             _colspan:function(array, count){
                 var self = this;
                 if(count === undefined){
@@ -1468,12 +1468,13 @@ __define('src/components/datagrid',function(){
             isLine:false,
             isActive:true,
             isBorder:true,
-            //初始化时是否调用分页
+            option:null,
+            //��ʼ��ʱ�Ƿ����÷�ҳ
             isPaging:true,
             isDir:false,
             keyCode:[9, 13],
             url:null,
-            //分页配置
+            //��ҳ����
             paging:null,
             fields:null,
             dataField:'list',
@@ -1635,7 +1636,7 @@ __define('src/components/datagrid',function(){
                         '<span class="cell-text'+
                             '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
                             '<%if val.content === "input"%> cell-text-input<%/if%>"'+
-                            '<%if val.showtitle === true%> title="<%_value%>"<%/if%>>'+
+                            '<%if val.showtitle === true || val.showtitle === "data"%> <%if val.showtitle !==true%>data-<%/if%>title="<%$value[val.field]??%>"<%/if%>>'+
                         '<%if val.content === "checkbox" && typeof _value === "object"%>'+
                         '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
                         '<span class="ui-checkradio">'+
@@ -1778,9 +1779,9 @@ __define('src/components/datagrid',function(){
             }
             self._template.content = tpl;
         },
-        //获取表格标题行数
+        //��ȡ������������
         _getRowNumber:function(array, index, arr, cellid, parent){
-            var self = this, _class = self.constructor;
+            var self = this, opts = self._options, _class = self.constructor;
             if(!arr[index]){
                 arr[index] = true;
             }
@@ -1788,8 +1789,15 @@ __define('src/components/datagrid',function(){
             if(cellid === undefined){
                 cellid = 0;
             }
+
+            var opts = opts.option || {};
             
             Nui.each(array, function(v){
+                for(var i in opts){
+                    if(v[i] === undefined){
+                        v[i] = opts[i]
+                    }
+                }
                 v.cellid = cellid++;
                 var order = v.order;
                 var className = v.className;
@@ -2308,6 +2316,7 @@ __define('src/components/datagrid',function(){
         }
     })
 })
+
 __define('pages/components/datagrid/script/checkradio',function(require,imports,renders,extend,exports){
 	var module=this;
 	/**
