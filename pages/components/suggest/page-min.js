@@ -1450,17 +1450,14 @@ __define('src/components/suggest',['src/core/component'], function(component){
              */
             field:'',
             /**
-             * @func 是否在文本框绑定事件时展示下拉
-             * @type <Boolean> 设置为true默认是focus事件
-             * @type <String> 设置事件类型、click/focus等，设置后组件内部会自动绑定事件
-             * @type <Event Object> 传入事件对象
-             * @desc 在事件回调中调用组件，若要默认展示下拉，需要传递event对象，而不应设置为事件类型，因为会导致事件被重复绑定
+             * @func 是否在文本获取焦点时展示下拉
+             * @type <Boolean>
+             * @desc 设置true后组件内部会绑定focus事件，因此不建议手动绑定focus事件调用组件的同时将该参数设置为true，那样会导致事件重复绑定
              */
-            event:false,
+            focus:false,
             /**
-             * @func 是否在文本框获取焦点并且文本框为空时展示下拉
+             * @func 是否允许文本框内容为空时展示下拉
              * @type <Boolean> 
-             * @desc event属性值不为false时才启用该功能
              */
             nullable:false,
             /**
@@ -1566,11 +1563,18 @@ __define('src/components/suggest',['src/core/component'], function(component){
                 '</ul>'
         },
         _events:{
-            
+            'mouseover':'_mouseover',
+            'mouseout':'_mouseout'
         },
         _caches:{},
         queryData:[],
         data:[],
+        _mouseover:function(){
+            this._hover = true
+        },
+        _mouseout:function(){
+            delete this._hover
+        },
         _match:function(data){
             var self = this, opts = self._options, match = false;
             Nui.each(self._matchs, function(val){
@@ -1673,23 +1677,15 @@ __define('src/components/suggest',['src/core/component'], function(component){
                 }, opts.ajax||{}))
             }, 50)
         },
-        _nullable:function(){
-            var self = this, opts = self._options;
-            if(!opts.url){
-                self.queryData = self._data();
-            }
-            self.show()
-        },
         _bindEvent:function(){
-            var self = this, opts = self._options, req = !!opts.url;
+            var self = this, opts = self._options;
             self._on('keyup', self.target, function(e, elem){
-                self.value = Nui.trim(elem.val());
-                if(self.value){
+                if(self.value = Nui.trim(elem.val())){
                     var cache;
                     if(self.value && opts.cache === true && (cache = self._caches[self.value])){
                         self._storage(cache);
                     }
-                    else if(req){
+                    else if(opts.url){
                         self._request()
                     }
                     else{
@@ -1697,13 +1693,19 @@ __define('src/components/suggest',['src/core/component'], function(component){
                     }
                 }
                 else{
-                    //self._nullable()
+                    self.show()
+                }
+            })
+
+            self._on('blur', self.target, function(e, elem){
+                if(!self._hover){
+                    self.hide()
                 }
             })
 
             if(opts.focus === true){
                 self._on('focus', self.target, function(e, elem){
-                    self._nullable()
+                    self.show()
                 })
             }
         },
@@ -1763,11 +1765,12 @@ __define('src/components/suggest',['src/core/component'], function(component){
             }
         },
         _render:function(){
-            var self = this, opts = self._options;
+            var self = this, opts = self._options, _class = self.constructor;
             self.element.html(self._tpl2html('inner', {
                 data:self.queryData,
                 value:self.value
             }));
+            _class._active = self;
             self.element.show();
             self.resize()
         },
@@ -1784,14 +1787,37 @@ __define('src/components/suggest',['src/core/component'], function(component){
             //self.element.css({})
         },
         show:function(){
-            var self = this, opts = self._options;
-            if(!self.element){
-                self._create()
+            var self = this, opts = self._options, _class = self.constructor;
+            if(_class._active && _class._active !== self){
+                _class._active.hide()
             }
-            self._render()
+            else if(opts.nullable !== true && !self.value){
+                self.hide()
+            }
+            else{
+                if(!self.element){
+                    self._create()
+                }
+                //文本框没内容，还原默认数据
+                if(!self.value && opts.nullable === true){
+                    if(!opts.url){
+                        self.queryData = self._data()
+                    }
+                    else{
+                        self.queryData = []
+                    }
+                }
+                self._render()
+            }
         },
         hide:function(){
-
+            var self = this, _class = self.constructor;
+            if(self.element){
+                if(_class._active === self){
+                    delete _class._active
+                }
+                self.element.hide()
+            }
         }
     })
 }); 
@@ -1804,15 +1830,15 @@ __define('./page',function(require,imports,renders,extend,exports){
 	var data = require('pages/components/suggest/data');
 	var suggest = require('src/components/suggest');
 	
-	$('#demo').click(function(){
-	    $('#demo').suggest({
-	        url:'http://127.0.0.1:8001/data/?callback=?',
+	$(':text').focus(function(e){
+	    $(this).suggest({
+	        //url:'http://127.0.0.1:8001/data/?callback=?',
 	        data:data,
 	        field:'buname',
 	        empty:'<%value%> 暂无数据',
 	        foot:'<a>aaaaaaaa</a>',
-	        //focus:true,
-	        //cache:true,
+	        nullable:true,
+	        cache:true,
 	        match:[{
 	            field:'buname',
 	            like:function(data, value){
@@ -1837,7 +1863,7 @@ __define('./page',function(require,imports,renders,extend,exports){
 	        onRequest:function(self, res){
 	            return res.list
 	        }
-	    })
+	    }).suggest('show')
 	})
 	
 });

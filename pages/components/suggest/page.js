@@ -1,15 +1,15 @@
 var data = require('./data');
 var suggest = require('../../../src/components/suggest');
 
-$('#demo').click(function(){
-    $('#demo').suggest({
-        url:'http://127.0.0.1:8001/data/?callback=?',
+$(':text').focus(function(e){
+    $(this).suggest({
+        //url:'http://127.0.0.1:8001/data/?callback=?',
         data:data,
         field:'buname',
         empty:'<%value%> 暂无数据',
         foot:'<a>aaaaaaaa</a>',
-        //focus:true,
-        //cache:true,
+        nullable:true,
+        cache:true,
         match:[{
             field:'buname',
             like:function(data, value){
@@ -34,5 +34,5 @@ $('#demo').click(function(){
         onRequest:function(self, res){
             return res.list
         }
-    })
+    }).suggest('show')
 })
