@@ -278,15 +278,14 @@ router({
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
 				<p>默认值：null</p>
-				<p>说明：路由地址切换后，在渲染模版之前触发</p>
+				<p>说明：路由地址切换后，在渲染模版之前触发，函数返回false时则不会执行渲染模版，不会触发onInit和onAfter</p>
 			</div>
-<script type="text/highlight" data-javascript-options>
-router({
-	onChnage:function(){
-		
-	}
-})
-</script>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onRender</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>默认值：null</p>
+				<p>说明：渲染模版后触发，每次调用实例的render方法都会触发</p>
+			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onInit</h3>
 			<div class="e-mt15 f-lh22">
 				<p>类型：{Function}</p>
@@ -326,21 +325,8 @@ router({
 </script>
 			
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 说明</h3>
-			<p class="e-mt15 f-lh22">选项参数中5个预置的回调执行顺序以及用法：</p>
-<script type="text/highlight" data-style-options>
-onBefore /*地址未切换，可用于给路由加权限，是否可以执行跳转*/
-   ↓
-onData   /*地址切换且模版未渲染，多路由页面之间交互时使用*/
-   ↓
-onChange /*地址切换且模版未渲染，可用于添加或修改data*/
-   ↓
-onInit   /*地址切换且模版已渲染，此时模版已经添加到dom中，可以执行组件初始化操作*/
-   ↓
-onAfter  /*地址切换切模版已渲染，因为只要切换地址后都会触发该方法，可对点击的菜单进行操作，比如选中高亮，展开二级菜单等*/
-</script>
 			<div class="e-mt15 f-lh22">
 				<p>在选项参数函数中可以通过this.element访问到页面容器的jquery实例（类名为nui-router-wrapper的元素），绑定事件必须代理为该元素。<span class="f-cred">万万不可将事件代理到页面加载就存在的元素上，比如documeng或者body，因为每次切换路由都会触发回调导致事件被多次绑定！</span></p>
-				<p>必要时可以自定义选项参数，包括函数以及属性，方便业务的扩展</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 router({
@@ -362,6 +348,27 @@ router({
 	},
 	click:function(e, elem, data){
 		this.bind(data)
+	}
+})
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例方法</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> render</h3>
+			<div class="e-mt15 f-lh22">
+				<p>类型：{Function}</p>
+				<p>说明：渲染模版，调用后会触发onRender回调，该方法一般在onInit中异步请求数据后调用</p>
+			</div>
+<script type="text/highlight" data-javascript-options>
+router({
+	template:'<%each list%><%$index%>:<%$value%><%/each%>',
+	data:{
+		list:[]
+	},
+	onInit:function(){
+		var that = this;
+		$.get('url', function(res){
+			that.data.list = res;
+			that.self.render()
+		})
 	}
 })
 </script>
@@ -565,7 +572,7 @@ selector.on('click', function(){
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=383771e"></script>
 <script type="text/javascript" src="/nui/dist/nui-load-min.js?v=0ff9310"></script>
-<script type="text/javascript" src="/nui/config.js?v=855d396"></script>
+<script type="text/javascript" src="/nui/config.js?v=89b9e16"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){

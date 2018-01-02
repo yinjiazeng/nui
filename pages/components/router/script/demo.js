@@ -2,14 +2,7 @@ var renders = this.renders;
 var require = this.require;
 var placeholder = require('{com}/placeholder');
 var router = require('{com}/router');
-
-import '../style/a.css'
-
-import a from '{node}/aa';
-
-renders({
-	<form class="aaaa import lay liumm" data-current="2" method="post" action="<%basePath%><%typeof(url)==="undefined"?'':url %>" target="uploadfile" enctype="multipart/form-data">
-})
+var placeholder_opts = require('./options', true);
 
 router({
 	target:'#home',
@@ -18,7 +11,7 @@ router({
 	wrapper:'#aa',
 	container:'#main'
 })
-var placeholder_opts = require('./options', true);
+
 router({
 	target:'#news, .news',
 	entry:true,
@@ -27,9 +20,11 @@ router({
 	level:2,
 	template:{
 		list:'<ul>'+
+				'<%if list??%>'+
 				'<%each list%>'+
 				'<li><a href="<%$value.url%>/<%$value.title%>" class="news"><%$value.title%></a></li>'+
 				'<%/each%>'+
+				'<%/if%>'+
 			'</ul>',
 		detail:'<div>'+
 					'<h3><%params.title%></h3>'+
@@ -37,29 +32,32 @@ router({
 				'</div>'
 	},
 	data:{
-		list:[{
-			url:'/news/1',
-			title:'资讯1'
-		},{
-			url:'/news/2',
-			title:'资讯2'
-		}, {
-			url:'/news/3',
-			title:'资讯3'
-		}]
+		
 	},
 	onChange:function(){
 		var tpl = this.template, params = this.data.params;
 		if(params.id && params.title){
-			
 			tpl.main = tpl.detail;
 		}
 		else{
 			tpl.main = tpl.list;
 		}
 	},
-	onInit:function(){
-		
+	onInit:function(self){
+		var that = this;
+		setTimeout(function(){
+			that.data.list = [{
+				url:'/news/1',
+				title:'资讯1'
+			},{
+				url:'/news/2',
+				title:'资讯2'
+			}, {
+				url:'/news/3',
+				title:'资讯3'
+			}]
+			that.self.render()
+		}, 500)
 	}
 })
 

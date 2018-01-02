@@ -1,7 +1,7 @@
 /**
  * @author Aniu[2017-02-27 23:46]
- * @update Aniu[2017-02-27 23:46]
- * @version 1.0.1
+ * @update Aniu[2018-01-02 21:25]
+ * @version 1.0.2
  * @description 路由
  */
 
@@ -91,7 +91,7 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
                             opts.data = $.extend(true, opts.data, self._active);
 
                             if(object._send && object._send.data && typeof opts.onData === 'function'){
-                                opts.onData.call(opts, object._send.data);
+                                opts.onData.call(opts, object._send.data, object);
                                 delete object._send;
                             }
 
@@ -107,36 +107,27 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
                                 else if(!self._wrapper){
                                     self._wrapper = self._getWrapper(object.container)
                                 }
-                                component.destroy((object._wrapper||self._wrapper).off());
                             }
 
                             var wrapper = opts.element = object._wrapper || self._wrapper;
                             
-                            if(typeof opts.onChange === 'function' && opts.onChange.call(opts) === false){
+                            if(typeof opts.onChange === 'function' && opts.onChange.call(opts, object) === false){
                                 return false
                             }
                                 
                             if(_isRender){
-                                var tmpl = opts.template;
-                                if(tmpl){
-                                    if(typeof tmpl === 'string'){
-                                        wrapper.html(template.render(tmpl, opts.data));
-                                    }
-                                    else{
-                                        wrapper.html(template.render.call(tmpl, tmpl.main, opts.data));
-                                    }
-                                }
+                                wrapper.off();
+                                object.render.call(object);
                                 if(typeof opts.onInit === 'function'){
-                                    opts.onInit.call(opts);
+                                    opts.onInit.call(opts, object);
                                 }
                                 events.call(opts);
-                                component.init(wrapper);
                                 object.loaded = true;
                             }
 
                             wrapper.show().siblings('.nui-router-wrapper').hide();
                             if(typeof opts.onAfter === 'function'){
-                                opts.onAfter.call(opts)
+                                opts.onAfter.call(opts, object)
                             }
                             self._initialize = true;
                             if(Nui.bsie7){
@@ -296,6 +287,7 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
             onBefore:null,
             onChange:null,
             onData:null,
+            onRender:null,
             onInit:null,
             onAfter:null
         },
@@ -387,7 +379,21 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
             })
             return self
         },
-        option:null,
-        reset:null
+        render:function(){
+            var self = this, opts = self._options, tmpl = opts.template, wrapper = self._wrapper || self.constructor._wrapper;
+            if(wrapper){
+                component.destroy(wrapper);
+                if(tmpl){
+                    if(typeof tmpl === 'string'){
+                        wrapper.html(template.render(tmpl, opts.data));
+                    }
+                    else{
+                        wrapper.html(template.render.call(tmpl, tmpl.main, opts.data));
+                    }
+                }
+                component.init(wrapper);
+                self._callback('Render')
+            }
+        }
     })
 })

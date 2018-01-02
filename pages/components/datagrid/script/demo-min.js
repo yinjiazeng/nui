@@ -1469,7 +1469,7 @@ __define('src/components/datagrid',function(){
             isActive:true,
             isBorder:true,
             option:null,
-            //��ʼ��ʱ�Ƿ����÷�ҳ
+            //��ʼ��ʱ�Ƿ���÷�ҳ
             isPaging:true,
             isDir:false,
             keyCode:[9, 13],
@@ -1779,7 +1779,7 @@ __define('src/components/datagrid',function(){
             }
             self._template.content = tpl;
         },
-        //��ȡ������������
+        //��ȡ����������
         _getRowNumber:function(array, index, arr, cellid, parent){
             var self = this, opts = self._options, _class = self.constructor;
             if(!arr[index]){

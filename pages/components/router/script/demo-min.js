@@ -11,14 +11,6 @@
         color:'#f60'
     }
 })
-__define('node_modules/aa/index',function(require,imports,renders,extend,exports){
-	var module=this;
-	imports('./a.css');
-	
-	exports.defaults = function(){
-	    
-	}
-});
 __define('src/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
@@ -1410,8 +1402,8 @@ __define('src/core/component', ['src/core/template', 'src/core/events'], functio
 
 /**
  * @author Aniu[2017-02-27 23:46]
- * @update Aniu[2017-02-27 23:46]
- * @version 1.0.1
+ * @update Aniu[2018-01-02 21:25]
+ * @version 1.0.2
  * @description 路由
  */
 
@@ -1501,7 +1493,7 @@ __define('src/components/router',['src/core/component', 'src/core/template', 'sr
                             opts.data = $.extend(true, opts.data, self._active);
 
                             if(object._send && object._send.data && typeof opts.onData === 'function'){
-                                opts.onData.call(opts, object._send.data);
+                                opts.onData.call(opts, object._send.data, object);
                                 delete object._send;
                             }
 
@@ -1517,36 +1509,27 @@ __define('src/components/router',['src/core/component', 'src/core/template', 'sr
                                 else if(!self._wrapper){
                                     self._wrapper = self._getWrapper(object.container)
                                 }
-                                component.destroy((object._wrapper||self._wrapper).off());
                             }
 
                             var wrapper = opts.element = object._wrapper || self._wrapper;
                             
-                            if(typeof opts.onChange === 'function' && opts.onChange.call(opts) === false){
+                            if(typeof opts.onChange === 'function' && opts.onChange.call(opts, object) === false){
                                 return false
                             }
                                 
                             if(_isRender){
-                                var tmpl = opts.template;
-                                if(tmpl){
-                                    if(typeof tmpl === 'string'){
-                                        wrapper.html(template.render(tmpl, opts.data));
-                                    }
-                                    else{
-                                        wrapper.html(template.render.call(tmpl, tmpl.main, opts.data));
-                                    }
-                                }
+                                wrapper.off();
+                                object.render.call(object);
                                 if(typeof opts.onInit === 'function'){
-                                    opts.onInit.call(opts);
+                                    opts.onInit.call(opts, object);
                                 }
                                 events.call(opts);
-                                component.init(wrapper);
                                 object.loaded = true;
                             }
 
                             wrapper.show().siblings('.nui-router-wrapper').hide();
                             if(typeof opts.onAfter === 'function'){
-                                opts.onAfter.call(opts)
+                                opts.onAfter.call(opts, object)
                             }
                             self._initialize = true;
                             if(Nui.bsie7){
@@ -1706,6 +1689,7 @@ __define('src/components/router',['src/core/component', 'src/core/template', 'sr
             onBefore:null,
             onChange:null,
             onData:null,
+            onRender:null,
             onInit:null,
             onAfter:null
         },
@@ -1797,8 +1781,22 @@ __define('src/components/router',['src/core/component', 'src/core/template', 'sr
             })
             return self
         },
-        option:null,
-        reset:null
+        render:function(){
+            var self = this, opts = self._options, tmpl = opts.template, wrapper = self._wrapper || self.constructor._wrapper;
+            if(wrapper){
+                component.destroy(wrapper);
+                if(tmpl){
+                    if(typeof tmpl === 'string'){
+                        wrapper.html(template.render(tmpl, opts.data));
+                    }
+                    else{
+                        wrapper.html(template.render.call(tmpl, tmpl.main, opts.data));
+                    }
+                }
+                component.init(wrapper);
+                self._callback('Render')
+            }
+        }
     })
 })
 /**
@@ -2037,14 +2035,7 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	var require = this.require;
 	var placeholder = require('src/components/placeholder');
 	var router = require('src/components/router');
-	
-	imports('../style/a.css')
-	
-	var a=__requireDefaultModule(require('node_modules/aa/index'));
-	
-	renders(''+''
-		+'<form class="aaaa import lay liumm" data-current="2" method="post" action="<%basePath%><%typeof(url)==="undefined"?\'\':url %>" target="uploadfile" enctype="multipart/form-data">'+''
-	+'')
+	var placeholder_opts = require('pages/components/router/script/options', true);
 	
 	router({
 		target:'#home',
@@ -2053,7 +2044,7 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 		wrapper:'#aa',
 		container:'#main'
 	})
-	var placeholder_opts = require('pages/components/router/script/options', true);
+	
 	router({
 		target:'#news, .news',
 		entry:true,
@@ -2062,9 +2053,11 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 		level:2,
 		template:{
 			list:'<ul>'+
+					'<%if list??%>'+
 					'<%each list%>'+
 					'<li><a href="<%$value.url%>/<%$value.title%>" class="news"><%$value.title%></a></li>'+
 					'<%/each%>'+
+					'<%/if%>'+
 				'</ul>',
 			detail:'<div>'+
 						'<h3><%params.title%></h3>'+
@@ -2072,29 +2065,32 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 					'</div>'
 		},
 		data:{
-			list:[{
-				url:'/news/1',
-				title:'资讯1'
-			},{
-				url:'/news/2',
-				title:'资讯2'
-			}, {
-				url:'/news/3',
-				title:'资讯3'
-			}]
+			
 		},
 		onChange:function(){
 			var tpl = this.template, params = this.data.params;
 			if(params.id && params.title){
-				
 				tpl.main = tpl.detail;
 			}
 			else{
 				tpl.main = tpl.list;
 			}
 		},
-		onInit:function(){
-			
+		onInit:function(self){
+			var that = this;
+			setTimeout(function(){
+				that.data.list = [{
+					url:'/news/1',
+					title:'资讯1'
+				},{
+					url:'/news/2',
+					title:'资讯2'
+				}, {
+					url:'/news/3',
+					title:'资讯3'
+				}]
+				that.self.render()
+			}, 500)
 		}
 	})
 	
