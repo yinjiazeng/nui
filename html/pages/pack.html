@@ -38,7 +38,9 @@ cnpm install --save-dev gulp gulp-nui
 //模块文件
 require('./a');
 imports('./b');
-extend('./c');
+extend('./c', {
+
+});
 renders({
     <div></div>
 })
@@ -46,19 +48,25 @@ module.exports = {
 
 }
 
+
+
 //模块文件打包后：
-Nui.define(function(require, imports, extend, renders){
-    var module = this;
-    require('./a');
-    imports('./b');
-    extend('./c');
-    renders({
-        <div></div>
+;(function(__define){
+    __define(function(require, imports, extend, renders){
+        var module = this;
+        require('./a');
+        imports('./b');
+        extend('./c', {
+            
+        });
+        renders(
+            '<div></div>'
+        )
+        module.exports = {
+        
+        }
     })
-    module.exports = {
-    
-    }
-})
+})(Nui['_module_1_define'])
 </script>
             <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="注意事项">注意事项</h2>
             <p class="e-mt15 f-lh22">匹配文件时一定要排除掉生成的压缩文件以及config文件，不然可能会导致任务多次执行。原因是生成或修改压缩文件本身就相当于文件修改，因此又会触发监听任务。</p>
