@@ -117,6 +117,15 @@ Nui.define(['../core/component'], function(component){
              */
             match:null,
             /**
+             * @func 自定义选中项目后的文本框内容
+             * @type <Function>
+             * @param self <Object> 组件实例对象
+             * @param data <Object> 当前选中数据
+             * @return <String> 返回自定义填充值
+             * @desc 未设置该值时，默认取field中的数据
+             */
+            value:null,
+            /**
              * @func 过滤数据
              * @type <Function>
              * @param self <Object> 组件实例对象
@@ -145,6 +154,9 @@ Nui.define(['../core/component'], function(component){
              */
             onSelect:null
         },
+        _caches:{},
+        queryData:[],
+        data:[],
         _template:{
             wrap:
                 '<div class="<% className %>"<%if style%> style="<%include \'style\'%>"<%/if%>></div>',
@@ -167,17 +179,44 @@ Nui.define(['../core/component'], function(component){
                 '</ul>'
         },
         _events:{
-            'mouseover':'_mouseover',
-            'mouseout':'_mouseout'
+            'mouseenter':'_suggestMouseover',
+            'mouseleave':'_suggestMouseout',
+            'mouseenter .suggest-item':'_suggestMouseover _itemMouseover',
+            'mouseleave .suggest-item':'_itemMouseout',
+            'click .suggest-item':'_select'
         },
-        _caches:{},
-        queryData:[],
-        data:[],
-        _mouseover:function(){
+        _suggestMouseover:function(e, elem){
             this._hover = true
         },
-        _mouseout:function(){
-            delete this._hover
+        _suggestMouseout:function(e, elem){
+            delete this._hover;
+        },
+        _itemMouseover:function(e, elem){
+            this._activeItem = elem.addClass('s-hover');
+            this._activeIndex = this._activeItem.data('index');
+        },
+        _itemMouseout:function(e, elem){
+            elem.removeClass('s-hover')
+        },
+        _select:function(e){
+            var self = this, opts = self._options, data = self.queryData[self._activeIndex], args = [data, e, this._activeItem], value = '';
+            if(self._callback('SelectBefore', args) === false){
+                return false
+            }
+
+            if(typeof opts.value === 'function'){
+                value = opts.value.call(opts, self, data)
+            }
+            else if(opts.field){
+                value = data[opts.field]
+            }
+
+            if(typeof value === 'string'){
+                self.target.val(value)
+            }
+
+            self._callback('Select', args);
+            self.hide();
         },
         _match:function(data){
             var self = this, opts = self._options, match = false;
@@ -281,6 +320,18 @@ Nui.define(['../core/component'], function(component){
                 }, opts.ajax||{}))
             }, 50)
         },
+        //按上
+        _code38:function(){
+
+        },
+        //按下
+        _code40:function(){
+            
+        },
+        //回车
+        _code13:function(e){
+            this._select(e)
+        },
         _bindEvent:function(){
             var self = this, opts = self._options;
             self._on('keyup', self.target, function(e, elem){
@@ -301,9 +352,18 @@ Nui.define(['../core/component'], function(component){
                 }
             })
 
+            self._on('click', self.target, function(e, elem){
+                if(!self._show){
+                    self.target.focus()
+                }
+            })
+
             self._on('blur', self.target, function(e, elem){
                 if(!self._hover){
                     self.hide()
+                }
+                else{
+                    elem.focus()
                 }
             })
 
@@ -312,6 +372,16 @@ Nui.define(['../core/component'], function(component){
                     self.show()
                 })
             }
+
+            self._on('keyup', self.target, function(e, elem){
+                if(self._show === true){
+                    var method = self['_code'+e.keyCode];
+                    if(typeof method === 'function'){
+                        method.call(self, e);
+                        e.stopPropagation()
+                    }
+                }
+            })
         },
         _create:function(){
             var self = this, data = self._tplData();
@@ -376,6 +446,7 @@ Nui.define(['../core/component'], function(component){
             }));
             _class._active = self;
             self.element.show();
+            self._show = true;
             self.resize()
         },
         _exec:function(){
@@ -392,6 +463,9 @@ Nui.define(['../core/component'], function(component){
         },
         show:function(){
             var self = this, opts = self._options, _class = self.constructor;
+            if(self._hover){
+                return
+            }
             if(_class._active && _class._active !== self){
                 _class._active.hide()
             }
@@ -416,10 +490,12 @@ Nui.define(['../core/component'], function(component){
         },
         hide:function(){
             var self = this, _class = self.constructor;
+            delete self._hover;
+            delete self._show;
+            if(_class._active === self){
+                delete _class._active
+            }
             if(self.element){
-                if(_class._active === self){
-                    delete _class._active
-                }
                 self.element.hide()
             }
         }
