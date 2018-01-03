@@ -191,7 +191,7 @@
     var domain = location.protocol+'//'+location.host;
     //获取当前页面的uri
     var getPath = function(){
-        var url = (domain+location.pathname).replace(/\\/g, '/');
+        var url = (domain+location.pathname.replace(/\/+/g, '/'));
         var index =  url.lastIndexOf('/');
         return url.substr(0, index+1);
     }
@@ -209,9 +209,21 @@
         }
     }
 
-    var getModuleid = function(){
-        ++mid;
-        return '_module_'+mid
+    var mid = 0;
+    
+    var async_mid = 0;
+
+    var getModuleid = function(async){
+        var name = '_module_';
+        if(!async){
+            ++mid;
+            name = name + mid;
+        }
+        else{
+            ++async_mid;
+            name = name + async + async_mid;
+        }
+        return name
     }
 
     var replaceExt = function(str){
@@ -221,8 +233,6 @@
     var head = document.head || document.getElementsByTagName('head')[0] || document.documentElement;
 
     var support = 'onload' in document.createElement('script');
-
-    var mid = 0;
 
     var moduleData;
 
@@ -316,9 +326,9 @@
     }
 
     //动态加载模块
-    Module.prototype.load = function(){
+    Module.prototype.load = function(callback){
         var mod = this;
-        if(!mod.loaded && mod.name !== '_module_'+mid){
+        if(!mod.loaded && !/_module_(async_)?\d+/.test(mod.name)){
             if(!mod.url){
                 var node = document.createElement('script');
                 mod.url = mod.id+mod.suffix+'.js'+mod.version;
@@ -338,6 +348,9 @@
                             mod.onload(node)()
                         }
                     }
+                }
+                if(mod.callback){
+                    return mod
                 }
             }
             return mod.resolve()
@@ -367,11 +380,15 @@
     }
 
     //加载模块依赖
-    Module.prototype.resolve = function(){
+    Module.prototype.resolve = function(callback){
         var mod = this;
         if(mod.alldeps.length && isEmptyObject(mod.depmodules)){
             each(mod.alldeps, function(val){
                 var module = Module.getModule(val, [], mod.uri);
+                if(callback){
+                    mod.loaded = true;
+                    module.callback = callback;
+                }
                 module.version = mod.version;
                 mod.depmodules[val] = module.loaded ? module : module.load()
             })
@@ -394,6 +411,10 @@
                         val && (mod[key] = val)
                     })
                     moduleData = null;
+                }
+                if(mod.callback){
+                    mod.callback();
+                    return mod
                 }
                 return mod.resolve().rootCallback()
             })
@@ -445,7 +466,8 @@
         methods.require = function(id, all){
             var _mod;
             if(id){
-                if((_mod = mod.depmodules[id]) || (_mod = cacheModules[id]) || (_mod = cacheModules[dirname+id])){
+                id = replaceExt(id);
+                if(_mod = (mod.depmodules[id] || cacheModules[id] || cacheModules[dirname+id])){
                     if(all){
                         return _mod
                     }
@@ -455,9 +477,7 @@
         }
 
         methods.require.async = function(id, callback){
-            setTimeout(function(){
-                Module.load(id, callback, getModuleid(), mod.uri)
-            })
+            Module.load(id, callback, getModuleid('async_'), mod.uri)
         }
 
         //继承模块
@@ -570,8 +590,9 @@
             if(typeof exports === 'undefined'){
                 exports = methods.exports
             }
-            
-            if(mod.name === 'component' || (exports._static && exports._static.__parent instanceof Module.Class.parent)){
+
+            //组件
+            if(exports._static && exports._init && (/\/component$/.test(mod.name) || exports._static.__parent instanceof Module.Class.parent)){
                 var obj = {
                     statics:{},
                     propertys:{},
@@ -737,50 +758,6 @@
         return cacheModules[attrs[1]] || cacheModules[id] || cacheModules[attrs[3]] || (cacheModules[id] = new Module(attrs, deps))
     }
 
-    Module.load = function(id, callback, _module_, uri){
-        //截取入口文件参数，依赖的文件加载时都会带上该参数
-        var match = id.match(/(\?[\s\S]*)$/);
-        
-        if(config.min === true && uri === true){
-            id = replaceExt(id);
-            if(!/-min$/.test(id)){
-                id += '-min'
-            }
-        }
-
-        var mod = Module.getModule(_module_, [id], uri);
-
-        if(match){
-            mod.version = match[0]
-        }
-        var depname = mod.alldeps[0];
-        var version = config.maps[depname.replace(/(-min)?(\.js)?$/, '')];
-        if(version){
-            if(!/^\?/.test(version)){
-                version = '?v='+version
-            }
-            mod.version = version
-        }
-
-        mod.callback = function(ids){
-            var _module = mod.depmodules[depname];
-            var suffix = _module.suffix;
-            each(ids, function(id){
-                var module = cacheModules[id].exec();
-                if(!suffix){
-                    module.loadcss()
-                }
-            })
-            if(type(callback, 'Function')){
-                callback.call(Nui, _module.module || _module.exports)
-            }
-            delete rootModules[_module_];
-            delete mod.callback
-        }
-        rootModules[_module_] = mod;
-        mod.load()
-    }
-
     //获取工厂函数中模块的依赖
     Module.getdeps = function(str){
         var deps = [];
@@ -800,26 +777,68 @@
         return [unique(deps), unique(styles)]
     }
 
-    Module.define = function(id, deps, factory){
-        //Nui.define(function(){})
-        if(type(id, 'Function')){
-            factory = id;
-            id = undefined;
-            deps = [];
-        }
-        //Nui.define(['mod1', 'mod2', ..], function(){})
-        //Nui.define('id', function(){})
-        else if(type(deps, 'Function')){
-            factory = deps;
-            if(type(id, 'String')){
-                deps = []
-            }
-            else{
-                deps = id;
-                id = undefined
+    Module.load = function(id, callback, _module_, isMin){
+        //截取入口文件参数，依赖的文件加载时都会带上该参数
+        var match = id.match(/(\?[\s\S]*)$/);
+        
+        if(config.min === true && isMin === true){
+            id = replaceExt(id);
+            if(!/-min$/.test(id)){
+                id += '-min'
             }
         }
 
+        var mod = rootModules[_module_] = Module.getModule(_module_, [id], isMin);
+
+        if(match){
+            mod.version = match[0]
+        }
+
+        var depname = mod.alldeps[0];
+        var version = config.maps[depname.replace(/(-min)?(\.js)?$/, '')];
+        if(version){
+            if(!/^\?/.test(version)){
+                version = '?v='+version
+            }
+            mod.version = version
+        }
+
+        var _callback = function(){
+            var _module = mod.depmodules[depname];
+            if(type(callback, 'Function')){
+                callback.call(Nui, _module.module || _module.exports)
+            }
+        }
+
+        if(isMin === true){
+            Nui[_module_ + '_define'] = function(){
+                Module.init.call(Module, arguments, 'pack', _module_)
+            }
+            mod.modules = [];
+            mod.resolve(function(){
+                each(mod.modules, function(v){
+                    v.exec();
+                })
+                _callback();
+            })
+        }
+        else{
+            mod.callback = function(ids){
+                each(ids, function(id){
+                    var module = cacheModules[id].exec();
+                    if(!isMin){
+                        module.loadcss()
+                    }
+                })
+                _callback();
+                delete rootModules[_module_];
+                delete mod.callback
+            }
+            mod.load()
+        }
+    }
+
+    Module.define = function(id, deps, factory){
         var arrs = Module.getdeps(factory.toString());
         var alldeps = deps.concat(arrs[0]);
         var styles = arrs[1];
@@ -850,22 +869,15 @@
         }
     }
 
-    Module._load = function(isMin){
-        return function(id, callback){
-            if(id && typeof id === 'string'){
-                Module.load(id, callback, getModuleid(), isMin)
-            }
-            return Nui
-        }
+    Module.pack = function(id, deps, factory, _module_){
+        var mod = Module.getModule(id, []);
+        mod.factory = factory;
+        mod.deps = deps;
+        mod.loaded = true;
+        rootModules[_module_].modules.push(mod);
     }
 
-    Nui.load = Module._load(true);
-
-    //不会生成压缩文件
-    Nui.use = Module._load();
-
-    Nui.define = function(){
-        var args = arguments;
+    Module.init = function(args, name, _module_){
         var len = args.length;
         var params = [];
 
@@ -905,7 +917,44 @@
             params = args
         }
 
-        Module.define.apply(Module, params)
+        //Nui.define(function(){})
+        if(type(params[0], 'Function')){
+            params[2] = params[0];
+            params[0] = undefined;
+            params[1] = [];
+        }
+        else if(type(params[1], 'Function')){
+            params[2] = params[1];
+            //Nui.define('id', function(){})
+            if(type(params[0], 'String')){
+                params[1] = [];
+            }
+            //Nui.define(['mod1', 'mod2', ..], function(){})
+            else{
+                params[1] = params[0];
+                params[0] = undefined;
+            }
+        }
+
+        Module[name](params[0], params[1], params[2], _module_)
+    }
+
+    Module.loader = function(isMin){
+        return function(id, callback){
+            if(id && typeof id === 'string'){
+                Module.load(id, callback, getModuleid(), isMin)
+            }
+            return Nui
+        }
+    }
+
+    Nui.load = Module.loader(true);
+
+    //不会生成压缩文件
+    Nui.use = Module.loader();
+
+    Nui.define = function(){
+        Module.init.call(Module, arguments, 'define')
     }
 
     Nui.config = function(obj, val){
