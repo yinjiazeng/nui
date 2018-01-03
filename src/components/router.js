@@ -126,13 +126,17 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
                             }
 
                             wrapper.show().siblings('.nui-router-wrapper').hide();
+
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts, object)
                             }
-                            self._initialize = true;
+
                             if(Nui.bsie7){
                                 self._setHistory(_hash);
                             }
+
+                            self._initialize = true;
+                            
                             return false
                         }
                     }
@@ -246,7 +250,7 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
                 })
             }
             this._isHistory = false;
-        },
+        }
         Nui.each(['forward', 'back'], function(v){
             var value = v==='forward' ? 1 : -1;
             statics[v] = function(){
