@@ -12,8 +12,8 @@
 {% endblock %}
 
 {% block content %}
-<div class="g-wrap f-tac e-pt20">
-	<div class="m-title e-mt20 e-pt20">
+<div class="g-wrap f-tac e-pt40">
+	<div class="m-title e-mt40 e-pt20">
 		<img src="/nui/assets/images/logo.png" class="logo" alt="Nui.js" />
 		<span class="f-tal desc f-dib">
 			<em>模块化</em>
@@ -22,30 +22,30 @@
 			</span>
 			<span class="f-dib e-mt20">
 				<a class="ui-btn e-mr10" href="/nui/pages/">教程</a>
-				<a class="ui-btn ui-btn-line" href="https://github.com/axnfex/nui" target="_blank">Github</a>
+				<a class="ui-btn ui-btn-line" href="//github.com/axnfex/nui" target="_blank">Github</a>
 			</span>
 		</span>
 	</div>
 	<div class="m-desc f-clearfix">
 		<dl class="f-fl">
-			<dt class="f-fs20 f-cblue">规范</dt>
+			<dt class="f-fs20 f-corange">规范</dt>
 			<dd class="f-lh24 e-mt20">
-				<p>打包工具能够自动完成模块合并、压缩、修改版本号</p>
-				<p>完美解决http请求过多以及缓存问题</p>
+				<p>遵循原生HTML/CSS/JS书写形式</p>
+				<p>更好的方式管理项目代码</p>
 			</dd>
 		</dl>
 		<dl class="f-fl">
-			<dt class="f-fs20 f-cgreen">性能</dt>
+			<dt class="f-fs20 f-cblue">丰富</dt>
 			<dd class="f-lh24 e-mt20">
+				<p>涵盖不同业务系统常用元素与组件</p>
 				<p>API文档详细齐全</p>
-				<p>涵盖了不同业务系统大多数组件</p>
 			</dd>
 		</dl>
 		<dl class="f-fl">
-			<dt class="f-fs20 f-cred">丰富</dt>
+			<dt class="f-fs20 f-cgreen">高效</dt>
 			<dd class="f-lh24 e-mt20">
-				<p>API文档详细齐全</p>
-				<p>涵盖了不同业务系统大多数组件</p>
+				<p>模块化开发方式</p>
+				<p>提升代码复用率，缩短项目周期</p>
 			</dd>
 		</dl>
 	</div>
@@ -54,8 +54,23 @@
 	<div class="g-wrap">
 		<h3 class="f-fs20">哪些项目在用？</h3>
 		<p>
-			<a href="https://oa.jss.com.cn/" target="_blank" class="ui-gray"><img src="/nui/assets/images/logos/oa.png" alt="诺诺OA" width="143" height="57" /></a>
-			<a href="https://cloud.jss.com.cn/" target="_blank" class="ui-gray"><img src="/nui/assets/images/logos/cloud.jpg" alt="诺诺云记账" width="179" height="57" /></a>
+			<a href="//oa.jss.com.cn/" target="_blank" class="ui-gray f-pr" style="top:3px;">
+				<img src="/nui/assets/images/logos/oa.png" alt="诺诺OA" width="143" height="57" />
+			</a>
+			<a href="//cloud.jss.com.cn/" target="_blank" class="ui-gray">
+				<img src="/nui/assets/images/logos/cloud.jpg" alt="诺诺云记账" width="179" height="57" />
+			</a>
+		</p>
+		<p>
+			<a href="//www.jss.com.cn/" target="_blank" class="ui-gray">
+				<img src="/nui/assets/images/logos/fuwu.jpg" alt="诺诺服务" width="179" height="57" />
+			</a>
+			<a href="//www.axnjf.com/" target="_blank" class="ui-gray">
+				<img src="/nui/assets/images/logos/jinfu.jpg" alt="诺诺金服" width="179" height="57" />
+			</a>
+			<a href="//www.axnsc.com/" target="_blank" class="ui-gray">
+				<img src="/nui/assets/images/logos/shop.jpg" alt="诺诺商城" width="179" height="57" />
+			</a>
 		</p>
 	</div>
 </div>
@@ -66,5 +81,5 @@
 {% endblock %}
 
 {% block script %}
-	Nui.load('{script}/index-min')
+	Nui.load('{script}/index')
 {% endblock %}
