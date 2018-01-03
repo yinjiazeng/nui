@@ -215,8 +215,9 @@ Nui.define(['../core/component'], function(component){
                 self.target.val(value)
             }
 
-            self._callback('Select', args);
             self.hide();
+            
+            self._callback('Select', args);
         },
         _match:function(data){
             var self = this, opts = self._options, match = false;
@@ -459,7 +460,7 @@ Nui.define(['../core/component'], function(component){
             }
         },
         resize:function(){
-            //self.element.css({})
+            self.element.css({})
         },
         show:function(){
             var self = this, opts = self._options, _class = self.constructor;
