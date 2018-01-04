@@ -5,7 +5,7 @@
         }
         return module
     }
-    __define('src/core/events', function(){
+    __define('lib/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -77,7 +77,7 @@
  * @description 实用工具集
  */
 
-__define('src/core/util', {
+__define('lib/core/util', {
     
     /**
      * @func 常用正则表达式
@@ -640,7 +640,7 @@ __define('src/core/util', {
  * @description 模版引擎
  */
 
-__define('src/core/template', ['src/core/util'], function(util){
+__define('lib/core/template', ['lib/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -937,7 +937,7 @@ __define('src/core/template', ['src/core/util'], function(util){
  * @description 组件基类
  */
 
-__define('src/core/component', ['src/core/template', 'src/core/events'], function(tpl, events){
+__define('lib/core/component', ['lib/core/template', 'lib/core/events'], function(tpl, events){
     var module = this;
     var require = this.require;
     var extend = this.extend;
@@ -1401,7 +1401,7 @@ __define('src/core/component', ['src/core/template', 'src/core/events'], functio
  * @description layer弹出层
  */
 
-__define('src/components/layer/layer',['src/core/component', 'src/core/util', 'src/core/template'], function(component, util, template){
+__define('lib/components/layer/layer',['lib/core/component', 'lib/core/util', 'lib/core/template'], function(component, util, template){
     var module = this;
 
     var statics = {
@@ -2179,7 +2179,7 @@ __define('src/components/layer/layer',['src/core/component', 'src/core/util', 's
         }
     })
 });
-__define('./script/page',['src/components/layer/layer', 'src/core/events'], function(layer, events){
+__define('./script/page',['lib/components/layer/layer', 'lib/core/events'], function(layer, events){
     var renders = this.renders;
     return events({
         element:document,

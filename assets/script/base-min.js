@@ -5,7 +5,7 @@
         }
         return module
     }
-    __define('src/core/events', function(){
+    __define('lib/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -77,7 +77,7 @@
  * @description 实用工具集
  */
 
-__define('src/core/util', {
+__define('lib/core/util', {
     
     /**
      * @func 常用正则表达式
@@ -640,7 +640,7 @@ __define('src/core/util', {
  * @description 模版引擎
  */
 
-__define('src/core/template', ['src/core/util'], function(util){
+__define('lib/core/template', ['lib/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -937,7 +937,7 @@ __define('src/core/template', ['src/core/util'], function(util){
  * @description 组件基类
  */
 
-__define('src/core/component', ['src/core/template', 'src/core/events'], function(tpl, events){
+__define('lib/core/component', ['lib/core/template', 'lib/core/events'], function(tpl, events){
     var module = this;
     var require = this.require;
     var extend = this.extend;
@@ -1401,8 +1401,8 @@ __define('src/core/component', ['src/core/template', 'src/core/events'], functio
  * @description 语法高亮组件
  */
 
-__define('src/components/highlight/highlight',function(){
-    return this.extend('src/core/component', {
+__define('lib/components/highlight/highlight',function(){
+    return this.extend('lib/core/component', {
         _static:{
             _init:function(){
                 var self = this;
@@ -1542,8 +1542,8 @@ __define('src/components/highlight/highlight',function(){
  * @description css语法高亮组件
  */
 
-__define('src/components/highlight/style',function(){
-    return this.extend('src/components/highlight/highlight', {
+__define('lib/components/highlight/style',function(){
+    return this.extend('lib/components/highlight/highlight', {
         _title:'css',
         _getCode:function(){
             var self = this;
@@ -1585,8 +1585,8 @@ __define('src/components/highlight/style',function(){
  * @description javascript语法高亮组件
  */
 
-__define('src/components/highlight/javascript',function(){
-    return this.extend('src/components/highlight/highlight', {
+__define('lib/components/highlight/javascript',function(){
+    return this.extend('lib/components/highlight/highlight', {
         _title:'js',
         _getCode:function(){
             var self = this;
@@ -1639,8 +1639,8 @@ __define('src/components/highlight/javascript',function(){
  * @description xml语法高亮组件
  */
 
-__define('src/components/highlight/xml',['src/components/highlight/javascript', 'src/components/highlight/style'],function(js, css){
-    return this.extend('src/components/highlight/highlight', {
+__define('lib/components/highlight/xml',['lib/components/highlight/javascript', 'lib/components/highlight/style'],function(js, css){
+    return this.extend('lib/components/highlight/highlight', {
         _title:'xml',
         _getCode:function(){
             var self = this;
@@ -1711,7 +1711,7 @@ __define('src/components/highlight/xml',['src/components/highlight/javascript', 
     })
 })
 
-__define('{script}/base',['src/components/highlight/xml', 'src/core/events'], function(xml, events){
+__define('{script}/base',['lib/components/highlight/xml', 'lib/core/events'], function(xml, events){
     this.imports('../style/base');
     var hash = location.hash ? location.hash.replace('#', '') : '';
     var main = $('.g-main');

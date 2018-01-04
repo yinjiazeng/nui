@@ -1,5 +1,5 @@
 var data = require('./data');
-var suggest = require('../../../src/components/suggest');
+var suggest = require('{com}/suggest');
 
 $(':text').suggest({
     //url:'http://127.0.0.1:8001/data/?callback=?',

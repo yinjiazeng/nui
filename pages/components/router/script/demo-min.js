@@ -11,7 +11,7 @@
         color:'#f60'
     }
 })
-__define('src/core/events', function(){
+__define('lib/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -83,7 +83,7 @@ __define('src/core/events', function(){
  * @description 实用工具集
  */
 
-__define('src/core/util', {
+__define('lib/core/util', {
     
     /**
      * @func 常用正则表达式
@@ -646,7 +646,7 @@ __define('src/core/util', {
  * @description 模版引擎
  */
 
-__define('src/core/template', ['src/core/util'], function(util){
+__define('lib/core/template', ['lib/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -943,7 +943,7 @@ __define('src/core/template', ['src/core/util'], function(util){
  * @description 组件基类
  */
 
-__define('src/core/component', ['src/core/template', 'src/core/events'], function(tpl, events){
+__define('lib/core/component', ['lib/core/template', 'lib/core/events'], function(tpl, events){
     var module = this;
     var require = this.require;
     var extend = this.extend;
@@ -1407,7 +1407,7 @@ __define('src/core/component', ['src/core/template', 'src/core/events'], functio
  * @description 路由
  */
 
-__define('src/components/router',['src/core/component', 'src/core/template', 'src/core/events'], function(component, template, events){
+__define('lib/components/router',['lib/core/component', 'lib/core/template', 'lib/core/events'], function(component, template, events){
     var statics = {
         _paths:{},
         _init:function(){
@@ -1810,7 +1810,7 @@ __define('src/components/router',['src/core/component', 'src/core/template', 'sr
  * @description 输入框占位符
  */
 
-__define('src/components/placeholder',['src/core/component', 'src/core/util'], function(component, util){
+__define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], function(component, util){
     var supportPlaceholder = util.supportHtml5('placeholder', 'input');
     return this.extend(component, {
         _options:{
@@ -2037,8 +2037,8 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	var module=this;
 	var renders = this.renders;
 	var require = this.require;
-	var placeholder = require('src/components/placeholder');
-	var router = require('src/components/router');
+	var placeholder = require('lib/components/placeholder');
+	var router = require('lib/components/router');
 	var placeholder_opts = require('pages/components/router/script/options', true);
 	
 	router({

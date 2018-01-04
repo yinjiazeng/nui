@@ -12,7 +12,7 @@
  * @description 实用工具集
  */
 
-__define('src/core/util', {
+__define('lib/core/util', {
     
     /**
      * @func 常用正则表达式
@@ -575,7 +575,7 @@ __define('src/core/util', {
  * @description 模版引擎
  */
 
-__define('src/core/template', ['src/core/util'], function(util){
+__define('lib/core/template', ['lib/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -865,7 +865,7 @@ __define('src/core/template', ['src/core/util'], function(util){
     return template
 })
 
-__define('src/core/events', function(){
+__define('lib/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -937,7 +937,7 @@ __define('src/core/events', function(){
  * @description 组件基类
  */
 
-__define('src/core/component', ['src/core/template', 'src/core/events'], function(tpl, events){
+__define('lib/core/component', ['lib/core/template', 'lib/core/events'], function(tpl, events){
     var module = this;
     var require = this.require;
     var extend = this.extend;
@@ -1401,7 +1401,7 @@ __define('src/core/component', ['src/core/template', 'src/core/events'], functio
  * @description layer弹出层
  */
 
-__define('src/components/layer/layer',['src/core/component', 'src/core/util', 'src/core/template'], function(component, util, template){
+__define('lib/components/layer/layer',['lib/core/component', 'lib/core/util', 'lib/core/template'], function(component, util, template){
     var module = this;
 
     var statics = {
@@ -2179,7 +2179,7 @@ __define('src/components/layer/layer',['src/core/component', 'src/core/util', 's
         }
     })
 });
-__define('src/components/layer/alert',['src/components/layer/layer'], function(layer){
+__define('lib/components/layer/alert',['lib/components/layer/layer'], function(layer){
     return function(content, title, width, height){
         var opts;
         if(typeof content === 'object'){
@@ -2205,7 +2205,7 @@ __define('src/components/layer/alert',['src/components/layer/layer'], function(l
  * @description 输入框占位符
  */
 
-__define('src/components/placeholder',['src/core/component', 'src/core/util'], function(component, util){
+__define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], function(component, util){
     var supportPlaceholder = util.supportHtml5('placeholder', 'input');
     return this.extend(component, {
         _options:{
@@ -2435,7 +2435,7 @@ __define('src/components/placeholder',['src/core/component', 'src/core/util'], f
  * @description input增强
  */
 
-__define('src/components/input',['src/components/placeholder'], function(placeholder){
+__define('lib/components/input',['lib/components/placeholder'], function(placeholder){
     return this.extend(placeholder, {
         _options:{
             /**
@@ -2690,8 +2690,8 @@ __define('src/components/input',['src/components/placeholder'], function(placeho
 }); 
 __define('./page',function(require,imports,renders,extend,exports){
 	var module=this;
-	var input=__requireDefaultModule(require('src/components/input'));
-	var alert=__requireDefaultModule(require('src/components/layer/alert'));
+	var input=__requireDefaultModule(require('lib/components/input'));
+	var alert=__requireDefaultModule(require('lib/components/layer/alert'));
 	
 	$('#demo').input({
 	    clear:'清除',

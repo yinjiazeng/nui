@@ -12,7 +12,7 @@
  * @description 实用工具集
  */
 
-__define('src/core/util', {
+__define('lib/core/util', {
     
     /**
      * @func 常用正则表达式
@@ -575,7 +575,7 @@ __define('src/core/util', {
  * @description 模版引擎
  */
 
-__define('src/core/template', ['src/core/util'], function(util){
+__define('lib/core/template', ['lib/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -865,7 +865,7 @@ __define('src/core/template', ['src/core/util'], function(util){
     return template
 })
 
-__define('src/core/events', function(){
+__define('lib/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -937,7 +937,7 @@ __define('src/core/events', function(){
  * @description 组件基类
  */
 
-__define('src/core/component', ['src/core/template', 'src/core/events'], function(tpl, events){
+__define('lib/core/component', ['lib/core/template', 'lib/core/events'], function(tpl, events){
     var module = this;
     var require = this.require;
     var extend = this.extend;
@@ -1401,7 +1401,7 @@ __define('src/core/component', ['src/core/template', 'src/core/events'], functio
  * @description layer弹出层
  */
 
-__define('src/components/layer/layer',['src/core/component', 'src/core/util', 'src/core/template'], function(component, util, template){
+__define('lib/components/layer/layer',['lib/core/component', 'lib/core/util', 'lib/core/template'], function(component, util, template){
     var module = this;
 
     var statics = {
@@ -2179,7 +2179,7 @@ __define('src/components/layer/layer',['src/core/component', 'src/core/util', 's
         }
     })
 });
-__define('src/components/layer/confirm',['src/components/layer/layer'], function(layer){
+__define('lib/components/layer/confirm',['lib/components/layer/layer'], function(layer){
     return function(content, callback, title, width, height, align){
         var opts;
         if(typeof content === 'object'){
@@ -2210,7 +2210,7 @@ __define('src/components/layer/confirm',['src/components/layer/layer'], function
         }))
     }
 })
-__define('./script/events/page',['src/core/template', 'src/core/events', 'src/components/layer/confirm'], function(template, events, confirm){
+__define('./script/events/page',['lib/core/template', 'lib/core/events', 'lib/components/layer/confirm'], function(template, events, confirm){
     var evt = events({
         elem:$('#data'),
         data:['蔬菜', '水果', '苹果'],

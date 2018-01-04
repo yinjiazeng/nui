@@ -12,7 +12,7 @@
  * @description 实用工具集
  */
 
-__define('src/core/util', {
+__define('lib/core/util', {
     
     /**
      * @func 常用正则表达式
@@ -568,7 +568,7 @@ __define('src/core/util', {
     }
 })
 
-__define('src/core/events', function(){
+__define('lib/core/events', function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -640,7 +640,7 @@ __define('src/core/events', function(){
  * @description 模版引擎
  */
 
-__define('src/core/template', ['src/core/util'], function(util){
+__define('lib/core/template', ['lib/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -937,7 +937,7 @@ __define('src/core/template', ['src/core/util'], function(util){
  * @description 组件基类
  */
 
-__define('src/core/component', ['src/core/template', 'src/core/events'], function(tpl, events){
+__define('lib/core/component', ['lib/core/template', 'lib/core/events'], function(tpl, events){
     var module = this;
     var require = this.require;
     var extend = this.extend;
@@ -1394,10 +1394,10 @@ __define('src/core/component', ['src/core/template', 'src/core/events'], functio
     })
 })
 
-__define('src/components/datagrid',function(){
+__define('lib/components/datagrid',function(){
     var module = this;
-    var component = module.require('src/core/component');
-    var util = module.require('src/core/util');
+    var component = module.require('lib/core/component');
+    var util = module.require('lib/core/util');
 
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
@@ -1469,7 +1469,7 @@ __define('src/components/datagrid',function(){
             isActive:true,
             isBorder:true,
             option:null,
-            //��ʼ��ʱ�Ƿ���÷�ҳ
+            //��ʼ��ʱ�Ƿ����÷�ҳ
             isPaging:true,
             isDir:false,
             keyCode:[9, 13],
@@ -1779,7 +1779,7 @@ __define('src/components/datagrid',function(){
             }
             self._template.content = tpl;
         },
-        //��ȡ����������
+        //��ȡ������������
         _getRowNumber:function(array, index, arr, cellid, parent){
             var self = this, opts = self._options, _class = self.constructor;
             if(!arr[index]){
@@ -2896,8 +2896,8 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	var module=this;
 	var paging = require('pages/components/datagrid/script/paging');
 	var checkradio = require('pages/components/datagrid/script/checkradio');
-	var template = require('src/core/template');
-	var datagrid = require('src/components/datagrid');
+	var template = require('lib/core/template');
+	var datagrid = require('lib/components/datagrid');
 	
 	var a=__requireDefaultModule(imports('./a.css'));
 	

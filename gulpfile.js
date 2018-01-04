@@ -8,7 +8,7 @@ var nunjucks = require('gulp-nunjucks-render');
 var babel = require('babel-core');
 
 gulp.task('concat', function() {
-    gulp.src(['./src/nui.js'])
+    gulp.src(['./lib/nui.js'])
         .pipe(uglify({
             mangle: true,
             output: {
@@ -16,7 +16,7 @@ gulp.task('concat', function() {
             }
         }))
         .pipe(rename('nui-min.js'))
-        .pipe(gulp.dest('./src/'))
+        .pipe(gulp.dest('./lib/'))
 });
 
 var options = {
@@ -48,15 +48,15 @@ gulp.task('revhtml', ['nunjucks'], function(){
 })
 
 gulp.task('revcss', function(){
-    gulp.src(['./{pages,assets}/**/*.css'])
+    gulp.src(['./{pages,assets,lib}/**/*.{css,less}'])
         .pipe(nui())
         .pipe(gulp.dest('./'))
 })
 
 gulp.task('watch', function() {    
-    gulp.watch(['{pages,assets}/**/*.{js,css}', '!{pages,assets}/**/*-min.{js,css}','!assets/script/config.js'], ['revhtml']);
+    gulp.watch(['{pages,assets}/**/*.{js,css,less}', '!{pages,assets}/**/*-min.{js,css}','!assets/script/config.js'], ['revhtml']);
     gulp.watch(['{pages,assets}/**/*.{jpg,png,gif,eot,svg,ttf,woff}'], ['revcss']);
-    gulp.watch(['src/**/*.js'], ['concat', 'revhtml']);
+    gulp.watch(['lib/**/*.{js,css,less}'], ['concat', 'revhtml']);
     gulp.watch(['html/**/*.html', 'tpl/*.tpl'], ['nunjucks', 'revhtml']);
 });
 

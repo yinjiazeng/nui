@@ -1,11 +1,11 @@
 Nui.config({
     "base": "/nui/",
     "paths": {
-        "core": "/src/core",
+        "core": "/lib/core",
         "script": "/assets/script",
         "style": "/assets/style",
-        "com": "/src/components",
-        "light": "/src/components/highlight",
+        "com": "/lib/components",
+        "light": "/lib/components/highlight",
         "node": "/node_modules"
     },
     "alias": {
@@ -17,11 +17,11 @@ Nui.config({
         "highlight": "{light}/highlight"
     },
     "maps": {
-        "{script}/base": "328020b",
-        "./script/events/page": "cc9147c",
-        "./script/template/page": "da4e9f0",
-        "./script/demo": "a0332c5",
-        "./script/page": "9a24a56",
-        "./page": "39872bd"
+        "{script}/base": "b0a5736",
+        "./script/events/page": "849c9ae",
+        "./script/template/page": "d0e5036",
+        "./script/demo": "91001a3",
+        "./page": "91b55d9",
+        "./script/page": "7af6ed3"
     }
 })

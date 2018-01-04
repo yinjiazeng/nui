@@ -1,5 +1,5 @@
-import input from '../../../src/components/input';
-import alert from '../../../src/components/layer/alert';
+import input from '{com}/input';
+import alert from '{com}/layer/alert';
 
 $('#demo').input({
     clear:'清除',
