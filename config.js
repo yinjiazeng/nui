@@ -17,11 +17,11 @@ Nui.config({
         "highlight": "{light}/highlight"
     },
     "maps": {
-        "{script}/base": "b0a5736",
-        "./script/events/page": "849c9ae",
-        "./script/template/page": "d0e5036",
-        "./script/demo": "91001a3",
-        "./page": "91b55d9",
-        "./script/page": "7af6ed3"
+        "{script}/base": "455ff27",
+        "./script/events/page": "5e5f5e0",
+        "./script/template/page": "f8337d5",
+        "./script/demo": "2281b2b",
+        "./page": "a6227f6",
+        "./script/page": "3cf60ee"
     }
 })

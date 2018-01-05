@@ -208,7 +208,7 @@ select,
 keygen,
 legend {
   font: 14px/1.14 '\5fae\8f6f\96c5\9ed1', helvetica, sans-serif;
-  color: #323232;
+  color: '#666';
 }
 html {
   _background-image: url(about:blank);
@@ -219,11 +219,11 @@ html {
   background-color: #fff;
 }
 a {
-  color: #323232;
+  color: '#666';
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 a:hover {
-  color: #3487E2;
+  color: '#666';
   text-decoration: none;
 }
 ::-webkit-scrollbar {
@@ -1069,4 +1069,13 @@ input:-webkit-autofill {
   width: 83px;
   height: 83px;
   background: url("../../../../lib/style/elements/void.png") no-repeat center;
+}
+.suggest {
+  color: #fff;
+}
+.suggest {
+  color: #f60;
+}
+.suggest {
+  color: #000;
 }
