@@ -12,7 +12,7 @@
  * @description 实用工具集
  */
 
-__define('lib/core/util', {
+__define('lib/core/util',{
     
     /**
      * @func 常用正则表达式
@@ -575,7 +575,7 @@ __define('lib/core/util', {
  * @description 模版引擎
  */
 
-__define('lib/core/template', ['lib/core/util'], function(util){
+__define('lib/core/template',['lib/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){

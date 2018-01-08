@@ -12,7 +12,7 @@
  * @description 实用工具集
  */
 
-__define('lib/core/util', {
+__define('lib/core/util',{
     
     /**
      * @func 常用正则表达式
@@ -568,7 +568,7 @@ __define('lib/core/util', {
     }
 })
 
-__define('lib/core/events', function(){
+__define('lib/core/events',function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -640,7 +640,7 @@ __define('lib/core/events', function(){
  * @description 模版引擎
  */
 
-__define('lib/core/template', ['lib/core/util'], function(util){
+__define('lib/core/template',['lib/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -937,7 +937,7 @@ __define('lib/core/template', ['lib/core/util'], function(util){
  * @description 组件基类
  */
 
-__define('lib/core/component', ['lib/core/template', 'lib/core/events'], function(tpl, events){
+__define('lib/core/component',['lib/core/template', 'lib/core/events'], function(tpl, events){
     var module = this;
     var require = this.require;
     var extend = this.extend;
