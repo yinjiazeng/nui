@@ -8,7 +8,22 @@ var nunjucks = require('gulp-nunjucks-render');
 var babel = require('babel-core');
 
 gulp.task('concat', function() {
-    gulp.src(['./lib/nui.js'])
+    gulp.src(['./load.js'])
+        .pipe(rename('nui-load.js'))
+        .pipe(gulp.dest('./dist/'))
+        .pipe(uglify({
+            mangle: true,
+            output: {
+                keep_quoted_props: true
+            }
+        }))
+        .pipe(rename('nui-load-min.js'))
+        .pipe(gulp.dest('./dist/'))
+    
+    //打包所有模块
+    gulp.src(['./load.js'])
+        .pipe(rename('nui.js'))
+        .pipe(gulp.dest('./dist/'))
         .pipe(uglify({
             mangle: true,
             output: {
@@ -16,7 +31,7 @@ gulp.task('concat', function() {
             }
         }))
         .pipe(rename('nui-min.js'))
-        .pipe(gulp.dest('./lib/'))
+        .pipe(gulp.dest('./dist/'))
 });
 
 var options = {

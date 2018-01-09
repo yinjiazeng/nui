@@ -1412,7 +1412,7 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  */
 
 __define('lib/components/suggest',['lib/core/component'], function(component){
-    this.imports('../style/components/suggest');
+    this.imports('../style/components/suggest/index');
     return this.extend(component, {
         _options:{
             /**

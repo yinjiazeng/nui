@@ -1071,9 +1071,6 @@ input:-webkit-autofill {
   background: url("../../../../lib/style/elements/img/void.png?v=01ee8b8") no-repeat center;
 }
 .suggest {
-  color: #f60;
-}
-.suggest {
   color: #fff;
 }
 .suggest {
