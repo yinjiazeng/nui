@@ -5,7 +5,7 @@
         }
         return module
     }
-    __define('pages/components/suggest/script/style',function(require,imports,renders,extend,exports){
+__define('pages/components/suggest/script/style',function(require,imports,renders,extend,exports){
 	var module=this;
 	imports('../style/base.less');
 });

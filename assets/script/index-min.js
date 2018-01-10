@@ -5,7 +5,7 @@
         }
         return module
     }
-    __define('{script}/index',function(){
+__define('{script}/index',function(){
     this.imports('../style/index')
 })
 

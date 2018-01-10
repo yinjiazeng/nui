@@ -5,7 +5,7 @@
         }
         return module
     }
-    __define('lib/core/events',function(){
+__define('lib/core/events',function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,

@@ -5,7 +5,7 @@
         }
         return module
     }
-    __define('pages/components/router/script/options',function(){
+__define('pages/components/router/script/options',function(){
     return {
         text:'1111',
         color:'#f60'
