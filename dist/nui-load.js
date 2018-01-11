@@ -549,8 +549,10 @@
             return exports
         }
 
-        //导入样式表
-        methods.imports = noop;
+        //导入资源
+        methods.imports = function(id){
+            return (config.paths.base || '') + id
+        }
 
         //渲染字符串
         methods.renders = function(tpl){

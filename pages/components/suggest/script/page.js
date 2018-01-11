@@ -1,6 +1,13 @@
 import '{com}/suggest';
 import data from './data';
 import './style';
+import a from '{node}/aa/images/a.png';
+import a2 from '../images/a.jpg';
+
+console.log(a);
+console.log(a2);
+
+$('<img src="'+ a +'">').appendTo('body')
 
 $(':text').suggest({
     //url:'http://127.0.0.1:8001/data/?callback=?',

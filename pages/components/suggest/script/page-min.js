@@ -1914,6 +1914,13 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	require('lib/components/suggest');
 	var data=__requireDefaultModule(require('pages/components/suggest/script/data'));
 	require('pages/components/suggest/script/style');
+	var a=__requireDefaultModule(imports('pages/components/suggest/images/pack_assets/a.f81365499b.png?=218f085'));
+	var a2=__requireDefaultModule(imports('pages/components/suggest/images/a.jpg?=ba04e3c'));
+	
+	console.log(a);
+	console.log(a2);
+	
+	$('<img src="'+ a +'">').appendTo('body')
 	
 	$(':text').suggest({
 	    //url:'http://127.0.0.1:8001/data/?callback=?',
