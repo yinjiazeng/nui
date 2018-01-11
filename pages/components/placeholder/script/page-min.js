@@ -717,9 +717,6 @@ __define('lib/core/template',['lib/core/util'], function(util){
                         return false
                     }
                 })
-                if(!tmp){
-                    return ''
-                }
                 if(typeof tmp === 'function'){
                     tmp = tmp()
                 }
@@ -756,7 +753,7 @@ __define('lib/core/template',['lib/core/util'], function(util){
 
     var render = function(tpl, data, opts){
         var that = this;
-        if(typeof tpl === 'string'){
+        if(typeof tpl === 'string' && tpl){
             opts = opts || {};
             var openTag = opts.openTag || options.openTag, closeTag = opts.closeTag || options.closeTag;
             tpl = replaceInclude.call(that, tpl, openTag, closeTag);
