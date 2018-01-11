@@ -771,9 +771,11 @@
                     deps.push(val.replace(/^(require|extend)|[\('"]/g, ''))
                 }
                 else{
-                    styles.push(val.replace(/^imports|[\('"]/g, ''))
+                    var url = val.replace(/^imports|[\('"]/g, '');
+                    if(!(/\.[a-zA-Z]$/i).test(url) || (/\.css$/i).test(url)){
+                        styles.push(url)
+                    }
                 }
-
             })
         }
         return [unique(deps), unique(styles)]
