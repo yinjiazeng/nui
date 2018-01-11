@@ -645,8 +645,8 @@ __define('lib/core/util',{
 
 /**
  * @author Aniu[2016-11-11 16:54]
- * @update Aniu[2016-11-11 16:54]
- * @version 1.0.1
+ * @update Aniu[2016-01-12 04:33]
+ * @version 1.0.2
  * @description 模版引擎
  */
 
@@ -720,9 +720,18 @@ __define('lib/core/template',['lib/core/util'], function(util){
         var rege = closeTag.replace(/([^\s])/g, '\\$1');
         return tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tid){
             if(tid){
-                var tmp = that[tid];
+                var tmp;
+                Nui.each(tid.split('.'), function(attr){
+                    tmp = (tmp||that)[attr];
+                    if(tmp === undefined){
+                        return false
+                    }
+                })
+                if(!tmp){
+                    return ''
+                }
                 if(typeof tmp === 'function'){
-                    tmp = tmp();
+                    tmp = tmp()
                 }
                 if(typeof tmp === 'string'){
                     return render.call(that, tmp, null, opts)
@@ -1914,13 +1923,9 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	require('lib/components/suggest');
 	var data=__requireDefaultModule(require('pages/components/suggest/script/data'));
 	require('pages/components/suggest/script/style');
-	var a=__requireDefaultModule(imports('pages/components/suggest/images/pack_assets/a.f81365499b.png?=218f085'));
+	var a=__requireDefaultModule(imports('pages/components/suggest/images/pack_assets/a.8f14659a72.png'));
 	var a2=__requireDefaultModule(imports('pages/components/suggest/images/a.jpg?=ba04e3c'));
 	var b=__requireDefaultModule(imports('assets/images/logos/cloud.jpg?=37962f0'));
-	
-	renders(''+''
-	    +'<img src="'+ a +'">'+''
-	+'')
 	
 	$(':text').suggest({
 	    //url:'http://127.0.0.1:8001/data/?callback=?',

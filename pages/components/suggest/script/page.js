@@ -5,10 +5,6 @@ import a from '{node}/aa/images/a.png';
 import a2 from '../images/a.jpg';
 import b from '../../../../assets/images/logos/cloud.jpg';
 
-renders({
-    <img src="\'+ a +\'">
-})
-
 $(':text').suggest({
     //url:'http://127.0.0.1:8001/data/?callback=?',
     data:data,

@@ -29,7 +29,11 @@ router({
 		detail:'<div>'+
 					'<h3><%params.title%></h3>'+
 					'<p>这是<%params.title%>详情，id是<%params.id%>。<input type="text" data-placeholder-options="'+ placeholder_opts.id +'"></p>'+
-				'</div>'
+					'<%include "aa.b"%>'+
+				'</div>',
+		aa:{
+			b:'11111'
+		}
 	},
 	data:{
 		

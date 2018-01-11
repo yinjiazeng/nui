@@ -635,8 +635,8 @@ __define('lib/core/events',function(){
 })
 /**
  * @author Aniu[2016-11-11 16:54]
- * @update Aniu[2016-11-11 16:54]
- * @version 1.0.1
+ * @update Aniu[2016-01-12 04:33]
+ * @version 1.0.2
  * @description 模版引擎
  */
 
@@ -710,9 +710,18 @@ __define('lib/core/template',['lib/core/util'], function(util){
         var rege = closeTag.replace(/([^\s])/g, '\\$1');
         return tpl.replace(new RegExp(regs+'\\s*include\\s+[\'\"]([^\'\"]*)[\'\"]\\s*'+rege, 'g'), function(str, tid){
             if(tid){
-                var tmp = that[tid];
+                var tmp;
+                Nui.each(tid.split('.'), function(attr){
+                    tmp = (tmp||that)[attr];
+                    if(tmp === undefined){
+                        return false
+                    }
+                })
+                if(!tmp){
+                    return ''
+                }
                 if(typeof tmp === 'function'){
-                    tmp = tmp();
+                    tmp = tmp()
                 }
                 if(typeof tmp === 'string'){
                     return render.call(that, tmp, null, opts)
@@ -1469,7 +1478,7 @@ __define('lib/components/datagrid',function(){
             isActive:true,
             isBorder:true,
             option:null,
-            //��ʼ��ʱ�Ƿ����÷�ҳ
+            //��ʼ��ʱ�Ƿ���÷�ҳ
             isPaging:true,
             isDir:false,
             keyCode:[9, 13],
@@ -1779,7 +1788,7 @@ __define('lib/components/datagrid',function(){
             }
             self._template.content = tpl;
         },
-        //��ȡ������������
+        //��ȡ����������
         _getRowNumber:function(array, index, arr, cellid, parent){
             var self = this, opts = self._options, _class = self.constructor;
             if(!arr[index]){
