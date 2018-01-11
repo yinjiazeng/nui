@@ -551,7 +551,7 @@
 
         //导入资源
         methods.imports = function(id){
-            return Module.normalize((config.paths.base || '') + id)
+            return (config.paths.base || '') + id
         }
 
         //渲染字符串

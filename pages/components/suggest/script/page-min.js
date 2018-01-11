@@ -1916,11 +1916,11 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	require('pages/components/suggest/script/style');
 	var a=__requireDefaultModule(imports('pages/components/suggest/images/pack_assets/a.f81365499b.png?=218f085'));
 	var a2=__requireDefaultModule(imports('pages/components/suggest/images/a.jpg?=ba04e3c'));
+	var b=__requireDefaultModule(imports('assets/images/logos/cloud.jpg?=37962f0'));
 	
-	console.log(a);
-	console.log(a2);
-	
-	$('<img src="'+ a +'">').appendTo('body')
+	renders(''+''
+	    +'<img src="'+ a +'">'+''
+	+'')
 	
 	$(':text').suggest({
 	    //url:'http://127.0.0.1:8001/data/?callback=?',

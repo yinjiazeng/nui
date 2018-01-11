@@ -6,7 +6,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
-    "gulp-nui": "^2.1.4",
+    "gulp-nui": "^2.2.1",
     "gulp-nunjucks-render": "^2.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.1",
