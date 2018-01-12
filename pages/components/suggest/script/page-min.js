@@ -1920,7 +1920,7 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	require('lib/components/suggest');
 	var data=__requireDefaultModule(require('pages/components/suggest/script/data'));
 	require('pages/components/suggest/script/style');
-	var a=__requireDefaultModule(imports('pages/components/suggest/images/pack_assets/a.8f14659a72.png'));
+	var a=__requireDefaultModule(imports('pages/components/suggest/images/pack_assets/a.f81365499b.png?=218f085'));
 	var a2=__requireDefaultModule(imports('pages/components/suggest/images/a.jpg?=ba04e3c'));
 	var b=__requireDefaultModule(imports('assets/images/logos/cloud.jpg?=37962f0'));
 	
