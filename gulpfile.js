@@ -8,7 +8,7 @@ var nunjucks = require('gulp-nunjucks-render');
 var babel = require('babel-core');
 
 gulp.task('concat', function() {
-    gulp.src(['./load.js'])
+    gulp.src(['./src/load.js'])
         .pipe(rename('nui-load.js'))
         .pipe(gulp.dest('./dist/'))
         .pipe(uglify({
@@ -21,7 +21,7 @@ gulp.task('concat', function() {
         .pipe(gulp.dest('./dist/'))
     
     //打包所有模块
-    gulp.src(['./load.js'])
+    gulp.src(['./src/load.js'])
         .pipe(rename('nui.js'))
         .pipe(gulp.dest('./dist/'))
         .pipe(uglify({
@@ -73,6 +73,7 @@ gulp.task('watch', function() {
     gulp.watch(['{pages,assets}/**/*.{jpg,png,gif,eot,svg,ttf,woff}'], ['revcss']);
     gulp.watch(['lib/**/*.{js,css,less}'], ['concat', 'revhtml']);
     gulp.watch(['html/**/*.html', 'tpl/*.tpl'], ['nunjucks', 'revhtml']);
+    gulp.watch(['src/**/*'], ['concat', 'revhtml']);
 });
 
 gulp.task('default', ['concat', 'revhtml', 'revcss', 'watch']);
