@@ -1641,31 +1641,32 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
         _toggle:function(e, elem){
             var self = this, opts = self._options, index = elem.index(), data = self._elemData[index];
             var container = data.$container;
-            if(index !== 0 && !container.is(':visible')){
-                if(container.is(':empty') && data.content){
-                    var content = '';
-                    if(typeof data.content === 'function'){
-                        content = data.onShow.call(opts, self, index, elem, container)
-                    }
-                    else{
-                        content = data.content
-                    }
-                    if(content === false){
-                        return
-                    }
-                    else if(typeof content === 'string'){
-                        container.html(content)
+            if(!container.is(':visible')){
+                if(index !== 0){
+                    if(container.is(':empty') && data.content){
+                        var content = '';
+                        if(typeof data.content === 'function'){
+                            content = data.onShow.call(opts, self, index, elem, container)
+                        }
+                        else{
+                            content = data.content
+                        }
+                        if(content === false){
+                            return
+                        }
+                        else if(typeof content === 'string'){
+                            container.html(content)
+                        }
                     }
                 }
+                elem.addClass('s-crt');
+                container.show();
                 Nui.each(self._elemData, function(v, i){
                     if(i !== index){
                         v.$elem.removeClass('s-crt')
                         v.$container.hide()
                     }
                 })
-                self._elemData[0].$elem.hide();
-                elem.addClass('s-crt');
-                container.show();
                 if(typeof data.onShow === 'function'){
                     data.onShow.call(opts, self, index, elem, container)
                 }
@@ -1698,7 +1699,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
             }
 
             if(typeof value === 'string'){
-                self.target.val(value)
+                self.value(value)
             }
 
             self.hide();
@@ -1714,13 +1715,13 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
                         match = true
                     }
                     else if(typeof like === 'string'){
-                        like = like.replace(/\{value\}/g, self.value);
+                        like = like.replace(/\{value\}/g, self.val);
                         if(fieldValue.match(new RegExp(like))){
                             match = true
                         }
                     }
                     else if(typeof like === 'function'){
-                        match = !!like(fieldValue, self.value)
+                        match = !!like(fieldValue, self.val)
                     }
                     if(match){
                         return false
@@ -1735,15 +1736,15 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
                 data = []
             }
             if(opts.cache === true){
-                self._caches[self.value] = data
+                self._caches[self.val] = data
             }
             self.queryData = data;
-            self.show()
+            self.show(true)
         },
         _filter:function(){
             var self = this, opts = self._options, data = [], _data = self._data();
             if(typeof opts.filter === 'function'){
-                data = opts.filter.call(opts, self, self.value, _data);
+                data = opts.filter.call(opts, self, self.val, _data);
             }
             else if(_data.length && self._matchs && self._matchs.length){
                 Nui.each(_data, function(val){
@@ -1758,7 +1759,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
             self._storage(data)
         },
         _request:function(){
-            var self = this, opts = self._options, data = {}, value = self.value;
+            var self = this, opts = self._options, data = {}, value = self.val;
             if(opts.query && typeof opts.query === 'string'){
                 data[opts.query] = value
             }
@@ -1822,9 +1823,9 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
         _bindEvent:function(){
             var self = this, opts = self._options;
             self._on('keyup', self.target, function(e, elem){
-                if(self.value = Nui.trim(elem.val())){
+                if(self.val = Nui.trim(elem.val())){
                     var cache;
-                    if(self.value && opts.cache === true && (cache = self._caches[self.value])){
+                    if(self.val && opts.cache === true && (cache = self._caches[self.val])){
                         self._storage(cache);
                     }
                     else if(opts.url){
@@ -1835,7 +1836,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
                     }
                 }
                 else{
-                    self.show()
+                    self.show(true)
                 }
             })
 
@@ -1847,6 +1848,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
 
             self._on('blur', self.target, function(e, elem){
                 if(!self._hover){
+                    self._callback('Blur', [elem])
                     self.hide()
                 }
                 else{
@@ -1877,7 +1879,10 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
             self._elemData = [{
                 title:'结果'
             }];
+            self._isTab = false;
+            self._activeTab = null;
             if(Nui.isArray(opts.tabs) && opts.tabs.length){
+                self._isTab = true;
                 self._elemData = self._elemData.concat(opts.tabs);
             }
             data.tabs = self._elemData;
@@ -1888,17 +1893,22 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
 
             self._elemData[0].$elem = $();
             self._elemData[0].$container = self.$result;
-
-            if(data.tabs.length > 1){
+            
+            if(self._isTab){
                 var tabs = self.$body.children('.suggest-tabs').children();
                 var containers = self.$inner.children();
                 Nui.each(self._elemData, function(v, i){
                     v.$elem = tabs.eq(i);
                     v.$container = containers.eq(i);
-                    if(!self.$activeTab && v.active === true){
-                        self._activeTab = v;
+                    if(!self._activeTab && v.active === true){
+                        self._activeTab = v
                     }
                 })
+                //没有设置默认显示标签则取第一个
+                if(!self._activeTab){
+                    self._activeTab = self._elemData[1]
+                }
+                self._toggle(null, self._activeTab.$elem)
             }
 
             self._event()
@@ -1951,14 +1961,26 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
                 self._matchs = match
             }
         },
-        _render:function(){
-            var self = this, opts = self._options, _class = self.constructor;
-            self.$result.html(self._tpl2html('result', {
-                data:self.queryData,
-                value:self.value
-            }));
+        _render:function(input){
+            var self = this, opts = self._options, _class = self.constructor, result = self._elemData[0];
+            result.$elem.hide();
+            result.$container.hide();
             _class._active = self;
-            self.$result.show();
+            //输入的时候才会显示
+            if((!self._isTab || (self._isTab && self.val)) && input){
+                self.$result.html(self._tpl2html('result', {
+                    data:self.queryData,
+                    value:self.val
+                }));
+                result.$elem.show();
+                if(self._activeTab){
+                    self._activeTab.$elem.hide()
+                }
+                self._toggle(null, result.$elem)
+            }
+            else if(self._activeTab){
+                self._toggle(null, self._activeTab.$elem.show())
+            }
             self.element.show();
             self._show = true;
             self.resize()
@@ -1967,7 +1989,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
             var self = this, opts = self._options, _class = self.constructor;
             self._container = _class._jquery(opts.container);
             if(self._getTarget() && (self._container = _class._jquery(opts.container))){
-                self.value = Nui.trim(self.target.val());
+                self.val = Nui.trim(self.target.val());
                 self._initData();
                 self._bindEvent();
             }
@@ -1976,7 +1998,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
             var self = this, width = self.target.outerWidth(), height = self.target.outerHeight();
             //self.element.css({})
         },
-        show:function(){
+        show:function(input){
             var self = this, opts = self._options, _class = self.constructor;
             if(self._hover){
                 return
@@ -1984,7 +2006,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
             if(_class._active && _class._active !== self){
                 _class._active.hide()
             }
-            else if(opts.nullable !== true && !self.value){
+            else if(opts.nullable !== true && !self.val){
                 self.hide()
             }
             else{
@@ -1992,7 +2014,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
                     self._create()
                 }
                 //文本框没内容，还原默认数据
-                if(!self.value && opts.nullable === true){
+                if(!self.val && opts.nullable === true){
                     if(!opts.url){
                         self.queryData = self._data()
                     }
@@ -2000,10 +2022,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
                         self.queryData = []
                     }
                 }
-                self._render();
-                if(!self.value && self._activeTab){
-                    self._toggle(null, self._activeTab.$elem)
-                }
+                self._render(input);
             }
         },
         hide:function(){
@@ -2015,6 +2034,26 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
             }
             if(self.element){
                 self.element.hide()
+            }
+        },
+        value:function(val){
+            var self = this, target = self.target, name = self.constructor.__component_name;
+            if(target){
+                var dom = target.get(0), obj;
+                if(dom && dom.nui){
+                    Nui.each(dom.nui, function(v, k){
+                        if(k !== name && typeof v.value === 'function' && v._setStyle && v._createRules){
+                            obj = v;
+                            return false
+                        }
+                    })
+                }
+                if(obj){
+                    obj.value(val)
+                }
+                else{
+                    target.val('')
+                }
             }
         }
     })
@@ -2036,9 +2075,8 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	    focus:true,
 	    tabs:[{
 	        title:'最近',
-	        hide:true,
 	        active:true,
-	        content:'',
+	        content:'111111',
 	        onShow:function(self, index, elem){
 	            console.log(1)
 	        }
@@ -2056,22 +2094,6 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	
 	        }
 	    }],
-	    match:[{
-	        field:'buname',
-	        like:function(data, value){
-	            return data.indexOf(value) === 0
-	        }
-	    }, {
-	        field:'id',
-	        like:function(data, value){
-	            return data.indexOf(value) === 0
-	        }
-	    }],
-	    events:{
-	        'click a':function(){
-	            
-	        }
-	    },
 	    item:function(){
 	        return '<span title="<%$data.buname%>"><%$data.buname%></span>'
 	    },
@@ -2082,6 +2104,13 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	    },
 	    onRequest:function(self, res){
 	        return res.list
+	    },
+	    onSelect:function(self, data){
+	        self.target.val('');
+	        self.show();
+	    },
+	    onBlur:function(self, elem){
+	        self.target.val('');
 	    }
 	})
 	

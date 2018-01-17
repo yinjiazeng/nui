@@ -13,9 +13,8 @@ $('.demo').suggest({
     focus:true,
     tabs:[{
         title:'最近',
-        hide:true,
         active:true,
-        content:'',
+        content:'111111',
         onShow:function(self, index, elem){
             console.log(1)
         }
@@ -29,27 +28,11 @@ $('.demo').suggest({
         }
     }, {
         title:'按区域',
-        onShow:function(){
+        onShow:function(){                                  
 
         }
     }],
-    match:[{
-        field:'buname',
-        like:function(data, value){
-            return data.indexOf(value) === 0
-        }
-    }, {
-        field:'id',
-        like:function(data, value){
-            return data.indexOf(value) === 0
-        }
-    }],
-    events:{
-        'click a':function(){
-            
-        }
-    },
-    item:function(){
+    item:function(){    
         return '<span title="<%$data.buname%>"><%$data.buname%></span>'
     },
     query:function(self, value){
@@ -59,6 +42,13 @@ $('.demo').suggest({
     },
     onRequest:function(self, res){
         return res.list
+    },
+    onSelect:function(self, data){
+        self.value('');
+        self.show();
+    },
+    onBlur:function(self, elem){
+        self.value('');
     }
 })
 
