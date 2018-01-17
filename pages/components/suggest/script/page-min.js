@@ -2090,11 +2090,11 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	        }
 	    }, {
 	        title:'按区域',
-	        onShow:function(){
+	        onShow:function(){                                  
 	
 	        }
 	    }],
-	    item:function(){
+	    item:function(){    
 	        return '<span title="<%$data.buname%>"><%$data.buname%></span>'
 	    },
 	    query:function(self, value){
@@ -2106,11 +2106,11 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	        return res.list
 	    },
 	    onSelect:function(self, data){
-	        self.target.val('');
+	        self.value('');
 	        self.show();
 	    },
 	    onBlur:function(self, elem){
-	        self.target.val('');
+	        self.value('');
 	    }
 	})
 	
