@@ -1,19 +1,38 @@
 import '{com}/suggest';
 import data from './data';
 import './style';
-import a from '{node}/aa/images/a.png';
-import a2 from '../images/a.jpg';
-import b from '../../../../assets/images/logos/cloud.jpg';
 
-$(':text').suggest({
+$('.demo').suggest({
     //url:'http://127.0.0.1:8001/data/?callback=?',
     data:data,
     field:'buname',
     empty:'<%value%> 暂无数据',
-    foot:'<a>aaaaaaaa</a>',
+    //foot:'<a>aaaaaaaa</a>',
     nullable:true,
     //cache:true,
     focus:true,
+    tabs:[{
+        title:'最近',
+        hide:true,
+        active:true,
+        content:'',
+        onShow:function(self, index, elem){
+            console.log(1)
+        }
+    }, {
+        title:'按用户',
+        content:function(){
+            return ''
+        },
+        onShow:function(){
+
+        }
+    }, {
+        title:'按区域',
+        onShow:function(){
+
+        }
+    }],
     match:[{
         field:'buname',
         like:function(data, value){

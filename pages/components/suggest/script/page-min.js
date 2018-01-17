@@ -1454,6 +1454,14 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
              */
             empty:'',
             /**
+             * @func 定义顶部模版
+             * @type <String>
+             * @type <Function>
+             * @param self <Object> 组件实例对象
+             * @return <String> 返回顶部模版
+             */
+            head:'',
+            /**
              * @func 定义底部模版
              * @type <String>
              * @type <Function>
@@ -1494,6 +1502,16 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
              */
             limit:5,
             /**
+             * @func 设置高宽
+             * @type <Object>
+             */
+            size:null,
+            /**
+             * @func 设置位置偏移
+             * @type <Object>
+             */
+            offset:null,
+            /**
              * @func 设置样式
              * @type <Object>
              */
@@ -1511,6 +1529,11 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
              * @return <Array> 返回原始数据
              */
             data:null,
+            /**
+             * @func 设置多标签
+             * @type <Array>
+             */
+            tabs:null,
             /**
              * @func 
              * @type <Object>
@@ -1572,16 +1595,24 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
         data:[],
         _template:{
             wrap:
-                '<div class="<% className %>"<%if style%> style="<%include \'style\'%>"<%/if%>></div>',
-            inner:
-                '<div class="suggest-body">'+
-                    '<%if data && data.length%>'+
-                        '<%include "list"%>'+
-                    '<%elseif value%>'+
-                        '<%include "empty"%>'+
-                    '<%/if%>'+
-                '</div>'+
-                '<%include "foot"%>',
+                '<div class="<% className %>"<%if style%> style="<%include \'style\'%>"<%/if%>>'+
+                    '<%include "head"%>'+
+                    '<div class="suggest-body">'+
+                        '<%include "tabs"%>'+
+                        '<div class="suggest-inner">'+
+                            '<%each tabs%>'+
+                                '<div class="suggest-content<%if $index === 0%> suggest-result<%/if%>" style="display:none;"></div>'+
+                            '<%/each%>'+
+                        '</div>'+
+                    '</div>'+
+                    '<%include "foot"%>'+
+                '</div>',
+            result:
+                '<%if data && data.length%>'+
+                    '<%include "list"%>'+
+                '<%elseif value%>'+
+                    '<%include "empty"%>'+
+                '<%/if%>',
             list:
                 '<ul class="suggest-list">'+
                     '<%each data $data $index%>'+
@@ -1589,14 +1620,56 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
                         '<%include "item"%>'+
                     '</li>'+
                     '<%/each%>'+
-                '</ul>'
+                '</ul>',
+            tabs:
+                '<%if tabs.length > 1%>'+
+                    '<div class="suggest-tabs">'+
+                        '<%each tabs tab%>'+
+                            '<span class="suggest-tab"<%if $index === 0%> style="display:none;"<%/if%>><%tab.title%></span>'+
+                        '<%/each%>'+
+                    '</div>'+
+                '<%/if%>'
         },
         _events:{
             'mouseenter':'_suggestMouseover',
             'mouseleave':'_suggestMouseout',
             'mouseenter .suggest-item':'_suggestMouseover _itemMouseover',
             'mouseleave .suggest-item':'_itemMouseout',
-            'click .suggest-item':'_select'
+            'click .suggest-item':'_select',
+            'click .suggest-tab':'_toggle'
+        },
+        _toggle:function(e, elem){
+            var self = this, opts = self._options, index = elem.index(), data = self._elemData[index];
+            var container = data.$container;
+            if(index !== 0 && !container.is(':visible')){
+                if(container.is(':empty') && data.content){
+                    var content = '';
+                    if(typeof data.content === 'function'){
+                        content = data.onShow.call(opts, self, index, elem, container)
+                    }
+                    else{
+                        content = data.content
+                    }
+                    if(content === false){
+                        return
+                    }
+                    else if(typeof content === 'string'){
+                        container.html(content)
+                    }
+                }
+                Nui.each(self._elemData, function(v, i){
+                    if(i !== index){
+                        v.$elem.removeClass('s-crt')
+                        v.$container.hide()
+                    }
+                })
+                self._elemData[0].$elem.hide();
+                elem.addClass('s-crt');
+                container.show();
+                if(typeof data.onShow === 'function'){
+                    data.onShow.call(opts, self, index, elem, container)
+                }
+            }
         },
         _suggestMouseover:function(e, elem){
             this._hover = true
@@ -1798,10 +1871,36 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
             })
         },
         _create:function(){
-            var self = this, data = self._tplData();
-            data.style = self._options.style || {};
+            var self = this, data = self._tplData(), opts = self._options;
+            data.style = opts.style || {};
             data.style.display = 'none';
+            self._elemData = [{
+                title:'结果'
+            }];
+            if(Nui.isArray(opts.tabs) && opts.tabs.length){
+                self._elemData = self._elemData.concat(opts.tabs);
+            }
+            data.tabs = self._elemData;
             self.element = $(self._tpl2html('wrap', data)).appendTo(self._container);
+            self.$body = self.element.children();
+            self.$inner = self.$body.children('.suggest-inner');
+            self.$result = self.$inner.children('.suggest-result');
+
+            self._elemData[0].$elem = $();
+            self._elemData[0].$container = self.$result;
+
+            if(data.tabs.length > 1){
+                var tabs = self.$body.children('.suggest-tabs').children();
+                var containers = self.$inner.children();
+                Nui.each(self._elemData, function(v, i){
+                    v.$elem = tabs.eq(i);
+                    v.$container = containers.eq(i);
+                    if(!self.$activeTab && v.active === true){
+                        self._activeTab = v;
+                    }
+                })
+            }
+
             self._event()
         },
         _initTemplate:function(name){
@@ -1840,7 +1939,7 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
         _initData:function(){
             var self = this, opts = self._options, data = opts.data, match = opts.match;
 
-            Nui.each(['item', 'empty', 'foot'], function(name){
+            Nui.each(['item', 'empty', 'head', 'foot'], function(name){
                 self._initTemplate(name);
             })
 
@@ -1854,11 +1953,12 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
         },
         _render:function(){
             var self = this, opts = self._options, _class = self.constructor;
-            self.element.html(self._tpl2html('inner', {
+            self.$result.html(self._tpl2html('result', {
                 data:self.queryData,
                 value:self.value
             }));
             _class._active = self;
+            self.$result.show();
             self.element.show();
             self._show = true;
             self.resize()
@@ -1873,7 +1973,8 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
             }
         },
         resize:function(){
-            self.element.css({})
+            var self = this, width = self.target.outerWidth(), height = self.target.outerHeight();
+            //self.element.css({})
         },
         show:function(){
             var self = this, opts = self._options, _class = self.constructor;
@@ -1899,7 +2000,10 @@ __define('lib/components/suggest',['lib/core/component'], function(component){
                         self.queryData = []
                     }
                 }
-                self._render()
+                self._render();
+                if(!self.value && self._activeTab){
+                    self._toggle(null, self._activeTab.$elem)
+                }
             }
         },
         hide:function(){
@@ -1920,19 +2024,38 @@ __define('./script/page',function(require,imports,renders,extend,exports){
 	require('lib/components/suggest');
 	var data=__requireDefaultModule(require('pages/components/suggest/script/data'));
 	require('pages/components/suggest/script/style');
-	var a=__requireDefaultModule(imports('pages/components/suggest/images/pack_assets/a.f81365499b.png?=218f085'));
-	var a2=__requireDefaultModule(imports('pages/components/suggest/images/a.jpg?=ba04e3c'));
-	var b=__requireDefaultModule(imports('assets/images/logos/cloud.jpg?=37962f0'));
 	
-	$(':text').suggest({
+	$('.demo').suggest({
 	    //url:'http://127.0.0.1:8001/data/?callback=?',
 	    data:data,
 	    field:'buname',
 	    empty:'<%value%> 暂无数据',
-	    foot:'<a>aaaaaaaa</a>',
+	    //foot:'<a>aaaaaaaa</a>',
 	    nullable:true,
 	    //cache:true,
 	    focus:true,
+	    tabs:[{
+	        title:'最近',
+	        hide:true,
+	        active:true,
+	        content:'',
+	        onShow:function(self, index, elem){
+	            console.log(1)
+	        }
+	    }, {
+	        title:'按用户',
+	        content:function(){
+	            return ''
+	        },
+	        onShow:function(){
+	
+	        }
+	    }, {
+	        title:'按区域',
+	        onShow:function(){
+	
+	        }
+	    }],
 	    match:[{
 	        field:'buname',
 	        like:function(data, value){

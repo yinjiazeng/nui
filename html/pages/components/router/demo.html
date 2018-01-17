@@ -16,7 +16,9 @@
 	</div>
 	{% include './script.tpl' %}
 	<script type="text/javascript">
-	Nui.load('./script/demo')
+	Nui.load('./script/demo', function(a){
+		console.log(a)
+	})
 	</script>
 </body>
 </html>

@@ -14,6 +14,10 @@
 	.nui-suggest {
 		position: absolute;
 	}
+	.nui-tag { display: inline-block; padding: 0 5px; background-color: blue; color: #fff;}
+
+.ui-input .nui-tag { float: left; margin: 8px 8px 0 0;}
+.ui-input input { float: left; margin-top: 8px; height: 30px;}
 	</style>
 	<div class="g-main f-fr">
 		<div class="mainbox">
@@ -22,6 +26,19 @@
 			<div class="e-mt15">
 				<input type="text" class="ui-input demo">
 				<input type="text" class="ui-input demo">
+			</div>
+			<div class="ui-input e-mt15" style="width:600px; height:auto; padding-bottom:8px; min-height:30px; overflow:hidden;">
+				<div>
+					<span class="nui-tag">
+						<em class="nui-tag-text">11111</em>
+						<i class="nui-tag-close">X</i>
+					</span>
+					<span class="nui-tag">
+						<em class="nui-tag-text">11111</em>
+						<i class="nui-tag-close">X</i>
+					</span>
+				</div>
+				<input type="text" class="search" placeholder="请输入...">
 			</div>
 <script type="text/highlight" data-xml-options>
 

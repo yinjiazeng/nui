@@ -1,2 +1,2 @@
-import '{com}/search/search';
+
 

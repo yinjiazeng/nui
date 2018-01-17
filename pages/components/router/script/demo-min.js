@@ -2046,6 +2046,8 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	var placeholder = require('lib/components/placeholder');
 	var router = require('lib/components/router');
 	var placeholder_opts = require('pages/components/router/script/options', true);
+	console.log(1)
+	
 	
 	router({
 		target:'#home',
