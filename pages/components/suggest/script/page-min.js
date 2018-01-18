@@ -1423,6 +1423,21 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
 __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], function(component, util){
     this.imports('../style/components/suggest/index');
     return this.extend(component, {
+        _static:{
+            _init:function(){
+                var self = this, timer = null;
+                Nui.win.resize(function(){
+                    clearTimeout(timer);
+                    timer = setTimeout(function(){
+                        Nui.each(self.__instances, function(obj){
+                            if(obj._show){
+                                obj.resize()
+                            }
+                        })
+                    }, 100)
+                })
+            }
+        },
         _options:{
             /**
              * @func 请求url
@@ -2146,10 +2161,19 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
             }
         },
         resize:function(){
-            var self = this, opts = self._options, target = self.target, width = target.outerWidth(), height = target.outerHeight(),
-                _offset = opts.offset, offset = target.offset(), top = offset.top, left = offset.left;
+            var self = this, opts = self._options, target = self.target, elem = self.element, 
+                width = target.outerWidth(), height = target.outerHeight(),
+                _width = elem.outerWidth(), _height = elem.outerHeight(),
+                _offset = opts.offset, offset = target.offset(), 
+                top = offset.top, left = offset.left, size = opts.size;
             if(!_offset){
                 _offset = {}
+            }
+            if(!size){
+                size = {
+                    width:0,
+                    height:0
+                }
             }
             top = top + height + (_offset.top||0);
             left = left + (_offset.left||0);
