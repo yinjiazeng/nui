@@ -1054,6 +1054,9 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
         //创建组件模块时会调用一次，可用于在document上绑定事件操作实例
         _init:jQuery.noop,
         _jquery:function(elem){
+            if(!elem){
+                return
+            }
             if(elem instanceof jQuery){
                 return elem
             }
@@ -1201,10 +1204,10 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
             if(!self.target){
                 var target = self._options.target;
                 var _class = self.constructor;
-                if(!target){
-                    return null
-                }
                 target = _class._jquery(target);
+                if(!target){
+                    return
+                }
                 self.target = self._bindComponentName(target);
             }
             return self.target

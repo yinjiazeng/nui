@@ -16,8 +16,9 @@
 	}
 	.nui-tag { display: inline-block; padding: 0 5px; background-color: blue; color: #fff;}
 
-.ui-input .nui-tag { float: left; margin: 8px 8px 0 0;}
-.ui-input input { float: left; margin-top: 8px; height: 30px;}
+.ui-input .nui-tag { float: left; margin: 0 8px 8px 0;}
+.ui-input input { float: left; height: 30px;}
+.nui-placeholder { float: left;}
 	</style>
 	<div class="g-main f-fr">
 		<div class="mainbox">
@@ -27,18 +28,22 @@
 				<input type="text" class="ui-input demo">
 				<input type="text" class="ui-input demo">
 			</div>
-			<div class="ui-input e-mt15" style="width:600px; height:auto; padding-bottom:8px; min-height:30px; overflow:hidden;">
-				<div>
+			<div class="ui-input e-mt15" style="width:600px; height:auto; padding-top:8px; min-height:30px; overflow:hidden;">
+				<div id="box" class="f-fl">
 					<span class="nui-tag">
-						<em class="nui-tag-text">11111</em>
-						<i class="nui-tag-close">X</i>
+						<em class="nui-tag-text">南屏公馆</em>
+						<b class="nui-tag-close">
+							<i class="iconfont">x</i>
+						</b>
 					</span>
 					<span class="nui-tag">
-						<em class="nui-tag-text">11111</em>
-						<i class="nui-tag-close">X</i>
+						<em class="nui-tag-text">熙园</em>
+						<b class="nui-tag-close">
+							<i class="iconfont">x</i>
+						</b>
 					</span>
 				</div>
-				<input type="text" class="search" placeholder="请输入...">
+				<input type="text" class="search" data-input-options='{"text":"请输入...", "animate":true, "clear":"X"}' style="border:1px solid #000; padding-left:15px;">
 			</div>
 <script type="text/highlight" data-xml-options>
 
@@ -66,5 +71,5 @@
 {% endblock %}
 
 {% block script %}
-Nui.load('./script/page')
+Nui.use('./script/page')
 {% endblock %}
