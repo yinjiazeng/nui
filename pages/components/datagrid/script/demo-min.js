@@ -1110,11 +1110,13 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
                     var object, options = args[0];
                     var execMethod = function(){
                         if(typeof options === 'string'){
+                            
                             if(options === 'options'){
                                 object.option(args[1], args[2])
                             }
                             else if(options.indexOf('_') !== 0){
                                 var attr = object[options];
+                                
                                 if(typeof attr === 'function'){
                                     attr.apply(object, Array.prototype.slice.call(args, 1))
                                 }
@@ -1478,7 +1480,7 @@ __define('lib/components/datagrid',function(){
             isActive:true,
             isBorder:true,
             option:null,
-            //��ʼ��ʱ�Ƿ����÷�ҳ
+            //��ʼ��ʱ�Ƿ���÷�ҳ
             isPaging:true,
             isDir:false,
             keyCode:[9, 13],
@@ -1788,7 +1790,7 @@ __define('lib/components/datagrid',function(){
             }
             self._template.content = tpl;
         },
-        //��ȡ������������
+        //��ȡ����������
         _getRowNumber:function(array, index, arr, cellid, parent){
             var self = this, opts = self._options, _class = self.constructor;
             if(!arr[index]){
