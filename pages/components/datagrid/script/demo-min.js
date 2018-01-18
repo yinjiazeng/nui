@@ -1054,6 +1054,9 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
         //创建组件模块时会调用一次，可用于在document上绑定事件操作实例
         _init:jQuery.noop,
         _jquery:function(elem){
+            if(!elem){
+                return
+            }
             if(elem instanceof jQuery){
                 return elem
             }
@@ -1201,10 +1204,10 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
             if(!self.target){
                 var target = self._options.target;
                 var _class = self.constructor;
-                if(!target){
-                    return null
-                }
                 target = _class._jquery(target);
+                if(!target){
+                    return
+                }
                 self.target = self._bindComponentName(target);
             }
             return self.target
@@ -1475,7 +1478,7 @@ __define('lib/components/datagrid',function(){
             isActive:true,
             isBorder:true,
             option:null,
-            //��ʼ��ʱ�Ƿ���÷�ҳ
+            //��ʼ��ʱ�Ƿ����÷�ҳ
             isPaging:true,
             isDir:false,
             keyCode:[9, 13],
@@ -1785,7 +1788,7 @@ __define('lib/components/datagrid',function(){
             }
             self._template.content = tpl;
         },
-        //��ȡ����������
+        //��ȡ������������
         _getRowNumber:function(array, index, arr, cellid, parent){
             var self = this, opts = self._options, _class = self.constructor;
             if(!arr[index]){
