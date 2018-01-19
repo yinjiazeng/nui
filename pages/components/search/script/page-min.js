@@ -1588,7 +1588,16 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
                  * @param tags <jQuery Object> 标签元素对象
                  * @return 返回数组
                  */
-                getData:null
+                getData:null,
+                /**
+                 * @func 
+                 * @type <Function>
+                 * @param self <Object> 组件实例对象
+                 * @param data <Object> 传入的数据
+                 * @param elem <jQuery Object> 需要删除的对象
+                 * @return <Boolean, Null> 返回true表示可以删除， 返回null表示存在但是不能删除
+                 */
+                deleteBasis:null
             },
             /**
              * @func 设置多菜单
@@ -2324,8 +2333,8 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
         },
         /**
          * @func 设置文本框内容值或者添加tag标签
-         * @param <String>
-         * @param <Object>
+         * @param data <String>
+         * @param data <Object>
          * {
          *     text:'',
          *     fields:{
@@ -2334,29 +2343,38 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
          *         ...
          *     }
          * }
+         * @param dele <Boolean>
          */
-        value:function(val){
+        value:function(data, cancel){
             var self = this, target = self.target, opts = self._options, name = self.constructor.__component_name;
             if(target){
-                if(typeof val === 'string'){
-                    val = Nui.trim(val)
+                if(typeof data === 'string'){
+                    data = Nui.trim(data)
                 }
-                if(self.$tagContainer && val){
-                    var data = {}, exist = false;
-                    if(typeof val === 'object'){
-                        data = val;
-                        if(data.text){
-                            data.text = Nui.trim(data.text);
+                if(self.$tagContainer && data){
+                    var _data = {}, exist = false;
+                    if(typeof data === 'object'){
+                        _data = data;
+                        if(_data.text){
+                            _data.text = Nui.trim(_data.text);
                         }
                     }
                     else{
-                        data.text = val
+                        _data.text = data
                     }
                     if(opts.tag.multiple === true){
                         self.$tags.each(function(){
-                            var $elem = $(this), text = Nui.trim($elem.children('.nui-tag-text').text());
-                            if(data.text === text){
-                                $elem.remove();
+                            var $elem = $(this), del = false;
+                            if(typeof self._tag.deleteBasis === 'function'){
+                                del = self._tag.deleteBasis.call(opts, self, _data, $elem)
+                            }
+                            else {
+                                del = _data.text === Nui.trim($elem.children('.nui-tag-text').text())
+                            }
+                            if(del === true || del === null){
+                                if(del === true){
+                                    $elem.remove();
+                                }
                                 exist = true;
                                 return false
                             }
@@ -2365,10 +2383,10 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
                     else{
                         self.$tags.remove()
                     }
-                    if(!exist && data.text){
-                        data.title = self._tag.title || false;
-                        data.close = self._tag.close || false;
-                        self.$tagContainer.append(self._tpl2html('tag', data))
+                    if(dele !== true && !exist && _data.text){
+                        _data.title = self._tag.title || false;
+                        _data.close = self._tag.close || false;
+                        self.$tagContainer.append(self._tpl2html('tag', _data))
                     }
                     self._setTagsData();
                     self.value('');
@@ -2386,10 +2404,10 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
                         })
                     }
                     if(obj){
-                        obj.value(val)
+                        obj.value(data)
                     }
                     else{
-                        target.val(val)
+                        target.val(data)
                     }
                 }
             }
