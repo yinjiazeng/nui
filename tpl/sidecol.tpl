@@ -272,9 +272,6 @@
                         <a{%if page == 'scrollbar' %} class="s-crt"{% endif %} href="/nui/pages/components/scrollbar/">滚动条</a>
                     </li>
                     <li>
-                        <a{%if page == 'suggest' %} class="s-crt"{% endif %} href="/nui/pages/components/suggest/">输入建议</a>
-                    </li>
-                    <li>
                         <a{%if page == 'search' %} class="s-crt"{% endif %} href="/nui/pages/components/search/">搜索</a>
                     </li>
                     <li>

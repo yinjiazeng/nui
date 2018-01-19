@@ -45,29 +45,58 @@
 	<!-- content -->
 	<div class="g-content">
     
-<style>
-.nui-tag { display: inline-block; padding: 0 5px; background-color: blue; color: #fff;}
+	<style>
+	.nui-search {
+		position: absolute;
+	}
+	.nui-tag { display: inline-block; padding: 0 5px; background-color: blue; color: #fff;}
 
-.ui-input .nui-tag { float: left; margin: 8px 8px 0 0;}
-.ui-input input { float: left; margin-top: 8px; height: 30px;}
-</style>
+.ui-input .nui-tag { float: left; margin: 0 8px 8px 0;}
+.ui-input input { float: left; height: 30px;}
+	</style>
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28">搜索</h1>
-
-			<div class="ui-input" style="width:600px; height:auto; padding-bottom:8px; min-height:30px; overflow:hidden;">
-				<div>
+			<h1 class="e-pt20 e-pb20 f-fs28">输入建议</h1>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">案例</h2>
+			<div class="e-mt15">
+				<input type="text" class="ui-input demo">
+				<input type="text" class="ui-input demo">
+			</div>
+			<div class="ui-input e-mt15" style="width:600px; height:auto; padding-top:8px; min-height:30px; overflow:hidden;">
+				<div id="box" class="f-fl">
 					<span class="nui-tag">
-						<em class="nui-tag-text">11111</em>
-						<i class="nui-tag-close">X</i>
+						<em class="nui-tag-text">南屏公馆</em>
+						<b class="nui-tag-close">
+							<i class="iconfont">x</i>
+						</b>
 					</span>
 					<span class="nui-tag">
-						<em class="nui-tag-text">11111</em>
-						<i class="nui-tag-close">X</i>
+						<em class="nui-tag-text">熙园</em>
+						<b class="nui-tag-close">
+							<i class="iconfont">x</i>
+						</b>
 					</span>
 				</div>
-				<input type="text" class="demo" placeholder="请输入...">
+				<input type="text" class="search" data-input-options='{"text":"请输入...", "animate":true, "clear":"X"}' style="border:1px solid #000; padding-left:15px;">
 			</div>
+<script type="text/highlight" data-xml-options>
+
+</script>
+<script type="text/highlight" data-javascript-options>
+
+</script>
+
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">选项参数</h2>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> iconfont</h3>
+			<div class="e-mt15 f-lh22">
+				<p>默认值：false</p>
+				<p>类型：{String} 设置字体图标类名，会在按钮上添加上该类</p>
+				<p>类型：{Boolean} 值为true是类名默认是iconfont</p>
+			</div>
+
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10">实例属性与方法</h2>
+			
 			
 		</div>	
 	</div>
@@ -153,10 +182,7 @@
                         <a href="/nui/pages/components/scrollbar/">滚动条</a>
                     </li>
                     <li>
-                        <a href="/nui/pages/components/suggest/">输入建议</a>
-                    </li>
-                    <li>
-                        <a class="s-crt" href="/nui/pages/components/search/">搜索</a>
+                        <a href="/nui/pages/components/search/">搜索</a>
                     </li>
                     <li>
                         <a href="/nui/pages/components/tab/">选项卡</a>
