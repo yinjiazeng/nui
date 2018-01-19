@@ -5,6 +5,9 @@
         }
         return module
     }
+__define('pages/components/search/script/data',function(){
+    return [{"isvoucher":"0","isclean":"0","id":"1","cid":"19","buname":"\u5357\u5c4f\u516c\u9986","buname_record":"","buname_py":"npgg","buname_pinyin":"nanpinggongguan","bulogo":"http:\/\/img2.haoju.cn\/upfiles\/200909\/1252461832.jpg!v6","build_logo":"","areacode":"340104000900671390000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u8700\u5c71\u533a \u5408\u4f5c\u5316\u8def","lng":"0","lat":"0","school":"","buaddress":"\u5408\u80a5\u5e02\u671b\u6c5f\u897f\u8def159\u53f7\uff08\u4e1c\u81f3\u8def\u53e3\uff09","saletel":"0551\u20145167859","saleaddress":"\u5408\u80a5\u5e02\u671b\u6c5f\u897f\u8def159\u53f7\uff08\u4e1c\u81f3\u8def\u53e3\uff09","certificate":"","property":"","bucategory":"","butype":"01001","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X 83.37(\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"1227628800","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771101","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1368163899000","hits":"97176","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252461832.jpg!small","bulogo_mid":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252461832.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252461832.jpg!lar","bulogo_thumb":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252461832.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"2","cid":"20","buname":"\u9752\u5e74\u8d22\u667a\u5e7f\u573a","buname_record":"","buname_py":"qnczgc","buname_pinyin":"qingniancaizhiguangchang","bulogo":false,"build_logo":"","areacode":"340135000000000000000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u65b0\u7ad9\u533a","lng":"0","lat":"0","school":"","buaddress":"\u5317\u4e8c\u73af\uff08\u53cc\u4e03\u8def\uff09\u4e0e\u9f99\u95e8\u5cad\u8def\u4ea4\u6c47\u5904","saletel":"0551-7102666\u30017103666","saleaddress":"\u5317\u4e8c\u73af\uff08\u53cc\u4e03\u8def\uff09\u4e0e\u9f99\u95e8\u5cad\u8def\u4ea4\u6c47\u5904","certificate":"","property":"","bucategory":"","butype":"01002","lastest_news":"\u521b\u65b0SOLO\u5c0f\u6237\u578b\u516c\u5bd3\u60ca\u8273\u767b\u573a","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771103","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1359604756000","hits":"11121","isdel":"0","sale_huxing":"","bulogo_small":false,"bulogo_mid":false,"bulogo_lar":false,"bulogo_thumb":false},{"isvoucher":"0","isclean":"0","id":"3","cid":"21","buname":"\u7eff\u5885\u79d1\u6e90","buname_record":"","buname_py":"lsky","buname_pinyin":"lvshukeyuan","bulogo":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252461988.jpg!v6","build_logo":"","areacode":"","areacode_str":"","lng":"0","lat":"0","school":"","buaddress":"\u519c\u79d1\u9662\u5185","saletel":"","saleaddress":"\u672a\u5b9a","certificate":"","property":"","bucategory":"","butype":"01001","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771105","seo_title":"","seo_keywords":"","seo_description":"","level":"","sort":"0","ifcheck":"2","intime":"1249113715000","restime":"1353047200000","hits":"25138","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img2.haoju.cn\/upfiles\/200909\/1252461988.jpg!small","bulogo_mid":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252461988.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252461988.jpg!lar","bulogo_thumb":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252461988.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"4","cid":"22","buname":"\u5149\u5f69\u5e7f\u573a","buname_record":"","buname_py":"gcgc","buname_pinyin":"guangcaiguangchang","bulogo":false,"build_logo":"","areacode":"","areacode_str":"","lng":"0","lat":"0","school":"","buaddress":"\u957f\u6c5f\u897f\u8def699\u53f7","saletel":"","saleaddress":"\u957f\u6c5f\u897f\u8def\u901a\u673a\u6240\uff08\u91d1\u6fe0\u5e7f\u573a\uff09","certificate":"0","property":"","bucategory":"","butype":"01006","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771106","seo_title":"","seo_keywords":"","seo_description":"","level":"","sort":"0","ifcheck":"2","intime":"1249113715000","restime":"1351565568000","hits":"36985","isdel":"0","sale_huxing":"","bulogo_small":false,"bulogo_mid":false,"bulogo_lar":false,"bulogo_thumb":false},{"isvoucher":"0","isclean":"0","id":"5","cid":"23","buname":"\u7199\u56ed","buname_record":"","buname_py":"xy","buname_pinyin":"xiyuan","bulogo":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252634522.jpg!v6","build_logo":"","areacode":"","areacode_str":"","lng":"0","lat":"0","school":"","buaddress":" ","saletel":"0551-3868333\u30013868222","saleaddress":" ","certificate":"0","property":"","bucategory":"","butype":"01001","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"1","bulable":"","baseinfo":"","tel_400":"40086597771107","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"2","intime":"1249113715000","restime":"1249958109000","hits":"24858","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252634522.jpg!small","bulogo_mid":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252634522.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252634522.jpg!lar","bulogo_thumb":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252634522.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"6","cid":"24","buname":"\u4f18\u6d3b\u516c\u5bd3","buname_record":"","buname_py":"yhgy","buname_pinyin":"youhuogongyu","bulogo":"http:\/\/img3.haoju.cn\/upfiles\/201212\/1354520471.jpg!v6","build_logo":"","areacode":"340132000900670983000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u9ad8\u65b0\u533a \u5408\u5bb6\u798f","lng":"0","lat":"0","school":"","buaddress":"\u957f\u6c5f\u897f\u8def699\u53f7","saletel":"0551-5355999","saleaddress":"\u957f\u6c5f\u897f\u8def\u901a\u673a\u6240\uff08\u91d1\u6fe0\u5e7f\u573a\uff09","certificate":"\u5408\u80a5\u5e02\u9ad8\u65b0\u533a","property":"","bucategory":"","butype":"01001","lastest_news":"\u73ed\u8f66\u4e8e9\u670822\u53f7\u5168\u9762\u8fd0\u8425","firstpay":"65344","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a6500(\u5747\u4ef7) X 33.51(\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 65344.5\u5143","aveprice":"6500","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771108","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1359604783000","hits":"79273","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img1.haoju.cn\/upfiles\/201212\/1354520471.jpg!small","bulogo_mid":"http:\/\/img2.haoju.cn\/upfiles\/201212\/1354520471.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/201212\/1354520471.jpg!lar","bulogo_thumb":"http:\/\/img1.haoju.cn\/upfiles\/201212\/1354520471.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"7","cid":"25","buname":"\u4e07\u8fbe\u516c\u9986","buname_record":"","buname_py":"wdgg","buname_pinyin":"wandagongguan","bulogo":"http:\/\/img3.haoju.cn\/upfiles\/201211\/1354263812.jpg!v6","build_logo":"","areacode":"340111000900670943000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u5305\u6cb3\u533a \u5927\u949f\u697c","lng":"0","lat":"0","school":"","buaddress":"\u5408\u80a5\u9a6c\u978d\u5c71\u8def\u548c\u829c\u6e56\u8def\u4ea4\u6c47\u5904","saletel":"0551-5176666\uff0c5368888","saleaddress":"\u829c\u6e56\u8def\u4e0e\u9a6c\u978d\u5c71\u8def\u4ea4\u6c47\u5904","certificate":"\u5408\u80a5","property":"","bucategory":"","butype":"01002","lastest_news":"1,3#\u697c\u9ad8\u5c4250-150\u33a1\u6237\u578b2.6\u5f00\u76d8","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a14000(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"14000","change":"167","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771109","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1359784697000","hits":"25879","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img2.haoju.cn\/upfiles\/201211\/1354263812.jpg!small","bulogo_mid":"http:\/\/img3.haoju.cn\/upfiles\/201211\/1354263812.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/201211\/1354263812.jpg!lar","bulogo_thumb":"http:\/\/img2.haoju.cn\/upfiles\/201211\/1354263812.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"8","cid":"26","buname":"\u91d1\u5ea7\u5609\u56ed","buname_record":"","buname_py":"jzjy","buname_pinyin":"jinzuojiayuan","bulogo":"http:\/\/img1.haoju.cn\/upfiles\/200905\/200711915738705.jpg!v6","build_logo":"","areacode":"340102000000000000000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u7476\u6d77\u533a","lng":"0","lat":"0","school":"","buaddress":"\u7476\u6d77\u516c\u56ed\u659c\u5bf9\u9762","saletel":"0551-4280777\u30014287777","saleaddress":"\u7476\u6d77\u516c\u56ed\u659c\u5bf9\u9762","certificate":"0","property":"","bucategory":"","butype":"01007","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a6200(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"6200","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"1206979200","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771110","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1359604854000","hits":"96770","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img3.haoju.cn\/upfiles\/200905\/200711915738705.jpg!small","bulogo_mid":"http:\/\/img2.haoju.cn\/upfiles\/200905\/200711915738705.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/200905\/200711915738705.jpg!lar","bulogo_thumb":"http:\/\/img1.haoju.cn\/upfiles\/200905\/200711915738705.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"9","cid":"27","buname":"\u7f8e\u5730\u9633\u5149\u5927\u53a6","buname_record":"","buname_py":"mdygdx","buname_pinyin":"meidiyangguangdaxia","bulogo":false,"build_logo":"","areacode":"","areacode_str":"","lng":"0","lat":"0","school":"","buaddress":"\u8700\u5c71\u533a\u91d1\u5be8\u8def\uff17\uff11\u53f7","saletel":"","saleaddress":"\u8700\u5c71\u533a\u91d1\u5be8\u8def\uff17\uff11\u53f7","certificate":"0","property":"","bucategory":"","butype":"01006","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771112","seo_title":"","seo_keywords":"","seo_description":"","level":"","sort":"0","ifcheck":"2","intime":"1249113715000","restime":"1351566276000","hits":"2321","isdel":"0","sale_huxing":"","bulogo_small":false,"bulogo_mid":false,"bulogo_lar":false,"bulogo_thumb":false},{"isvoucher":"0","isclean":"0","id":"11","cid":"29","buname":"\u84dd\u9f0e\u68e0\u6eaa\u4eba\u5bb6","buname_record":"","buname_py":"ldtxrj","buname_pinyin":"landingtangxirenjia","bulogo":"http:\/\/img1.haoju.cn\/upfiles\/201211\/1354092753.jpg!v6","build_logo":"","areacode":"340134000900671372000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u6ee8\u6e56\u65b0\u533a \u897f\u85cf\u8def","lng":"0","lat":"0","school":"\u897f\u56ed\u5c0f\u5b66\u300150\u4e2d\u5357\u533a\u897f\u56ed\u5c0f\u5b66\u300150\u4e2d\u5357\u533a","buaddress":"\u6ee8\u6e56\u65b0\u533a\u897f\u85cf\u8def\u4e0e\u4e2d\u5c71\u8def\u4ea4\u53e3","saletel":"0551-2888588","saleaddress":"\u6ee8\u6e56\u65b0\u533a\u897f\u85cf\u8def\u4e0e\u4e2d\u5c71\u8def\u4ea4\u53e3","certificate":"\u5408\u80a5\u5e02 \u6ee8\u6e56","property":"40\u5e74","bucategory":"","butype":"01003","lastest_news":"\u73b0\u5728\u53ea\u6709235-368\u5e73\u7c73\u7684\u6237\u578b\u4e86\u3002","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a28000(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"28000","change":"120","price_updatetime":"0","deal_aveprice":"0","youhui_type":"1","lastest_youhui":"\u84dd\u9f0e\u6ee8\u6e56\u5047\u65e5\u4f4f\u5b85\u5546\u94fa\u4eab\u5168\u6b3e95\u6298\u6309\u63ed98\u6298\u4f18\u60e0","lastest_kaipan":"1290614400","lastest_kaipan_str":"2013\u5e7410\u6708\u6708\u5e95","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771115","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1368165618000","hits":"106708","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img1.haoju.cn\/upfiles\/201211\/1354092753.jpg!small","bulogo_mid":"http:\/\/img2.haoju.cn\/upfiles\/201211\/1354092753.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/201211\/1354092753.jpg!lar","bulogo_thumb":"http:\/\/img3.haoju.cn\/upfiles\/201211\/1354092753.jpg!thumb"}]
+})
 /**
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
@@ -568,16 +571,6 @@ __define('lib/core/util',{
     }
 })
 
-__define('pages/components/suggest/script/style',function(require,imports,renders,extend,exports){
-	var module=this;
-	imports('../style/base.less');
-});
-__define('pages/components/suggest/script/data',function(require,imports,renders,extend,exports){
-	var module=this;
-	imports('../style/data.less');
-	
-	return [{"isvoucher":"0","isclean":"0","id":"1","cid":"19","buname":"\u5357\u5c4f\u516c\u9986","buname_record":"","buname_py":"npgg","buname_pinyin":"nanpinggongguan","bulogo":"http:\/\/img2.haoju.cn\/upfiles\/200909\/1252461832.jpg!v6","build_logo":"","areacode":"340104000900671390000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u8700\u5c71\u533a \u5408\u4f5c\u5316\u8def","lng":"0","lat":"0","school":"","buaddress":"\u5408\u80a5\u5e02\u671b\u6c5f\u897f\u8def159\u53f7\uff08\u4e1c\u81f3\u8def\u53e3\uff09","saletel":"0551\u20145167859","saleaddress":"\u5408\u80a5\u5e02\u671b\u6c5f\u897f\u8def159\u53f7\uff08\u4e1c\u81f3\u8def\u53e3\uff09","certificate":"","property":"","bucategory":"","butype":"01001","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X 83.37(\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"1227628800","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771101","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1368163899000","hits":"97176","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252461832.jpg!small","bulogo_mid":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252461832.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252461832.jpg!lar","bulogo_thumb":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252461832.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"2","cid":"20","buname":"\u9752\u5e74\u8d22\u667a\u5e7f\u573a","buname_record":"","buname_py":"qnczgc","buname_pinyin":"qingniancaizhiguangchang","bulogo":false,"build_logo":"","areacode":"340135000000000000000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u65b0\u7ad9\u533a","lng":"0","lat":"0","school":"","buaddress":"\u5317\u4e8c\u73af\uff08\u53cc\u4e03\u8def\uff09\u4e0e\u9f99\u95e8\u5cad\u8def\u4ea4\u6c47\u5904","saletel":"0551-7102666\u30017103666","saleaddress":"\u5317\u4e8c\u73af\uff08\u53cc\u4e03\u8def\uff09\u4e0e\u9f99\u95e8\u5cad\u8def\u4ea4\u6c47\u5904","certificate":"","property":"","bucategory":"","butype":"01002","lastest_news":"\u521b\u65b0SOLO\u5c0f\u6237\u578b\u516c\u5bd3\u60ca\u8273\u767b\u573a","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771103","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1359604756000","hits":"11121","isdel":"0","sale_huxing":"","bulogo_small":false,"bulogo_mid":false,"bulogo_lar":false,"bulogo_thumb":false},{"isvoucher":"0","isclean":"0","id":"3","cid":"21","buname":"\u7eff\u5885\u79d1\u6e90","buname_record":"","buname_py":"lsky","buname_pinyin":"lvshukeyuan","bulogo":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252461988.jpg!v6","build_logo":"","areacode":"","areacode_str":"","lng":"0","lat":"0","school":"","buaddress":"\u519c\u79d1\u9662\u5185","saletel":"","saleaddress":"\u672a\u5b9a","certificate":"","property":"","bucategory":"","butype":"01001","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771105","seo_title":"","seo_keywords":"","seo_description":"","level":"","sort":"0","ifcheck":"2","intime":"1249113715000","restime":"1353047200000","hits":"25138","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img2.haoju.cn\/upfiles\/200909\/1252461988.jpg!small","bulogo_mid":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252461988.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252461988.jpg!lar","bulogo_thumb":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252461988.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"4","cid":"22","buname":"\u5149\u5f69\u5e7f\u573a","buname_record":"","buname_py":"gcgc","buname_pinyin":"guangcaiguangchang","bulogo":false,"build_logo":"","areacode":"","areacode_str":"","lng":"0","lat":"0","school":"","buaddress":"\u957f\u6c5f\u897f\u8def699\u53f7","saletel":"","saleaddress":"\u957f\u6c5f\u897f\u8def\u901a\u673a\u6240\uff08\u91d1\u6fe0\u5e7f\u573a\uff09","certificate":"0","property":"","bucategory":"","butype":"01006","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771106","seo_title":"","seo_keywords":"","seo_description":"","level":"","sort":"0","ifcheck":"2","intime":"1249113715000","restime":"1351565568000","hits":"36985","isdel":"0","sale_huxing":"","bulogo_small":false,"bulogo_mid":false,"bulogo_lar":false,"bulogo_thumb":false},{"isvoucher":"0","isclean":"0","id":"5","cid":"23","buname":"\u7199\u56ed","buname_record":"","buname_py":"xy","buname_pinyin":"xiyuan","bulogo":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252634522.jpg!v6","build_logo":"","areacode":"","areacode_str":"","lng":"0","lat":"0","school":"","buaddress":" ","saletel":"0551-3868333\u30013868222","saleaddress":" ","certificate":"0","property":"","bucategory":"","butype":"01001","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"1","bulable":"","baseinfo":"","tel_400":"40086597771107","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"2","intime":"1249113715000","restime":"1249958109000","hits":"24858","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252634522.jpg!small","bulogo_mid":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252634522.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/200909\/1252634522.jpg!lar","bulogo_thumb":"http:\/\/img3.haoju.cn\/upfiles\/200909\/1252634522.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"6","cid":"24","buname":"\u4f18\u6d3b\u516c\u5bd3","buname_record":"","buname_py":"yhgy","buname_pinyin":"youhuogongyu","bulogo":"http:\/\/img3.haoju.cn\/upfiles\/201212\/1354520471.jpg!v6","build_logo":"","areacode":"340132000900670983000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u9ad8\u65b0\u533a \u5408\u5bb6\u798f","lng":"0","lat":"0","school":"","buaddress":"\u957f\u6c5f\u897f\u8def699\u53f7","saletel":"0551-5355999","saleaddress":"\u957f\u6c5f\u897f\u8def\u901a\u673a\u6240\uff08\u91d1\u6fe0\u5e7f\u573a\uff09","certificate":"\u5408\u80a5\u5e02\u9ad8\u65b0\u533a","property":"","bucategory":"","butype":"01001","lastest_news":"\u73ed\u8f66\u4e8e9\u670822\u53f7\u5168\u9762\u8fd0\u8425","firstpay":"65344","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a6500(\u5747\u4ef7) X 33.51(\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 65344.5\u5143","aveprice":"6500","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771108","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1359604783000","hits":"79273","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img1.haoju.cn\/upfiles\/201212\/1354520471.jpg!small","bulogo_mid":"http:\/\/img2.haoju.cn\/upfiles\/201212\/1354520471.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/201212\/1354520471.jpg!lar","bulogo_thumb":"http:\/\/img1.haoju.cn\/upfiles\/201212\/1354520471.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"7","cid":"25","buname":"\u4e07\u8fbe\u516c\u9986","buname_record":"","buname_py":"wdgg","buname_pinyin":"wandagongguan","bulogo":"http:\/\/img3.haoju.cn\/upfiles\/201211\/1354263812.jpg!v6","build_logo":"","areacode":"340111000900670943000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u5305\u6cb3\u533a \u5927\u949f\u697c","lng":"0","lat":"0","school":"","buaddress":"\u5408\u80a5\u9a6c\u978d\u5c71\u8def\u548c\u829c\u6e56\u8def\u4ea4\u6c47\u5904","saletel":"0551-5176666\uff0c5368888","saleaddress":"\u829c\u6e56\u8def\u4e0e\u9a6c\u978d\u5c71\u8def\u4ea4\u6c47\u5904","certificate":"\u5408\u80a5","property":"","bucategory":"","butype":"01002","lastest_news":"1,3#\u697c\u9ad8\u5c4250-150\u33a1\u6237\u578b2.6\u5f00\u76d8","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a14000(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"14000","change":"167","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771109","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1359784697000","hits":"25879","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img2.haoju.cn\/upfiles\/201211\/1354263812.jpg!small","bulogo_mid":"http:\/\/img3.haoju.cn\/upfiles\/201211\/1354263812.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/201211\/1354263812.jpg!lar","bulogo_thumb":"http:\/\/img2.haoju.cn\/upfiles\/201211\/1354263812.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"8","cid":"26","buname":"\u91d1\u5ea7\u5609\u56ed","buname_record":"","buname_py":"jzjy","buname_pinyin":"jinzuojiayuan","bulogo":"http:\/\/img1.haoju.cn\/upfiles\/200905\/200711915738705.jpg!v6","build_logo":"","areacode":"340102000000000000000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u7476\u6d77\u533a","lng":"0","lat":"0","school":"","buaddress":"\u7476\u6d77\u516c\u56ed\u659c\u5bf9\u9762","saletel":"0551-4280777\u30014287777","saleaddress":"\u7476\u6d77\u516c\u56ed\u659c\u5bf9\u9762","certificate":"0","property":"","bucategory":"","butype":"01007","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a6200(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"6200","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"1206979200","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771110","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1359604854000","hits":"96770","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img3.haoju.cn\/upfiles\/200905\/200711915738705.jpg!small","bulogo_mid":"http:\/\/img2.haoju.cn\/upfiles\/200905\/200711915738705.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/200905\/200711915738705.jpg!lar","bulogo_thumb":"http:\/\/img1.haoju.cn\/upfiles\/200905\/200711915738705.jpg!thumb"},{"isvoucher":"0","isclean":"0","id":"9","cid":"27","buname":"\u7f8e\u5730\u9633\u5149\u5927\u53a6","buname_record":"","buname_py":"mdygdx","buname_pinyin":"meidiyangguangdaxia","bulogo":false,"build_logo":"","areacode":"","areacode_str":"","lng":"0","lat":"0","school":"","buaddress":"\u8700\u5c71\u533a\u91d1\u5be8\u8def\uff17\uff11\u53f7","saletel":"","saleaddress":"\u8700\u5c71\u533a\u91d1\u5be8\u8def\uff17\uff11\u53f7","certificate":"0","property":"","bucategory":"","butype":"01006","lastest_news":"","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a0(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"0","change":"0","price_updatetime":"0","deal_aveprice":"0","youhui_type":"","lastest_youhui":"","lastest_kaipan":"0","lastest_kaipan_str":"","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771112","seo_title":"","seo_keywords":"","seo_description":"","level":"","sort":"0","ifcheck":"2","intime":"1249113715000","restime":"1351566276000","hits":"2321","isdel":"0","sale_huxing":"","bulogo_small":false,"bulogo_mid":false,"bulogo_lar":false,"bulogo_thumb":false},{"isvoucher":"0","isclean":"0","id":"11","cid":"29","buname":"\u84dd\u9f0e\u68e0\u6eaa\u4eba\u5bb6","buname_record":"","buname_py":"ldtxrj","buname_pinyin":"landingtangxirenjia","bulogo":"http:\/\/img1.haoju.cn\/upfiles\/201211\/1354092753.jpg!v6","build_logo":"","areacode":"340134000900671372000000000000000000","areacode_str":"\u5b89\u5fbd \u5408\u80a5\u5e02 \u6ee8\u6e56\u65b0\u533a \u897f\u85cf\u8def","lng":"0","lat":"0","school":"\u897f\u56ed\u5c0f\u5b66\u300150\u4e2d\u5357\u533a\u897f\u56ed\u5c0f\u5b66\u300150\u4e2d\u5357\u533a","buaddress":"\u6ee8\u6e56\u65b0\u533a\u897f\u85cf\u8def\u4e0e\u4e2d\u5c71\u8def\u4ea4\u53e3","saletel":"0551-2888588","saleaddress":"\u6ee8\u6e56\u65b0\u533a\u897f\u85cf\u8def\u4e0e\u4e2d\u5c71\u8def\u4ea4\u53e3","certificate":"\u5408\u80a5\u5e02 \u6ee8\u6e56","property":"40\u5e74","bucategory":"","butype":"01003","lastest_news":"\u73b0\u5728\u53ea\u6709235-368\u5e73\u7c73\u7684\u6237\u578b\u4e86\u3002","firstpay":"0","firstpay_process":"\u8ba1\u7b97\u8fc7\u7a0b\uff1a28000(\u5747\u4ef7) X (\u6700\u5c0f\u6237\u578b\u9762\u79ef) X 0.3 = 0\u5143","aveprice":"28000","change":"120","price_updatetime":"0","deal_aveprice":"0","youhui_type":"1","lastest_youhui":"\u84dd\u9f0e\u6ee8\u6e56\u5047\u65e5\u4f4f\u5b85\u5546\u94fa\u4eab\u5168\u6b3e95\u6298\u6309\u63ed98\u6298\u4f18\u60e0","lastest_kaipan":"1290614400","lastest_kaipan_str":"2013\u5e7410\u6708\u6708\u5e95","salestatus":"5","bulable":"","baseinfo":"","tel_400":"40086597771115","seo_title":"","seo_keywords":"","seo_description":"","level":"D","sort":"0","ifcheck":"1","intime":"1249113715000","restime":"1368165618000","hits":"106708","isdel":"0","sale_huxing":"","bulogo_small":"http:\/\/img1.haoju.cn\/upfiles\/201211\/1354092753.jpg!small","bulogo_mid":"http:\/\/img2.haoju.cn\/upfiles\/201211\/1354092753.jpg!mid","bulogo_lar":"http:\/\/img1.haoju.cn\/upfiles\/201211\/1354092753.jpg!lar","bulogo_thumb":"http:\/\/img3.haoju.cn\/upfiles\/201211\/1354092753.jpg!thumb"}]
-});
 __define('lib/core/events',function(){
     return function(opts){
         var self = this, that = opts || self,
@@ -1120,11 +1113,13 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
                     var object, options = args[0];
                     var execMethod = function(){
                         if(typeof options === 'string'){
+                            
                             if(options === 'options'){
                                 object.option(args[1], args[2])
                             }
                             else if(options.indexOf('_') !== 0){
                                 var attr = object[options];
+                                
                                 if(typeof attr === 'function'){
                                     attr.apply(object, Array.prototype.slice.call(args, 1))
                                 }
@@ -1420,8 +1415,8 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  * @description 搜索下拉
  */
 
-__define('lib/components/suggest',['lib/core/component', 'lib/core/util'], function(component, util){
-    this.imports('../style/components/suggest/index');
+__define('lib/components/search',['lib/core/component', 'lib/core/util'], function(component, util){
+    this.imports('../style/components/search/index');
     return this.extend(component, {
         _static:{
             _init:function(){
@@ -1453,6 +1448,11 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
              * @return <Object> 查询参数对象集合
              */
             query:'keyword',
+            /**
+             * @func 设置层级
+             * @type <Number>
+             */
+            zIndex:19920604,
             /**
              * @func 定义列表模版
              * @type <String>
@@ -1520,7 +1520,7 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
              */
             limit:5,
             /**
-             * @func 设置高宽
+             * @func 增加高宽
              * @type <Object>
              */
             size:null,
@@ -1558,8 +1558,22 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                  */
                 multiple:false,
                 /**
+                 * @func 当输入框焦点在起始位置时，按回格键是否删除前一个标签
+                 * @type <Boolean>
+                 */
+                dele:false,
+                /**
+                 * @func 是否设置提示
+                 * @type <Boolean>
+                 */
+                title:false,
+                /**
                  * @func 标签填充容器
-                 * @type <Object>
+                 * @type <DOM, jQuery Object, Selector>
+                 * @type <Function>
+                 * @param self <Object> 组件实例对象
+                 * @param target <jQuery Object> 调用组件对象
+                 * @return <Selector, DOM, jQuery Object>
                  */
                 container:null,
                 /**
@@ -1570,12 +1584,23 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                 /**
                  * @func 设置标签数据
                  * @type <Function>
+                 * @param self <Object> 组件实例对象
+                 * @param tags <jQuery Object> 标签元素对象
+                 * @return 返回数组
                  */
-                data:null
+                getData:null
             },
             /**
              * @func 设置多菜单
              * @type <Array>
+             * [{
+             *     title:'',
+             *     content:'',
+             *     active:true,
+             *     onShow:function(){
+             * 
+             *     }
+             * }]
              */
             tabs:null,
             /**
@@ -1591,21 +1616,28 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
              *     like:/^\d/,
              *     like:'^{value}',
              *     like:function(data, value){
-             *          return data.indexOf(value)
+             *          return data.indexOf(value) !== -1
              *     }
              * }]
              */
             match:null,
             /**
-             * @func 自定义选中项目后的文本框内容
+             * @func 定义选中列表后的文本框内容
              * @type <Function>
              * @param self <Object> 组件实例对象
              * @param data <Object> 当前选中数据
              * @return <String> 返回自定义填充值
              * @desc 未设置该值时，默认取field中的数据
              */
-            value:null,
-            active:null,
+            setValue:null,
+            /**
+             * @func 列表渲染时判断某一行是否被选中
+             * @type <Function>
+             * @param self <Object> 组件实例对象
+             * @param data <Object> 列表选中数据
+             * @return <Boolean> 
+             */
+            selected:null,
             /**
              * @func 过滤数据
              * @type <Function>
@@ -1625,34 +1657,37 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
              * @func 选择前触发回调
              * @type <Function>
              * @param self <Object> 组件实例对象
-             * @return <Boolean> 返回false则不会触发onSelect
+             * @param data <Object> 选中项数据
+             * @param event <Object> 事件对象
+             * @param elem <jQuery Object> 选中项对象
+             * @return <Boolean> 返回false则不会触发setValue以及onSelect
              */
             onSelectBefore:null,
             /**
              * @func 选择后触发回调
              * @type <Function>
              * @param self <Object> 组件实例对象
+             * @param data <Object> 选中项数据
+             * @param event <Object> 事件对象
+             * @param elem <jQuery Object> 选中项对象
              */
             onSelect:null,
             /**
              * @func 输入框失焦后触发
              * @type <Function>
              * @param self <Object> 组件实例对象
+             * @param target <jQuery Object> 调用组件对象
              */
             onBlur:null
         },
-        _caches:{},
-        queryData:[],
-        data:[],
         _template:{
             wrap:
                 '<div class="<% className %>"<%if style%> style="<%include \'style\'%>"<%/if%>>'+
-                    '<%include "head"%>'+
-                    '<div class="suggest-body">'+
+                    '<div class="com-search-body<%if tabs.length > 1%> com-search-body-tab<%/if%>">'+
                         '<%include "tabs"%>'+
-                        '<div class="suggest-inner">'+
+                        '<div class="com-search-inner">'+
                             '<%each tabs%>'+
-                                '<div class="suggest-content<%if $index === 0%> suggest-result<%/if%>" style="display:none;"></div>'+
+                                '<div class="com-search-content<%if $index === 0%> com-search-result<%/if%>" style="display:none;"></div>'+
                             '<%/each%>'+
                         '</div>'+
                     '</div>'+
@@ -1660,44 +1695,51 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                 '</div>',
             result:
                 '<%if data && data.length%>'+
-                    '<%include "list"%>'+
+                    '<%if head && value%>'+
+                        '<div class="com-search-detail">'+
+                            '<%include "head"%>'+
+                            '<%include "list"%>'+
+                        '</div>'+
+                    '<%else%>'+
+                        '<%include "list"%>'+
+                    '<%/if%>'+
                 '<%elseif value%>'+
                     '<%include "empty"%>'+
                 '<%/if%>',
             list:
-                '<ul class="suggest-list">'+
+                '<ul class="com-search-list">'+
                     '<%each data $data $index%>'+
                         '<%include "item"%>'+
                     '<%/each%>'+
                 '</ul>',
             tabs:
                 '<%if tabs.length > 1%>'+
-                    '<div class="suggest-tabs">'+
+                    '<div class="com-search-tab">'+
                         '<%each tabs tab%>'+
-                            '<span class="suggest-tab"<%if $index === 0%> style="display:none;"<%/if%>><%tab.title%></span>'+
+                            '<span class="com-search-tab-nav"<%if $index === 0%> style="display:none;"<%/if%>><%tab.title%></span>'+
                         '<%/each%>'+
                     '</div>'+
                 '<%/if%>',
             tag:
                 '<span class="nui-tag">'+
-                    '<em class="nui-tag-text"><%text%></em>'+
+                    '<em class="nui-tag-text"<%if title%> title="<%text%>"<%/if%>><%text%></em>'+
                     '<%if close%>'+
                     '<b class="nui-tag-close"><%close%></b>'+
                     '<%/if%>'+
-                    '<%if fields?? && fields.length%>'+
+                    '<%if fields?? && fields%>'+
                         '<%each fields%>'+
-                            '<input type="hidden" name="<%$index%>"> value="<%$value%>"'+
+                            '<input type="hidden" class="com-search-hidden" name="<%$index%>" value="<%$value%>">'+
                         '<%/each%>'+
                     '<%/if%>'+
                 '</span>'
         },
         _events:{
-            'mouseenter':'_suggestMouseover',
-            'mouseleave':'_suggestMouseout',
-            'mouseenter .suggest-item':'_suggestMouseover _itemMouseover',
-            'mouseleave .suggest-item':'_itemMouseout',
-            'click .suggest-item':'_select',
-            'click .suggest-tab':'_toggle'
+            'mouseenter':'_searchMouseover',
+            'mouseleave':'_searchMouseout',
+            'mouseenter .com-search-item':'_searchMouseover _itemMouseover',
+            'mouseleave .com-search-item':'_itemMouseout',
+            'click .com-search-item':'_select',
+            'click .com-search-tab-nav':'_toggle'
         },
         _toggle:function(e, elem){
             var self = this, opts = self._options, index = elem.index();
@@ -1738,10 +1780,10 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                 self._activeTab = data;
             }
         },
-        _suggestMouseover:function(e, elem){
+        _searchMouseover:function(e, elem){
             this._hover = true
         },
-        _suggestMouseout:function(e, elem){
+        _searchMouseout:function(e, elem){
             delete this._hover;
         },
         _itemMouseover:function(e, elem){
@@ -1757,8 +1799,8 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                 return false
             }
 
-            if(typeof opts.value === 'function'){
-                value = opts.value.call(opts, self, data)
+            if(typeof opts.setValue === 'function'){
+                value = opts.setValue.call(opts, self, data)
             }
             else if(opts.field){
                 value = data[opts.field]
@@ -1804,7 +1846,7 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
             self.show(true)
         },
         _filter:function(){
-            var self = this, opts = self._options, data = [], _data = self._data();
+            var self = this, opts = self._options, data = [], _data = self._setData();
             if(typeof opts.filter === 'function'){
                 data = opts.filter.call(opts, self, self.val, _data);
             }
@@ -1880,13 +1922,16 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
         },
         //回车
         _code13:function(e){
-            //this._select(e)
+            // var self = this;
+            // if(self._activeIndex !== undefined){
+            //     self._select(e)
+            // }
         },
         //删除
         _code8:function(e){
             var self = this;
             //光标位置在输入框起始处时删除末尾的标签
-            if(self.$tags && self.$tags.length && !util.getFocusIndex(self.target.get(0))){
+            if(self.$tags && self.$tags.length && self._tag.dele === true && !util.getFocusIndex(self.target.get(0))){
                 self.$tags.last().remove();
                 self._setTagsData();
                 self._update();
@@ -1936,7 +1981,7 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                 })
             }
 
-            self._on('keyup', self.target, function(e, elem){
+            self._on('keydown', self.target, function(e, elem){
                 if(self._show === true){
                     var method = self['_code'+e.keyCode];
                     if(typeof method === 'function'){
@@ -1973,31 +2018,34 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
             var self = this, data = self._tplData(), opts = self._options;
             data.style = opts.style || {};
             data.style.display = 'none';
+            if(data.style['z-index'] === undefined){
+                data.style['z-index'] = opts.zIndex || 0
+            }
             self._elemData = [{
                 title:'结果'
             }];
-            self._isTab = false;
-            self._defaultTab = null;
             if(Nui.isArray(opts.tabs) && opts.tabs.length){
                 self._isTab = true;
                 self._elemData = self._elemData.concat(opts.tabs);
             }
             data.tabs = self._elemData;
             self.element = $(self._tpl2html('wrap', data)).appendTo(self.$container);
+            self._setElemData();
+
             self.$body = self.element.children();
-            self.$inner = self.$body.children('.suggest-inner');
-            self.$result = self.$inner.children('.suggest-result');
+            self.$inner = self.$body.children('.com-search-inner');
+            self.$result = self.$inner.children('.com-search-result');
 
             self._elemData[0].$elem = $();
             self._elemData[0].$container = self.$result;
             
             if(self._isTab){
-                var tabs = self.$body.children('.suggest-tabs').children();
+                var tabs = self.$body.children('.com-search-tab').children();
                 var containers = self.$inner.children();
                 Nui.each(self._elemData, function(v, i){
                     v.$elem = tabs.eq(i);
                     v.$container = containers.eq(i);
-                    if(!self._defaultTab && v.select === true){
+                    if(!self._defaultTab && v.active === true){
                         self._defaultTab = v
                     }
                 })
@@ -2006,7 +2054,7 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                     self._defaultTab = self._elemData[1]
                 }
             }
-
+            
             self._event()
         },
         _initTemplate:function(name){
@@ -2017,23 +2065,23 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
 
             if(typeof content !== 'string'){
                 if(name === 'item' && opts.field){
-                    content = '<li class="suggest-item<%active($data)%>" data-index="<%$index%>"><%$data["'+ opts.field +'"]??%></li>'
+                    content = '<li class="com-search-item<%selected($data)%>" data-index="<%$index%>"><%$data["'+ opts.field +'"]??%></li>'
                 }
                 else{
                     content = ''
                 }
             }
             else if(name === 'item' && content && !/^\s*\<li\s+/i.test(content)){
-                content = '<li class="suggest-item<%active($data)%>" data-index="<%$index%>">'+ content +'</li>'
+                content = '<li class="com-search-item<%selected($data)%>" data-index="<%$index%>">'+ content +'</li>'
             }
 
             if(name !== 'item' && content){
-                content = '<div class="suggest-'+ name +'">'+ content +'</div>'
+                content = '<div class="com-search-'+ name +'">'+ content +'</div>'
             }
 
             self._template[name] = content;
         },
-        _data:function(){
+        _setData:function(){
             var self = this, opts = self._options, data = opts.data;
             if(typeof opts.data === 'function'){
                 data = opts.data.call(opts, self)
@@ -2045,8 +2093,61 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
 
             return self.data = data
         },
+        _setElemData:function(){
+            var self = this, elem = self.element, _class = self.constructor;
+            self.elementData = {
+                btbWidth:_class._getSize(elem, 'tb', 'border'),
+                blrWidth:_class._getSize(elem, 'lr', 'border'),
+                ptbWidth:_class._getSize(elem, 'tb', 'padding'),
+                plrWidth:_class._getSize(elem, 'lr', 'padding')
+            }
+        },
+        _setTargetData:function(){
+            var self = this, target = self.target, _class = self.constructor;
+            self.targetData = {
+                width:target.width(),
+                height:target.height(),
+                oWidth:target.outerWidth(),
+                oHeight:target.outerHeight(),
+                blWidth:_class._getSize(target, 'l', 'border'),
+                brWidth:_class._getSize(target, 'r', 'border'),
+                btWidth:_class._getSize(target, 't', 'border'),
+                bbWidth:_class._getSize(target, 'b', 'border')
+            }
+        },
+        _setTagsData:function(){
+            var self = this, opts = self._options;
+            self.$tags = self.$tagContainer.children();
+            self.tagData = [];
+            if(typeof self._tag.getData === 'function'){
+                self.tagData = self._tag.getData.call(opts, self, self.$tags)
+            }
+            else{
+                self.$tags.each(function(){
+                    self.tagData.push($(this).children('.nui-tag-text').text())
+                })
+            }
+            if(!Nui.type(self.tagData, 'Array')){
+                self.tagData = []
+            }
+        },
         _initData:function(){
             var self = this, opts = self._options, data = opts.data, match = opts.match;
+            self._caches = {};
+
+            self.queryData = [];
+
+            self.data = [];
+
+            self._setTargetData();
+
+            self._size = opts.size || {};
+
+            self._offset = opts.offset || {};
+
+            self._isTab = false;
+
+            self._defaultTab = null;
 
             Nui.each(['item', 'empty', 'head', 'foot'], function(name){
                 self._initTemplate(name);
@@ -2060,37 +2161,21 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                 self._matchs = match
             }
         },
-        _setTagsData:function(){
+        _getSelected:function(){
             var self = this, opts = self._options;
-            self.$tags = self.$tagContainer.children();
-            self.tagData = [];
-            if(typeof self._tag.data === 'function'){
-                self.tagData = self._tag.data.call(opts, self, self.$tags)
-            }
-            else{
-                self.$tags.each(function(){
-                    self.tagData.push($(this).children('.nui-tag-text').text())
-                })
-            }
-            if(!Nui.type(self.tagData, 'Array')){
-                self.tagData = []
-            }
-        },
-        _getActive:function(){
-            var self = this, opts = self._options;
-            var active = function(){
+            var selected = function(){
                 return '';
             }
-            if(typeof opts.active === 'function'){
-                active = function(data){
-                    if(opts.active.call(opts, self, data) === true){
+            if(typeof opts.selected === 'function'){
+                selected = function(data){
+                    if(opts.selected.call(opts, self, data) === true){
                         return ' s-crt'
                     }
                     return ''
                 }
             }
             else if(opts.field){
-                active = function(data){
+                selected = function(data){
                     var cls = '';
                     if(self.tagData){
                         Nui.each(self.tagData, function(v){
@@ -2106,7 +2191,7 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                     return cls;
                 }
             }
-            return active
+            return selected
         },
         _render:function(input){
             var self = this, opts = self._options, _class = self.constructor, result = self._elemData[0];
@@ -2118,7 +2203,8 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                 self.$result.html(self._tpl2html('result', {
                     data:self.queryData,
                     value:self.val,
-                    active:self._getActive()
+                    selected:self._getSelected(),
+                    head:!!self._template.head
                 }));
                 result.$elem.show();
                 if(self._defaultTab){
@@ -2161,31 +2247,45 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
             }
         },
         resize:function(){
-            var self = this, opts = self._options, target = self.target, elem = self.element, 
-                width = target.outerWidth(), height = target.outerHeight(),
-                _width = elem.outerWidth(), _height = elem.outerHeight(),
-                _offset = opts.offset, offset = target.offset(), 
-                top = offset.top, left = offset.left, size = opts.size;
-            if(!_offset){
-                _offset = {}
-            }
-            if(!size){
-                size = {
-                    width:0,
-                    height:0
+            var self = this, opts = self._options, target = self.target, elem = self.element, targetData = self.targetData, elemData = self.elementData,
+            width = 0, oWidth = elem.outerWidth(), oHeight = elem.outerHeight(), offset = target.offset(), top = offset.top, left = offset.left,
+            _class = self.constructor, wWidth = Nui.win.width(), wHeight = Nui.win.height();
+
+            top = top + targetData.oHeight - targetData.bbWidth + (self._offset.top||0);
+            left = left + (self._offset.left||0);
+            width = targetData.oWidth - elemData.blrWidth - elemData.plrWidth + (self._size.width || 0);
+
+            //内容在可视区域底部显示不全，则在输入框上方显示
+            var diff = wHeight - top - oHeight;
+            if(diff < 0){
+                var _top = offset.top - oHeight - (self._offset.top||0) + targetData.btWidth;
+                if(_top >= 0){
+                    top = _top
                 }
             }
-            top = top + height + (_offset.top||0);
-            left = left + (_offset.left||0);
+
+            //内容在可视区域右侧显示不全，则与输入框居右对齐
+            diff = wWidth - left - targetData.oWidth - (self._size.width || 0);
+            if(diff < 0){
+                diff = targetData.oWidth + (self._size.width || 0) - targetData.oWidth;
+                if(diff > 0){
+                    var _left = offset.left - diff;
+                    if(_left >= 0){
+                        left = _left
+                    }
+                }
+            }
+
             self.element.css({
                 top:top,
-                left:left
+                left:left,
+                width:width
             })
         },
         show:function(input){
             var self = this, opts = self._options, _class = self.constructor;
             self.val = Nui.trim(this.target.val());
-            if(self._hover){
+            if(self._hover && !input){
                 return
             }
             if(_class._active && _class._active !== self){
@@ -2201,12 +2301,13 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                 //文本框没内容，还原默认数据
                 if(!self.val && opts.nullable === true){
                     if(!opts.url){
-                        self.queryData = self._data()
+                        self.queryData = self._setData()
                     }
                     else{
                         self.queryData = []
                     }
                 }
+                
                 self._render(input);
             }
         },
@@ -2221,6 +2322,19 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                 self.element.hide()
             }
         },
+        /**
+         * @func 设置文本框内容值或者添加tag标签
+         * @param <String>
+         * @param <Object>
+         * {
+         *     text:'',
+         *     fields:{
+         *         field1:value1,
+         *         field2:value2,
+         *         ...
+         *     }
+         * }
+         */
         value:function(val){
             var self = this, target = self.target, opts = self._options, name = self.constructor.__component_name;
             if(target){
@@ -2252,9 +2366,8 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
                         self.$tags.remove()
                     }
                     if(!exist && data.text){
-                        if(!data.close && self._tag.close){
-                            data.close = self._tag.close
-                        }
+                        data.title = self._tag.title || false;
+                        data.close = self._tag.close || false;
                         self.$tagContainer.append(self._tpl2html('tag', data))
                     }
                     self._setTagsData();
@@ -2283,94 +2396,135 @@ __define('lib/components/suggest',['lib/core/component', 'lib/core/util'], funct
         }
     })
 }); 
-__define('./script/page',function(require,imports,renders,extend,exports){
-	var module=this;
-	require('lib/components/suggest');
-	var data=__requireDefaultModule(require('pages/components/suggest/script/data'));
-	require('pages/components/suggest/script/style');
-	var util=__requireDefaultModule(require('lib/core/util'));
-	
-	$('.search').suggest({
-	    url:'http://127.0.0.1:8001/data/?callback=?',
-	    data:data,
-	    field:'buname',
-	    empty:'<%value%> 暂无数据',
-	    selectContainer:'#box',
-	    //foot:'<a>aaaaaaaa</a>',
-	    nullable:true,
-	    //cache:true,
-	    focus:true,
-	    events:{
-	        'click .item':function(e, elem){
-	            this.self.value(elem.text())
-	        }
-	    },
-	    tag:{
-	        multiple:true,
-	        close:'<i class="iconfont">x</i>',
-	        container:'#box'
-	    },
-	    tabs:[{
-	        title:'最近',
-	        active:true,
-	        content:renders(''+''
-	            +'<ul>'+''
-	                +'<li class="item">南屏公馆</li>'+''
-	                +'<li class="item">优活公寓</li>'+''
-	            +'</ul>'+''
-	        +''),
-	        onShow:function(self, elem, container){
-	            container.find('li').each(function(){
-	                var $elem = $(this).removeClass('s-crt');
-	                var text = $elem.text();
-	                Nui.each(self.tagData, function(v){
-	                    if(text === v){
-	                        $elem.addClass('s-crt');
-	                        return false;
-	                    }
-	                })
-	            })
-	        }
-	    }, {
-	        title:'按用户',
-	        content:function(){
-	            return '<s>111111</s>'
-	        },
-	        onShow:function(self){
-	            
-	        }
-	    }, {
-	        title:'按区域',
-	        onShow:function(self){                      
-	            
-	        }
-	    }],
-	    // active:function(self, data){
-	    //     var exist = false;
-	    //     Nui.each(self.tagData, function(v){
-	
-	    //     })
-	    // },
-	    item:function(){    
-	        return '<li class="suggest-item<%active($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
-	    },
-	    query:function(self, value){
-	        return {
-	            keywords:encodeURI(value)
-	        }
-	    },
-	    onRequest:function(self, res){
-	        return res.list
-	    },
-	    onSelect:function(self, data){
-	        self.show();
-	    },
-	    onBlur:function(self, elem){
-	        self.value('');
-	    }
-	})
-	
-	
-});
+__define('./script/page',function(require){
+    var suggest = require('lib/components/search');
+    var util = require('lib/core/util');
+    var data = require('pages/components/search/script/data');
+
+    $('.search').focus(function(){
+        $(this).search({
+            //url:'http://127.0.0.1:8001/data/?callback=?',
+            field:'buname',
+            empty:'<%value%> 暂无数据',
+            selectContainer:'#box',
+            data:data,
+            //foot:'<a>aaaaaaaa</a>',
+            nullable:true,
+            //cache:true,
+            //focus:true,
+            head:'正在搜索<%value%>',
+            events:{
+                'click .item':function(e, elem){
+                    this.self.value(elem.text())
+                },
+                'click :checkbox':function(e, elem){
+                    this.self.value(elem.val())
+                }
+            },
+            // match:{
+            //     field:'buname',
+            //     like:function(data, value){
+            //         return data.indexOf(value) !== -1
+            //     }
+            // },
+            offset:{
+                
+            },
+            size:{
+                //width:100
+            },
+            tag:{
+                multiple:true,
+                close:'<i class="iconfont">x</i>',
+                container:'#box',
+                dele:true
+            },
+            tabs:[{
+                title:'最近',
+                content:
+                    '<ul>'+
+                        '<li class="item">南屏公馆</li>'+
+                        '<li class="item">优活公寓</li>'+
+                    '</ul>',
+                onShow:function(self, elem, container){
+                    container.find('li').each(function(){
+                        var $elem = $(this).removeClass('s-crt');
+                        var text = $elem.text();
+                        Nui.each(self.tagData, function(v){
+                            if(text === v){
+                                $elem.addClass('s-crt');
+                                return false;
+                            }
+                        })
+                    })
+                }
+            }, {
+                title:'按用户',
+                content:function(){
+                    return '<s>111111</s>'
+                },
+                onShow:function(self){
+                    
+                }
+            }, {
+                title:'按区域',
+                content:
+                    '<div class="">'+
+                        '<a>省份</a>'+
+                        '<a>城市</a>'+
+                        '<a>区域</a>'+
+                        '<div>'+
+                            '<label><input type="checkbox" value="北京"> 北京</label>'+
+                        '</div>'+
+                    '</div>',
+                onShow:function(self, elem, container){                      
+                    container.find(':checkbox').prop('checked', false).each(function(){
+                        var $elem = $(this);
+                        var text = $elem.val();
+                        Nui.each(self.tagData, function(v){
+                            if(text === v){
+                                $elem.prop('checked', true)
+                                return false;
+                            }
+                        })
+                    });
+                }
+            }],
+            selected:function(self, data){
+                var exist = false;
+                Nui.each(self.tagData, function(v){
+        
+                })
+            },
+            item:function(){    
+                return '<li class="com-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
+            },
+            query:function(self, value){
+                return {
+                    keywords:encodeURI(value)
+                }
+            },
+            // setValue:function(self, data){
+            //     return {
+            //         text:'1111',
+            //         fields:{
+            //             'aaa':111,
+            //             'ccc':'1111'
+            //         }
+            //     }
+            // },
+            onRequest:function(self, res){
+                return res.list
+            },
+            onSelect:function(self, data){
+                self.show();
+            },
+            onBlur:function(self, elem){
+                self.value('');
+            }
+        }).search('show')
+    })
+})
+
 
 })(Nui['_module_2_define']);

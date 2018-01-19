@@ -2,6 +2,10 @@
 
 {% block title %}{% endblock %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/nui/pages/components/search/style/page-min.css"/>
+{% endblock %}
+
 {% block nav %}
 	{% import 'nav.tpl' as nav %}
 	{{nav.active('study')}}
@@ -11,9 +15,6 @@
 
 {% block content %}
 	<style>
-	.nui-search {
-		position: absolute;
-	}
 	.nui-tag { display: inline-block; padding: 0 5px; background-color: blue; color: #fff;}
 
 .ui-input .nui-tag { float: left; margin: 0 8px 8px 0;}
@@ -21,7 +22,7 @@
 	</style>
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28">输入建议</h1>
+			<h1 class="e-pt20 e-pb20 f-fs28">搜索</h1>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">案例</h2>
 			<div class="e-mt15">
 				<input type="text" class="ui-input demo">
@@ -70,5 +71,5 @@
 {% endblock %}
 
 {% block script %}
-Nui.use('./script/page')
+Nui.load('./script/page')
 {% endblock %}

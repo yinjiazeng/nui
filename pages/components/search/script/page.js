@@ -14,9 +14,13 @@ Nui.define(function(require){
             nullable:true,
             //cache:true,
             //focus:true,
+            head:'正在搜索<%value%>',
             events:{
                 'click .item':function(e, elem){
                     this.self.value(elem.text())
+                },
+                'click :checkbox':function(e, elem){
+                    this.self.value(elem.val())
                 }
             },
             // match:{
@@ -66,18 +70,36 @@ Nui.define(function(require){
                 }
             }, {
                 title:'按区域',
-                onShow:function(self){                      
-                    
+                content:
+                    '<div class="">'+
+                        '<a>省份</a>'+
+                        '<a>城市</a>'+
+                        '<a>区域</a>'+
+                        '<div>'+
+                            '<label><input type="checkbox" value="北京"> 北京</label>'+
+                        '</div>'+
+                    '</div>',
+                onShow:function(self, elem, container){                      
+                    container.find(':checkbox').prop('checked', false).each(function(){
+                        var $elem = $(this);
+                        var text = $elem.val();
+                        Nui.each(self.tagData, function(v){
+                            if(text === v){
+                                $elem.prop('checked', true)
+                                return false;
+                            }
+                        })
+                    });
                 }
             }],
-            // selected:function(self, data){
-            //     var exist = false;
-            //     Nui.each(self.tagData, function(v){
+            selected:function(self, data){
+                var exist = false;
+                Nui.each(self.tagData, function(v){
         
-            //     })
-            // },
+                })
+            },
             item:function(){    
-                return '<li class="search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
+                return '<li class="com-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
             },
             query:function(self, value){
                 return {

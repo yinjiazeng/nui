@@ -10,8 +10,10 @@
     <link rel="icon" type="image/vnd.microsoft.icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
 	<link rel="icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
 	<link rel="shortcut icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
-	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css?v=c710ef1"/>
+	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css?v=e3b1298"/>
     
+<link rel="stylesheet" type="text/css" href="/nui/pages/components/search/style/page-min.css?v=663afab"/>
+
 </head>
 <body class="g-body">
 	<!-- header -->
@@ -46,9 +48,6 @@
 	<div class="g-content">
     
 	<style>
-	.nui-search {
-		position: absolute;
-	}
 	.nui-tag { display: inline-block; padding: 0 5px; background-color: blue; color: #fff;}
 
 .ui-input .nui-tag { float: left; margin: 0 8px 8px 0;}
@@ -56,7 +55,7 @@
 	</style>
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28">输入建议</h1>
+			<h1 class="e-pt20 e-pb20 f-fs28">搜索</h1>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">案例</h2>
 			<div class="e-mt15">
 				<input type="text" class="ui-input demo">
@@ -224,7 +223,7 @@
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=4223d4c"></script>
 <script type="text/javascript" src="/nui/dist/nui-load-min.js?v=394e26b"></script>
-<script type="text/javascript" src="/nui/config.js?v=ce2a0e4"></script>
+<script type="text/javascript" src="/nui/config.js?v=61ff9fb"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){
@@ -234,7 +233,7 @@
     
     <script type="text/javascript">
     
-Nui.use("./script/page")
+Nui.load("./script/page")
 
     </script>
 </body>

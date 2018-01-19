@@ -1413,6 +1413,7 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  */
 
 __define('lib/components/highlight/highlight',function(){
+    this.imports('../../style/components/highlight/index');
     return this.extend('lib/core/component', {
         _static:{
             _init:function(){

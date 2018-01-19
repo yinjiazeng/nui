@@ -1414,6 +1414,7 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
 
 __define('lib/components/layer/layer',['lib/core/component', 'lib/core/util', 'lib/core/template'], function(component, util, template){
     var module = this;
+    this.imports('../../style/components/layer/index');
 
     var statics = {
         _maskzIndex:10000,
