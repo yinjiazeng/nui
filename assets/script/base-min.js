@@ -1413,7 +1413,7 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  */
 
 __define('lib/components/highlight/highlight',function(){
-    this.imports('../../style/components/highlight/index');
+    this.imports('../../assets/components/highlight/index');
     return this.extend('lib/core/component', {
         _static:{
             _init:function(){
@@ -1422,7 +1422,7 @@ __define('lib/components/highlight/highlight',function(){
                     if(self._active){
                         Nui.each(self.__instances, function(val){
                             if(val._active){
-                                val.element.find('tr.s-crt').removeClass('s-crt');
+                                val.element.find('.con-highlight-tr.s-crt').removeClass('s-crt');
                                 val._active = false;
                             }
                         })
@@ -1431,7 +1431,7 @@ __define('lib/components/highlight/highlight',function(){
                 })
             },
             _getcode:function(type, text){
-                return '<code class="'+ type +'">'+ text +'</code>'
+                return '<code class="con-highlight-'+ type +'">'+ text +'</code>'
             },
             _getarr:function(match, code){
                 var array = [];
@@ -1471,7 +1471,7 @@ __define('lib/components/highlight/highlight',function(){
             //点击代码那一行高亮
             isLight:true,
             //是否显示行号
-            isLine:false,
+            isLine:true,
             //是否显示语法标题
             isTitle:true
         },
@@ -1493,28 +1493,28 @@ __define('lib/components/highlight/highlight',function(){
         _template:
             '<div class="<% className %>">'
                 +'<%if tools%>'
-                +'<div class="tools">'
+                +'<div class="con-highlight-tools">'
                     +'<%if tools.copy%>'
                     +'<em class="copy">复制</em>'
                     +'<%/if%>'
                 +'</div>'
                 +'<%/if%>'
-                +'<div class="body">'
-                    +'<table>'
+                +'<div class="con-highlight-body">'
+                    +'<table class="con-highlight-table">'
                         +'<%each list val key%>'
-                            +'<tr>'
-                                +'<%if isLine === true%><td class="line" number="<%key+1%>"><%if bsie7%><%key+1%><%/if%></td><%/if%>'
-                                +'<td class="code"><%val%></td>'
+                            +'<tr class="con-highlight-row">'
+                                +'<%if isLine === true%><td class="con-highlight-cell con-highlight-line" number="<%key+1%>"><%if bsie7%><%key+1%><%/if%></td><%/if%>'
+                                +'<td class="con-highlight-cell con-highlight-code"><%val%></td>'
                             +'</tr>'
                         +'<%/each%>'
                     +'</table>'
                 +'</div>'
                 +'<%if isTitle%>'
-                +'<em class="title"><%title%></em>'
+                +'<em class="con-highlight-title"><%title%></em>'
                 +'<%/if%>'
             +'</div>',
         _events:{
-            'click tr':function(e, elem){
+            'click .con-highlight-row':function(e, elem){
                 if(this._options.isLight === true){
                     this.constructor._active = this._active = true;
                     elem.addClass('s-crt').siblings().removeClass('s-crt');

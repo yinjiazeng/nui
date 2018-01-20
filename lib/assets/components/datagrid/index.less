@@ -1,0 +1,68 @@
+.nui-datagrid {
+    .datagrid-table .ui-table { table-layout: fixed;}
+    .datagrid-table .table-cell { padding-left: 0; padding-right: 0; text-align: center; vertical-align: middle;}
+    .datagrid-table .table-cell.f-tal { text-align: left;}
+    .datagrid-table .table-cell.f-tar { text-align: right;}
+    .datagrid-table .cell-wrap, .datagrid-table .cell-text { display: inline-block;}
+    .datagrid-table .cell-wrap { width: 100%; vertical-align: middle;}
+    .datagrid-table .cell-text { margin: 0 5px;}
+    .datagrid-table .cell-wrap.cell-nowrap { overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+    .datagrid-body, .datagrid-thead, .datagrid-title { position: relative;}
+    .datagrid-table .cell-text-input {
+        display: block;
+        border: 1px solid #E6E6E6;
+        background-color: #fff;
+        padding-left: 6px;
+        padding-right: 6px;
+        .datagrid-input {
+            padding-right: 1px;
+            width: 100%;
+        }
+    }
+    .datagrid-table  {
+        .datagrid-hide {
+            display: none;
+        }
+        .table-row.s-hover {
+            .datagrid-hide {
+                display: inline-block;
+            }
+        }
+    }
+    .datagrid-box { position: relative; overflow: auto;}
+    .datagrid-fixed .datagrid-box { margin-top: -1px;}
+    .datagrid-table-all .ui-table { width: 100%;}
+    .datagrid-table-all .datagrid-thead { overflow: hidden; width:100%;}
+    .datagrid-table-all .datagrid-box { width: 100%;}
+    .datagrid-table-fixed { position: absolute; top:0; z-index: 1; background-color: #fff;}
+    .datagrid-table-fixed .datagrid-box { overflow: hidden;}
+    .datagrid-table-fixed .ui-table { width: auto;}
+    .datagrid-table-left { left: 0;}
+    .datagrid-table-right { right: 0;}
+    .datagrid-paging { padding-top: 20px; height:30px;}
+    .datagrid-order { position: relative; display: inline-block;}
+    .datagrid-order b { left: 3px; cursor: pointer;}
+    .datagrid-order b, .datagrid-order s, .datagrid-order i { position: absolute;}
+    .datagrid-order s, .datagrid-order i { line-height:0; font-size:0; border:6px dashed transparent;}
+    .datagrid-order-asc { top: -14px;}
+    .datagrid-order-asc i { border-bottom-style:solid; border-bottom-color:#ccc;}
+    .datagrid-order-asc.s-crt i { border-bottom-color:#46679e;}
+    .datagrid-order-desc { bottom: 7px;}
+    .datagrid-order-desc i { border-top-style:solid; border-top-color:#ccc;}
+    .datagrid-order-desc.s-crt i { border-top-color:#46679e;}
+    .datagrid-order-both .datagrid-order-asc { top:-18px;}
+    .datagrid-order-both .datagrid-order-desc { bottom:2px;}
+    .datagrid-paging {
+        height: 22px;
+        padding: 10px 0;
+    }
+    .nui-paging {
+        float: right;
+    }
+    .ui-paging {
+        margin-right: 10px
+    }
+    .ui-paging-number {
+        margin-right: 10px;
+    }
+}

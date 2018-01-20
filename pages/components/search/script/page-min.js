@@ -1416,7 +1416,7 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  */
 
 __define('lib/components/search',['lib/core/component', 'lib/core/util'], function(component, util){
-    this.imports('../style/components/search/index');
+    this.imports('../assets/components/search/index');
     return this.extend(component, {
         _static:{
             _init:function(){
@@ -1552,6 +1552,11 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
              * @type <Object>
              */
             tag:{
+                /**
+                 * @func 标签皮肤
+                 * @type <String>
+                 */
+                skin:'',
                 /**
                  * @func 是否多选
                  * @type <Boolean>
@@ -1692,11 +1697,11 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
         _template:{
             wrap:
                 '<div class="<% className %>"<%if style%> style="<%include \'style\'%>"<%/if%>>'+
-                    '<div class="com-search-body<%if tabs.length > 1%> com-search-body-tab<%/if%>">'+
+                    '<div class="con-search-body<%if tabs.length > 1%> con-search-body-tab<%/if%>">'+
                         '<%include "tabs"%>'+
-                        '<div class="com-search-inner">'+
+                        '<div class="con-search-inner">'+
                             '<%each tabs%>'+
-                                '<div class="com-search-content<%if $index === 0%> com-search-result<%/if%>" style="display:none;"></div>'+
+                                '<div class="con-search-content<%if $index === 0%> con-search-result<%/if%>" style="display:none;"></div>'+
                             '<%/each%>'+
                         '</div>'+
                     '</div>'+
@@ -1705,7 +1710,7 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
             result:
                 '<%if data && data.length%>'+
                     '<%if head && value%>'+
-                        '<div class="com-search-detail">'+
+                        '<div class="con-search-detail">'+
                             '<%include "head"%>'+
                             '<%include "list"%>'+
                         '</div>'+
@@ -1716,28 +1721,28 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
                     '<%include "empty"%>'+
                 '<%/if%>',
             list:
-                '<ul class="com-search-list">'+
+                '<ul class="con-search-list">'+
                     '<%each data $data $index%>'+
                         '<%include "item"%>'+
                     '<%/each%>'+
                 '</ul>',
             tabs:
                 '<%if tabs.length > 1%>'+
-                    '<div class="com-search-tab">'+
+                    '<div class="con-search-tab">'+
                         '<%each tabs tab%>'+
-                            '<span class="com-search-tab-nav"<%if $index === 0%> style="display:none;"<%/if%>><%tab.title%></span>'+
+                            '<span class="con-search-tab-nav"<%if $index === 0%> style="display:none;"<%/if%>><%tab.title%></span>'+
                         '<%/each%>'+
                     '</div>'+
                 '<%/if%>',
             tag:
-                '<span class="nui-tag">'+
-                    '<em class="nui-tag-text"<%if title%> title="<%text%>"<%/if%>><%text%></em>'+
+                '<span class="nui-tag<%if skin%> nui-tag-<%skin%><%/if%>">'+
+                    '<em class="con-tag-text"<%if title%> title="<%text%>"<%/if%>><%text%></em>'+
                     '<%if close%>'+
-                    '<b class="nui-tag-close"><%close%></b>'+
+                    '<b class="con-tag-close"><%close%></b>'+
                     '<%/if%>'+
                     '<%if fields?? && fields%>'+
                         '<%each fields%>'+
-                            '<input type="hidden" class="com-search-hidden" name="<%$index%>" value="<%$value%>">'+
+                            '<input type="hidden" name="<%$index%>" value="<%$value%>">'+
                         '<%/each%>'+
                     '<%/if%>'+
                 '</span>'
@@ -1745,10 +1750,10 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
         _events:{
             'mouseenter':'_searchMouseover',
             'mouseleave':'_searchMouseout',
-            'mouseenter .com-search-item':'_searchMouseover _itemMouseover',
-            'mouseleave .com-search-item':'_itemMouseout',
-            'click .com-search-item':'_select',
-            'click .com-search-tab-nav':'_toggle'
+            'mouseenter .con-search-item':'_searchMouseover _itemMouseover',
+            'mouseleave .con-search-item':'_itemMouseout',
+            'click .con-search-item':'_select',
+            'click .con-search-tab-nav':'_toggle'
         },
         _toggle:function(e, elem){
             var self = this, opts = self._options, index = elem.index();
@@ -2009,7 +2014,7 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
                 self._on('mouseout', self.$tagContainer, '.nui-tag', function(){
                     delete self._hover
                 })
-                self._on('click', self.$tagContainer, '.nui-tag-close', function(e, elem){
+                self._on('click', self.$tagContainer, '.nui-tag > .con-tag-close', function(e, elem){
                     elem.closest('.nui-tag').remove();
                     self._setTagsData();
                     delete self._hover;
@@ -2042,14 +2047,14 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
             self._setElemData();
 
             self.$body = self.element.children();
-            self.$inner = self.$body.children('.com-search-inner');
-            self.$result = self.$inner.children('.com-search-result');
+            self.$inner = self.$body.children('.con-search-inner');
+            self.$result = self.$inner.children('.con-search-result');
 
             self._elemData[0].$elem = $();
             self._elemData[0].$container = self.$result;
             
             if(self._isTab){
-                var tabs = self.$body.children('.com-search-tab').children();
+                var tabs = self.$body.children('.con-search-tab').children();
                 var containers = self.$inner.children();
                 Nui.each(self._elemData, function(v, i){
                     v.$elem = tabs.eq(i);
@@ -2074,18 +2079,18 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
 
             if(typeof content !== 'string'){
                 if(name === 'item' && opts.field){
-                    content = '<li class="com-search-item<%selected($data)%>" data-index="<%$index%>"><%$data["'+ opts.field +'"]??%></li>'
+                    content = '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>"><%$data["'+ opts.field +'"]??%></li>'
                 }
                 else{
                     content = ''
                 }
             }
             else if(name === 'item' && content && !/^\s*\<li\s+/i.test(content)){
-                content = '<li class="com-search-item<%selected($data)%>" data-index="<%$index%>">'+ content +'</li>'
+                content = '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>">'+ content +'</li>'
             }
 
             if(name !== 'item' && content){
-                content = '<div class="com-search-'+ name +'">'+ content +'</div>'
+                content = '<div class="con-search-'+ name +'">'+ content +'</div>'
             }
 
             self._template[name] = content;
@@ -2133,7 +2138,7 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
             }
             else{
                 self.$tags.each(function(){
-                    self.tagData.push($(this).children('.nui-tag-text').text())
+                    self.tagData.push($(this).children('.con-tag-text').text())
                 })
             }
             if(!Nui.type(self.tagData, 'Array')){
@@ -2345,7 +2350,7 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
          * }
          * @param dele <Boolean>
          */
-        value:function(data, cancel){
+        value:function(data, dele){
             var self = this, target = self.target, opts = self._options, name = self.constructor.__component_name;
             if(target){
                 if(typeof data === 'string'){
@@ -2369,7 +2374,7 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
                                 del = self._tag.deleteBasis.call(opts, self, _data, $elem)
                             }
                             else {
-                                del = _data.text === Nui.trim($elem.children('.nui-tag-text').text())
+                                del = _data.text === Nui.trim($elem.children('.con-tag-text').text())
                             }
                             if(del === true || del === null){
                                 if(del === true){
@@ -2386,6 +2391,7 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
                     if(dele !== true && !exist && _data.text){
                         _data.title = self._tag.title || false;
                         _data.close = self._tag.close || false;
+                        _data.skin = self._tag.skin || '';
                         self.$tagContainer.append(self._tpl2html('tag', _data))
                     }
                     self._setTagsData();
@@ -2414,10 +2420,12 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
         }
     })
 }); 
-__define('./script/page',function(require){
+__define('./script/page',function(require, imports){
+    imports('../style/base');
     var suggest = require('lib/components/search');
     var util = require('lib/core/util');
     var data = require('pages/components/search/script/data');
+    
 
     $('.search').focus(function(){
         $(this).search({
@@ -2515,7 +2523,7 @@ __define('./script/page',function(require){
                 })
             },
             item:function(){    
-                return '<li class="com-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
+                return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
             },
             query:function(self, value){
                 return {

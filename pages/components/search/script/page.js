@@ -1,7 +1,9 @@
-Nui.define(function(require){
+Nui.define(function(require, imports){
+    imports('../style/base');
     var suggest = require('{com}/search');
     var util = require('util');
     var data = require('./data');
+    
 
     $('.search').focus(function(){
         $(this).search({
@@ -99,7 +101,7 @@ Nui.define(function(require){
                 })
             },
             item:function(){    
-                return '<li class="com-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
+                return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
             },
             query:function(self, value){
                 return {
