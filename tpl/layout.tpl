@@ -36,7 +36,11 @@
 
     {% include 'script.tpl' %}
     
-    
+    <script type="text/javascript">
+	Nui.load('{script}/base-min', function(page){
+        page.init()
+    })
+    </script>
     {% block assets %}{% endblock %}
     <script type="text/javascript">
     {% block script %}{% endblock %}

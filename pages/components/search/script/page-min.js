@@ -2858,9 +2858,9 @@ __define('lib/components/search',function(require, imports){
                     data.onShow.call(opts, self, elem, container)
                 }
                 self._activeTab = data;
-                if(e){
-                    self.resize()
-                }
+                // if(e){
+                //     self.resize()
+                // }
             }
         },
         _searchMouseover:function(e, elem){
@@ -3653,4 +3653,4 @@ __define('./script/page',function(require, imports){
 })
 
 
-})(Nui['_module_1_define']);
+})(Nui['_module_2_define']);

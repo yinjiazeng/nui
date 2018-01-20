@@ -2987,4 +2987,4 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	})
 });
 
-})(Nui['_module_1_define']);
+})(Nui['_module_2_define']);
