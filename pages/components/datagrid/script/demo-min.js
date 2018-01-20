@@ -1412,8 +1412,9 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
 __define('lib/components/paging',['lib/core/component'], function(component){
     
 })
-__define('lib/components/datagrid',function(require){
-    var module = this;
+__define('lib/components/datagrid',function(require, imports){
+    imports('../assets/components/datagrid/index');
+    
     var component = require('lib/core/component');
     var util = require('lib/core/util');
     var paging = require('lib/components/paging');
@@ -1429,7 +1430,7 @@ __define('lib/components/datagrid',function(require){
         return oldWidth - newWidth;
     })()
 
-    return module.extend(component, {
+    return this.extend(component, {
         _static:{
             _init:function(){
                 var self = this;

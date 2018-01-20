@@ -1064,11 +1064,28 @@ input:-webkit-autofill {
   border-left: none;
   border-right: none;
 }
+.ui-tag {
+  display: inline-block;
+  padding: 0 5px;
+  height: 24px;
+  line-height: 24px;
+  background-color: #3D83E9;
+  color: #fff;
+}
+.ui-tag.ui-tag-circle {
+  border-radius: 999px;
+}
 .ui-void {
   display: inline-block;
   width: 83px;
   height: 83px;
-  background: url("../../../../lib/style/elements/img/void.png?v=01ee8b8") no-repeat center;
+  background: url("../../../../lib/assets/images/void.png?v=01ee8b8") no-repeat center;
+}
+.ui-tine {
+  display: inline-block;
+  line-height: 0;
+  font-size: 0;
+  border: 6px dashed transparent;
 }
 .nui-layer {
   position: absolute;

@@ -1,5 +1,5 @@
 Nui.define(function(require, imports){
-    var suggest = require('{com}/search');
+    var search = require('{com}/search');
     var util = require('util');
     var data = require('./data');
     
@@ -37,7 +37,7 @@ Nui.define(function(require, imports){
             },
             tag:{
                 multiple:true,
-                close:'<i class="iconfont">x</i>',
+                close:' <i class="iconfont">x</i>',
                 container:'#box',
                 dele:true
             },

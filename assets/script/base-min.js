@@ -1413,8 +1413,9 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  * @description 语法高亮组件
  */
 
-__define('lib/components/highlight/highlight',function(){
-    this.imports('../../assets/components/highlight/index');
+__define('lib/components/highlight/highlight',function(require, imports){
+    imports('../../assets/components/highlight/index');
+    
     return this.extend('lib/core/component', {
         _static:{
             _init:function(){

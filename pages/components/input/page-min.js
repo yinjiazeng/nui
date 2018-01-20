@@ -1413,9 +1413,12 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  * @description layer弹出层
  */
 
-__define('lib/components/layer/layer',['lib/core/component', 'lib/core/util', 'lib/core/template'], function(component, util, template){
-    var module = this;
-    this.imports('../../style/components/layer/index');
+__define('lib/components/layer/layer',function(require, imports){
+    imports('../../assets/components/layer/index');
+    
+    var component = require('lib/core/component');
+    var util = require('lib/core/util');
+    var template = require('lib/core/template');
 
     var statics = {
         _maskzIndex:10000,
