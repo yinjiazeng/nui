@@ -10,4 +10,4 @@ __define('{script}/index',function(){
 })
 
 
-})(Nui['_module_2_define']);
+})(Nui['_module_1_define']);

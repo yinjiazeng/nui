@@ -1,21 +1,21 @@
 .nui-search {
     position: absolute;
-    border: 1px solid #ccc;
 }
 .nui-search .con-search-body {
-    height: 200px;
+    border: 1px solid #ccc;
     background-color: #fff;
+    
 }
-.nui-search .con-search-item {
-    padding-left: 10px;
-    height: 25px;
-    line-height: 25px;
+.nui-search .con-search-body-tab {
+    overflow: hidden;
+    min-height: 190px;
 }
-.nui-search .con-search-tab, 
-.nui-search .con-search-inner {
-    height: 100%;
+.nui-search .con-search-body-tab .con-search-tab, 
+.nui-search .con-search-body-tab .con-search-inner {
+    padding-bottom: 9999px;
+    margin-bottom: -9999px;
 }
-.nui-search .con-search-head {
+.nui-search .con-search-prompt {
     height: 40px;
     line-height: 18px;
     padding: 0 0 0 8px;
@@ -31,11 +31,12 @@
     background-color: #e6e6e6;
 }
 .nui-search .con-search-list {
-    height: 200px;
     overflow: auto;
 }
-.nui-search .con-search-detail .con-search-list {
-    height: 160px;
+.nui-search .con-search-item {
+    padding-left: 10px;
+    height: 25px;
+    line-height: 25px;
 }
 .nui-search .con-search-tab-nav {
     display: block;

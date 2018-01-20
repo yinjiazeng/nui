@@ -1416,9 +1416,12 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  * @description layer弹出层
  */
 
-__define('lib/components/layer/layer',['lib/core/component', 'lib/core/util', 'lib/core/template'], function(component, util, template){
-    var module = this;
-    this.imports('../../style/components/layer/index');
+__define('lib/components/layer/layer',function(require, imports){
+    imports('../../assets/components/layer/index');
+    
+    var component = require('lib/core/component');
+    var util = require('lib/core/util');
+    var template = require('lib/core/template');
 
     var statics = {
         _maskzIndex:10000,
@@ -2470,7 +2473,6 @@ __define('lib/core/request',function(require){
 
     return request
 })
-
 /**
  * @author Aniu[2017-12-23 16:50]
  * @update Aniu[2017-12-23 16:50]
@@ -2480,8 +2482,9 @@ __define('lib/core/request',function(require){
 
 __define('lib/components/search',function(require, imports){
     imports('../assets/components/search/index');
+    
     var component = require('lib/core/component');
-    var component = require('lib/core/utilt');
+    var util = require('lib/core/util');
     var request = require('lib/core/request');
 
     return this.extend(component, {
@@ -2539,13 +2542,13 @@ __define('lib/components/search',function(require, imports){
              */
             empty:'',
             /**
-             * @func 定义顶部模版
+             * @func 定义提示信息模版
              * @type <String>
              * @type <Function>
              * @param self <Object> 组件实例对象
-             * @return <String> 返回顶部模版
+             * @return <String> 返回提示信息模版
              */
-            head:'',
+            prompt:'',
             /**
              * @func 定义底部模版
              * @type <String>
@@ -2585,7 +2588,7 @@ __define('lib/components/search',function(require, imports){
              * @func 下拉列表的数量，超过出现滚动条
              * @type <Number>
              */
-            limit:5,
+            limit:6,
             /**
              * @func 增加高宽
              * @type <Object>
@@ -2776,14 +2779,10 @@ __define('lib/components/search',function(require, imports){
                 '</div>',
             result:
                 '<%if data && data.length%>'+
-                    '<%if head && value%>'+
-                        '<div class="con-search-detail">'+
-                            '<%include "head"%>'+
-                            '<%include "list"%>'+
-                        '</div>'+
-                    '<%else%>'+
-                        '<%include "list"%>'+
+                    '<%if prompt && value%>'+
+                        '<%include "prompt"%>'+
                     '<%/if%>'+
+                    '<%include "list"%>'+
                 '<%elseif value%>'+
                     '<%include "empty"%>'+
                 '<%/if%>',
@@ -2802,7 +2801,7 @@ __define('lib/components/search',function(require, imports){
                     '</div>'+
                 '<%/if%>',
             tag:
-                '<span class="nui-tag<%if skin%> nui-tag-<%skin%><%/if%>">'+
+                '<span class="ui-tag<%if skin%> ui-tag-<%skin%><%/if%>">'+
                     '<em class="con-tag-text"<%if title%> title="<%text%>"<%/if%>><%text%></em>'+
                     '<%if close%>'+
                     '<b class="con-tag-close"><%close%></b>'+
@@ -2859,6 +2858,9 @@ __define('lib/components/search',function(require, imports){
                     data.onShow.call(opts, self, elem, container)
                 }
                 self._activeTab = data;
+                if(e){
+                    self.resize()
+                }
             }
         },
         _searchMouseover:function(e, elem){
@@ -3073,16 +3075,16 @@ __define('lib/components/search',function(require, imports){
             })
 
             if(self.$tagContainer){
-                self._on('mouseover', self.$tagContainer, '.nui-tag', function(){
+                self._on('mouseover', self.$tagContainer, '.ui-tag', function(){
                     if(self._show){
                         self._hover = true
                     }
                 })
-                self._on('mouseout', self.$tagContainer, '.nui-tag', function(){
+                self._on('mouseout', self.$tagContainer, '.ui-tag', function(){
                     delete self._hover
                 })
-                self._on('click', self.$tagContainer, '.nui-tag > .con-tag-close', function(e, elem){
-                    elem.closest('.nui-tag').remove();
+                self._on('click', self.$tagContainer, '.ui-tag > .con-tag-close', function(e, elem){
+                    elem.closest('.ui-tag').remove();
                     self._setTagsData();
                     delete self._hover;
                     if(!self._show){
@@ -3230,7 +3232,7 @@ __define('lib/components/search',function(require, imports){
 
             self._defaultTab = null;
 
-            Nui.each(['item', 'empty', 'head', 'foot'], function(name){
+            Nui.each(['item', 'empty', 'prompt', 'foot'], function(name){
                 self._initTemplate(name);
             })
 
@@ -3274,6 +3276,30 @@ __define('lib/components/search',function(require, imports){
             }
             return selected
         },
+        _setHeight:function(){
+            var self = this, opts = self._options, len = self.queryData.length;
+            if(len > 0 && opts.limit > 0){
+                var height = 0;
+                var $list = self.$result.children('.con-search-list');
+                if(!self._itemHeight){
+                    if($list.length){
+                        self._itemHeight = height = $list.children(':eq(0)').outerHeight()
+                    }
+                }
+                else{
+                    height = self._itemHeight
+                }
+                if(height){
+                    if(len > opts.limit){
+                        height *= opts.limit
+                    }
+                    else{
+                        height *= len
+                    }
+                    $list.height(height)
+                }
+            }
+        },
         _render:function(input){
             var self = this, opts = self._options, _class = self.constructor, result = self._elemData[0];
             result.$elem.hide();
@@ -3285,13 +3311,14 @@ __define('lib/components/search',function(require, imports){
                     data:self.queryData,
                     value:self.val,
                     selected:self._getSelected(),
-                    head:!!self._template.head
+                    prompt:!!self._template.prompt
                 }));
                 result.$elem.show();
                 if(self._defaultTab){
                     self._defaultTab.$elem.hide()
                 }
-                self._toggle(null, result.$elem)
+                self._toggle(null, result.$elem);
+                self._setHeight();
             }
             else if(self._defaultTab){
                 self._toggle(null, self._defaultTab.$elem.show())
@@ -3396,12 +3423,17 @@ __define('lib/components/search',function(require, imports){
             var self = this, _class = self.constructor;
             delete self._hover;
             delete self._show;
+            delete self._itemHeight;
             if(_class._active === self){
                 delete _class._active
             }
             if(self.element){
                 self.element.hide()
             }
+        },
+        destroy:function(){
+            this.hide();
+            component.destroy.call(this);
         },
         /**
          * @func 设置文本框内容值或者添加tag标签
@@ -3488,7 +3520,7 @@ __define('lib/components/search',function(require, imports){
     })
 }); 
 __define('./script/page',function(require, imports){
-    var suggest = require('lib/components/search');
+    var search = require('lib/components/search');
     var util = require('lib/core/util');
     var data = require('pages/components/search/script/data');
     
@@ -3503,7 +3535,7 @@ __define('./script/page',function(require, imports){
             nullable:true,
             //cache:true,
             //focus:true,
-            head:'正在搜索<%value%>',
+            prompt:'正在搜索<%value%>',
             events:{
                 'click .item':function(e, elem){
                     this.self.value(elem.text())
@@ -3512,12 +3544,15 @@ __define('./script/page',function(require, imports){
                     this.self.value(elem.val())
                 }
             },
-            // match:{
-            //     field:'buname',
-            //     like:function(data, value){
-            //         return data.indexOf(value) !== -1
-            //     }
-            // },
+            match:{
+                field:'buname',
+                like:function(data, value){
+                    if(value == 1){
+                        return true
+                    }
+                    return data.indexOf(value) !== -1
+                }
+            },
             offset:{
                 
             },
@@ -3526,7 +3561,7 @@ __define('./script/page',function(require, imports){
             },
             tag:{
                 multiple:true,
-                close:'<i class="iconfont">x</i>',
+                close:' <i class="iconfont">x</i>',
                 container:'#box',
                 dele:true
             },
@@ -3618,4 +3653,4 @@ __define('./script/page',function(require, imports){
 })
 
 
-})(Nui['_module_2_define']);
+})(Nui['_module_1_define']);

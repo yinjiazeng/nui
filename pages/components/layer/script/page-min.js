@@ -2242,4 +2242,4 @@ __define('./script/page',['lib/components/layer/layer', 'lib/core/events'], func
     })
 })
 
-})(Nui['_module_2_define']);
+})(Nui['_module_1_define']);

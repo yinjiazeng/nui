@@ -14,7 +14,7 @@ Nui.define(function(require, imports){
             nullable:true,
             //cache:true,
             //focus:true,
-            head:'正在搜索<%value%>',
+            prompt:'正在搜索<%value%>',
             events:{
                 'click .item':function(e, elem){
                     this.self.value(elem.text())
@@ -23,12 +23,15 @@ Nui.define(function(require, imports){
                     this.self.value(elem.val())
                 }
             },
-            // match:{
-            //     field:'buname',
-            //     like:function(data, value){
-            //         return data.indexOf(value) !== -1
-            //     }
-            // },
+            match:{
+                field:'buname',
+                like:function(data, value){
+                    if(value == 1){
+                        return true
+                    }
+                    return data.indexOf(value) !== -1
+                }
+            },
             offset:{
                 
             },

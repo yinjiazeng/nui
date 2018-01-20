@@ -2294,4 +2294,4 @@ __define('./script/events/page',['lib/core/template', 'lib/core/events', 'lib/co
     evt.render()
 })
 
-})(Nui['_module_2_define']);
+})(Nui['_module_1_define']);
