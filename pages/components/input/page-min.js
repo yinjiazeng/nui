@@ -2490,7 +2490,7 @@ __define('lib/components/input',['lib/components/placeholder'], function(placeho
                 '<span style="<%include \'style\'%>">'+
                 '<%each button%>'+
                     '<%var style = $value.style%>'+
-                    '<i style="<%include \'style\'%>" class="input-button input-<%$value.id%> input-button-<%type%>'+
+                    '<i style="<%include \'style\'%>" class="con-input-button con-input-<%$value.id%> con-input-type-<%type%>'+
                     '<%if $value.iconfont%> '+
                     '<%$value.iconfont === true ? "iconfont" : $value.iconfont%>'+
                     '<%/if%>'+
@@ -2517,17 +2517,20 @@ __define('lib/components/input',['lib/components/placeholder'], function(placeho
                 '<%/if%>'
         },
         _events:{
-            'click .input-clear':'_clear',
-            'click .input-reveal':'_reveal',
+            'click .con-input-clear':'_clear',
+            'click .con-input-reveal':'_reveal',
             'mouseenter':'_mouseover',
             'mouseleave':'_mouseout'
         },
         _input:function(){
-            placeholder.exports._input.call(this);
-            var self = this, opts = this._options, val = self.target.val();
-            var isHide = (!opts.equal && val === self._text) || !val;
-            var type = !isHide ? 'show' : 'hide';
-            self._hideElem[type]()
+            var self = this;
+            placeholder.exports._input.call(self);
+            if(self._hideElem){
+                var opts = this._options, val = self.target.val();
+                var isHide = (!opts.equal && val === self._text) || !val;
+                var type = !isHide ? 'show' : 'hide';
+                self._hideElem[type]()
+            }
         },
         _mouseover:function(){
             var target = this.target;
@@ -2609,9 +2612,9 @@ __define('lib/components/input',['lib/components/placeholder'], function(placeho
                 delete btn.style.display;
                 btn.style.display = btn.show === true || (self._val && !readonly) ? 'inline' : 'none';
                 if(btn.show !== true){
-                    hides.push('.input-'+btn.id)
+                    hides.push('.con-input-'+btn.id)
                     if(btn.hover === true){
-                        hovers.push('.input-'+btn.id)
+                        hovers.push('.con-input-'+btn.id)
                     }
                 }
                 self._bindEvent(btn)
@@ -2626,11 +2629,11 @@ __define('lib/components/input',['lib/components/placeholder'], function(placeho
                 self[method] = function(e, elem){
                     btn.callback.call(opts, self, e, elem)
                 }
-                var methods = self._events['click .input-'+btn.id];
+                var methods = self._events['click .con-input-'+btn.id];
                 if(methods){
                     method = Nui.trim(methods.split(method)[0]) + ' ' + method
                 }
-                self._events['click .input-'+btn.id] = method;
+                self._events['click .con-input-'+btn.id] = method;
             }
         },
         _createElems:function(){
@@ -2688,7 +2691,7 @@ __define('lib/components/input',['lib/components/placeholder'], function(placeho
             else{
                 this.target.attr('type', type);
             }
-            elem.removeClass('input-button-text input-button-password').addClass('input-button-' + type);
+            elem.removeClass('con-input-type-text con-input-type-password').addClass('con-input-type-' + type);
             if(data.content && typeof data.content === 'object'){
                 elem.html(data.content[type]||'')
             }

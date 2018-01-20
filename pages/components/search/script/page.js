@@ -1,14 +1,30 @@
 Nui.define(function(require, imports){
     var search = require('{com}/search');
+    var input = require('{com}/input');
     var util = require('util');
     var data = require('./data');
     
-    $('.search').focus(function(){
+    $('#demo').focus(function(){
+        $(this).search({
+            field:'buname',
+            empty:'<%value%> 暂无数据',
+            data:data,
+            foot:'<a>点击我</a>',
+            nullable:true,
+            match:{
+                field:'buname',
+                like:function(data, value){
+                    return data.indexOf(value) !== -1
+                }
+            },
+        }).search('show')
+    })
+
+    $('#search').focus(function(){
         $(this).search({
             //url:'http://127.0.0.1:8001/data/?callback=?',
             field:'buname',
             empty:'<%value%> 暂无数据',
-            selectContainer:'#box',
             data:data,
             //foot:'<a>aaaaaaaa</a>',
             nullable:true,

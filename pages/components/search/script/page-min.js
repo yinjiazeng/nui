@@ -572,6 +572,71 @@ __define('lib/core/util',function(require){
     })
 })
 
+__define('lib/core/events',function(){
+    return function(opts){
+        var self = this, that = opts || self,
+            constr = that.constructor,
+            isComponent = constr && constr.__component_name,
+            elem = self.element || that.element || Nui.doc, 
+            events = isComponent ? that._events : that.events;
+        if(!elem || !events){
+            return that
+        }
+
+        if(typeof events === 'function'){
+            events = events.call(that)
+        }
+
+        if(!(elem instanceof jQuery)){
+            elem = jQuery(elem)
+        }
+
+        var evt, ele, ret;
+        var callback = function(e, elem, cbs){
+            if(typeof cbs === 'function'){
+                cbs.call(that, e, elem);
+            }
+            else{
+                var _cb, _that;
+                Nui.each(cbs, function(cb, i){
+                    if(typeof (_cb = that[cb]) === 'function'){
+                        _that = that;
+                    }
+                    else if(typeof (_cb = self[cb]) === 'function'){
+                        _that = self;
+                    }
+                    if(_that){
+                        return ret = _cb.call(_that, e, elem, ret);
+                    }
+                })
+            }
+        }
+
+        Nui.each(events, function(cbs, evts){
+            if(cbs && (typeof cbs === 'string' || typeof cbs === 'function')){
+                if(typeof cbs === 'string'){
+                    cbs = Nui.trim(cbs).split(/\s+/);
+                }
+                evts = Nui.trim(evts).split(/\s+/);
+                // keyup:kupdown:focus a => elem.on('keyup kupdown focus', 'a', callback)
+                evt = evts.shift().replace(/:/g, ' ');
+                ele = evts.join(' ');
+                //组件内部处理
+                if(isComponent){
+                    that._on(evt, elem, ele, function(e, elem){
+                        callback(e, elem, cbs)
+                    })
+                }
+                else{
+                    elem.on(evt, ele, function(e){
+                        callback(e, jQuery(this), cbs)
+                    })
+                }
+            }
+        })
+        return that
+    }
+})
 /**
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-01-12 04:33]
@@ -875,71 +940,6 @@ __define('lib/core/template',['lib/core/util'], function(util){
     return template
 })
 
-__define('lib/core/events',function(){
-    return function(opts){
-        var self = this, that = opts || self,
-            constr = that.constructor,
-            isComponent = constr && constr.__component_name,
-            elem = self.element || that.element || Nui.doc, 
-            events = isComponent ? that._events : that.events;
-        if(!elem || !events){
-            return that
-        }
-
-        if(typeof events === 'function'){
-            events = events.call(that)
-        }
-
-        if(!(elem instanceof jQuery)){
-            elem = jQuery(elem)
-        }
-
-        var evt, ele, ret;
-        var callback = function(e, elem, cbs){
-            if(typeof cbs === 'function'){
-                cbs.call(that, e, elem);
-            }
-            else{
-                var _cb, _that;
-                Nui.each(cbs, function(cb, i){
-                    if(typeof (_cb = that[cb]) === 'function'){
-                        _that = that;
-                    }
-                    else if(typeof (_cb = self[cb]) === 'function'){
-                        _that = self;
-                    }
-                    if(_that){
-                        return ret = _cb.call(_that, e, elem, ret);
-                    }
-                })
-            }
-        }
-
-        Nui.each(events, function(cbs, evts){
-            if(cbs && (typeof cbs === 'string' || typeof cbs === 'function')){
-                if(typeof cbs === 'string'){
-                    cbs = Nui.trim(cbs).split(/\s+/);
-                }
-                evts = Nui.trim(evts).split(/\s+/);
-                // keyup:kupdown:focus a => elem.on('keyup kupdown focus', 'a', callback)
-                evt = evts.shift().replace(/:/g, ' ');
-                ele = evts.join(' ');
-                //组件内部处理
-                if(isComponent){
-                    that._on(evt, elem, ele, function(e, elem){
-                        callback(e, elem, cbs)
-                    })
-                }
-                else{
-                    elem.on(evt, ele, function(e){
-                        callback(e, jQuery(this), cbs)
-                    })
-                }
-            }
-        })
-        return that
-    }
-})
 /**
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
@@ -1409,6 +1409,499 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
     })
 })
 
+/**
+ * @author Aniu[2016-11-10 22:39]
+ * @update Aniu[2017-12-22 10:17]
+ * @version 1.0.1
+ * @description 输入框占位符
+ */
+
+__define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], function(component, util){
+    var supportPlaceholder = util.supportHtml5('placeholder', 'input');
+    return this.extend(component, {
+        _options:{
+            /**
+             * @func 输入框占位提示文本，若元素上含有placeholder属性将会覆盖该值
+             * @type <String>
+             */
+            text:'',
+            /**
+             * @func 是否启用动画形式展示
+             * @type <Boolean>
+             */
+            animate:false,
+            /**
+             * @func 输入框值是否可以和占位符相同
+             * @type <Boolean>
+             */
+            equal:true,
+            /**
+             * @func 销毁或者重置组件是否还原默认值
+             * @type <Boolean>
+             */
+            restore:true,
+            /**
+             * @func 占位符文本颜色
+             * @type <String>
+             */
+            color:'#ccc',
+            /**
+             * @func 调用value方法后执行回调
+             * @type <Function>
+             */
+            onChange:null
+        },
+        _template:{
+            wrap:'<strong class="<% className %>" style="<%include \'style\'%>" />',
+            elem:'<b style="<%include \'style\'%>"><%text%></b>'
+        },
+        _events:{
+            'click b':'_focus',
+            'focus :input':'_indent',
+            'blur :input':'_blur _input',
+            'keyup :input':'_input'
+        },
+        _data:{},
+        _exec:function(){
+            var self = this, opts = self._options, target = self._getTarget();
+            if(target){
+                var text = self._defaultText = target.attr('placeholder');
+                if(!self._defaultText && opts.text){
+                    target.attr('placeholder', text = opts.text)
+                }
+                self._val = target.val();
+                if(self._defaultValue === undefined){
+                    self._defaultValue = self._val;
+                }
+                self._text = Nui.trim(text||'');
+                self._setData();
+                self._create()
+            }
+        },
+        _setData:function(){
+            var self = this, _class = self.constructor;
+            var isText = self.target.is('textarea');
+            var height = self.target.height();
+            self._data = {
+                top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
+                height:isText ? 'auto' : height+'px',
+                position:'absolute',
+                'line-height':isText ? 'normal' : height+'px'
+            }
+        },
+        _create:function(){
+            var self = this, opts = self._options, _class = self.constructor;
+            if(self._condition()){
+                var data = self._tplData();
+                data.style = {
+                    'position':'relative',
+                    'display':'inline-block',
+                    'width':self.target.outerWidth()+'px',
+                    'overflow':'hidden',
+                    'cursor':'text'
+                }
+                self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
+                self._createElems();
+                self._event()
+            }
+            else if(self._text && opts.color){
+                self._setStyle()
+            }
+        },
+        _focus:function(){
+            this.target.focus()
+        },
+        _blur:function(){
+            delete this.constructor._active;
+        },
+        _indent:function(){
+            var _class = this.constructor;
+            if(this._options.animate && this.$text){
+                _class._active = this.target;
+                this.$text.stop(true, false).animate({left:this._pLeft+10, opacity:'0.5'});
+            }
+        },
+        _input:function(){
+            var val = this.target.val(), _class = this.constructor;
+            if((!this._options.equal && val === this._text) || !val){
+                this.target.val('');
+                if(this.$text){
+                    this.$text.show();
+                    if(this._options.animate){
+                        if(_class._active){
+                            this.$text.css({left:this._pLeft+10, opacity:'0.5'})
+                        }
+                        else{
+                            this.$text.stop(true, false).animate({left:this._pLeft, opacity:'1'})
+                        }
+                    }
+                }
+            }
+            else if(this.$text){
+                this.$text.hide()
+            }
+        },
+        _condition:function(){
+            return this._options.animate || !supportPlaceholder
+        },
+        _createElems:function(){
+            var opts = this._options;
+            if(this._text){
+                if(opts.animate || !supportPlaceholder){
+                    this.target.removeAttr('placeholder');
+                    this._createText();
+                }
+                else if(opts.color){
+                    this._setStyle()
+                }
+            }
+        },
+        _createText:function(){
+            var self = this, opts = self._options, _class = self.constructor;
+            self._pLeft = _class._getSize(this.target, 'l', 'padding') + _class._getSize(this.target, 'l');
+            self.$text = $(self._tpl2html('elem', {
+                text:self._text,
+                style:Nui.extend({
+                    left:_class._getSize(self.target, 'l', 'padding')+_class._getSize(self.target, 'l')+'px',
+                    color:opts.color,
+                    display:self._val ? 'none' : 'inline'
+                }, self._data)
+            })).appendTo(self.element)
+        },
+        _setStyle:function(){
+            var self = this, opts = self._options;
+            self.className = '_nui_'+ self.constructor.__component_name +'_'+self.__id;
+            self.target.addClass(self.className);
+            if(!self.constructor.style){
+                self._createStyle()
+            }
+            self._createRules()
+        },
+        _createStyle:function(){
+            var self = this;
+            var style = document.createElement('style');
+            document.head.appendChild(style);
+            self.constructor.style = style.sheet
+        },
+        _createRules:function(){
+            var self = this;
+            var sheet = self.constructor.style;
+            var id = self.__id;
+            try{
+                sheet.deleteRule(id)
+            }
+            catch(e){}
+            Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
+                var selector = '.'+self.className+v;
+                var rules = 'opacity:1; color:'+(self._options.color||'');
+                try{
+                    if('addRule' in sheet){
+                        sheet.addRule(selector, rules, id)
+                    }
+                    else if('insertRule' in sheet){
+                        sheet.insertRule(selector + '{' + rules + '}', id)
+                    }
+                }
+                catch(e){}
+            })
+        },
+        _reset:function(){
+            var self = this;
+            self._off();
+            if(self.$text){
+                self.$text.remove()
+            }
+            if(self.target){
+                self.target.removeClass(self.className);
+                if(self.element){
+                    self.target.unwrap();
+                    self.element = null
+                }
+                if(self._options.restore === true){
+                    self.target.val(self._defaultValue)
+                }
+                if(self._defaultText){
+                    self.target.attr('placeholder', self._defaultText)
+                }
+                else{
+                    self.target.removeAttr('placeholder')
+                }
+            }
+        },
+        value:function(val){
+            var _class = this.constructor, target = this.target;
+            if(arguments.length){
+                target.val(val)
+            }
+            this._input();
+            this._callback('Change');
+        }
+    })
+})
+
+/**
+ * @author Aniu[2017-12-21 15:12]
+ * @update Aniu[2017-12-22 10:17]
+ * @version 1.0.1
+ * @description input增强
+ */
+
+__define('lib/components/input',['lib/components/placeholder'], function(placeholder){
+    return this.extend(placeholder, {
+        _options:{
+            /**
+             * @func 按钮文本是否是图标编码
+             * @type <Boolean,String>
+             */
+            iconfont:false,
+            /**
+             * @func 是否默认隐藏，鼠标悬停时才显示
+             * @type <Boolean>
+             */
+            hover:false,
+            /**
+             * @func 按钮始终显示
+             * @type <Boolean>
+             */
+            show:false,
+            /**
+             * @func 是否显示查看密码按钮
+             * @type <Boolean,String,Object>
+             */
+            reveal:null,
+            /**
+             * @func 是否显示清除按钮
+             * @type <Boolean,String,Object>
+             */
+            clear:null,
+            /**
+             * @func 按钮集合
+             * @type <Array>
+             */
+            button:null
+        },
+        _template:{
+            'button':
+                '<span style="<%include \'style\'%>">'+
+                '<%each button%>'+
+                    '<%var style = $value.style%>'+
+                    '<i style="<%include \'style\'%>" class="con-input-button con-input-<%$value.id%> con-input-type-<%type%>'+
+                    '<%if $value.iconfont%> '+
+                    '<%$value.iconfont === true ? "iconfont" : $value.iconfont%>'+
+                    '<%/if%>'+
+                    '"'+
+                    '<%if $value.title%> title="'+
+                        '<%if $value.title === true%>'+
+                            '<%include \'content\'%>'+
+                        '<%elseif typeof $value.title === "object"%>'+
+                            '<%$value.title[type]||""%>'+
+                        '<%else%>'+
+                            '<%$value.title%>'+
+                        '<%/if%>"'+
+                    '<%/if%>'+
+                    '>'+
+                    '<%include \'content\'%>'+
+                    '</i>'+
+                '<%/each%>'+
+                '</span>',
+            'content':
+                '<%if $value.content && typeof $value.content === "object"%>'+
+                '<%$value.content[type]||""%>'+
+                '<%else%>'+
+                '<%$value.content||""%>'+
+                '<%/if%>'
+        },
+        _events:{
+            'click .con-input-clear':'_clear',
+            'click .con-input-reveal':'_reveal',
+            'mouseenter':'_mouseover',
+            'mouseleave':'_mouseout'
+        },
+        _input:function(){
+            var self = this;
+            placeholder.exports._input.call(self);
+            if(self._hideElem){
+                var opts = this._options, val = self.target.val();
+                var isHide = (!opts.equal && val === self._text) || !val;
+                var type = !isHide ? 'show' : 'hide';
+                self._hideElem[type]()
+            }
+        },
+        _mouseover:function(){
+            var target = this.target;
+            if(!target.prop('readonly') && !target.prop('disabled') && target.val()){
+                this._hoverElem.show()
+            }
+        },
+        _mouseout:function(){
+            this._hoverElem.hide()
+        },
+        _condition:function(){
+            var opts = this._options;
+            if(
+                placeholder.exports._condition.call(this) || 
+                opts.clear || 
+                opts.reveal ||
+                opts.button
+            ){
+                return true
+            }
+        },
+        _createButton:function(hides, hovers){
+            var self = this, opts = self._options, button = [], defaults = {}, buttons = {}, caches = {};
+            var readonly = self.target.prop('readonly') || self.target.prop('disabled');
+
+            Nui.each(['reveal', 'clear'], function(id){
+                var btn = opts[id];
+                if(btn){
+                    if(typeof btn === 'boolean'){
+                        btn = {}
+                    }
+                    else if(typeof btn === 'string'){
+                        btn = {
+                            content:btn
+                        }
+                    }
+                    defaults[id] = Nui.extend(true, {}, btn, {id:id})
+                }
+            })
+
+            if(Nui.type(opts.button, 'Array')){
+                Nui.each(opts.button, function(val){
+                    if(val){
+                        if(typeof val === 'string'){
+                            val = {
+                                id:val
+                            }
+                        }
+                        var id = val.id, btn = val, def;
+                        if(!caches[id]){
+                            caches[id] = true;
+                            if(def = defaults[id]){
+                                btn = $.extend(true, {}, def, val);
+                                delete defaults[id]
+                            }
+                            button.push(btn)
+                        }
+                    }
+                })
+            }
+
+            Nui.each(defaults, function(val, id){
+                button.push(val)
+            })
+
+            Nui.each(button, function(btn){
+                if(btn.iconfont === undefined){
+                    btn.iconfont = opts.iconfont
+                }
+                if(btn.hover === undefined){
+                    btn.hover = opts.hover
+                }
+                if(btn.show === undefined){
+                    btn.show = opts.show
+                }
+                if(!btn.style){
+                    btn.style = {}
+                }
+                delete btn.style.display;
+                btn.style.display = btn.show === true || (self._val && !readonly) ? 'inline' : 'none';
+                if(btn.show !== true){
+                    hides.push('.con-input-'+btn.id)
+                    if(btn.hover === true){
+                        hovers.push('.con-input-'+btn.id)
+                    }
+                }
+                self._bindEvent(btn)
+            })
+
+            return self._button = button
+        },
+        _bindEvent:function(btn){
+            var self = this, opts = self._options;
+            if(typeof btn.callback === 'function'){
+                var method = '_callback_'+btn.id;
+                self[method] = function(e, elem){
+                    btn.callback.call(opts, self, e, elem)
+                }
+                var methods = self._events['click .con-input-'+btn.id];
+                if(methods){
+                    method = Nui.trim(methods.split(method)[0]) + ' ' + method
+                }
+                self._events['click .con-input-'+btn.id] = method;
+            }
+        },
+        _createElems:function(){
+            var self = this, opts = self._options, _class = self.constructor, hides = [], hovers = [];
+            placeholder.exports._createElems.call(self);
+            self.$button = $(self._tpl2html('button', {
+                button:self._createButton(hides, hovers),
+                iconfont:opts.iconfont,
+                type:self.target.attr('type') === 'password' ? 'password' : 'text',
+                style:Nui.extend({
+                    right:_class._getSize(self.target, 'r')+'px'
+                }, self._data)
+            })).appendTo(self.element);
+            self._hideElem = self.element.find(hides.toString());
+            self._hoverElem = self.element.find(hovers.toString());
+        },
+        _option:function(type){
+            var data = {};
+            Nui.each(this._button, function(v){
+                if(v.id === type){
+                    data = v;
+                    return false
+                }
+            })
+            return data
+        },
+        _clear:function(e, elem){
+            this.value('');
+            this.target.focus();
+            if(this._option('clear').show !== true){
+                elem.hide();
+            }
+        },
+        _reveal:function(e, elem){
+            var self = this, type = 'text', data = this._option('reveal');
+            if(this.target.attr('type') === 'text'){
+                type = 'password'
+            }
+            //IE8-不允许修改type，因此重新创建新元素
+            if(Nui.browser.msie && Nui.browser.version <= 8){
+                var html = self.target.prop('outerHTML');
+                var regexp = /(type=['"]?)(text|password)(['"]?)/i;
+                //IE6下input没有type="text"属性
+                if(!regexp.test(html)){
+                    html = html.replace(/^(<input)/i, '$1 type="'+ type +'"')
+                }   
+                else{
+                    html = html.replace(regexp, '$1'+type+'$3')
+                }
+                var newInput = $(html).insertAfter(self.target);
+                newInput.val(self.target.val());
+                self.target.remove();
+                self.target = newInput;
+            }
+            else{
+                this.target.attr('type', type);
+            }
+            elem.removeClass('con-input-type-text con-input-type-password').addClass('con-input-type-' + type);
+            if(data.content && typeof data.content === 'object'){
+                elem.html(data.content[type]||'')
+            }
+            if(data.title && typeof data.title === 'object'){
+                elem.attr('title', data.title[type]||'')
+            }
+        },
+        _reset:function(){
+            if(this.$button){
+                this.$button.remove()
+            }
+            placeholder.exports._reset.call(this)
+        }
+    })
+}); 
 /**
  * @author Aniu[2016-11-10 22:39]
  * @update Aniu[2016-11-10 22:39]
@@ -3146,7 +3639,7 @@ __define('lib/components/search',function(require, imports){
                 content = content.call(opts, self)
             }
 
-            if(typeof content !== 'string'){
+            if(!content || typeof content !== 'string'){
                 if(name === 'item' && opts.field){
                     content = '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>"><%$data["'+ opts.field +'"]??%></li>'
                 }
@@ -3406,8 +3899,8 @@ __define('lib/components/search',function(require, imports){
                 if(!self.element){
                     self._create()
                 }
-                //文本框没内容，还原默认数据
-                if(!self.val && opts.nullable === true){
+                //不论输入框是否有值，获得焦点时显示完整列表
+                if(!input && opts.nullable === true){
                     if(!opts.url){
                         self.queryData = self._setData()
                     }
@@ -3415,7 +3908,6 @@ __define('lib/components/search',function(require, imports){
                         self.queryData = []
                     }
                 }
-                
                 self._render(input);
             }
         },
@@ -3521,15 +4013,31 @@ __define('lib/components/search',function(require, imports){
 }); 
 __define('./script/page',function(require, imports){
     var search = require('lib/components/search');
+    var input = require('lib/components/input');
     var util = require('lib/core/util');
     var data = require('pages/components/search/script/data');
     
-    $('.search').focus(function(){
+    $('#demo').focus(function(){
+        $(this).search({
+            field:'buname',
+            empty:'<%value%> 暂无数据',
+            data:data,
+            foot:'<a>点击我</a>',
+            nullable:true,
+            match:{
+                field:'buname',
+                like:function(data, value){
+                    return data.indexOf(value) !== -1
+                }
+            },
+        }).search('show')
+    })
+
+    $('#search').focus(function(){
         $(this).search({
             //url:'http://127.0.0.1:8001/data/?callback=?',
             field:'buname',
             empty:'<%value%> 暂无数据',
-            selectContainer:'#box',
             data:data,
             //foot:'<a>aaaaaaaa</a>',
             nullable:true,
