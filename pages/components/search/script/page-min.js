@@ -2421,12 +2421,10 @@ __define('lib/components/search',['lib/core/component', 'lib/core/util'], functi
     })
 }); 
 __define('./script/page',function(require, imports){
-    imports('../style/base');
     var suggest = require('lib/components/search');
     var util = require('lib/core/util');
     var data = require('pages/components/search/script/data');
     
-
     $('.search').focus(function(){
         $(this).search({
             //url:'http://127.0.0.1:8001/data/?callback=?',

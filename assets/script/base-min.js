@@ -1471,7 +1471,7 @@ __define('lib/components/highlight/highlight',function(){
             //点击代码那一行高亮
             isLight:true,
             //是否显示行号
-            isLine:true,
+            isLine:false,
             //是否显示语法标题
             isTitle:true
         },

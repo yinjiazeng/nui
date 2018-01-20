@@ -1,10 +1,8 @@
 Nui.define(function(require, imports){
-    imports('../style/base');
     var suggest = require('{com}/search');
     var util = require('util');
     var data = require('./data');
     
-
     $('.search').focus(function(){
         $(this).search({
             //url:'http://127.0.0.1:8001/data/?callback=?',
