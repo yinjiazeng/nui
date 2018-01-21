@@ -3,7 +3,7 @@ Nui.define(function(require, imports){
     var input = require('{com}/input');
     var util = require('util');
     var data = require('./data');
-    
+
     $('#demo').focus(function(){
         $(this).search({
             field:'buname',
@@ -30,7 +30,7 @@ Nui.define(function(require, imports){
             nullable:true,
             //cache:true,
             //focus:true,
-            prompt:'正在搜索<%value%>',
+            prompt:'搜索条件为“<%value%>”的用户或区域，匹配到<%count%>条数据',
             events:{
                 'click .item':function(e, elem){
                     this.self.value(elem.text())
@@ -52,7 +52,7 @@ Nui.define(function(require, imports){
                 
             },
             size:{
-                //width:100
+                width:80
             },
             tag:{
                 multiple:true,

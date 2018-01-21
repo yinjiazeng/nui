@@ -2,13 +2,12 @@
     position: absolute;
 }
 .nui-search .con-search-body {
-    border: 1px solid #ccc;
+    border: 1px solid #efefef;
     background-color: #fff;
-    
 }
 .nui-search .con-search-body-tab {
     overflow: hidden;
-    min-height: 190px;
+    min-height: 220px;
 }
 .nui-search .con-search-body-tab .con-search-tab, 
 .nui-search .con-search-body-tab .con-search-inner {
@@ -16,38 +15,42 @@
     margin-bottom: -9999px;
 }
 .nui-search .con-search-prompt {
+    overflow: hidden;
     height: 40px;
     line-height: 18px;
     padding: 0 0 0 8px;
-    border-bottom:1px solid #e6e6e6;
-    overflow: hidden;
+    border-bottom:1px solid #f9f9f9;
 }
 .nui-search .con-search-tab {
     float: right;
     display: inline;
-    width: 30px;
+    width: 36px;
     height: 100%;
     text-align: center;
-    background-color: #e6e6e6;
+    background-color: #f9f9f9;
 }
 .nui-search .con-search-list {
     overflow: auto;
 }
 .nui-search .con-search-item {
     padding-left: 10px;
-    height: 25px;
-    line-height: 25px;
+    height: 30px;
+    line-height: 30px;
 }
 .nui-search .con-search-tab-nav {
     display: block;
-    padding: 5px;
+    padding: 8px;
+    line-height: 16px;
+    cursor: pointer;
+    color: #3E84E9;
 }
 .nui-search .con-search-tab-nav.s-crt {
     background-color: #fff;
+    color: #232323;
 }
 .nui-search .con-search-item.s-crt {
-    background-color: #e6e6e6;
+    background-color: #649ced;
 }
 .nui-search .con-search-item.s-hover {
-    background-color: #e6e6e6;
+    background-color: #f1f4fb;
 }

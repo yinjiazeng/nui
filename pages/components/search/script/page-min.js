@@ -3271,7 +3271,8 @@ __define('lib/components/search',function(require, imports){
                     '<%include "foot"%>'+
                 '</div>',
             result:
-                '<%if data && data.length%>'+
+                '<%var count = 0%>'+
+                '<%if data && (count = data.length)%>'+
                     '<%if prompt && value%>'+
                         '<%include "prompt"%>'+
                     '<%/if%>'+
@@ -4016,7 +4017,7 @@ __define('./script/page',function(require, imports){
     var input = require('lib/components/input');
     var util = require('lib/core/util');
     var data = require('pages/components/search/script/data');
-    
+
     $('#demo').focus(function(){
         $(this).search({
             field:'buname',
@@ -4043,7 +4044,7 @@ __define('./script/page',function(require, imports){
             nullable:true,
             //cache:true,
             //focus:true,
-            prompt:'正在搜索<%value%>',
+            prompt:'搜索条件为“<%value%>”的用户或区域，匹配到<%count%>条数据',
             events:{
                 'click .item':function(e, elem){
                     this.self.value(elem.text())
@@ -4065,7 +4066,7 @@ __define('./script/page',function(require, imports){
                 
             },
             size:{
-                //width:100
+                width:80
             },
             tag:{
                 multiple:true,
