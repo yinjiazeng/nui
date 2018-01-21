@@ -214,16 +214,12 @@ html {
   _background-image: url(about:blank);
   _background-attachment: fixed;
 }
-body,
-html {
-  background-color: #fff;
-}
 a {
   color: #232323;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 a:hover {
-  color: #3487E2;
+  color: #3F91F1;
   text-decoration: none;
 }
 /* 清除IE输入框小眼睛和叉叉 */

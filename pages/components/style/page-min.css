@@ -214,16 +214,12 @@ html {
   _background-image: url(about:blank);
   _background-attachment: fixed;
 }
-body,
-html {
-  background-color: #fff;
-}
 a {
   color: #232323;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 a:hover {
-  color: #3487E2;
+  color: #3F91F1;
   text-decoration: none;
 }
 /* 清除IE输入框小眼睛和叉叉 */
@@ -1082,15 +1078,16 @@ input:-webkit-autofill {
 .nui-layer .layer-box {
   background-color: #fff;
   zoom: 1;
-  border: 1px solid #B7B7B7;
-  border-radius: 5px;
+  border: 1px solid #F2F2F2;
+  border-radius: 3px;
 }
 .nui-layer .layer-head {
   padding-left: 15px;
   height: 33px;
   line-height: 33px;
-  color: #333;
-  border-bottom: 1px solid #DBDBDB;
+  color: #323232;
+  border-bottom: 1px solid #E6E6E6;
+  background-color: #F2F2F2;
 }
 .nui-layer .layer-box,
 .nui-layer .layer-body {
@@ -1113,7 +1110,7 @@ input:-webkit-autofill {
 }
 .nui-layer .layer-main {
   overflow: visible;
-  word-break: break-all;
+  word-wrap: break-word;
 }
 .nui-layer .layer-foot {
   padding: 15px 10px 20px;
@@ -1138,9 +1135,10 @@ input:-webkit-autofill {
   color: #666;
   border: none;
   z-index: 1;
+  background: none;
 }
 .nui-layer-mask {
-  background-image: url(about:blank);
+  background-image: url(about:blank) \9;;
 }
 .nui-layer-mask .layer-mask {
   position: relative;
@@ -1238,4 +1236,31 @@ input:-webkit-autofill {
   border-right-color: #FFEBEB;
   left: 1px;
   top: 0;
+}
+.nui-layer.layer-loading .layer-main div {
+  padding: 15px 15px 30px 15px;
+  background: url("../../../lib/assets/images/loadingdata.gif?v=7ff1ab3") no-repeat center -10px;
+}
+.nui-layer.layer-message .layer-button-close {
+  top: -7px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  line-height: 18px;
+  font-size: 18px;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 1px solid #F2F2F2;
+}
+.nui-input span {
+  background-color: #fff;
+  padding-right: 8px;
+}
+.nui-input span .con-input-button {
+  margin-left: 8px;
+  display: inline-block;
+  line-height: normal;
+  float: none;
+  vertical-align: middle;
+  cursor: pointer;
 }

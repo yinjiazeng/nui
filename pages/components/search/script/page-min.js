@@ -1646,7 +1646,10 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
  * @description input增强
  */
 
-__define('lib/components/input',['lib/components/placeholder'], function(placeholder){
+__define('lib/components/input',function(require, imports){
+    imports('../assets/components/input/index');
+    var placeholder = require('lib/components/placeholder');
+
     return this.extend(placeholder, {
         _options:{
             /**
