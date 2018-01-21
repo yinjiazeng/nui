@@ -245,6 +245,9 @@
                         <a{%if page == 'popover' %} class="s-crt"{% endif %} href="/nui/pages/components/popover/">提示框</a>
                     </li>
                     <li>
+                        <a{%if page == 'search' %} class="s-crt"{% endif %} href="/nui/pages/components/search/">搜索</a>
+                    </li>
+                    <li>
                         <a{%if page == 'calendar' %} class="s-crt"{% endif %} href="/nui/pages/components/calendar/">日历</a>
                     </li>
                     <li>
@@ -270,9 +273,6 @@
                     </li>
                     <li>
                         <a{%if page == 'scrollbar' %} class="s-crt"{% endif %} href="/nui/pages/components/scrollbar/">滚动条</a>
-                    </li>
-                    <li>
-                        <a{%if page == 'search' %} class="s-crt"{% endif %} href="/nui/pages/components/search/">搜索</a>
                     </li>
                     <li>
                         <a{%if page == 'tab' %} class="s-crt"{% endif %} href="/nui/pages/components/tab/">选项卡</a>
