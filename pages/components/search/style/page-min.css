@@ -1308,15 +1308,16 @@ input:-webkit-autofill {
   padding: 8px;
   line-height: 16px;
   cursor: pointer;
-  color: #3E84E9;
+  color: #3F91F1;
 }
 .nui-search .con-search-tab-nav.s-crt {
   background-color: #fff;
   color: #232323;
 }
-.nui-search .con-search-item.s-crt {
-  background-color: #649ced;
-}
-.nui-search .con-search-item.s-hover {
+.nui-search .con-search-item:hover {
   background-color: #f1f4fb;
+}
+.nui-search .con-search-item.s-crt {
+  background-color: #3F91F1;
+  color: #fff;
 }

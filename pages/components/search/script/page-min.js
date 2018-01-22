@@ -2973,7 +2973,7 @@ __define('lib/core/request',function(require){
  * @author Aniu[2017-12-23 16:50]
  * @update Aniu[2017-12-23 16:50]
  * @version 1.0.1
- * @description 搜索下拉
+ * @description 搜索
  */
 
 __define('lib/components/search',function(require, imports){
@@ -3313,9 +3313,9 @@ __define('lib/components/search',function(require, imports){
         _events:{
             'mouseenter':'_searchMouseover',
             'mouseleave':'_searchMouseout',
-            'mouseenter .con-search-item':'_searchMouseover _itemMouseover',
-            'mouseleave .con-search-item':'_itemMouseout',
-            'click .con-search-item':'_select',
+            'mouseenter .con-search-result .con-search-item':'_searchMouseover _itemMouseover',
+            'mouseleave .con-search-result .con-search-item':'_itemMouseout',
+            'click .con-search-result .con-search-item':'_select',
             'click .con-search-tab-nav':'_toggle'
         },
         _toggle:function(e, elem){
@@ -4081,8 +4081,8 @@ __define('./script/page',function(require, imports){
                 title:'最近',
                 content:
                     '<ul>'+
-                        '<li class="item">南屏公馆</li>'+
-                        '<li class="item">优活公寓</li>'+
+                        '<li class="con-search-item">南屏公馆</li>'+
+                        '<li class="con-search-item">优活公寓</li>'+
                     '</ul>',
                 onShow:function(self, elem, container){
                     container.find('li').each(function(){

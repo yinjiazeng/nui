@@ -64,8 +64,8 @@ Nui.define(function(require, imports){
                 title:'最近',
                 content:
                     '<ul>'+
-                        '<li class="item">南屏公馆</li>'+
-                        '<li class="item">优活公寓</li>'+
+                        '<li class="con-search-item">南屏公馆</li>'+
+                        '<li class="con-search-item">优活公寓</li>'+
                     '</ul>',
                 onShow:function(self, elem, container){
                     container.find('li').each(function(){
