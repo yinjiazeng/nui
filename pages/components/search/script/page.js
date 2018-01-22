@@ -22,14 +22,13 @@ Nui.define(function(require, imports){
 
     $('#search').focus(function(){
         $(this).search({
-            //url:'http://127.0.0.1:8001/data/?callback=?',
+            url:'http://127.0.0.1:8001/data/?callback=?',
             field:'buname',
             empty:'<%value%> 暂无数据',
-            data:data,
+            //data:data,
             //foot:'<a>aaaaaaaa</a>',
             nullable:true,
             //cache:true,
-            //focus:true,
             prompt:'搜索条件为“<%value%>”的用户或区域，匹配到<%count%>条数据',
             events:{
                 'click .item':function(e, elem){
@@ -64,15 +63,15 @@ Nui.define(function(require, imports){
                 title:'最近',
                 content:
                     '<ul>'+
-                        '<li class="con-search-item">南屏公馆</li>'+
-                        '<li class="con-search-item">优活公寓</li>'+
+                        '<li class="con-search-item item">南屏公馆</li>'+
+                        '<li class="con-search-item item">优活公寓</li>'+
                     '</ul>',
                 onShow:function(self, elem, container){
                     container.find('li').each(function(){
                         var $elem = $(this).removeClass('s-crt');
                         var text = $elem.text();
                         Nui.each(self.tagData, function(v){
-                            if(text === v){
+                            if(text === v.text){
                                 $elem.addClass('s-crt');
                                 return false;
                             }
@@ -103,7 +102,7 @@ Nui.define(function(require, imports){
                         var $elem = $(this);
                         var text = $elem.val();
                         Nui.each(self.tagData, function(v){
-                            if(text === v){
+                            if(text === v.text){
                                 $elem.prop('checked', true)
                                 return false;
                             }
