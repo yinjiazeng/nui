@@ -3969,17 +3969,17 @@ __define('lib/components/search',function(require, imports){
             this._update();
             this.resize();
         },
-        data2tpl:function(data){
-            var self = this, array = [], tpl = '';
+        data2html:function(data){
+            var self = this, array = [], html = '';
             Nui.each([].concat(data), function(val){
                 if(val && val.text){
                     array.push(self._initTagTplData(val))
                 }
             })
             if(array.length){
-                tpl = self._tpl2html('tags', array)
+                html = self._tpl2html('tags', array)
             }
-            return tpl
+            return html
         },
         /**
          * @func 设置文本框内容值或者添加tag标签
@@ -4009,7 +4009,7 @@ __define('lib/components/search',function(require, imports){
                 data = Nui.trim(data)
             }
             if(self.$tagContainer && data){
-                var array = [], tpl;
+                var array = [], html;
                 if(Nui.type(data, 'Array')){
                     array = array.concat(data)
                 }
@@ -4053,8 +4053,8 @@ __define('lib/components/search',function(require, imports){
                         self.$tags.remove()
                     }
 
-                    if(add !== false && (tpl = self.data2tpl(array))){
-                        self.$tagContainer.append(tpl)
+                    if(add !== false && (html = self.data2html(array))){
+                        self.$tagContainer.append(html)
                     }
                     
                     if(self._tag.clear !== false){
