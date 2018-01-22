@@ -3156,7 +3156,7 @@ __define('lib/components/search',function(require, imports){
                  * @func 关闭按钮内容
                  * @type <String>
                  */
-                close:'',
+                close:'<i>×</i>',
                 /**
                  * @func 设置标签数据
                  * @type <Function>
@@ -4141,7 +4141,6 @@ __define('./script/page',function(require, imports){
             },
             tag:{
                 multiple:true,
-                close:' <i class="iconfont">x</i>',
                 container:'#box',
                 dele:true
             },

@@ -55,7 +55,6 @@ Nui.define(function(require, imports){
             },
             tag:{
                 multiple:true,
-                close:' <i class="iconfont">x</i>',
                 container:'#box',
                 dele:true
             },
