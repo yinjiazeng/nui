@@ -3318,14 +3318,24 @@ __define('lib/components/search',function(require, imports){
                     '</div>'+
                 '<%/if%>',
             tags:
-                '<%each $list data k%>'+
-                    '<span class="ui-tag<%if data.type%><%each data.type type i%> ui-tag-<%type%><%/each%><%/if%>">'+
-                        '<em class="con-tag-text"<%if data.title%> title="<%data.text%>"<%/if%>><%data.text%></em>'+
-                        '<%if data.close%>'+
-                        '<b class="con-tag-close"><%data.close%></b>'+
+                '<%var _type, _title, _close%>'+
+                '<%if type?? && type%>'+
+                '<%var _type = [].concat(type)%>'+
+                '<%/if%>'+
+                '<%if title?? && title%>'+
+                '<%var _title = title%>'+
+                '<%/if%>'+
+                '<%if close?? && close%>'+
+                '<%var _close = close%>'+
+                '<%/if%>'+
+                '<%each data $data k%>'+
+                    '<span class="ui-tag<%if _type%><%each _type v i%> ui-tag-<%v%><%/each%><%/if%>">'+
+                        '<em class="con-tag-text"<%if _title%> title="<%$data.text%>"<%/if%>><%$data.text%></em>'+
+                        '<%if _close%>'+
+                        '<b class="con-tag-close"><%_close%></b>'+
                         '<%/if%>'+
-                        '<%if data.fields?? && data.fields%>'+
-                            '<%each data.fields%>'+
+                        '<%if $data.fields?? && $data.fields%>'+
+                            '<%each $data.fields%>'+
                                 '<%if $value !== undefined%>'+
                                 '<input type="hidden" name="<%$index%>" value="<%$value%>">'+
                                 '<%/if%>'+
@@ -3889,6 +3899,23 @@ __define('lib/components/search',function(require, imports){
             this._setTagsData();
             this.resize();
         },
+        _data2html:function(data){
+            var self = this, array = [], html = '', tag = self._tag;
+            Nui.each([].concat(data), function(val){
+                if(val && val.text){
+                    array.push(val)
+                }
+            })
+            if(array.length){
+                html = self._tpl2html('tags', {
+                    data:array,
+                    title:tag.title,
+                    close:tag.close,
+                    type:tag.type,
+                })
+            }
+            return html
+        },
         resize:function(){
             var self = this, opts = self._options, target = self.target, elem = self.element, targetData = self.targetData, elemData = self.elementData,
             width = 0, oWidth = elem.outerWidth(), oHeight = elem.outerHeight(), offset = target.offset(), top = offset.top, left = offset.left,
@@ -3969,18 +3996,6 @@ __define('lib/components/search',function(require, imports){
             this.hide();
             component.destroy.call(this);
         },
-        data2html:function(data){
-            var self = this, array = [], html = '';
-            Nui.each([].concat(data), function(val){
-                if(val && val.text){
-                    array.push(self._initTagTplData(val))
-                }
-            })
-            if(array.length){
-                html = self._tpl2html('tags', array)
-            }
-            return html
-        },
         /**
          * @func 设置文本框内容值或者添加tag标签
          * @param data <String>
@@ -4053,7 +4068,7 @@ __define('lib/components/search',function(require, imports){
                         self.$tags.remove()
                     }
 
-                    if(add !== false && (html = self.data2html(array))){
+                    if(add !== false && (html = self._data2html(array))){
                         self.$tagContainer.append(html)
                     }
                     
