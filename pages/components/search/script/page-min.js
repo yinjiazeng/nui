@@ -3158,7 +3158,7 @@ __define('lib/components/search',function(require, imports){
                  * @func 关闭按钮内容
                  * @type <String>
                  */
-                close:'<i>×</i>',
+                close:'×',
                 /**
                  * @func 设置标签数据
                  * @type <Function>
