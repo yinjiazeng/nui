@@ -32,6 +32,7 @@ Nui.define(function(require, imports){
             prompt:'搜索条件为“<%value%>”的用户或区域，匹配到<%count%>条数据',
             events:{
                 'click .item':function(e, elem){
+                    elem.toggleClass('s-crt');
                     this.self.value(elem.text())
                 },
                 'click :checkbox':function(e, elem){

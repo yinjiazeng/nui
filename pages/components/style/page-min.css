@@ -1049,14 +1049,39 @@ input:-webkit-autofill {
 }
 .ui-tag {
   display: inline-block;
-  padding: 0 5px;
+  padding: 0 8px 0 5px;
+  background-color: #3D83E9;
+}
+.ui-tag .con-tag-text,
+.ui-tag .con-tag-close {
+  color: #fff;
+  vertical-align: middle;
+}
+.ui-tag .con-tag-text {
+  display: inline-block;
   height: 24px;
   line-height: 24px;
-  background-color: #3D83E9;
-  color: #fff;
+  max-width: 105px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ui-tag .con-tag-close {
+  margin-left: 3px;
+  font-size: 18px;
+  cursor: pointer;
 }
 .ui-tag.ui-tag-circle {
   border-radius: 999px;
+}
+.ui-tag.ui-tag-gray {
+  background-color: #E5EDF5;
+}
+.ui-tag.ui-tag-gray .con-tag-text {
+  color: #323232;
+}
+.ui-tag.ui-tag-gray .con-tag-close {
+  color: #969696;
 }
 .ui-void {
   display: inline-block;
