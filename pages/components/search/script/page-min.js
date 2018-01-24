@@ -3313,7 +3313,9 @@ __define('lib/components/search',function(require, imports){
                 '<%if tabs.length > 1%>'+
                     '<div class="con-search-tab">'+
                         '<%each tabs tab%>'+
-                            '<span class="con-search-tab-nav"<%if $index === 0%> style="display:none;"<%/if%>><%tab.title%></span>'+
+                            '<span class="con-search-tab-nav"<%if typeof tab.style === "object" && tab.style%> style="<%each tab.style%><%$index%>:<%$value%>;<%/each%>"<%/if%>>'+
+                                '<%tab.title%>'+
+                            '</span>'+
                         '<%/each%>'+
                     '</div>'+
                 '<%/if%>',
@@ -3376,6 +3378,7 @@ __define('lib/components/search',function(require, imports){
                             container.html(content)
                         }
                     }
+                    self._selectTab = data;
                 }
                 elem.addClass('s-crt');
                 container.show();
@@ -3642,7 +3645,10 @@ __define('lib/components/search',function(require, imports){
                 data.style['z-index'] = opts.zIndex || 0
             }
             self._elemData = [{
-                title:'结果'
+                title:'结果',
+                style:{
+                    display:'none'
+                }
             }];
             if(Nui.isArray(opts.tabs) && opts.tabs.length){
                 self._isTab = true;
@@ -3860,6 +3866,10 @@ __define('lib/components/search',function(require, imports){
                 self._toggle(null, result.$elem);
                 self._setHeight();
             }
+            else if(self._selectTab){
+                self._defaultTab.$elem.show();
+                self._toggle(null, self._selectTab.$elem)
+            }
             else if(self._defaultTab){
                 self._toggle(null, self._defaultTab.$elem.show())
             }
@@ -3985,6 +3995,7 @@ __define('lib/components/search',function(require, imports){
             delete self._hover;
             delete self._show;
             delete self._itemHeight;
+            delete self._selectTab;
             if(_class._active === self){
                 delete _class._active
             }

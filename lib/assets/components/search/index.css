@@ -21,6 +21,10 @@
     padding: 0 0 0 8px;
     border-bottom:1px solid #f9f9f9;
 }
+.nui-search .con-search-empty {
+    text-align: center;
+    padding-top: 70px;
+}
 .nui-search .con-search-tab {
     float: right;
     display: inline;
