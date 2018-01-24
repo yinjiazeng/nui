@@ -3184,13 +3184,6 @@ __define('lib/components/search',function(require, imports){
                  */
                 deleteMatch:null,
                 /**
-                 * @func 标签被点击关闭后触发
-                 * @type <Function>
-                 * @param self <Object> 组件实例对象
-                 * @param data <Object> 被删除的标签数据
-                 */
-                onClose:null,
-                /**
                  * @func 标签添加或者移除时触发
                  * @type <Function>
                  * @param self <Object> 组件实例对象
@@ -3395,7 +3388,7 @@ __define('lib/components/search',function(require, imports){
                         v.$container.hide()
                     }
                 })
-                self._activeTab = data;
+                self.activeTab = data;
                 if(typeof data.onShow === 'function'){
                     data.onShow.call(opts, self, elem, container)
                 }
@@ -3559,7 +3552,7 @@ __define('lib/components/search',function(require, imports){
                 var tagSize = 0;
                 if(self.tagData && (tagSize = self.tagData.length) && !util.getFocusIndex(self.target.get(0))){
                     self.tagData[tagSize - 1].$elem.remove();
-                    self._change()
+                    self._change(e)
                 }
             }
         },
@@ -3617,16 +3610,6 @@ __define('lib/components/search',function(require, imports){
             })
 
             if(self.$tagContainer){
-                if(opts.tag.focus === true){
-                    self._on('mouseover', self.$tagContainer, '.ui-tag', function(){
-                        if(self._show){
-                            self._hover = true
-                        }
-                    })
-                    self._on('mouseout', self.$tagContainer, '.ui-tag', function(){
-                        delete self._hover
-                    })
-                }
                 self._on('click', self.$tagContainer, '.ui-tag > .con-tag-close', function(e, elem){
                     var $tag = elem.closest('.ui-tag');
                     var data = self._getTagData($tag);
@@ -3636,11 +3619,30 @@ __define('lib/components/search',function(require, imports){
                     if(!self._show && opts.tag.focus === true){
                         self.target.focus()
                     }
-                    self._change()
-                    if(typeof self._tag.onClose === 'function'){
-                        self._tag.onClose.call(opts, self, data)
-                    }
+                    self._change(e)
                 })
+            }
+
+            if(self.$tagScroll){
+                // self._on('mouseover', self.$tagScroll, function(){
+                //     self._hover = true
+                // })
+                // self._on('mouseout', self.$tagScroll, function(){
+                //     delete self._hover;
+                // })
+                // self._on('click', self.$tagContainer, '.ui-tag', function(){
+                //     self._tag_event = true;
+                // })
+                // self._on('click', self.$tagScroll, function(e){
+                //     if(!self._tag_event && !self._show){
+                //         delete self._hover;
+                //         self.target.focus();
+                //         self._hover = true;                 
+                //     }
+                //     else{
+                //         delete self._tag_event
+                //     }
+                // })
             }
         },
         _create:function(){
@@ -3774,9 +3776,6 @@ __define('lib/components/search',function(require, imports){
             }
             self.$tagContainer = _class._jquery(self._tag.container);
             self.$tagScroll = _class._jquery(self._tag.scroll);
-            if(self.$tagContainer){
-                self._setTagsData()
-            }
             if(!self.$tagScroll){
                 self.$tagScroll = self.$tagContainer
             }
@@ -3915,12 +3914,12 @@ __define('lib/components/search',function(require, imports){
             data.type = self._tag.type ? [].concat(self._tag.type) : '';
             return data
         },
-        _change:function(){
+        _change:function(e){
             var self = this, opts = self._options;
             self._setTagsData();
             self.resize();
             if(typeof self._tag.onChange === 'function'){
-                self._tag.onChange.call(opts, self)
+                self._tag.onChange.call(opts, self, e)
             }
         },
         _data2html:function(data){
@@ -3991,6 +3990,9 @@ __define('lib/components/search',function(require, imports){
             else{
                 if(!self.element){
                     self._create()
+                }
+                if(!self._show && self.$tagContainer){
+                    self._setTagsData()
                 }
                 //不论输入框是否有值，获得焦点时显示完整列表
                 if(!input && opts.nullable === true){
@@ -4198,7 +4200,9 @@ __define('./script/page',function(require, imports){
             },
             tag:{
                 multiple:true,
+                focus:true,
                 container:'#box',
+                scroll:'.ui-input',
                 dele:true
             },
             tabs:[{

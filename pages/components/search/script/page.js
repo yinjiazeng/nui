@@ -56,7 +56,9 @@ Nui.define(function(require, imports){
             },
             tag:{
                 multiple:true,
+                focus:true,
                 container:'#box',
+                scroll:'.ui-input',
                 dele:true
             },
             tabs:[{
