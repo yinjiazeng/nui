@@ -1305,16 +1305,16 @@ input:-webkit-autofill {
   padding-bottom: 9999px;
   margin-bottom: -9999px;
 }
+.nui-search .con-search-body-tab .con-search-empty {
+  text-align: center;
+  padding-top: 70px;
+}
 .nui-search .con-search-prompt {
   overflow: hidden;
   height: 40px;
   line-height: 18px;
   padding: 0 0 0 8px;
   border-bottom: 1px solid #f9f9f9;
-}
-.nui-search .con-search-empty {
-  text-align: center;
-  padding-top: 70px;
 }
 .nui-search .con-search-tab {
   float: right;
@@ -1325,6 +1325,7 @@ input:-webkit-autofill {
   background-color: #f9f9f9;
 }
 .nui-search .con-search-list {
+  position: relative;
   overflow: auto;
 }
 .nui-search .con-search-item {
@@ -1344,7 +1345,7 @@ input:-webkit-autofill {
   background-color: #fff;
   color: #232323;
 }
-.nui-search .con-search-item:hover {
+.nui-search .con-search-item.s-hover {
   background-color: #f1f4fb;
 }
 .nui-search .con-search-item.s-crt {

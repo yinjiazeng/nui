@@ -6,6 +6,7 @@ Nui.define(function(require, imports){
 
     $('#demo').focus(function(){
         $(this).search({
+            //url:'http://127.0.0.1:8001/data/?callback=?',
             field:'buname',
             empty:'<%value%> 暂无数据',
             data:data,
@@ -17,6 +18,9 @@ Nui.define(function(require, imports){
                     return data.indexOf(value) !== -1
                 }
             },
+            onRequest:function(self, res){
+                return res.list
+            }
         }).search('show')
     })
 
@@ -55,8 +59,7 @@ Nui.define(function(require, imports){
             multiple:true,
             //focus:true,
             backspace:true,
-            container:'#box',
-            scroll:'.ui-input'
+            container:'#box'
         },
         tabs:[{
             title:'最近',
@@ -136,8 +139,9 @@ Nui.define(function(require, imports){
         onRequest:function(self, res){
             return res.list
         },
-        onSelect:function(self, data){
-            self.show();
+        onSelectBefore:function(self, data){
+            // self.value(data[this.field])
+            // return false
         },
         onBlur:function(self, elem){
             self.value('');

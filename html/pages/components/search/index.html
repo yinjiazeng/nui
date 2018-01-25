@@ -21,8 +21,12 @@
 			<div class="e-mt15">
 				<input type="text" class="ui-input" id="demo" data-input-options='{"text":"请输入...","animate":true,"clear":"X"}'>
 			</div>
-			<div class="ui-input e-mt15" style="width:600px; height:auto; padding-top:8px; min-height:30px; overflow:hidden;">
-				<div id="box" class="f-fl">
+			<style>
+			#box { padding-bottom: 8px; max-height:170px; overflow:auto;}
+			#box .ui-tag, #box strong, #box input { float: left; margin: 8px 8px 0 0;}
+			</style>
+			<div class="ui-input e-mt15" style="width:600px; height:auto;">
+				<div id="box">
 					<span class="ui-tag">
 						<em class="con-tag-text">南屏公馆</em>
 						<b class="con-tag-close">
@@ -35,8 +39,8 @@
 							<i>×</i>
 						</b>
 					</span>
+					<input type="text" id="search" style="height:25px;" data-input-options='{"text":"请输入..."}' style="border:1px solid #000; padding-left:15px;">
 				</div>
-				<input type="text" id="search" style="height:25px;" data-input-options='{"text":"请输入..."}' style="border:1px solid #000; padding-left:15px;">
 			</div>
 <script type="text/highlight" data-xml-options>
 
