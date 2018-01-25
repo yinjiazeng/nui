@@ -1054,15 +1054,6 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
         _options:{},
         //创建组件模块时会调用一次，可用于在document上绑定事件操作实例
         _init:jQuery.noop,
-        _jquery:function(elem){
-            if(!elem){
-                return
-            }
-            if(elem instanceof jQuery){
-                return elem
-            }
-            return jQuery(elem)
-        },
         _getSize:function(selector, dir, attr){
             var size = 0;
             attr = attr || 'border';
@@ -1202,12 +1193,23 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
             this._exec()
         },
         _exec:jQuery.noop,
+        _jquery:function(elem){
+            if(typeof elem === 'function'){
+                elem = elem.call(this._options, this)
+            }
+            if(!elem){
+                return
+            }
+            if(elem instanceof jQuery){
+                return elem
+            }
+            return jQuery(elem)
+        },
         _getTarget:function(){
             var self = this;
             if(!self.target){
                 var target = self._options.target;
-                var _class = self.constructor;
-                target = _class._jquery(target);
+                target = self._jquery(target);
                 if(!target){
                     return
                 }
@@ -1277,7 +1279,7 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
                 callback = selector;
                 selector = dalegate;
                 dalegate = null;
-                selector = self.constructor._jquery(selector)
+                selector = self._jquery(selector)
             }
 
             var _callback = function(e){
@@ -1637,9 +1639,9 @@ __define('lib/components/layer/layer',function(require, imports){
             this._exec()
         },
         _exec:function(){
-            var self = this, opts = self._options, _class = self.constructor;
-            self._container = _class._jquery(opts.container);
-            if(self._container.length){
+            var self = this, opts = self._options;
+            self._container = self._jquery(opts.container);
+            if(self._container){
                 self._containerDOM = self._container.get(0);
                 if(self._containerDOM.tagName !== 'BODY'){
                     self._window = self._container;

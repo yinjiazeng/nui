@@ -1057,15 +1057,6 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
         _options:{},
         //创建组件模块时会调用一次，可用于在document上绑定事件操作实例
         _init:jQuery.noop,
-        _jquery:function(elem){
-            if(!elem){
-                return
-            }
-            if(elem instanceof jQuery){
-                return elem
-            }
-            return jQuery(elem)
-        },
         _getSize:function(selector, dir, attr){
             var size = 0;
             attr = attr || 'border';
@@ -1205,12 +1196,23 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
             this._exec()
         },
         _exec:jQuery.noop,
+        _jquery:function(elem){
+            if(typeof elem === 'function'){
+                elem = elem.call(this._options, this)
+            }
+            if(!elem){
+                return
+            }
+            if(elem instanceof jQuery){
+                return elem
+            }
+            return jQuery(elem)
+        },
         _getTarget:function(){
             var self = this;
             if(!self.target){
                 var target = self._options.target;
-                var _class = self.constructor;
-                target = _class._jquery(target);
+                target = self._jquery(target);
                 if(!target){
                     return
                 }
@@ -1280,7 +1282,7 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
                 callback = selector;
                 selector = dalegate;
                 dalegate = null;
-                selector = self.constructor._jquery(selector)
+                selector = self._jquery(selector)
             }
 
             var _callback = function(e){
@@ -1464,7 +1466,6 @@ __define('lib/components/datagrid',function(require, imports){
             _hasChildren:function(value){
                 return Nui.isArray(value.children) && value.children.length
             },
-            //��ȡ�ϲ���Ԫ����
             _colspan:function(array, count){
                 var self = this;
                 if(count === undefined){
@@ -1709,9 +1710,9 @@ __define('lib/components/datagrid',function(require, imports){
                 '<%/if%>'
         },
         _exec:function(){
-            var self = this, opts = self._options, _class = self.constructor, container = opts.container;
+            var self = this, opts = self._options, container = opts.container;
             if(container && Nui.isArray(opts.columns) && opts.columns.length){
-                self._container = _class._jquery(container);
+                self._container = self._jquery(container);
                 self._columns = {
                     all:[],
                     left:[],
@@ -1739,7 +1740,7 @@ __define('lib/components/datagrid',function(require, imports){
             }
         },
         _create:function(){
-            var self = this, opts = self._options, _class = self.constructor;
+            var self = this, opts = self._options;
             self._rows = {};
             self._cols = {};
             self._colTemplates = {};
@@ -1798,7 +1799,6 @@ __define('lib/components/datagrid',function(require, imports){
             }
             self._template.content = tpl;
         },
-        //��ȡ����������
         _getRowNumber:function(array, index, arr, cellid, parent){
             var self = this, opts = self._options, _class = self.constructor;
             if(!arr[index]){

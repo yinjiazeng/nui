@@ -56,10 +56,10 @@ Nui.define(function(require, imports){
             },
             tag:{
                 multiple:true,
-                focus:true,
+                //focus:true,
+                backspace:true,
                 container:'#box',
-                scroll:'.ui-input',
-                dele:true
+                scroll:'.ui-input'
             },
             tabs:[{
                 title:'最近',
@@ -100,7 +100,7 @@ Nui.define(function(require, imports){
                         '</div>'+
                     '</div>',
                 onShow:function(self, elem, container){                      
-                    container.find(':checkbox').prop('checked', false).each(function(){
+                    self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
                         var $elem = $(this);
                         var text = $elem.val();
                         Nui.each(self.tagData, function(v){
@@ -143,6 +143,18 @@ Nui.define(function(require, imports){
             },
             onBlur:function(self, elem){
                 self.value('');
+            },
+            onChange:function(self){
+                self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
+                    var $elem = $(this);
+                    var text = $elem.val();
+                    Nui.each(self.tagData, function(v){
+                        if(text === v.text){
+                            $elem.prop('checked', true)
+                            return false;
+                        }
+                    })
+                });
             }
         }).search('show')
     })

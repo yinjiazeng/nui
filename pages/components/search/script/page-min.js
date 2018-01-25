@@ -1057,15 +1057,6 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
         _options:{},
         //创建组件模块时会调用一次，可用于在document上绑定事件操作实例
         _init:jQuery.noop,
-        _jquery:function(elem){
-            if(!elem){
-                return
-            }
-            if(elem instanceof jQuery){
-                return elem
-            }
-            return jQuery(elem)
-        },
         _getSize:function(selector, dir, attr){
             var size = 0;
             attr = attr || 'border';
@@ -1205,12 +1196,23 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
             this._exec()
         },
         _exec:jQuery.noop,
+        _jquery:function(elem){
+            if(typeof elem === 'function'){
+                elem = elem.call(this._options, this)
+            }
+            if(!elem){
+                return
+            }
+            if(elem instanceof jQuery){
+                return elem
+            }
+            return jQuery(elem)
+        },
         _getTarget:function(){
             var self = this;
             if(!self.target){
                 var target = self._options.target;
-                var _class = self.constructor;
-                target = _class._jquery(target);
+                target = self._jquery(target);
                 if(!target){
                     return
                 }
@@ -1280,7 +1282,7 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
                 callback = selector;
                 selector = dalegate;
                 dalegate = null;
-                selector = self.constructor._jquery(selector)
+                selector = self._jquery(selector)
             }
 
             var _callback = function(e){
@@ -2136,9 +2138,9 @@ __define('lib/components/layer/layer',function(require, imports){
             this._exec()
         },
         _exec:function(){
-            var self = this, opts = self._options, _class = self.constructor;
-            self._container = _class._jquery(opts.container);
-            if(self._container.length){
+            var self = this, opts = self._options;
+            self._container = self._jquery(opts.container);
+            if(self._container){
                 self._containerDOM = self._container.get(0);
                 if(self._containerDOM.tagName !== 'BODY'){
                     self._window = self._container;
@@ -3017,6 +3019,7 @@ __define('lib/components/search',function(require, imports){
             /**
              * @func 设置层级
              * @type <Number>
+             * @desc 若style中已经设置，则不使用该值
              */
             zIndex:19920604,
             /**
@@ -3182,13 +3185,7 @@ __define('lib/components/search',function(require, imports){
                  * @param tag <Object> 已存在的标签对象
                  * @return <Boolean> 返回true表示需要添加的数据已存在与标签中，需删除； 返回true或者null表示不会被添加为标签
                  */
-                deleteMatch:null,
-                /**
-                 * @func 标签添加或者移除时触发
-                 * @type <Function>
-                 * @param self <Object> 组件实例对象
-                 */
-                onChange:null
+                deleteMatch:null
             },
             /**
              * @func 设置多菜单
@@ -3278,7 +3275,14 @@ __define('lib/components/search',function(require, imports){
              * @param self <Object> 组件实例对象
              * @param target <jQuery Object> 调用组件对象
              */
-            onBlur:null
+            onBlur:null,
+            /**
+             * @func 调用value实例方法或者删除标签后触发
+             * @type <Function>
+             * @param self <Object> 组件实例对象
+             * @param event <Event Object> 当删除标签时才会有该参数
+             */
+            onChange:null
         },
         _template:{
             wrap:
@@ -3347,9 +3351,9 @@ __define('lib/components/search',function(require, imports){
                 '<%/each%>'
         },
         _events:{
-            'mouseenter':'_searchMouseover',
-            'mouseleave':'_searchMouseout',
-            'mouseenter .con-search-result .con-search-item':'_searchMouseover _itemMouseover',
+            'mouseenter':'_mouseover',
+            'mouseleave':'_mouseout',
+            'mouseenter .con-search-result .con-search-item':'_mouseover _itemMouseover',
             'mouseleave .con-search-result .con-search-item':'_itemMouseout',
             'click .con-search-result .con-search-item':'_select',
             'click .con-search-tab-nav':'_toggle'
@@ -3394,10 +3398,10 @@ __define('lib/components/search',function(require, imports){
                 }
             }
         },
-        _searchMouseover:function(e, elem){
+        _mouseover:function(e, elem){
             this._hover = true
         },
-        _searchMouseout:function(e, elem){
+        _mouseout:function(e, elem){
             delete this._hover;
         },
         _itemMouseover:function(e, elem){
@@ -3539,12 +3543,9 @@ __define('lib/components/search',function(require, imports){
         },
         //回车
         _code13:function(e){
-            // var self = this;
-            // if(self._activeIndex !== undefined){
-            //     self._select(e)
-            // }
+            
         },
-        //删除
+        //退格键删除
         _code8:function(e){
             var self = this;
             //光标位置在输入框起始处时删除末尾的标签
@@ -3609,8 +3610,10 @@ __define('lib/components/search',function(require, imports){
                 }
             })
 
-            if(self.$tagContainer){
-                self._on('click', self.$tagContainer, '.ui-tag > .con-tag-close', function(e, elem){
+            var $tagContainer = self.$tagContainer;
+            var $tagScroll = self.$tagScroll;
+            if($tagContainer){
+                self._on('click', $tagContainer, '.ui-tag > .con-tag-close', function(e, elem){
                     var $tag = elem.closest('.ui-tag');
                     var data = self._getTagData($tag);
                     $tag.remove();
@@ -3621,28 +3624,36 @@ __define('lib/components/search',function(require, imports){
                     }
                     self._change(e)
                 })
-            }
 
-            if(self.$tagScroll){
-                // self._on('mouseover', self.$tagScroll, function(){
-                //     self._hover = true
-                // })
-                // self._on('mouseout', self.$tagScroll, function(){
-                //     delete self._hover;
-                // })
-                // self._on('click', self.$tagContainer, '.ui-tag', function(){
-                //     self._tag_event = true;
-                // })
-                // self._on('click', self.$tagScroll, function(e){
-                //     if(!self._tag_event && !self._show){
-                //         delete self._hover;
-                //         self.target.focus();
-                //         self._hover = true;                 
-                //     }
-                //     else{
-                //         delete self._tag_event
-                //     }
-                // })
+                if($tagScroll && $tagScroll.find(self.target).length){
+                    self._on('mouseenter', $tagScroll , function(){
+                        self._mouseover()
+                    })
+                    self._on('mouseleave', $tagScroll , function(){
+                        self._mouseout()
+                    })
+                    self._on('click', $tagContainer, '.ui-tag', function(){
+                        self._tag_event = true;
+                    })
+                    self._on('click', $tagScroll , function(e){
+                        if(!self._tag_event && !self._show){
+                            delete self._hover;
+                            self.target.focus();
+                            self._hover = true;                 
+                        }
+                        else{
+                            delete self._tag_event
+                        }
+                    })
+                }
+                else if(opts.tag.focus === true){
+                    self._on('mouseenter', $tagContainer, '.ui-tag', function(){
+                        self._mouseover()
+                    })
+                    self._on('mouseleave', $tagContainer, '.ui-tag', function(){
+                        self._mouseout()
+                    })
+                }
             }
         },
         _create:function(){
@@ -3663,7 +3674,7 @@ __define('lib/components/search',function(require, imports){
                 self._elemData = self._elemData.concat(opts.tabs);
             }
             data.tabs = self._elemData;
-            self.element = $(self._tpl2html('wrap', data)).appendTo(self.$container);
+            self.element = $(self._tpl2html('wrap', data)).appendTo(self.container);
             self._setElemData();
 
             self.$body = self.element.children();
@@ -3769,13 +3780,13 @@ __define('lib/components/search',function(require, imports){
             })
         },
         _initTag:function(){
-            var self = this, opts = self._options, _class = self.constructor;
+            var self = this, opts = self._options;
             self._tag = opts.tag;
             if(typeof self._tag !== 'object'){
                 self._tag = {}
             }
-            self.$tagContainer = _class._jquery(self._tag.container);
-            self.$tagScroll = _class._jquery(self._tag.scroll);
+            self.$tagContainer = self._jquery(self._tag.container);
+            self.$tagScroll = self._jquery(self._tag.scroll);
             if(!self.$tagScroll){
                 self.$tagScroll = self.$tagContainer
             }
@@ -3900,9 +3911,8 @@ __define('lib/components/search',function(require, imports){
             self.resize()
         },
         _exec:function(){
-            var self = this, opts = self._options, _class = self.constructor;
-            self.$container = _class._jquery(opts.container);
-            if(self._getTarget() && (self.$container = _class._jquery(opts.container))){
+            var self = this, opts = self._options;
+            if(self._getTarget() && (self.container = self._jquery(opts.container))){
                 self._initData();
                 self._bindEvent();
             }
@@ -3918,9 +3928,7 @@ __define('lib/components/search',function(require, imports){
             var self = this, opts = self._options;
             self._setTagsData();
             self.resize();
-            if(typeof self._tag.onChange === 'function'){
-                self._tag.onChange.call(opts, self, e)
-            }
+            self._callback('Change', [e]);
         },
         _data2html:function(data){
             var self = this, array = [], html = '', tag = self._tag;
@@ -4046,11 +4054,13 @@ __define('lib/components/search',function(require, imports){
          * }
          */
         value:function(data, add){
-            var self = this, target = self.target, opts = self._options, name = self.constructor.__component_name;
+            var self = this, target = self.target, opts = self._options, 
+                _class = self.constructor, name = _class.__component_name
+                $tagContainer = self.$tagContainer;
             if(typeof data === 'string'){
                 data = Nui.trim(data)
             }
-            if(self.$tagContainer && (data || data === null)){
+            if($tagContainer && (data || data === null)){
                 if(data !== null){
                     var array = [], html;
                     if(Nui.type(data, 'Array')){
@@ -4105,7 +4115,7 @@ __define('lib/components/search',function(require, imports){
                             $last.after(html)
                         }
                         else{
-                            self.$tagContainer.prepend(html)
+                            $tagContainer.prepend(html)
                         }
                         //如果滚动容器有滚动条，添加标签滚动到底部
                         self.$tagScroll.scrollTop(19920604)
@@ -4137,6 +4147,9 @@ __define('lib/components/search',function(require, imports){
                 }
                 else{
                     target.val(data)
+                }
+                if(!$tagContainer){
+                    self._callback('Change');
                 }
             }
         }
@@ -4200,10 +4213,10 @@ __define('./script/page',function(require, imports){
             },
             tag:{
                 multiple:true,
-                focus:true,
+                //focus:true,
+                backspace:true,
                 container:'#box',
-                scroll:'.ui-input',
-                dele:true
+                scroll:'.ui-input'
             },
             tabs:[{
                 title:'最近',
@@ -4244,7 +4257,7 @@ __define('./script/page',function(require, imports){
                         '</div>'+
                     '</div>',
                 onShow:function(self, elem, container){                      
-                    container.find(':checkbox').prop('checked', false).each(function(){
+                    self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
                         var $elem = $(this);
                         var text = $elem.val();
                         Nui.each(self.tagData, function(v){
@@ -4287,6 +4300,18 @@ __define('./script/page',function(require, imports){
             },
             onBlur:function(self, elem){
                 self.value('');
+            },
+            onChange:function(self){
+                self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
+                    var $elem = $(this);
+                    var text = $elem.val();
+                    Nui.each(self.tagData, function(v){
+                        if(text === v.text){
+                            $elem.prop('checked', true)
+                            return false;
+                        }
+                    })
+                });
             }
         }).search('show')
     })
