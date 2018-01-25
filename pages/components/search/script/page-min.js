@@ -2993,7 +2993,7 @@ __define('lib/components/search',function(require, imports){
                     clearTimeout(timer);
                     timer = setTimeout(function(){
                         Nui.each(self.__instances, function(obj){
-                            if(obj._show){
+                            if(obj._showed){
                                 obj.resize()
                             }
                         })
@@ -3461,7 +3461,7 @@ __define('lib/components/search',function(require, imports){
                 self._caches[self.val] = data
             }
             self.queryData = data;
-            self.show(true)
+            self._show(true)
         },
         _filter:function(){
             var self = this, opts = self._options, data = [], _data = self._setData();
@@ -3573,12 +3573,12 @@ __define('lib/components/search',function(require, imports){
                     }
                 }
                 else{
-                    self.show(true)
+                    self._show(true)
                 }
             })
 
             self._on('click', self.target, function(e, elem){
-                if(!self._show){
+                if(!self._showed){
                     self.target.focus()
                 }
             })
@@ -3596,12 +3596,12 @@ __define('lib/components/search',function(require, imports){
 
             if(opts.focus === true){
                 self._on('focus', self.target, function(e, elem){
-                    self.show()
+                    self._show()
                 })
             }
 
             self._on('keydown', self.target, function(e, elem){
-                if(self._show === true){
+                if(self._showed === true){
                     var method = self['_code'+e.keyCode];
                     if(typeof method === 'function'){
                         method.call(self, e);
@@ -3619,7 +3619,7 @@ __define('lib/components/search',function(require, imports){
                     $tag.remove();
                     delete self._hover;
                     delete data.$elem;
-                    if(!self._show && opts.tag.focus === true){
+                    if(!self._showed && opts.tag.focus === true){
                         self.target.focus()
                     }
                     self._change(e)
@@ -3636,7 +3636,7 @@ __define('lib/components/search',function(require, imports){
                         self._tag_event = true;
                     })
                     self._on('click', $tagScroll , function(e){
-                        if(!self._tag_event && !self._show){
+                        if(!self._tag_event && !self._showed){
                             delete self._hover;
                             self.target.focus();
                             self._hover = true;                 
@@ -3823,6 +3823,13 @@ __define('lib/components/search',function(require, imports){
                 self._matchs = match
             }
         },
+        _initTagTplData:function(data){
+            var self = this;
+            data.title = self._tag.title || false;
+            data.close = self._tag.close || false;
+            data.type = self._tag.type ? [].concat(self._tag.type) : '';
+            return data
+        },
         _getSelected:function(){
             var self = this, opts = self._options;
             var selected = function(){
@@ -3907,22 +3914,8 @@ __define('lib/components/search',function(require, imports){
                 self._toggle(null, self._defaultTab.$elem.show())
             }
             self.element.show();
-            self._show = true;
+            self._showed = true;
             self.resize()
-        },
-        _exec:function(){
-            var self = this, opts = self._options;
-            if(self._getTarget() && (self.container = self._jquery(opts.container))){
-                self._initData();
-                self._bindEvent();
-            }
-        },
-        _initTagTplData:function(data){
-            var self = this;
-            data.title = self._tag.title || false;
-            data.close = self._tag.close || false;
-            data.type = self._tag.type ? [].concat(self._tag.type) : '';
-            return data
         },
         _change:function(e){
             var self = this, opts = self._options;
@@ -3946,6 +3939,13 @@ __define('lib/components/search',function(require, imports){
                 })
             }
             return html
+        },
+        _exec:function(){
+            var self = this, opts = self._options;
+            if(self._getTarget() && (self.container = self._jquery(opts.container))){
+                self._initData();
+                self._bindEvent();
+            }
         },
         resize:function(){
             var self = this, opts = self._options, target = self.target, elem = self.element, targetData = self.targetData, elemData = self.elementData,
@@ -3983,7 +3983,7 @@ __define('lib/components/search',function(require, imports){
                 width:width
             })
         },
-        show:function(input){
+        _show:function(input){
             var self = this, opts = self._options, _class = self.constructor;
             self.val = Nui.trim(this.target.val());
             if(self._hover && !input){
@@ -3999,7 +3999,7 @@ __define('lib/components/search',function(require, imports){
                 if(!self.element){
                     self._create()
                 }
-                if(!self._show && self.$tagContainer){
+                if(!self._showed && self.$tagContainer){
                     self._setTagsData()
                 }
                 //不论输入框是否有值，获得焦点时显示完整列表
@@ -4014,10 +4014,19 @@ __define('lib/components/search',function(require, imports){
                 self._render(input);
             }
         },
+        /**
+         * @func 显示组件
+         */
+        show:function(){
+            this._show()
+        },
+        /**
+         * @func 隐藏组件
+         */
         hide:function(){
             var self = this, _class = self.constructor;
             delete self._hover;
-            delete self._show;
+            delete self._showed;
             delete self._itemHeight;
             delete self._selectTab;
             if(_class._active === self){
@@ -4027,6 +4036,9 @@ __define('lib/components/search',function(require, imports){
                 self.element.hide()
             }
         },
+        /**
+         * @func 销毁组件
+         */
         destroy:function(){
             this.hide();
             component.destroy.call(this);
@@ -4052,6 +4064,7 @@ __define('lib/components/search',function(require, imports){
          *         ...
          *     }
          * }
+         * @param add <Boolean> 是否可以添加标签，设置为false则不能新增
          */
         value:function(data, add){
             var self = this, target = self.target, opts = self._options, 
@@ -4177,131 +4190,84 @@ __define('./script/page',function(require, imports){
         }).search('show')
     })
 
-    $('#search').focus(function(){
-        $(this).search({
-            url:'http://127.0.0.1:8001/data/?callback=?',
+    $('#search').search({
+        //url:'http://127.0.0.1:8001/data/?callback=?',
+        field:'buname',
+        empty:'<%value%> 暂无数据',
+        data:data,
+        //foot:'<a>aaaaaaaa</a>',
+        nullable:true,
+        //cache:true,
+        focus:true,
+        prompt:'搜索条件为“<%value%>”的用户或区域，匹配到<%count%>条数据',
+        events:{
+            'click .item':function(e, elem){
+                elem.toggleClass('s-crt');
+                this.self.value(elem.text())
+            },
+            'click :checkbox':function(e, elem){
+                this.self.value(elem.val())
+            }
+        },
+        match:{
             field:'buname',
-            empty:'<%value%> 暂无数据',
-            //data:data,
-            //foot:'<a>aaaaaaaa</a>',
-            nullable:true,
-            //cache:true,
-            prompt:'搜索条件为“<%value%>”的用户或区域，匹配到<%count%>条数据',
-            events:{
-                'click .item':function(e, elem){
-                    elem.toggleClass('s-crt');
-                    this.self.value(elem.text())
-                },
-                'click :checkbox':function(e, elem){
-                    this.self.value(elem.val())
+            like:function(data, value){
+                if(value == 1){
+                    return true
                 }
+                return data.indexOf(value) !== -1
+            }
+        },
+        size:{
+            width:80
+        },
+        tag:{
+            multiple:true,
+            //focus:true,
+            backspace:true,
+            container:'#box',
+            scroll:'.ui-input'
+        },
+        tabs:[{
+            title:'最近',
+            content:function(){
+                return '<ul>'+
+                            '<li class="con-search-item item">南屏公馆</li>'+
+                            '<li class="con-search-item item">优活公寓</li>'+
+                        '</ul>'
             },
-            match:{
-                field:'buname',
-                like:function(data, value){
-                    if(value == 1){
-                        return true
-                    }
-                    return data.indexOf(value) !== -1
-                }
-            },
-            offset:{
-                
-            },
-            size:{
-                width:80
-            },
-            tag:{
-                multiple:true,
-                //focus:true,
-                backspace:true,
-                container:'#box',
-                scroll:'.ui-input'
-            },
-            tabs:[{
-                title:'最近',
-                content:
-                    '<ul>'+
-                        '<li class="con-search-item item">南屏公馆</li>'+
-                        '<li class="con-search-item item">优活公寓</li>'+
-                    '</ul>',
-                onShow:function(self, elem, container){
-                    container.find('li').each(function(){
-                        var $elem = $(this).removeClass('s-crt');
-                        var text = $elem.text();
-                        Nui.each(self.tagData, function(v){
-                            if(text === v.text){
-                                $elem.addClass('s-crt');
-                                return false;
-                            }
-                        })
+            onShow:function(self, elem, container){
+                container.find('li').each(function(){
+                    var $elem = $(this).removeClass('s-crt');
+                    var text = $elem.text();
+                    Nui.each(self.tagData, function(v){
+                        if(text === v.text){
+                            $elem.addClass('s-crt');
+                            return false;
+                        }
                     })
-                }
-            }, {
-                title:'按用户',
-                content:function(){
-                    return '<s>111111</s>'
-                },
-                onShow:function(self){
-                    
-                }
-            }, {
-                title:'按区域',
-                content:
-                    '<div class="">'+
-                        '<a>省份</a>'+
-                        '<a>城市</a>'+
-                        '<a>区域</a>'+
-                        '<div>'+
-                            '<label><input type="checkbox" value="北京"> 北京</label>'+
-                        '</div>'+
-                    '</div>',
-                onShow:function(self, elem, container){                      
-                    self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
-                        var $elem = $(this);
-                        var text = $elem.val();
-                        Nui.each(self.tagData, function(v){
-                            if(text === v.text){
-                                $elem.prop('checked', true)
-                                return false;
-                            }
-                        })
-                    });
-                }
-            }],
-            selected:function(self, data){
-                var exist = false;
-                Nui.each(self.tagData, function(v){
-        
                 })
+            }
+        }, {
+            title:'按用户',
+            content:function(){
+                return '<s>111111</s>'
             },
-            item:function(){    
-                return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
-            },
-            query:function(self, value){
-                return {
-                    keywords:encodeURI(value)
-                }
-            },
-            // setValue:function(self, data){
-            //     return {
-            //         text:'1111',
-            //         fields:{
-            //             'aaa':111,
-            //             'ccc':'1111'
-            //         }
-            //     }
-            // },
-            onRequest:function(self, res){
-                return res.list
-            },
-            onSelect:function(self, data){
-                self.show();
-            },
-            onBlur:function(self, elem){
-                self.value('');
-            },
-            onChange:function(self){
+            onShow:function(self){
+                
+            }
+        }, {
+            title:'按区域',
+            content:
+                '<div class="">'+
+                    '<a>省份</a>'+
+                    '<a>城市</a>'+
+                    '<a>区域</a>'+
+                    '<div>'+
+                        '<label><input type="checkbox" value="北京"> 北京</label>'+
+                    '</div>'+
+                '</div>',
+            onShow:function(self, elem, container){                      
                 self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
                     var $elem = $(this);
                     var text = $elem.val();
@@ -4313,7 +4279,51 @@ __define('./script/page',function(require, imports){
                     })
                 });
             }
-        }).search('show')
+        }],
+        selected:function(self, data){
+            var exist = false;
+            Nui.each(self.tagData, function(v){
+    
+            })
+        },
+        item:function(){    
+            return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
+        },
+        query:function(self, value){
+            return {
+                keywords:encodeURI(value)
+            }
+        },
+        // setValue:function(self, data){
+        //     return {
+        //         text:'1111',
+        //         fields:{
+        //             'aaa':111,
+        //             'ccc':'1111'
+        //         }
+        //     }
+        // },
+        onRequest:function(self, res){
+            return res.list
+        },
+        onSelect:function(self, data){
+            self.show();
+        },
+        onBlur:function(self, elem){
+            self.value('');
+        },
+        onChange:function(self){
+            self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
+                var $elem = $(this);
+                var text = $elem.val();
+                Nui.each(self.tagData, function(v){
+                    if(text === v.text){
+                        $elem.prop('checked', true)
+                        return false;
+                    }
+                })
+            });
+        }
     })
 })
 
