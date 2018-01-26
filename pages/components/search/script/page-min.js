@@ -2973,8 +2973,8 @@ __define('lib/core/request',function(require){
 })
 /**
  * @author Aniu[2017-12-23 16:50]
- * @update Aniu[2017-12-23 16:50]
- * @version 1.0.1
+ * @update Aniu[2018-01-26 11:05]
+ * @version 1.0.2
  * @description 搜索
  */
 
@@ -4290,7 +4290,7 @@ __define('lib/components/search',function(require, imports){
                     target.val(data)
                 }
                 if(!$tagContainer){
-                    self._callback('Change');
+                    self._callback('Change')
                 }
             }
         }
@@ -4438,8 +4438,8 @@ __define('./script/page',function(require, imports){
             return res.list
         },
         onSelectBefore:function(self, data){
-            // self.value(data[this.field])
-            // return false
+            self.value(data[this.field])
+            return false
         },
         onBlur:function(self, elem){
             self.value('');

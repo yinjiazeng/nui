@@ -140,8 +140,8 @@ Nui.define(function(require, imports){
             return res.list
         },
         onSelectBefore:function(self, data){
-            // self.value(data[this.field])
-            // return false
+            self.value(data[this.field])
+            return false
         },
         onBlur:function(self, elem){
             self.value('');
