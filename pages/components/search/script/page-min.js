@@ -1105,7 +1105,6 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
                     var object, options = args[0];
                     var execMethod = function(){
                         if(typeof options === 'string'){
-                            
                             if(options === 'options'){
                                 object.option(args[1], args[2])
                             }
@@ -4171,7 +4170,7 @@ __define('lib/components/search',function(require, imports){
          */
         destroy:function(){
             this.hide();
-            component.destroy.call(this);
+            component.exports.destroy.call(this);
         },
         /**
          * @func 设置文本框内容值或者添加tag标签

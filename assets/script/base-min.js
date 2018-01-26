@@ -1102,7 +1102,6 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
                     var object, options = args[0];
                     var execMethod = function(){
                         if(typeof options === 'string'){
-                            
                             if(options === 'options'){
                                 object.option(args[1], args[2])
                             }
