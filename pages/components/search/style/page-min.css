@@ -1345,10 +1345,28 @@ input:-webkit-autofill {
   background-color: #fff;
   color: #232323;
 }
-.nui-search .con-search-item.s-hover {
+.nui-search .con-search-item.s-hover,
+.nui-search .con-search-item:hover {
   background-color: #f1f4fb;
 }
 .nui-search .con-search-item.s-crt {
   background-color: #3F91F1;
   color: #fff;
+}
+.demo2Tags {
+  width: 600px;
+  height: auto;
+  max-height: 170px;
+  overflow: auto;
+  padding-bottom: 5px;
+}
+.demo2Tags .ui-tag,
+.demo2Tags strong,
+.demo2Tags input {
+  float: left;
+  margin: 5px 5px 0 0;
+}
+.demo2Tags input {
+  height: 28px;
+  border: none;
 }

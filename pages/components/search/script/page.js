@@ -1,42 +1,49 @@
 Nui.define(function(require, imports){
+    imports('../style/page.less');
     var search = require('{com}/search');
     var input = require('{com}/input');
-    var util = require('util');
     var data = require('./data');
+    var template = require('template');
+    var emps = [];
+    var depts = [];
 
-    $('#demo').focus(function(){
+    Nui.each(data.empList, function(val){
+        Nui.each(val.list, function(v){
+            emps.push(v)
+        })
+    })
+
+    Nui.each(data.deptList, function(val){
+        Nui.each(val.list, function(v){
+            depts.push(v)
+        })
+    })
+
+    var all = [].concat(emps, depts);
+
+    $('#demo1').focus(function(){
         $(this).search({
-            //url:'http://127.0.0.1:8001/data/?callback=?',
-            field:'buname',
-            empty:'<%value%> 暂无数据',
-            data:data,
-            foot:'<a>点击我</a>',
+            field:'name',
+            empty:'<p class="f-lh20 e-pl5 e-pr5">搜索条件为“<%value%>”未能匹配到数据</p>',
+            data:emps,
             nullable:true,
-            match:{
-                field:'buname',
+            match:[{
+                field:'name',
                 like:function(data, value){
                     return data.indexOf(value) !== -1
                 }
-            },
-            onRequest:function(self, res){
-                return res.list
-            }
+            }]
         }).search('show')
     })
 
-    $('#search').search({
-        //url:'http://127.0.0.1:8001/data/?callback=?',
-        field:'buname',
-        empty:'<%value%> 暂无数据',
-        data:data,
-        //foot:'<a>aaaaaaaa</a>',
+    $('#demo2').search({
+        field:'name',
+        empty:'没有搜索结果，请变换搜索条件',
         nullable:true,
-        //cache:true,
         focus:true,
-        prompt:'搜索条件为“<%value%>”的用户或区域，匹配到<%count%>条数据',
+        prompt:'搜索条件为“<%value%>”的员工或部门，匹配到<%count%>条数据',
         events:{
-            'click .item':function(e, elem){
-                elem.toggleClass('s-crt');
+            'click .item-history':function(e, elem){
                 this.self.value(elem.text())
             },
             'click :checkbox':function(e, elem){
@@ -44,73 +51,52 @@ Nui.define(function(require, imports){
             }
         },
         match:{
-            field:'buname',
+            field:'name',
             like:function(data, value){
-                if(value == 1){
-                    return true
-                }
                 return data.indexOf(value) !== -1
             }
         },
         size:{
-            width:80
+            width:100
         },
         tag:{
             multiple:true,
-            //focus:true,
+            focus:true,
             backspace:true,
-            container:'#box'
+            container:'#demo2Tags > div',
+            scroll:'#demo2Tags'
         },
         tabs:[{
             title:'最近',
             content:function(){
-                return '<ul>'+
-                            '<li class="con-search-item item">南屏公馆</li>'+
-                            '<li class="con-search-item item">优活公寓</li>'+
-                        '</ul>'
+                return template.render(
+                    '<ul class="con-search-list e-pt5 item-history">'+
+                    '<%each $list%>'+
+                        '<li class="con-search-item" data-name="<%$value.name%>"><%$value.name%></li>'+
+                    '<%/each%>'+
+                    '</ul>'
+                    , 
+                    data.historyList
+                )
             },
             onShow:function(self, elem, container){
-                container.find('li').each(function(){
-                    var $elem = $(this).removeClass('s-crt');
-                    var text = $elem.text();
-                    Nui.each(self.tagData, function(v){
-                        if(text === v.text){
-                            $elem.addClass('s-crt');
-                            return false;
-                        }
-                    })
-                })
+                
             }
         }, {
-            title:'按用户',
+            title:'按员工',
             content:function(){
-                return '<s>111111</s>'
+                
             },
             onShow:function(self){
                 
             }
         }, {
-            title:'按区域',
-            content:
-                '<div class="">'+
-                    '<a>省份</a>'+
-                    '<a>城市</a>'+
-                    '<a>区域</a>'+
-                    '<div>'+
-                        '<label><input type="checkbox" value="北京"> 北京</label>'+
-                    '</div>'+
-                '</div>',
-            onShow:function(self, elem, container){                      
-                self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
-                    var $elem = $(this);
-                    var text = $elem.val();
-                    Nui.each(self.tagData, function(v){
-                        if(text === v.text){
-                            $elem.prop('checked', true)
-                            return false;
-                        }
-                    })
-                });
+            title:'按部门',
+            content:function(){
+
+            },
+            onShow:function(){                      
+                
             }
         }],
         selected:function(self, data){
@@ -126,18 +112,6 @@ Nui.define(function(require, imports){
             return {
                 keywords:encodeURI(value)
             }
-        },
-        // setValue:function(self, data){
-        //     return {
-        //         text:'1111',
-        //         fields:{
-        //             'aaa':111,
-        //             'ccc':'1111'
-        //         }
-        //     }
-        // },
-        onRequest:function(self, res){
-            return res.list
         },
         onSelectBefore:function(self, data){
             self.value(data[this.field])

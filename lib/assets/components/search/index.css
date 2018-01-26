@@ -54,7 +54,8 @@
     background-color: #fff;
     color: #232323;
 }
-.nui-search .con-search-item.s-hover {
+.nui-search .con-search-item.s-hover,
+.nui-search .con-search-item:hover {
     background-color: #f1f4fb;
 }
 .nui-search .con-search-item.s-crt {
