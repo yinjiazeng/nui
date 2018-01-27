@@ -78,9 +78,9 @@ Nui.define(function(require, imports){
             title:'最近',
             content:function(){
                 return template.render(
-                    '<ul class="con-search-list e-pt5">'+
+                    '<ul class="con-search-list">'+
                         '<%each $list%>'+
-                            '<li class="con-search-item item-history" data-name="<%$value.name%>"><%$value.name%></li>'+
+                            '<li class="con-search-item item-history e-mt5" data-name="<%$value.name%>"><%$value.name%></li>'+
                         '<%/each%>'+
                     '</ul>'
                     , 
