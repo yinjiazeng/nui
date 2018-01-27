@@ -1353,22 +1353,29 @@ input:-webkit-autofill {
   background-color: #3F91F1;
   color: #fff;
 }
-.demo2Tags {
+.ui-input-auto {
   width: 600px;
   height: auto;
   max-height: 170px;
   overflow: auto;
   padding-bottom: 5px;
 }
-.demo2Tags .ui-tag,
-.demo2Tags strong,
-.demo2Tags input {
+.ui-input-auto .ui-tag,
+.ui-input-auto strong,
+.ui-input-auto input {
   float: left;
   margin: 5px 5px 0 0;
 }
-.demo2Tags input {
+.ui-input-auto input {
   height: 28px;
   border: none;
+}
+.demo3Tags {
+  width: 600px;
+  height: auto;
+}
+.demo3Tags .ui-input-auto {
+  width: auto;
 }
 .letters {
   height: 47px;

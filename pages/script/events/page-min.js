@@ -2151,7 +2151,7 @@ __define('lib/components/layer/layer',function(require, imports){
         _reset:function(){
             var self = this, _class = self.constructor, noMask = true;
             component.exports._reset.call(this);
-            component('destroy', self.main);
+            component.destroy(self.main);
             Nui.each(_class.__instances, function(val){
                 if(val && val._options.isMask === true && val !== self && val._containerDOM === self._containerDOM){
                     return (noMask = false);
