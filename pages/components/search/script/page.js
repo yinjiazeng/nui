@@ -217,21 +217,17 @@ Nui.define(function(require, imports){
                                 },
                                 callback:{
                                     beforeClick:function(treeId, treeNode){
-                                        var nodes = that.ztree.getSelectedNodes();
-                                        var exist = false;
+                                        var data = [], count = 0;
+                                        var nodes = that.ztree.transformToArray(treeNode);
                                         Nui.each(nodes, function(node){
-                                            if(node === treeNode){
-                                                exist = true;
-                                                return false;
+                                            if(!node.children){
+                                                if(!that.selected(self, node)){
+                                                    count++;
+                                                }
+                                                data.push(that.setValue(self, node))
                                             }
                                         })
-                                        if(exist){
-                                            that.ztree.cancelSelectedNode(treeNode);
-                                        }
-                                        else{
-                                            that.ztree.selectNode(treeNode, true)
-                                        }
-                                        self.value()
+                                        self.value(data, count !== data.length)
                                         return false
                                     }
                                 }
@@ -274,14 +270,31 @@ Nui.define(function(require, imports){
                                 }]
                             }]
                         that.ztree = $.fn.zTree.init($('#ztree'), setting, zTreeNodes);
-                        that.data = that.ztree.transformToArray(that.ztree.getNodes())
+                        that.data = that.ztree.transformToArray(that.ztree.getNodes());
+                        that.toggleZtree()
                     })
                 }
                 else{
-
+                    that.toggleZtree()
                 }
             }
         }],
+        toggleZtree:function(){
+            var that = this, self = that.self;
+            Nui.each(that.data, function(v){
+                if(that.selected(self, v)){
+                    that.ztree.selectNode(v, true)
+                }
+                else{
+                    that.ztree.cancelSelectedNode(v)
+                }
+            })
+        },
+        setValue:function(selr, data){
+            return {
+                text:data.name
+            }
+        },
         selected:function(self, data){
             var exist = false;
             Nui.each(self.tagData, function(val){
@@ -308,6 +321,7 @@ Nui.define(function(require, imports){
                 var elem = $(this), data = elem.data();
                 elem.toggleClass('s-crt', that.selected(self, data))
             })
+            that.toggleZtree()
         }
     })
 })
