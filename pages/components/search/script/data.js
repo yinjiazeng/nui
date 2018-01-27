@@ -157,46 +157,6 @@ Nui.define(function(){
             {
                 "list": [
                     {
-                        "id": "62892175EC0D4FB39F9980E661405C81",
-                        "name": "诺诺服务",
-                        "type": "0"
-                    },
-                    {
-                        "id": "D4C52A8751A443B3AB386080C3008D87",
-                        "name": "诺诺服务and微信开发组",
-                        "type": "0"
-                    },
-                    {
-                        "id": "C93EBC167C43466D88C7D2AC6E322B5B",
-                        "name": "诺诺金服",
-                        "type": "0"
-                    },
-                    {
-                        "id": "0AB2BF3C1D8B480FB58E9CBDB1A0772E",
-                        "name": "诺诺金服开发组",
-                        "type": "0"
-                    },
-                    {
-                        "id": "310939E5635E49128B728B9BB5279561",
-                        "name": "诺诺商城",
-                        "type": "0"
-                    },
-                    {
-                        "id": "3A6991A17FD141D2B02AC8268024B1CE",
-                        "name": "诺诺商城开发组",
-                        "type": "0"
-                    },
-                    {
-                        "id": "8FEE077ECF1C49C68B852A3A2D5F524B",
-                        "name": "诺言开发组",
-                        "type": "0"
-                    }
-                ],
-                "str": "N"
-            },
-            {
-                "list": [
-                    {
                         "id": "E4A71DF91E4940B1ABF871EABAF10896",
                         "name": "培训中心",
                         "type": "0"
@@ -233,26 +193,6 @@ Nui.define(function(){
                     }
                 ],
                 "str": "S"
-            },
-            {
-                "list": [
-                    {
-                        "id": "74AFD6237CBF435E8A116A4B91E98B9D",
-                        "name": "消费产品业务部",
-                        "type": "0"
-                    },
-                    {
-                        "id": "3270A4C65D3245738548C0D11AAA76A4",
-                        "name": "系统架构部",
-                        "type": "0"
-                    },
-                    {
-                        "id": "15C84F3D36C9438CB23B1C6BDBCACCEC",
-                        "name": "系统集成及大客户部",
-                        "type": "0"
-                    }
-                ],
-                "str": "X"
             },
             {
                 "list": [
@@ -1248,54 +1188,6 @@ Nui.define(function(){
                         "type": "1"
                     },
                     {
-                        "id": "96723A995F844B5E9058D0918D2A972B",
-                        "name": "蓝红梅",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "182CCC9F1D1747D4A086F5796EAA0E4C",
-                        "name": "兰竹喧",
-                        "photo": "http://inv.axnfw.com/group1/M00/98/2B/wKgHP1lkQYWAWSBzAAGQIBxtl3A151.jpg",
-                        "post": "产品助理",
-                        "type": "1"
-                    },
-                    {
-                        "id": "F9157B8F10CB4F8BBBA571DBDC2E3216",
-                        "name": "雷益烙",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "8638A273A7D941649E81A7C4A711EFDD",
-                        "name": "梁成浩",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "E15AAC2076E4418387303D0D2B4C0A4F",
-                        "name": "梁威",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "1A7E9B1EC3724A7F93685677BDF4EE8F",
-                        "name": "梁徐雅",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "运营",
-                        "type": "1"
-                    },
-                    {
-                        "id": "E534588D5A404A2D8A39684D02D49A30",
-                        "name": "梁壮壮",
-                        "photo": "http://inv.axnfw.com/group1/M00/C9/15/wKgHP1pPOH6AH9ywAAB8Ec9hp0I136.jpg",
-                        "post": "大数据开发工程师",
-                        "type": "1"
-                    },
-                    {
                         "id": "62D6166E5BA34DFBAA8B7F6808FEDC74",
                         "name": "李斌",
                         "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
@@ -1626,101 +1518,6 @@ Nui.define(function(){
                         "type": "1"
                     },
                     {
-                        "id": "4C92E26B30C8465BAEC4369B262C5463",
-                        "name": "李飏",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "财税审核专员",
-                        "type": "1"
-                    },
-                    {
-                        "id": "84F9CCDB2C2F4CC6875971818C8BCA2D",
-                        "name": "李颖",
-                        "photo": "http://inv.axnfw.com/group1/M00/30/CF/wKgHP1n6zziAVr9JAADTMaGKwZ4475.jpg",
-                        "post": "测试工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "37AF0AFBE3FB4CA0AEC7543175D5BDEC",
-                        "name": "李媛媛",
-                        "photo": "http://inv.axnfw.com/group1/M00/EE/FD/wKgHP1m56L-AbU4yAABB-x0hYwc089.jpg",
-                        "post": "C++开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "6EC3CEDA40984481B221915A1F308807",
-                        "name": "李玉娇（李尹凡）",
-                        "photo": "http://inv.axnfw.com/group1/M00/D7/B8/wKgHPlpdbVmAX4s9AAD1oJvowHg656.jpg",
-                        "post": "交互设计师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "81EE5B3BA00F464088AC2B5713623CE3",
-                        "name": "李云",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "B477FBA0A38D4394818B0018F366A2B8",
-                        "name": "李泽坤",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "A906E96D3852416D9E6F0000351CE75B",
-                        "name": "龙彬",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Hadoop开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "06841BE9A2BD45D1B0F2C3DB6A02242E",
-                        "name": "龙玲",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "79D5B0C1E30F493C9EDFA8E58F0AA25E",
-                        "name": "鲁华",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "A601F1BB08444C5D9AAECD34CE96C77E",
-                        "name": "卢家俊",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "EBEA155FADEC427CB7755237143B5589",
-                        "name": "陆健辉",
-                        "photo": "http://inv.axnfw.com/group1/M00/72/39/wKgHPlkdkEGAffnMAACRNpXtcdI676.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "44D23F1EF6994BAEA2EB0EB032665736",
-                        "name": "鲁军",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "D70AA7D2BA554124BF1ADD01B13E8E9E",
-                        "name": "罗建华",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "5E62A0BA03344BB28101AFD1340FF70F",
-                        "name": "卢鹏",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "产品经理",
-                        "type": "1"
-                    },
-                    {
                         "id": "B6DD053749084F4792F24B1FAAF2AA2C",
                         "name": "鲁胜利",
                         "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
@@ -2012,54 +1809,6 @@ Nui.define(function(){
                         "type": "1"
                     },
                     {
-                        "id": "1115690887BE46EFB2176324C611890D",
-                        "name": "邵阳",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1487232184086.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "591650D174B64BC78018224FBCA70864",
-                        "name": "沈黄丽",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "销售助理",
-                        "type": "1"
-                    },
-                    {
-                        "id": "FB69F79ACC6B42A5826909C1A575FDB1",
-                        "name": "沈苗",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "92C98D74D287446A88FCE52771252397",
-                        "name": "施良泽",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "9E203D46B58941339BEDF02F70CCD52A",
-                        "name": "时瑞君",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1489577663091.jpg",
-                        "post": "产品经理",
-                        "type": "1"
-                    },
-                    {
-                        "id": "E9CD6C4CF0EE4C309DDC8462C133275A",
-                        "name": "舒丽琴",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1475038444770.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "D6AC4064B3614435AB522EE8613B56FA",
-                        "name": "宋芳芳",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "大数据开发工程师",
-                        "type": "1"
-                    },
-                    {
                         "id": "1C335FEB1C454A5AB07AA6532A9190AB",
                         "name": "宋凯",
                         "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
@@ -2099,32 +1848,6 @@ Nui.define(function(){
                         "name": "孙运利",
                         "photo": "http://u.jss.com.cn/images/usercenter/personal/1481038902055.jpg",
                         "post": "大数据开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "88A8993D57C54F678CE61E7C180C9902",
-                        "name": "孙菀青",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1480561500950.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "6E5644BDFF874C809DC1467B9AB40423",
-                        "name": "孙振尧",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "48367D6BBC0E4B5FB3EBBAC6514F75EB",
-                        "name": "苏儒博",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "489116A9667D419F92165769B7D31814",
-                        "name": "苏志锦",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "测试",
                         "type": "1"
                     }
                 ],
@@ -2260,53 +1983,6 @@ Nui.define(function(){
                         "type": "1"
                     },
                     {
-                        "id": "737BCF5EDA794BFBB85CB562BB8781AE",
-                        "name": "汪嘉琦",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "21CB80A0CD15419789AB229559F3BA68",
-                        "name": "王杰",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "前端开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "16A882B0C003496A966F088D435F60A3",
-                        "name": "王金飞",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "67A0D029C07C4C0F9051C2F7C2B3BDC7",
-                        "name": "王锦美",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "661E7C17EFA94489BABA2122C9DFFF17",
-                        "name": "王金余",
-                        "photo": "http://inv.axnfw.com/group1/M00/9C/87/wKgHP1lssS-AV-0KAABHpPhv5qQ192.jpg",
-                        "post": "网络工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "5B8448096558473AB95D6460B5F90D2F",
-                        "name": "王军",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1481528019751.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "E0D73052B4214F07B52317D017EF75F9",
-                        "name": "王坤奇",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
                         "id": "476A431627294949BB6CB8D76F354985",
                         "name": "王乐",
                         "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
@@ -2356,40 +2032,6 @@ Nui.define(function(){
                         "type": "1"
                     },
                     {
-                        "id": "70FB7162CB9F48DC832B865A25029992",
-                        "name": "王诗茹",
-                        "photo": "http://inv.axnfw.com/group1/M00/20/4F/wKgHPlnuzYeAH9DQAABC1EEGuA8025.jpg",
-                        "post": "前端开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "0961677A732046128ADD5589332559C8",
-                        "name": "汪伟锋",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "03DDC12E13AA42549DA53BD3796C1E98",
-                        "name": "王文军",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "办公室主任",
-                        "type": "1"
-                    },
-                    {
-                        "id": "5B9D1E3464C348D3A0DEB58F420B2A08",
-                        "name": "王祥君",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "F65535CECEA643239FD3B945C1C8FC9D",
-                        "name": "王显平",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "java软件工程师",
-                        "type": "1"
-                    },
-                    {
                         "id": "C8AF9A0D9E5A4D89AC666E575E50FE56",
                         "name": "王小明",
                         "photo": "http://u.jss.com.cn/images/usercenter/personal/1481770651336.jpg",
@@ -2418,83 +2060,6 @@ Nui.define(function(){
                         "type": "1"
                     },
                     {
-                        "id": "0FDCEF906AFF4B3BA538C79354717025",
-                        "name": "王莹",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "F9EA4A2982F545C7BD59CA6A3CBE41DA",
-                        "name": "汪义庆",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "A858019A2D5E491AAC6771F9CE70F38C",
-                        "name": "王渝迪",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "252DCE4FCAEC434B8BB2E5DC24EC0697",
-                        "name": "韦丽娜",
-                        "photo": "http://inv.axnfw.com/group1/M00/85/41/wKgHPllHQKqAY4xEAABXWFr7b7A057.jpg",
-                        "post": "客服专员",
-                        "type": "1"
-                    },
-                    {
-                        "id": "15832D4EA78A4E69B3144FFE8C2E7D2B",
-                        "name": "韦应安",
-                        "photo": "http://inv.axnfw.com/group1/M00/0F/B1/wKgHP1nfNIqAallhAAAuYLHRHb4640.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "EAD18EECDFFE4DFC859303D01496E0FE",
-                        "name": "温明明",
-                        "photo": "http://inv.axnfw.com/group1/M00/A0/82/wKgHP1l0QHmAZ8tHAABQFw4-k2o554.jpg",
-                        "post": "技术助理",
-                        "type": "1"
-                    },
-                    {
-                        "id": "EB8B2487A4774D78AB08F76094202B06",
-                        "name": "吴冰峰",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "客户经理",
-                        "type": "1"
-                    },
-                    {
-                        "id": "87C5CCF59BF441A0A92EAB2CDCC7B982",
-                        "name": "吴德礼",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "系统运维工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "E6230158A09343ABB3DA69AFE685CCD0",
-                        "name": "吴碟",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "总经理",
-                        "type": "1"
-                    },
-                    {
-                        "id": "A48EA9674BB84866BF7DF144B8C276F1",
-                        "name": "吴敦华",
-                        "photo": "http://inv.axnfw.com/group1/M00/B6/5C/wKgHPlmcDf-ASc_5AABQoOzrbVg475.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "788964DC9AC94A0A83D75C0E5DE3322B",
-                        "name": "吴华庆",
-                        "photo": "http://inv.axnfw.com/group1/M00/18/59/wKgHPlnoBjCAJa73AAAuViBLxv0614.jpg",
-                        "post": "司机",
-                        "type": "1"
-                    },
-                    {
                         "id": "77CE25746C7C41B79689695CC0495071",
                         "name": "吴家华",
                         "photo": "http://inv.axnfw.com/group1/M00/D7/C1/wKgHPlpe6keAaE7xAANzgMwTGzc945.jpg",
@@ -2512,34 +2077,6 @@ Nui.define(function(){
                         "id": "8C1B4EC699B54A889EBD32C65C589B48",
                         "name": "吴佳露",
                         "photo": "http://u.jss.com.cn/images/usercenter/personal/1481864269961.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "C743A777EDB04CC5AD2FE4CD5726EE06",
-                        "name": "邬娇娇",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1477123300166.jpg",
-                        "post": "测试工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "AA78F023781E432397CEC7C59EDF2096",
-                        "name": "吴家证",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "D35F3825EA854B568D318FA93543D6B5",
-                        "name": "吴莉荣",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1474962550130.jpg",
-                        "post": "开发组长",
-                        "type": "1"
-                    },
-                    {
-                        "id": "2047340B0DE546CABEA79FC08186FC06",
-                        "name": "武鹏",
-                        "photo": "http://inv.axnfw.com/group1/M00/0E/CB/wKgHP1ne0KWAGHZXAAAbUJ3AU20920.jpg",
-                        "post": "",
                         "type": "1"
                     },
                     {
@@ -2678,54 +2215,6 @@ Nui.define(function(){
                         "type": "1"
                     },
                     {
-                        "id": "0C5E75D6B9B547DFB9A07A2BC4A83335",
-                        "name": "谢璐璐",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "前端开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "C2CADF7FB1694935BF0DB5B7FF8A4F58",
-                        "name": "谢尚杰",
-                        "photo": "http://inv.axnfw.com/group1/M00/B6/51/wKgHP1pFApKAQZE0AABVILxNcMw037.jpg",
-                        "post": "系统运维开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "6A1D600ACEFF4B64A94D00FC80283F96",
-                        "name": "谢文慧",
-                        "photo": "http://inv.axnfw.com/group1/M00/21/38/wKgHP1nvIK6AHb6CAAAm-hYJ78o015.jpg",
-                        "post": "测试工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "3B56C288E108474BABCE43FCB346C807",
-                        "name": "谢贤益",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1481200487498.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "D5224AD2B84747A8B5EFB4ED3DB4F98C",
-                        "name": "修如",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "5FC86F7CA65841B4A73ABC0AB744A6D1",
-                        "name": "奚艳",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1479647091129.jpg",
-                        "post": "绩效",
-                        "type": "1"
-                    },
-                    {
-                        "id": "410C3E3C9EA64EFFA9EC9CB1F9C3603D",
-                        "name": "徐斌",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1477287145877.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
                         "id": "D35EF4F87FC04DA887B239D6C0177E96",
                         "name": "徐超",
                         "photo": "http://inv.axnfw.com/group1/M00/66/B7/wKgHP1oWxZWABYXdAAIgjAD3Ck0529.jpg",
@@ -2778,67 +2267,6 @@ Nui.define(function(){
                         "name": "徐军东",
                         "photo": "http://inv.axnfw.com/group1/M00/C8/A6/wKgHPlpPIOCAFzjpAAFB3Hs7bAQ958.jpg",
                         "post": "测试test",
-                        "type": "1"
-                    },
-                    {
-                        "id": "81475F8D00BD493E83B2BF3A18AE8B12",
-                        "name": "徐梦玲",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "C0CD8B7072454C54BF25CDB918AB1F10",
-                        "name": "徐鸣宏",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "72B6779E36B54AD38167B653798C35DC",
-                        "name": "徐茜茜",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "数据",
-                        "type": "1"
-                    },
-                    {
-                        "id": "6134CD7E870D4989A8092B62837655B1",
-                        "name": "徐卫军",
-                        "photo": "http://inv.axnfw.com/group1/M00/D7/7A/wKgHP1pXHbeAR4_-AADrxFTpRWc281.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "385CA005BA5C470F845AB1860954DCCA",
-                        "name": "徐晓丹",
-                        "photo": "http://inv.axnfw.com/group1/M00/0F/9B/wKgHP1nfJtOACUx6AAFSbv9yrOs865.jpg",
-                        "post": "信控员",
-                        "type": "1"
-                    },
-                    {
-                        "id": "256DE9BC7BD94278BB13245B4412C8FA",
-                        "name": "徐晓岚",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "法务助理",
-                        "type": "1"
-                    },
-                    {
-                        "id": "58458C26121146378A5E3BB3DFB6FE48",
-                        "name": "许晓晓",
-                        "photo": "http://inv.axnfw.com/group1/M00/C2/EE/wKgHP1pMthKAOPZ3AABPbZeSr6g632.jpg",
-                        "post": "未设置",
-                        "type": "1"
-                    },
-                    {
-                        "id": "C336F475AB0543DE9F6D6D18A73C8C51",
-                        "name": "徐燕玉",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "2F33042A55AA4410BF8C18DD965287B2",
-                        "name": "徐一杨",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
                         "type": "1"
                     },
                     {
@@ -2916,93 +2344,6 @@ Nui.define(function(){
                         "type": "1"
                     },
                     {
-                        "id": "4122747A77704F0E9BC0B1CF6ADD2893",
-                        "name": "杨梦杰",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "1DEFFC4106C346A48ECB86C6B449986A",
-                        "name": "杨乃生",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "F29EAB6A3D834B38B22FF1A052FB6920",
-                        "name": "杨青云",
-                        "photo": "http://inv.axnfw.com/group1/M00/1A/86/wKgHPlnpchOAI0RPAACG1fZhr_8656.jpg",
-                        "post": "测试工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "A115507337324B268DEFDC735B23DF10",
-                        "name": "杨婷",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "测试工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "F67F4FD24E11415F9DAE04BCCA194610",
-                        "name": "杨振君",
-                        "photo": "http://inv.axnfw.com/group1/M00/EC/FE/wKgHP1m3hrKAD25oAACN4d6qqlc108.jpg",
-                        "post": "产品运营",
-                        "type": "1"
-                    },
-                    {
-                        "id": "1C1909E66002457F825FAC7F5087EDAA",
-                        "name": "颜俊翔",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "C09F5002EB47434886E0A4C5BADCB7E9",
-                        "name": "姚琴玉",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "区域经理",
-                        "type": "1"
-                    },
-                    {
-                        "id": "959A62558E4443D4BB32A6F0CE9CDB49",
-                        "name": "姚伟锋",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "152133874F564D618FC487A2B33B361B",
-                        "name": "姚远智",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "C++开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "6007021EE31445888FE6BBB2EE6AFA4A",
-                        "name": "叶丰",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "D5807F8BB6C245E9AE7829FFF0AF98A0",
-                        "name": "叶竞呈",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "1C861A148F8A48AAAB288D19999D3E22",
-                        "name": "叶瑾燕",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "A634E2E857314D34B34DB0CD5CC8F253",
-                        "name": "叶玲玲",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1481870316075.jpg",
-                        "post": "测试",
-                        "type": "1"
-                    },
-                    {
                         "id": "DB8D93B80E2E45B69A3C7FEA3DDE5D5F",
                         "name": "叶其仁",
                         "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
@@ -3062,27 +2403,6 @@ Nui.define(function(){
                         "name": "袁航",
                         "photo": "http://inv.axnfw.com/group1/M00/EA/34/wKgHPlm13k2ASRwjAAAa_G3B7Ak127.jpg",
                         "post": "JAVA开发",
-                        "type": "1"
-                    },
-                    {
-                        "id": "0A36D9BE47A840ECB6A2FF845DED0822",
-                        "name": "袁钱军",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "仓库主管",
-                        "type": "1"
-                    },
-                    {
-                        "id": "8289C4ED72A542C59047771434466332",
-                        "name": "俞江丽",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "产品专员",
-                        "type": "1"
-                    },
-                    {
-                        "id": "F3DD6BD5EA2E4AE99DEF29E684F58AD8",
-                        "name": "余锐",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师（实习）",
                         "type": "1"
                     },
                     {
@@ -3270,66 +2590,6 @@ Nui.define(function(){
                         "name": "张士香",
                         "photo": "http://u.jss.com.cn/images/usercenter/personal/1482037860377.jpg",
                         "post": "运营",
-                        "type": "1"
-                    },
-                    {
-                        "id": "FFE3693A50994363B6016019DBD22C3D",
-                        "name": "张婷",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "物控员",
-                        "type": "1"
-                    },
-                    {
-                        "id": "18F93003F9C64E1F85F8384CEA3166A0",
-                        "name": "张婷婷",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "互联网信息审核专员",
-                        "type": "1"
-                    },
-                    {
-                        "id": "4A0168040A4C475B9E747D25F71AE5B6",
-                        "name": "张鑫",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "信息审核员",
-                        "type": "1"
-                    },
-                    {
-                        "id": "47E2AB70C2D34C268BE04F72CC4B5CE2",
-                        "name": "张欣",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1474620718825.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "4E94D997EAFA43E78A6B0D3B6EB20558",
-                        "name": "张欣怡",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "78E8AC097D5745689B4C0166A7EDABA1",
-                        "name": "张秀芳",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "客户经理",
-                        "type": "1"
-                    },
-                    {
-                        "id": "E9B833236DC24441BF048CC21F519836",
-                        "name": "张璇",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "46D807DAB9764A41809ABF9B97510163",
-                        "name": "张嫣君",
-                        "photo": "http://inv.axnfw.com/group1/M00/0F/B0/wKgHPlnfMyOAbIivAADY6aY52k4697.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "61992AAD316A4966AA1B30577A7945EE",
-                        "name": "张彦伟",
-                        "photo": "http://inv.axnfw.com/group1/M00/FF/40/wKgHP1nKZ1-ANHpTAABKHufZs7c902.jpg",
-                        "post": "产品运营",
                         "type": "1"
                     },
                     {
@@ -3578,47 +2838,6 @@ Nui.define(function(){
                         "name": "朱丽晓",
                         "photo": "http://inv.axnfw.com/group1/M00/C0/4E/wKgHPlpLdnSAZt2gAAAMPoEPcwo993.jpg",
                         "post": "测试人员",
-                        "type": "1"
-                    },
-                    {
-                        "id": "8C27368E11424A8FA8CF075F7D738CAD",
-                        "name": "朱鹏飞",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "553C392917BC485E852633B8DDD28A7D",
-                        "name": "朱鑫生",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "java开发工程师",
-                        "type": "1"
-                    },
-                    {
-                        "id": "5228F78AEC36460A96B0639CD5F9AC32",
-                        "name": "朱艳",
-                        "photo": "http://u.jss.com.cn/images/usercenter/personal/1490788035251.jpg",
-                        "type": "1"
-                    },
-                    {
-                        "id": "66EB69A789D94DA893D0CC134224CC59",
-                        "name": "朱泳存",
-                        "photo": "http://inv.axnfw.com/group1/M00/AA/CF/wKgHP1mJMEqAXhF7AAE6hh5HA0I970.jpg",
-                        "post": "研发",
-                        "type": "1"
-                    },
-                    {
-                        "id": "67BFBD6D4B9143968CEB7F43230BAB43",
-                        "name": "朱永光",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "",
-                        "type": "1"
-                    },
-                    {
-                        "id": "12FA3E4E28E4434BB748FD15234B5904",
-                        "name": "朱宇峰",
-                        "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                        "post": "Java开发工程师",
                         "type": "1"
                     },
                     {

@@ -18,7 +18,7 @@ Nui.define(function(require, imports){
             depts.push(v)
         })
     })
-
+    
     var all = [].concat(emps, depts);
 
     $('#demo1').focus(function(){
