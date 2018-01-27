@@ -184,27 +184,12 @@ Nui.define(function(require, imports){
     })
 
     $('#demo3').search({
+        container:'.demo3Tags',
         field:'name',
         empty:'没有搜索结果，请变换搜索条件',
+        prompt:'<p style="line-height:40px;">搜索条件为“<%value%>”的部门或员工，匹配到<%count%>条数据</p>',
         nullable:true,
         focus:true,
-        container:'.demo3Tags',
-        prompt:'搜索条件为“<%value%>”的员工或部门，匹配到<%count%>条数据',
-        events:{
-            'click .item-history':function(e, elem){
-                this.self.value(elem.text())
-            },
-            'click .letters > .s-crt':function(e, elem){
-                var letter = elem.text();
-                var $container = this.self.activeTab.$container;
-                var $list = $container.find('.con-search-list');
-                var top = $container.find('.letter-box[data-letter="'+ letter +'"]').position().top;
-                $list.animate({scrollTop:'+='+top}, 200)
-            },
-            'click .item-letter':function(e, elem){
-                this.self.value(elem.data('name'))
-            }
-        },
         match:{
             field:'name',
             like:function(data, value){
@@ -213,96 +198,90 @@ Nui.define(function(require, imports){
         },
         tag:{
             multiple:true,
-            clear:false,
-            focus:true,
-            backspace:true,
             container:'.demo3Tags > div > div',
             scroll:'.demo3Tags > div'
         },
         tabs:[{
-            title:'最近',
+            title:'组织架构',
             content:function(){
-                return template.render(
-                    '<ul class="con-search-list">'+
-                        '<%each $list%>'+
-                            '<li class="con-search-item item-history e-mt5" data-name="<%$value.name%>"><%$value.name%></li>'+
-                        '<%/each%>'+
-                    '</ul>'
-                    , 
-                    data.historyList
-                )
+                return '<div id="ztree" class="ztree"></div>'
             },
-            onShow:function(){
-                this.data = all;
-                this.toggle()
-            }
-        }, {
-            title:'按员工',
-            content:function(){
-                return this.content(data.empList)
-            },
-            onShow:function(){
-                this.data = emps;
-                this.toggle()
-            }
-        }, {
-            title:'按部门',
-            content:function(){
-                return this.content(data.deptList)
-            },
-            onShow:function(){      
-                this.data = depts;                
-                this.toggle()
+            onShow:function(self){
+                var that = this;
+                if(!that.ztree){
+                    require.async('../../../../assets/script/zTree/jquery.ztree.all-3.5.min.js', function(){
+                        var zTreeObj,
+                            setting = {
+                                view:{
+                                    selectedMulti:true
+                                },
+                                callback:{
+                                    beforeClick:function(treeId, treeNode){
+                                        var nodes = that.ztree.getSelectedNodes();
+                                        var exist = false;
+                                        Nui.each(nodes, function(node){
+                                            if(node === treeNode){
+                                                exist = true;
+                                                return false;
+                                            }
+                                        })
+                                        if(exist){
+                                            that.ztree.cancelSelectedNode(treeNode);
+                                        }
+                                        else{
+                                            that.ztree.selectNode(treeNode, true)
+                                        }
+                                        self.value()
+                                        return false
+                                    }
+                                }
+                            },
+                            zTreeNodes = [{
+                                name:'研发中心',
+                                children:[{
+                                    name:'前端开发组',
+                                    children:[{
+                                        name:'王福元'
+                                    }, {
+                                        name:'吕永宝'
+                                    }, {
+                                        name:'王驰君'
+                                    }]
+                                }, {
+                                    name:'架构组',
+                                    children:[{
+                                        name:'董丽华'
+                                    }, {
+                                        name:'方兴苗'
+                                    }]
+                                }]
+                            }, {
+                                name:'产品部',
+                                children:[{
+                                    name:'UED组',
+                                    children:[{
+                                        name:'孙宛清'
+                                    }, {
+                                        name:'郭荣'
+                                    }]
+                                }, {
+                                    name:'产品组',
+                                    children:[{
+                                        name:'邓本'
+                                    }, {
+                                        name:'秦文倩'
+                                    }]
+                                }]
+                            }]
+                        that.ztree = $.fn.zTree.init($('#ztree'), setting, zTreeNodes);
+                        that.data = that.ztree.transformToArray(that.ztree.getNodes())
+                    })
+                }
+                else{
+
+                }
             }
         }],
-        content:function(data){
-            return template.render(
-                '<div class="letters">'+
-                    '<%each "★ABCDEFGHIJKLMNOPQRSTUVWXYZ#".split("")%>'+
-                        '<span<%active($value)%>><%$value%></span>'+
-                    '<%/each%>'+
-                '</div>'+
-                '<div class="con-search-list" style="max-height:320px;">'+
-                    '<%each data%>'+
-                    '<div class="f-clearfix letter-box" data-letter="<%$value.str%>">'+
-                        '<em class="e-mt5"><%$value.str%></em>'+
-                        '<ul class="list">'+
-                            '<%each $value.list v%>'+
-                                '<li class="con-search-item e-pl0 e-mt5 item-letter" data-name="<%v.name%>">'+
-                                    '<img src="<%photo(v.photo)%>" class="f-fl" width="30" height="30" alt="<%v.name%>">'+
-                                    '<span class="f-fl e-ml5 f-toe text"><%v.name%></span>'+
-                                '</li>'+
-                            '<%/each%>'+
-                        '</ul>'+
-                    '</div>'+
-                    '<%/each%>'+
-                '</div>'
-                , 
-                {
-                    data:data,
-                    active:function(letter){
-                        var cls = '';
-                        Nui.each(data, function(v){
-                            if(v.str == letter){
-                                cls = ' class="s-crt"';
-                                return false
-                            }
-                        })
-                        return cls
-                    },
-                    photo:function(val){
-                        return val || '//rs.jss.com.cn/oa/oa/index/images/dept_30.png'
-                    }
-                }
-            )
-        },
-        toggle:function(){
-            var that = this, self = that.self;
-            self.activeTab.$container.find('.con-search-item').each(function(){
-                var elem = $(this), data = elem.data();
-                elem.toggleClass('s-crt', that.selected(self, data))
-            })
-        },
         selected:function(self, data){
             var exist = false;
             Nui.each(self.tagData, function(val){
@@ -324,7 +303,11 @@ Nui.define(function(require, imports){
             self.value('');
         },
         onChange:function(self){
-            this.toggle()
+            var that = this;
+            self.activeTab.$container.find('.con-search-item').each(function(){
+                var elem = $(this), data = elem.data();
+                elem.toggleClass('s-crt', that.selected(self, data))
+            })
         }
     })
 })
