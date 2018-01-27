@@ -46,8 +46,15 @@ Nui.define(function(require, imports){
             'click .item-history':function(e, elem){
                 this.self.value(elem.text())
             },
-            'click :checkbox':function(e, elem){
-                this.self.value(elem.val())
+            'click .letters > .s-crt':function(e, elem){
+                var letter = elem.text();
+                var $container = this.self.activeTab.$container;
+                var $list = $container.find('.con-search-list');
+                var top = $container.find('.letter-box[data-letter="'+ letter +'"]').position().top;
+                $list.animate({scrollTop:'+='+top}, 200)
+            },
+            'click .item-letter':function(e, elem){
+                this.self.value(elem.data('name'))
             }
         },
         match:{
@@ -61,57 +68,108 @@ Nui.define(function(require, imports){
         },
         tag:{
             multiple:true,
+            clear:false,
             focus:true,
             backspace:true,
-            container:'#demo2Tags > div',
-            scroll:'#demo2Tags'
+            container:'.demo2Tags > div',
+            scroll:'.demo2Tags'
         },
         tabs:[{
             title:'最近',
             content:function(){
                 return template.render(
-                    '<ul class="con-search-list e-pt5 item-history">'+
-                    '<%each $list%>'+
-                        '<li class="con-search-item" data-name="<%$value.name%>"><%$value.name%></li>'+
-                    '<%/each%>'+
+                    '<ul class="con-search-list e-pt5">'+
+                        '<%each $list%>'+
+                            '<li class="con-search-item item-history" data-name="<%$value.name%>"><%$value.name%></li>'+
+                        '<%/each%>'+
                     '</ul>'
                     , 
                     data.historyList
                 )
             },
-            onShow:function(self, elem, container){
-                
+            onShow:function(){
+                this.data = all;
+                this.toggle()
             }
         }, {
             title:'按员工',
             content:function(){
-                
+                return this.content(data.empList)
             },
-            onShow:function(self){
-                
+            onShow:function(){
+                this.data = emps;
+                this.toggle()
             }
         }, {
             title:'按部门',
             content:function(){
-
+                return this.content(data.deptList)
             },
-            onShow:function(){                      
-                
+            onShow:function(){      
+                this.data = depts;                
+                this.toggle()
             }
         }],
-        selected:function(self, data){
-            var exist = false;
-            Nui.each(self.tagData, function(v){
-    
+        content:function(data){
+            return template.render(
+                '<div class="letters">'+
+                    '<%each "★ABCDEFGHIJKLMNOPQRSTUVWXYZ#".split("")%>'+
+                        '<span<%active($value)%>><%$value%></span>'+
+                    '<%/each%>'+
+                '</div>'+
+                '<div class="con-search-list" style="max-height:320px;">'+
+                    '<%each data%>'+
+                    '<div class="f-clearfix letter-box" data-letter="<%$value.str%>">'+
+                        '<em class="e-mt5"><%$value.str%></em>'+
+                        '<ul class="list">'+
+                            '<%each $value.list v%>'+
+                                '<li class="con-search-item e-pl0 e-mt5 item-letter" data-name="<%v.name%>">'+
+                                    '<img src="<%photo(v.photo)%>" class="f-fl" width="30" height="30" alt="<%v.name%>">'+
+                                    '<span class="f-fl e-ml5 f-toe text"><%v.name%></span>'+
+                                '</li>'+
+                            '<%/each%>'+
+                        '</ul>'+
+                    '</div>'+
+                    '<%/each%>'+
+                '</div>'
+                , 
+                {
+                    data:data,
+                    active:function(letter){
+                        var cls = '';
+                        Nui.each(data, function(v){
+                            if(v.str == letter){
+                                cls = ' class="s-crt"';
+                                return false
+                            }
+                        })
+                        return cls
+                    },
+                    photo:function(val){
+                        return val || '//rs.jss.com.cn/oa/oa/index/images/dept_30.png'
+                    }
+                }
+            )
+        },
+        toggle:function(){
+            var that = this, self = that.self;
+            self.activeTab.$container.find('.con-search-item').each(function(){
+                var elem = $(this), data = elem.data();
+                elem.toggleClass('s-crt', that.selected(self, data))
             })
         },
-        item:function(){    
-            return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
+        selected:function(self, data){
+            var exist = false;
+            Nui.each(self.tagData, function(val){
+                if(data.name === val.text){
+                    exist = true;
+                    return false
+                }
+            })
+            return exist
         },
-        query:function(self, value){
-            return {
-                keywords:encodeURI(value)
-            }
+        item:function(){    
+            return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>" data-name="<%$data.name%>"><%$data.name%></li>'
         },
         onSelectBefore:function(self, data){
             self.value(data[this.field])
@@ -121,16 +179,7 @@ Nui.define(function(require, imports){
             self.value('');
         },
         onChange:function(self){
-            self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
-                var $elem = $(this);
-                var text = $elem.val();
-                Nui.each(self.tagData, function(v){
-                    if(text === v.text){
-                        $elem.prop('checked', true)
-                        return false;
-                    }
-                })
-            });
+            this.toggle()
         }
     })
 })

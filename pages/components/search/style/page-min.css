@@ -1370,3 +1370,34 @@ input:-webkit-autofill {
   height: 28px;
   border: none;
 }
+.letters {
+  height: 47px;
+  border-bottom: 1px solid #efefef;
+  padding-left: 2px;
+  font-size: 13px;
+}
+.letters span {
+  margin: 6px 0 0 0;
+  width: 15px;
+  float: left;
+  text-align: center;
+}
+.letters span.s-crt {
+  cursor: pointer;
+  color: #3F91F1;
+}
+.letter-box em {
+  width: 40px;
+  float: left;
+  text-align: center;
+  line-height: 30px;
+}
+.letter-box ul {
+  padding-left: 40px;
+}
+.letter-box ul .e-pl0 {
+  padding-left: 0;
+}
+.letter-box ul .text {
+  width: 120px;
+}

@@ -876,43 +876,20 @@ __define('pages/components/search/script/data',function(){
     return {
         "historyList": [
             {
-                "id": "3D6E6C6BE9B54A9090846E38FAC5863F",
-                "name": "常建新",
-                "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                "post": "",
+                "name": "王福元",
                 "type": "1"
             },
             {
-                "id": "6EE8F12709A943CD83BF13F572346DA6",
-                "name": "陈丹",
-                "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
+                "name": "陈华",
                 "type": "1"
             },
             {
-                "id": "BC5E1D871D1D421AA71B526B435F49B8",
-                "name": "陈可达",
-                "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
+                "name": "单立强",
                 "type": "1"
             },
             {
-                "id": "2367A2DC16F34E608BF12F2056B91699",
-                "name": "陈丽",
-                "photo": "http://u.jss.com.cn/images/usercenter/personal/1482458445976.jpg",
-                "post": "",
-                "type": "1"
-            },
-            {
-                "id": "E8349D8A67AA41C793B2C261BAB3C29E",
-                "name": "陈强",
-                "photo": "http://u.jss.com.cn/images/usercenter/personal/1472630665568.jpg",
-                "post": "产品运营",
-                "type": "1"
-            },
-            {
-                "id": "34A2FB372ED348958C6849C4D61E4592",
-                "name": "陈晓",
-                "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                "type": "1"
+                "name": "办公室",
+                "type": "0"
             }
         ],
         "deptList": [
@@ -8015,8 +7992,15 @@ __define('./script/page',function(require, imports){
             'click .item-history':function(e, elem){
                 this.self.value(elem.text())
             },
-            'click :checkbox':function(e, elem){
-                this.self.value(elem.val())
+            'click .letters > .s-crt':function(e, elem){
+                var letter = elem.text();
+                var $container = this.self.activeTab.$container;
+                var $list = $container.find('.con-search-list');
+                var top = $container.find('.letter-box[data-letter="'+ letter +'"]').position().top;
+                $list.animate({scrollTop:'+='+top}, 200)
+            },
+            'click .item-letter':function(e, elem){
+                this.self.value(elem.data('name'))
             }
         },
         match:{
@@ -8030,57 +8014,108 @@ __define('./script/page',function(require, imports){
         },
         tag:{
             multiple:true,
+            clear:false,
             focus:true,
             backspace:true,
-            container:'#demo2Tags > div',
-            scroll:'#demo2Tags'
+            container:'.demo2Tags > div',
+            scroll:'.demo2Tags'
         },
         tabs:[{
             title:'最近',
             content:function(){
                 return template.render(
-                    '<ul class="con-search-list e-pt5 item-history">'+
-                    '<%each $list%>'+
-                        '<li class="con-search-item" data-name="<%$value.name%>"><%$value.name%></li>'+
-                    '<%/each%>'+
+                    '<ul class="con-search-list e-pt5">'+
+                        '<%each $list%>'+
+                            '<li class="con-search-item item-history" data-name="<%$value.name%>"><%$value.name%></li>'+
+                        '<%/each%>'+
                     '</ul>'
                     , 
                     data.historyList
                 )
             },
-            onShow:function(self, elem, container){
-                
+            onShow:function(){
+                this.data = all;
+                this.toggle()
             }
         }, {
             title:'按员工',
             content:function(){
-                
+                return this.content(data.empList)
             },
-            onShow:function(self){
-                
+            onShow:function(){
+                this.data = emps;
+                this.toggle()
             }
         }, {
             title:'按部门',
             content:function(){
-
+                return this.content(data.deptList)
             },
-            onShow:function(){                      
-                
+            onShow:function(){      
+                this.data = depts;                
+                this.toggle()
             }
         }],
-        selected:function(self, data){
-            var exist = false;
-            Nui.each(self.tagData, function(v){
-    
+        content:function(data){
+            return template.render(
+                '<div class="letters">'+
+                    '<%each "★ABCDEFGHIJKLMNOPQRSTUVWXYZ#".split("")%>'+
+                        '<span<%active($value)%>><%$value%></span>'+
+                    '<%/each%>'+
+                '</div>'+
+                '<div class="con-search-list" style="max-height:320px;">'+
+                    '<%each data%>'+
+                    '<div class="f-clearfix letter-box" data-letter="<%$value.str%>">'+
+                        '<em class="e-mt5"><%$value.str%></em>'+
+                        '<ul class="list">'+
+                            '<%each $value.list v%>'+
+                                '<li class="con-search-item e-pl0 e-mt5 item-letter" data-name="<%v.name%>">'+
+                                    '<img src="<%photo(v.photo)%>" class="f-fl" width="30" height="30" alt="<%v.name%>">'+
+                                    '<span class="f-fl e-ml5 f-toe text"><%v.name%></span>'+
+                                '</li>'+
+                            '<%/each%>'+
+                        '</ul>'+
+                    '</div>'+
+                    '<%/each%>'+
+                '</div>'
+                , 
+                {
+                    data:data,
+                    active:function(letter){
+                        var cls = '';
+                        Nui.each(data, function(v){
+                            if(v.str == letter){
+                                cls = ' class="s-crt"';
+                                return false
+                            }
+                        })
+                        return cls
+                    },
+                    photo:function(val){
+                        return val || '//rs.jss.com.cn/oa/oa/index/images/dept_30.png'
+                    }
+                }
+            )
+        },
+        toggle:function(){
+            var that = this, self = that.self;
+            self.activeTab.$container.find('.con-search-item').each(function(){
+                var elem = $(this), data = elem.data();
+                elem.toggleClass('s-crt', that.selected(self, data))
             })
         },
-        item:function(){    
-            return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>"><span title="<%$data.buname%>"><%$data.buname%></span></li>'
+        selected:function(self, data){
+            var exist = false;
+            Nui.each(self.tagData, function(val){
+                if(data.name === val.text){
+                    exist = true;
+                    return false
+                }
+            })
+            return exist
         },
-        query:function(self, value){
-            return {
-                keywords:encodeURI(value)
-            }
+        item:function(){    
+            return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>" data-name="<%$data.name%>"><%$data.name%></li>'
         },
         onSelectBefore:function(self, data){
             self.value(data[this.field])
@@ -8090,16 +8125,7 @@ __define('./script/page',function(require, imports){
             self.value('');
         },
         onChange:function(self){
-            self.activeTab.$container.find(':checkbox').prop('checked', false).each(function(){
-                var $elem = $(this);
-                var text = $elem.val();
-                Nui.each(self.tagData, function(v){
-                    if(text === v.text){
-                        $elem.prop('checked', true)
-                        return false;
-                    }
-                })
-            });
+            this.toggle()
         }
     })
 })

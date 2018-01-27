@@ -2,43 +2,20 @@ Nui.define(function(){
     return {
         "historyList": [
             {
-                "id": "3D6E6C6BE9B54A9090846E38FAC5863F",
-                "name": "常建新",
-                "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                "post": "",
+                "name": "王福元",
                 "type": "1"
             },
             {
-                "id": "6EE8F12709A943CD83BF13F572346DA6",
-                "name": "陈丹",
-                "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
+                "name": "陈华",
                 "type": "1"
             },
             {
-                "id": "BC5E1D871D1D421AA71B526B435F49B8",
-                "name": "陈可达",
-                "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
+                "name": "单立强",
                 "type": "1"
             },
             {
-                "id": "2367A2DC16F34E608BF12F2056B91699",
-                "name": "陈丽",
-                "photo": "http://u.jss.com.cn/images/usercenter/personal/1482458445976.jpg",
-                "post": "",
-                "type": "1"
-            },
-            {
-                "id": "E8349D8A67AA41C793B2C261BAB3C29E",
-                "name": "陈强",
-                "photo": "http://u.jss.com.cn/images/usercenter/personal/1472630665568.jpg",
-                "post": "产品运营",
-                "type": "1"
-            },
-            {
-                "id": "34A2FB372ED348958C6849C4D61E4592",
-                "name": "陈晓",
-                "photo": "http://u.jss.com.cn/Contents/usercenter/allow/static/images/man.jpg",
-                "type": "1"
+                "name": "办公室",
+                "type": "0"
             }
         ],
         "deptList": [
