@@ -228,9 +228,11 @@ Nui.define(function(require, imports){
                                                 all.push(data)
                                             }
                                         })
+                                        //没有被选择的或者全部被选择的
                                         if(all.length === arr.length || !arr.length){
                                             self.value(all)
                                         }
+                                        //只有部分被选择
                                         else{
                                             self.value(arr)
                                         }
