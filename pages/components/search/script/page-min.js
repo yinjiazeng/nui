@@ -5850,7 +5850,7 @@ __define('lib/components/search',function(require, imports){
     var util = require('lib/core/util');
     var request = require('lib/core/request');
 
-    return this.extend(component, {
+    var Search = this.extend(component, {
         _static:{
             _init:function(){
                 var self = this, timer = null;
@@ -5864,6 +5864,47 @@ __define('lib/components/search',function(require, imports){
                         })
                     }, 100)
                 })
+            },
+            /**
+             * @func 将tag数据转为html模版
+             * @param data <Object>
+             * {
+             *     text:'',
+             *     fields:{
+             *         field1:value1,
+             *         field2:value2,
+             *         ...
+             *     }
+             * }
+             * @param data <Array>
+             * [{
+             *     text:'',
+             *     fields:{
+             *         field1:value1,
+             *         field2:value2,
+             *         ...
+             *     }
+             * }
+             * @param option <Object> 
+             * {
+             *     title:true,
+             *     close:'×',
+             *     type:'gray'
+             * }
+             */
+            data2html:function(data, option){
+                if(data && typeof data === 'object'){
+                    if(!option){
+                        option = {}
+                    }
+                    return Search._tpl2html.call(Search, 'tags', {
+                        data:[].concat(data),
+                        title:option.title === undefined ? true : option.title,
+                        close:option.close||'×',
+                        type:option.type ? [].concat(option.type) : false
+                    })
+                }
+                return ''
             }
         },
         _options:{
@@ -5994,6 +6035,11 @@ __define('lib/components/search',function(require, imports){
                  */
                 type:'',
                 /**
+                 * @func 关闭按钮内容
+                 * @type <String>
+                 */
+                close:'×',
+                /**
                  * @func 是否多选
                  * @type <Boolean>
                  */
@@ -6029,11 +6075,6 @@ __define('lib/components/search',function(require, imports){
                  * @desc 如果未设置将取container作为滚动容器
                  */
                 scroll:null,
-                /**
-                 * @func 关闭按钮内容
-                 * @type <String>
-                 */
-                close:'×',
                 /**
                  * @func 设置标签数据
                  * @type <Function>
@@ -6189,21 +6230,12 @@ __define('lib/components/search',function(require, imports){
                     '</div>'+
                 '<%/if%>',
             tags:
-                '<%var _type, _title, _close%>'+
-                '<%if type?? && type%>'+
-                '<%var _type = [].concat(type)%>'+
-                '<%/if%>'+
-                '<%if title?? && title%>'+
-                '<%var _title = title%>'+
-                '<%/if%>'+
-                '<%if close?? && close%>'+
-                '<%var _close = close%>'+
-                '<%/if%>'+
                 '<%each data $data k%>'+
-                    '<span class="ui-tag<%if _type%><%each _type v i%> ui-tag-<%v%><%/each%><%/if%>">'+
-                        '<em class="con-tag-text"<%if _title%> title="<%$data.text%>"<%/if%>><%$data.text%></em>'+
-                        '<%if _close%>'+
-                        '<b class="con-tag-close"><%_close%></b>'+
+                    '<%if $data && $data.text%>'+
+                    '<span class="ui-tag<%if type%><%each type v i%> ui-tag-<%v%><%/each%><%/if%>">'+
+                        '<em class="con-tag-text"<%if title%> title="<%$data.text%>"<%/if%>><%$data.text%></em>'+
+                        '<%if close%>'+
+                        '<b class="con-tag-close"><%close%></b>'+
                         '<%/if%>'+
                         '<%if $data.fields?? && $data.fields%>'+
                             '<%each $data.fields%>'+
@@ -6213,6 +6245,7 @@ __define('lib/components/search',function(require, imports){
                             '<%/each%>'+
                         '<%/if%>'+
                     '</span>'+
+                    '<%/if%>'+
                 '<%/each%>'
         },
         _events:{
@@ -6804,13 +6837,6 @@ __define('lib/components/search',function(require, imports){
                 self._matchs = match
             }
         },
-        _initTagTplData:function(data){
-            var self = this;
-            data.title = self._tag.title || false;
-            data.close = self._tag.close || false;
-            data.type = self._tag.type ? [].concat(self._tag.type) : '';
-            return data
-        },
         _getSelected:function(){
             var self = this, opts = self._options;
             var selected = function(){
@@ -6927,21 +6953,7 @@ __define('lib/components/search',function(require, imports){
             }
         },
         _data2html:function(data){
-            var self = this, array = [], html = '', tag = self._tag;
-            Nui.each([].concat(data), function(val){
-                if(val && val.text){
-                    array.push(val)
-                }
-            })
-            if(array.length){
-                html = self._tpl2html('tags', {
-                    data:array,
-                    title:tag.title,
-                    close:tag.close,
-                    type:tag.type
-                })
-            }
-            return html
+            return this.constructor.data2html(data, this._tag)
         },
         _exec:function(){
             var self = this, opts = self._options;
@@ -7187,6 +7199,8 @@ __define('lib/components/search',function(require, imports){
             }
         }
     })
+
+    return Search
 }); 
 __define('./script/page',function(require, imports){
     imports('../style/page.less');
