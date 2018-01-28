@@ -7417,25 +7417,7 @@ __define('./script/page',function(require, imports){
                                 },
                                 callback:{
                                     beforeClick:function(treeId, treeNode){
-                                        var arr = [], all = [];
-                                        var nodes = that.ztree.transformToArray(treeNode);
-                                        Nui.each(nodes, function(node){
-                                            if(!node.children){
-                                                var data = that.setValue(self, node);
-                                                if(!that.selected(self, node)){
-                                                    arr.push(data)
-                                                }
-                                                all.push(data)
-                                            }
-                                        })
-                                        //没有被选择的或者全部被选择的
-                                        if(all.length === arr.length || !arr.length){
-                                            self.value(all)
-                                        }
-                                        //只有部分被选择
-                                        else{
-                                            self.value(arr)
-                                        }
+                                        that.toggle(treeNode)
                                         return false
                                     }
                                 }
@@ -7487,6 +7469,28 @@ __define('./script/page',function(require, imports){
                 }
             }
         }],
+        toggle:function(treeNode){
+            var that = this, self = that.self;
+            var arr = [], all = [];
+            var nodes = that.ztree.transformToArray(treeNode);
+            Nui.each(nodes, function(node){
+                if(!node.children){
+                    var data = that.setValue(self, node);
+                    if(!that.selected(self, node)){
+                        arr.push(data)
+                    }
+                    all.push(data)
+                }
+            })
+            //没有被选择的或者全部被选择的
+            if(all.length === arr.length || !arr.length){
+                self.value(all)
+            }
+            //只有部分被选择
+            else{
+                self.value(arr)
+            }
+        },
         toggleZtree:function(){
             var that = this, self = that.self;
             Nui.each(that.data, function(v){
@@ -7517,7 +7521,12 @@ __define('./script/page',function(require, imports){
             return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>" data-name="<%$data.name%>"><%$data.name%></li>'
         },
         onSelectBefore:function(self, data){
-            self.value(data[this.field])
+            if(data.children){
+                this.toggle(data)
+            }
+            else{
+                self.value(data[this.field])
+            }
             return false
         },
         onBlur:function(self, elem){
