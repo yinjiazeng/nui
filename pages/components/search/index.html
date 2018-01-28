@@ -151,6 +151,122 @@
 				<p>说明：在展示列表时如果未使用item参数，将会展示该值内容</p>
 			</div>
 
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> focus</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：是否在文本获取焦点时展示下拉</p>
+				<p>默认：false</p>
+				<p>类型：{Boolean}</p>
+				<p>说明：设置true后组件内部会绑定focus事件，因此不建议手动绑定focus事件调用组件的同时将该参数设置为true，那样会导致事件重复绑定</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> nullable</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：是否允许文本框内容为空时展示下拉</p>
+				<p>默认：false</p>
+				<p>类型：{Boolean}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> cahce</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：搜索时是否缓存数据</p>
+				<p>默认：false</p>
+				<p>类型：{Boolean}</p>
+				<p>说明：设置为true后，如果输入之前已经查询过的数据，那么不再执行查询，直接返回该数据</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> container</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：展示内容显示容器</p>
+				<p>默认：'body'</p>
+				<p>类型：{String} 选择器</p>
+				<p>类型：{Object} DOM对象、jQuery对象</p>
+				<p>类型：{Function} </p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>返回：{String, Object} 返回选择器或者元素对象</p>
+				<p>说明：如果设置为body，创建的元素会基于搜索输入框进行定位，如果不是则基于该值定义的元素进行定位</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> limit</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：下拉列表的数量，超过出现滚动条</p>
+				<p>默认：6</p>
+				<p>类型：{Number}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> size</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：为展示元素增加高宽</p>
+				<p>默认：null</p>
+				<p>类型：{Object}</p>
+				<p>属性：width {Number} 宽度</p>
+				<p>属性：height {Number} 高度</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> offset</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：设置展示元素的偏移值</p>
+				<p>默认：null</p>
+				<p>类型：{Object}</p>
+				<p>属性：top {Number} 顶部偏移值</p>
+				<p>属性：left {Number} 左侧偏移值</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> style</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：设置展示元素样式</p>
+				<p>默认：null</p>
+				<p>类型：{Object}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> ajax</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：jQuery ajax配置</p>
+				<p>默认：null</p>
+				<p>类型：{Object}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> data</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：自定义列表数据</p>
+				<p>默认：null</p>
+				<p>类型：{Array}</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>返回：{Array} 返回自定义数据</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> tag</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：展示标签配置项</p>
+				<p>类型：{Object}</p>
+				<table class="data e-mt5">
+					<tr>
+						<th width="80">属性</th>
+						<th width="80">默认值</th>
+						<th width="80">类型</th>
+						<th>说明</th>
+					</tr>
+					<tr>
+						<td>type</td>
+						<td>''</td>
+						<td>{String, Array}</td>
+						<td>定义标签类型，设置后会在标签元素上增加类名ui-tag-名称</td>
+					</tr>
+					<tr>
+						<td>close</td>
+						<td>'×'</td>
+						<td>{String}</td>
+						<td>关闭按钮内容</td>
+					</tr>
+					<tr>
+						<td>multiple</td>
+						<td>true</td>
+						<td>{Boolean}</td>
+						<td>是否多选</td>
+					</tr>
+				</table>
+			</div>
+
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例属性</h2>
 			
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例方法</h2>
