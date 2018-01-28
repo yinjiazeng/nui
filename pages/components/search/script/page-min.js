@@ -6012,7 +6012,7 @@ __define('lib/components/search',function(require, imports){
                  * @func 选择完是否清空输入框
                  * @type <Boolean>
                  */
-                clear:true,
+                clear:false,
                 /**
                  * @func 是否设置提示
                  * @type <Boolean>
@@ -6585,10 +6585,11 @@ __define('lib/components/search',function(require, imports){
                     $tag.remove();
                     delete self._hover;
                     delete data.$elem;
-                    if(!self._showed && opts.tag.focus === true){
+                    if(opts.tag.focus === true){
+                        self._hover = true;
                         self.target.focus()
                     }
-                    self._change(e)
+                    self._change(e);
                 })
 
                 if($tagScroll && $tagScroll.find(self.target).length){
@@ -7257,7 +7258,6 @@ __define('./script/page',function(require, imports){
         },
         tag:{
             multiple:true,
-            clear:false,
             focus:true,
             backspace:true,
             container:'.demo2Tags > div',
@@ -7387,6 +7387,7 @@ __define('./script/page',function(require, imports){
         },
         tag:{
             multiple:true,
+            focus:true,
             container:'.demo3Tags > div > div',
             scroll:'.demo3Tags > div'
         },
@@ -7406,17 +7407,23 @@ __define('./script/page',function(require, imports){
                                 },
                                 callback:{
                                     beforeClick:function(treeId, treeNode){
-                                        var data = [], count = 0;
+                                        var arr = [], all = [];
                                         var nodes = that.ztree.transformToArray(treeNode);
                                         Nui.each(nodes, function(node){
                                             if(!node.children){
+                                                var data = that.setValue(self, node);
                                                 if(!that.selected(self, node)){
-                                                    count++;
+                                                    arr.push(data)
                                                 }
-                                                data.push(that.setValue(self, node))
+                                                all.push(data)
                                             }
                                         })
-                                        self.value(data, count !== data.length)
+                                        if(all.length === arr.length || !arr.length){
+                                            self.value(all)
+                                        }
+                                        else{
+                                            self.value(arr)
+                                        }
                                         return false
                                     }
                                 }

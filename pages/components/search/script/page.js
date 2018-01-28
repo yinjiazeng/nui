@@ -68,7 +68,6 @@ Nui.define(function(require, imports){
         },
         tag:{
             multiple:true,
-            clear:false,
             focus:true,
             backspace:true,
             container:'.demo2Tags > div',
@@ -198,6 +197,7 @@ Nui.define(function(require, imports){
         },
         tag:{
             multiple:true,
+            focus:true,
             container:'.demo3Tags > div > div',
             scroll:'.demo3Tags > div'
         },
@@ -217,17 +217,23 @@ Nui.define(function(require, imports){
                                 },
                                 callback:{
                                     beforeClick:function(treeId, treeNode){
-                                        var data = [], count = 0;
+                                        var arr = [], all = [];
                                         var nodes = that.ztree.transformToArray(treeNode);
                                         Nui.each(nodes, function(node){
                                             if(!node.children){
+                                                var data = that.setValue(self, node);
                                                 if(!that.selected(self, node)){
-                                                    count++;
+                                                    arr.push(data)
                                                 }
-                                                data.push(that.setValue(self, node))
+                                                all.push(data)
                                             }
                                         })
-                                        self.value(data, count !== data.length)
+                                        if(all.length === arr.length || !arr.length){
+                                            self.value(all)
+                                        }
+                                        else{
+                                            self.value(arr)
+                                        }
                                         return false
                                     }
                                 }
