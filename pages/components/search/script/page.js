@@ -208,6 +208,7 @@ Nui.define(function(require, imports){
         tag:{
             multiple:true,
             focus:true,
+            clear:true,
             container:'.demo3Tags > div > div',
             scroll:'.demo3Tags > div'
         },
@@ -337,6 +338,7 @@ Nui.define(function(require, imports){
             else{
                 self.value(data[this.field])
             }
+            self.hide();
             return false
         },
         onBlur:function(self, elem){
