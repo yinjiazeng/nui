@@ -2,6 +2,10 @@
 
 {% block title %}{% endblock %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/nui/pages/script/style/page-min.css"/>
+{% endblock %}
+
 {% block nav %}
 	{% import 'nav.tpl' as nav %}
 	{{nav.active('study')}}
@@ -56,7 +60,7 @@ Nui.define(['events'], function(events){
 			<button class="ui-button j-del e-mr10">删除</button>
 			<button class="ui-button j-update e-mr10">修改</button>
 <script type="text/highlight" data-javascript-options>
-Nui.define(['template', 'events', '{com}/layer/layerExt'], function(template, events, layer){
+Nui.define(['template', 'events', '{com}/layer/confirm'], function(template, events, confirm){
 
     var evt = events({
         elem:$('#data'),
@@ -109,7 +113,7 @@ Nui.define(['template', 'events', '{com}/layer/layerExt'], function(template, ev
         },
         update:function(e, elem, data){
             var that = this;
-            layer.confirm('<input type="text" style="border:1px solid #ccc; width:180px; height:24px;" />', function(e, self){
+            confirm('<input type="text" style="border:1px solid #ccc; width:180px; height:24px;" />', function(self){
                 var val = Nui.trim(self.main.find('input').val());
                 if(val){
                     Nui.each(data, function(v){

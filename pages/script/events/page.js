@@ -50,7 +50,7 @@ Nui.define(['template', 'events', '{com}/layer/confirm'], function(template, eve
         },
         update:function(e, elem, data){
             var that = this;
-            confirm('<input type="text" style="border:1px solid #ccc; width:180px; height:24px;" />', function(e, self){
+            confirm('<input type="text" style="border:1px solid #ccc; width:180px; height:24px;" />', function(self){
                 var val = Nui.trim(self.main.find('input').val());
                 if(val){
                     Nui.each(data, function(v){
