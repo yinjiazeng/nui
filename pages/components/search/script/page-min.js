@@ -7257,7 +7257,7 @@ __define('./script/page',function(require, imports){
             width:100
         },
         tag:{
-            multiple:true,
+            multiple:false,
             focus:true,
             backspace:true,
             container:'.demo2Tags > div',
@@ -7370,6 +7370,15 @@ __define('./script/page',function(require, imports){
         onChange:function(self){
             this.toggle()
         }
+    })
+
+    $('[name="single"]').click(function(){
+        var ele = $(this);
+        $('#demo2').search('option', {
+            tag:{
+                multiple:!ele.prop('checked')
+            }
+        })
     })
 
     $('#demo3').search({
