@@ -231,6 +231,132 @@
 						<td>{Boolean}</td>
 						<td>是否多选</td>
 					</tr>
+					<tr>
+						<td>backspace</td>
+						<td>false</td>
+						<td>{Boolean}</td>
+						<td>是否可以用退格键删除标签</td>
+					</tr>
+					<tr>
+						<td>focus</td>
+						<td>false</td>
+						<td>{Boolean}</td>
+						<td>点击叉号删除标签时是否使输入框获取焦点</td>
+					</tr>
+					<tr>
+						<td>clear</td>
+						<td>false</td>
+						<td>{Boolean}</td>
+						<td>选择完是否清空输入框</td>
+					</tr>
+					<tr>
+						<td>title</td>
+						<td>true</td>
+						<td>{Boolean}</td>
+						<td>鼠标悬停在标签上是否有提示</td>
+					</tr>
+					<tr>
+						<td>container</td>
+						<td>null</td>
+						<td>{DOM, jQuery Object, Selector, Function}</td>
+						<td>标签填充容器，该属性必填</td>
+					</tr>
+					<tr>
+						<td>scroll</td>
+						<td>null</td>
+						<td>{DOM, jQuery Object, Selector, Function}</td>
+						<td>设置滚动容器，未设置时默认取container属性</td>
+					</tr>
+					<tr>
+						<td>getData</td>
+						<td>null</td>
+						<td>{Function}</td>
+						<td>该方法会在标签元素遍历时执行，设置已选择的标签数据，存储在实例属性tagData中，返回对象必须包含text属性</td>
+					</tr>
+					<tr>
+						<td>deleteMatch</td>
+						<td>null</td>
+						<td>{DOM, jQuery Object, Selector}</td>
+						<td>检测已选中的标签是否可以删除</td>
+					</tr>
+				</table>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> tabs</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：设置多菜单</p>
+				<p>默认：null</p>
+				<p>类型：{Array}</p>
+				<table class="data e-mt5">
+					<tr>
+						<th width="80">属性</th>
+						<th width="80">默认值</th>
+						<th width="80">类型</th>
+						<th>说明</th>
+					</tr>
+					<tr>
+						<td>title</td>
+						<td>''</td>
+						<td>{String}</td>
+						<td>菜单标题</td>
+					</tr>
+					<tr>
+						<td>content</td>
+						<td>''</td>
+						<td>{String, Function}</td>
+						<td>菜单内容</td>
+					</tr>
+					<tr>
+						<td>onShow</td>
+						<td>null</td>
+						<td>{Function}</td>
+						<td>菜单选中状态时回调</td>
+					</tr>
+				</table>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> match</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：过滤数据</p>
+				<p>默认：null</p>
+				<p>类型：{Array, Object}</p>
+				<table class="data e-mt5">
+					<tr>
+						<th width="80">属性</th>
+						<th width="80">默认值</th>
+						<th width="80">类型</th>
+						<th>说明</th>
+					</tr>
+					<tr>
+						<td>field</td>
+						<td>''</td>
+						<td>{String}</td>
+						<td>匹配字段名</td>
+					</tr>
+					<tr>
+						<td>like</td>
+						<td>''</td>
+						<td colspan="2">
+							<table class="data">
+								<tr>
+									<th width="80">类型</th>
+									<th>说明</th>
+								</tr>
+								<tr>
+									<td>{String}</td>
+									<td>正则字符串，可使用{value}作为当前输入值占位符</td>
+								</tr>
+								<tr>
+									<td>{Object}</td>
+									<td>正则对象</td>
+								</tr>
+								<tr>
+									<td>{Function}</td>
+									<td>第一个参数为通过field获取的值，第二个参数为当前输入值，函数返回布尔类型</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
 				</table>
 			</div>
 
