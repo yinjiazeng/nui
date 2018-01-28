@@ -75,15 +75,87 @@
 
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">选项参数</h2>
 
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> iconfont</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> url</h3>
 			<div class="e-mt15 f-lh22">
-				<p>默认值：false</p>
-				<p>类型：{String} 设置字体图标类名，会在按钮上添加上该类</p>
-				<p>类型：{Boolean} 值为true是类名默认是iconfont</p>
+				<p>功能：请求url</p>
+				<p>默认：''</p>
+				<p>类型：{String}</p>
 			</div>
 
-            <h2 class="e-pt20 f-fs22 f-bb e-pb10">实例属性与方法</h2>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> zIndex</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：设置层级</p>
+				<p>默认：19920604</p>
+				<p>类型：{Number}</p>
+				<p>说明：若style中已经设置，则不使用该值</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> query</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：设置查询参数</p>
+				<p>默认：'keyword'</p>
+				<p>类型：{String}</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：value {String} 文本框输入值</p>
+				<p>返回：{Object} 查询参数对象集合</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> item</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：定义列表模版</p>
+				<p>默认：''</p>
+				<p>类型：{String}</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>返回：{String} 返回列表模版</p>
+				<p>说明：模版中可以使用<%$data%>获取当前行数据，<%$index%>获取当前行索引；配合选项参数selected方法在模版中调用<%selected($data)%>可以设置当前行是否选中</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> empty</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：定义提示信息模版</p>
+				<p>默认：''</p>
+				<p>类型：{String}</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>返回：{String} 返回空数据时模版</p>
+				<p>说明：模版中可以使用<%value%>获取当前输入值</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> prompt</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：定义输入时有结果返回提示模版</p>
+				<p>默认：''</p>
+				<p>类型：{String}</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>返回：{String} 返回提示模版</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> foot</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：定义底部模版</p>
+				<p>默认：''</p>
+				<p>类型：{String}</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>返回：{String} 返回底部模版</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> field</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：设置列表展示内容字段名</p>
+				<p>默认：''</p>
+				<p>类型：{String}</p>
+				<p>说明：在展示列表时如果未使用item参数，将会展示该值内容</p>
+			</div>
+
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例属性</h2>
 			
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例方法</h2>
+
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">类方法</h2>
 			
 		</div>	
 	</div>
@@ -142,7 +214,7 @@
                         <a href="/nui/pages/components/popover/">提示框</a>
                     </li>
                     <li>
-                        <a href="/nui/pages/components/search/">搜索</a>
+                        <a class="s-crt" href="/nui/pages/components/search/">搜索</a>
                     </li>
                     <li>
                         <a href="/nui/pages/components/calendar/">日历</a>
@@ -211,7 +283,7 @@
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=4223d4c"></script>
 <script type="text/javascript" src="/nui/dist/nui-load-min.js?v=394e26b"></script>
-<script type="text/javascript" src="/nui/config.js?v=46f9af4"></script>
+<script type="text/javascript" src="/nui/config.js?v=beb5eb7"></script>
     
     <script type="text/javascript">
 	Nui.load("{script}/base-min", function(page){

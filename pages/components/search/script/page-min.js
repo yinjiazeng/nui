@@ -5935,6 +5935,7 @@ __define('lib/components/search',function(require, imports){
              * @param self <Object> 组件实例对象
              * @return <String> 返回列表模版
              * @desc 模版中可以使用<%$data%>获取当前行数据，<%$index%>获取当前行索引
+             * @desc 配合选项参数selected方法在模版中调用<%selected($data)%>可以设置当前行是否选中
              */
             item:'',
             /**
@@ -5942,16 +5943,16 @@ __define('lib/components/search',function(require, imports){
              * @type <String>
              * @type <Function>
              * @param self <Object> 组件实例对象
-             * @return <String> 返回空数据模版
+             * @return <String> 返回空数据时模版
              * @desc 模版中可以使用<%value%>获取当前输入值
              */
             empty:'',
             /**
-             * @func 定义提示信息模版
+             * @func 定义输入时有结果返回提示模版
              * @type <String>
              * @type <Function>
              * @param self <Object> 组件实例对象
-             * @return <String> 返回提示信息模版
+             * @return <String> 返回提示模版
              */
             prompt:'',
             /**
@@ -5963,8 +5964,9 @@ __define('lib/components/search',function(require, imports){
              */
             foot:'',
             /**
-             * @func 列表内容字段名
+             * @func 设置列表展示内容字段名
              * @type <String>
+             * @desc 在展示列表时如果未使用item参数，将会展示该值内容
              */
             field:'',
             /**
