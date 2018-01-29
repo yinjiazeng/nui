@@ -6132,7 +6132,7 @@ __define('lib/components/search',function(require, imports){
              */
             match:null,
             /**
-             * @func 定义选中列表后的文本框内容
+             * @func 定义搜索列表选中数据
              * @type <Function>
              * @param self <Object> 组件实例对象
              * @param data <Object> 当前选中数据
@@ -6159,12 +6159,12 @@ __define('lib/components/search',function(require, imports){
              * @func 请求返回数据时触发回调
              * @type <Function>
              * @param self <Object> 组件实例对象
-             * @param response <Anything> 接口返回数据
+             * @param data <Anything> 接口返回数据
              * @return <Array> 返回列表数据
              */
-            onRequest:null,
+            onResponse:null,
             /**
-             * @func 选择前触发回调
+             * @func 选中列表前触发回调
              * @type <Function>
              * @param self <Object> 组件实例对象
              * @param data <Object> 选中项数据
@@ -6174,7 +6174,7 @@ __define('lib/components/search',function(require, imports){
              */
             onSelectBefore:null,
             /**
-             * @func 选择后触发回调
+             * @func 选中列表后触发回调
              * @type <Function>
              * @param self <Object> 组件实例对象
              * @param data <Object> 选中项数据
@@ -6190,7 +6190,7 @@ __define('lib/components/search',function(require, imports){
              */
             onBlur:null,
             /**
-             * @func 调用value实例方法或者删除标签后触发
+             * @func 改变选中值后触发回调
              * @type <Function>
              * @param self <Object> 组件实例对象
              * @param event <Event Object> 当删除标签时才会有该参数
@@ -6442,8 +6442,8 @@ __define('lib/components/search',function(require, imports){
                         if(typeof success === 'function'){
                             success.call(this, res, status, xhr)
                         }
-                        if(typeof opts.onRequest === 'function'){
-                            _data = opts.onRequest.call(opts, self, res)
+                        if(typeof opts.onResponse === 'function'){
+                            _data = opts.onResponse.call(opts, self, res)
                         }
                         self._storage(_data);
                     }
@@ -6748,7 +6748,7 @@ __define('lib/components/search',function(require, imports){
         },
         _setElemData:function(){
             var self = this, elem = self.element, _class = self.constructor;
-            self.elementData = {
+            self._elementData = {
                 btbWidth:_class._getSize(elem, 'tb', 'border'),
                 blrWidth:_class._getSize(elem, 'lr', 'border'),
                 ptbWidth:_class._getSize(elem, 'tb', 'padding'),
@@ -6768,7 +6768,7 @@ __define('lib/components/search',function(require, imports){
             else{
                 self._container_body = true
             }
-            self.targetData = {
+            self._targetData = {
                 width:target.width(),
                 height:target.height(),
                 oWidth:target.outerWidth(),
@@ -7004,7 +7004,7 @@ __define('lib/components/search',function(require, imports){
             }
         },
         resize:function(){
-            var self = this, opts = self._options, target = self.target, elem = self.element, targetData = self.targetData, elemData = self.elementData,
+            var self = this, opts = self._options, target = self.target, elem = self.element, targetData = self._targetData, elemData = self._elementData,
             oWidth = elem.outerWidth(), oHeight = elem.outerHeight(), offset = target.offset(), otop = offset.top, oleft = offset.left,
             _class = self.constructor, wWidth = Nui.win.width(), wHeight = Nui.win.height(), notbody = !self._container_body;
 
@@ -7083,7 +7083,7 @@ __define('lib/components/search',function(require, imports){
             component.exports.destroy.call(this);
         },
         /**
-         * @func 设置文本框内容值或者添加tag标签
+         * @func 填充文本框内容或者添加tag标签
          * @param data <String>
          * @param data <Object> null为清空
          * {
@@ -7217,6 +7217,20 @@ __define('./script/page',function(require, imports){
     var template = require('lib/core/template');
     var emps = [];
     var depts = [];
+
+    var arr = [{
+        text:'search组件',
+        fields:{
+            id:1
+        }
+    }, {
+        text:'search组件',
+        fields:{
+            id:2
+        }
+    }]
+
+    console.log(search.data2html(arr))
 
     Nui.each(data.empList, function(val){
         Nui.each(val.list, function(v){

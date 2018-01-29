@@ -180,7 +180,7 @@
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> style</h3>
 			<div class="e-mt15 f-lh22">
-				<p>功能：设置展示元素样式</p>
+				<p>功能：设置组件元素样式</p>
 				<p>默认：null</p>
 				<p>类型：{Object}</p>
 			</div>
@@ -320,6 +320,7 @@
 				<p>功能：过滤数据</p>
 				<p>默认：null</p>
 				<p>类型：{Array, Object}</p>
+				<p>说明：该参数仅在使用自定义数据时才会启用,与filter参数互斥，优先使用filter</p>
 				<table class="data e-mt5">
 					<tr>
 						<th width="80">属性</th>
@@ -360,12 +361,297 @@
 				</table>
 			</div>
 
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> setValue</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：定义搜索列表选中数据</p>
+				<p>默认：null 默认取field参数获取的值</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：data {Object} 当前选中行数据</p>
+				<p>返回：{String, Object} 如果选中后以标签展示，并且需要在标签中设置隐藏域，返回值必须是对象，必须包含text、fields属性</p>
+			</div>
+
+<script type="text/highlight" data-javascript-options>
+import search from '{com}/search';
+
+search({
+	target:'#demo',
+	tag:{
+		container:'#container'
+	},
+	setValue:function(self, data){
+		return {
+			text:data.name,
+			fields:{
+				id:data.id,
+				name:data.name
+			}
+		}
+	}
+})
+</script>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> selected</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：检测列表是否被选中</p>
+				<p>默认：null</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：data {Object} 列表一行数据</p>
+				<p>返回：{Boolean} 返回true表示被选中，列表class属性值会增加s-crt类</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> filter</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：过滤数据</p>
+				<p>默认：null</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：value {String} 当前搜索的值</p>
+				<p>参数：data {Object} 列表数据</p>
+				<p>返回：{Array} 返回过滤后的新数据</p>
+				<p>说明：该参数仅在使用自定义数据时才会启用，与match参数互斥，优先使用该参数</p>
+			</div>
+
+<script type="text/highlight" data-javascript-options>
+import search from '{com}/search';
+
+search({
+	target:'#demo',
+	filter:function(self, value, data){
+		var arr = [];
+		Nui.each(data, function(v){
+			if(v.name.indexOf(value) === 0){
+				arr.push(v)
+			}
+		})
+		return arr
+	}
+})
+</script>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onResponse</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：请求返回数据时触发回调</p>
+				<p>默认：null</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：data {Anything} 接口返回数据</p>
+				<p>返回：{Array} 返回列表数据</p>
+			</div>
+
+<script type="text/highlight" data-javascript-options>
+import search from '{com}/search';
+
+search({
+	target:'#demo',
+	url:'//loclahost/data/',
+	onResponse:function(self, data){
+		return data.list
+	}
+})
+</script>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onSelectBefore</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：选中列表前触发回调</p>
+				<p>默认：null</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：data {Object} 选中项数据</p>
+				<p>参数：event {Object} 事件对象</p>
+				<p>参数：elem {Object} 选中项jQuery对象</p>
+				<p>返回：{Boolean} 返回false则不会触发setValue以及onSelect</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onSelect</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：选中列表后触发回调</p>
+				<p>默认：null</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：data {Object} 选中项数据</p>
+				<p>参数：event {Object} 事件对象</p>
+				<p>参数：elem {Object} 选中项jQuery对象</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onBlur</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：输入框失焦后触发</p>
+				<p>默认：null</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：target {Object} 调用组件jQuery对象</p>
+				<p>说明：不建议手动给元素绑定blur事件，应该使用该参数</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onChange</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：改变选中值后触发回调</p>
+				<p>默认：null</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：event {Object} 事件对象，当手动删除标签时才会有该参数</p>
+			</div>
+
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例属性</h2>
-			
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> target</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：调用组件的对象</p>
+				<p>类型：{jQuery Object}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> element</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：组件元素对象</p>
+				<p>类型：{jQuery Object}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> container</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：展示列表所在容器对象</p>
+				<p>类型：{jQuery Object}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> $result</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：搜索列表容器对象</p>
+				<p>类型：{jQuery Object}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> $list</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：搜索列表对象，没有搜到内容时该值不存在</p>
+				<p>类型：{jQuery Object}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> $tags</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：选中的标签元素对象</p>
+				<p>类型：{jQuery Object}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> tagData</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：选中的标签数据集合</p>
+				<p>类型：{Array}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> activeTab</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：当前选中状态菜单数据</p>
+				<p>类型：{Object}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> data</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：选项参数data中获取的数据</p>
+				<p>类型：{Array}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> queryData</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：查询后的结果数据</p>
+				<p>类型：{Array}</p>
+			</div>
+
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例方法</h2>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> resize</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：重新计算组件元素的位置</p>
+				<p>类型：{Function}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> show</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：显示组件元素</p>
+				<p>类型：{Function}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> hide</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：隐藏组件元素</p>
+				<p>类型：{Function}</p>
+			</div>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> value</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：填充文本框内容或者添加tag标签</p>
+				<p>类型：{Function}</p>
+				<p>参数：data {String, Object, Array} 为对象类型时必须包含text属性，如果需要给标签添加隐藏域则必须包含fields属性</p>
+				<p>参数：add {Boolean} 如果为false则不会添加标签</p>
+			</div>
+
+<script type="text/highlight" data-javascript-options>
+import search from '{com}/search';
+
+var obj = search({
+	target:'#demo',
+	tag:{
+		container:'#container'
+	}
+})
+
+obj.value({
+	text:'search组件'
+})
+
+obj.value([{
+	text:'search组件',
+	fields:{
+		id:1
+	}
+}, {
+	text:'search组件',
+	fields:{
+		id:2
+	}
+}])
+</script>
 
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">类方法</h2>
 			
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> data2html</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：将tag数据转为html模版</p>
+				<p>类型：{Function}</p>
+				<p>参数：data {String, Object, Array} 为对象类型时必须包含text属性，如果需要给标签添加隐藏域则必须包含fields属性</p>
+				<p>参数：option {Object} 属性包含title、close、type，说明请参考选项参数tag</p>
+			</div>
+<script type="text/highlight" data-javascript-options>
+import search from '{com}/search';
+
+var arr = [{
+	text:'search组件',
+	fields:{
+		id:1
+	}
+}, {
+	text:'search组件',
+	fields:{
+		id:2
+	}
+}]
+
+search.data2html(arr, {
+	type:'gray'
+})
+</script>
+			<p class="e-mt15">方法输出：</p>
+<script type="text/highlight" data-xml-options>
+<span class="ui-tag ui-tag-gray">
+	<em class="con-tag-text" title="search组件">search组件</em>
+	<b class="con-tag-close">×</b>
+	<input type="hidden" name="id" value="1">
+</span>
+<span class="ui-tag ui-tag-gray">
+	<em class="con-tag-text" title="search组件">search组件</em>
+	<b class="con-tag-close">×</b>
+	<input type="hidden" name="id" value="2">
+</span>
+</script>
 		</div>	
 	</div>
 	{% import 'sidecol.tpl' as side %}

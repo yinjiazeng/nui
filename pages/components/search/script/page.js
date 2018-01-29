@@ -7,6 +7,20 @@ Nui.define(function(require, imports){
     var emps = [];
     var depts = [];
 
+    var arr = [{
+        text:'search组件',
+        fields:{
+            id:1
+        }
+    }, {
+        text:'search组件',
+        fields:{
+            id:2
+        }
+    }]
+
+    console.log(search.data2html(arr))
+
     Nui.each(data.empList, function(val){
         Nui.each(val.list, function(v){
             emps.push(v)
