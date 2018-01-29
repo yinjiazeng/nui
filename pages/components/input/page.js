@@ -1,5 +1,4 @@
 import input from '{com}/input';
-import alert from '{com}/layer/alert';
 
 $('#demo').input({
     clear:'清除',
