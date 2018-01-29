@@ -272,55 +272,95 @@ this._callback('Change', [arg1, arg2, ...])
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="封装组件">封装组件</h2>
 <script type="text/highlight" data-javascript-options>
-//定义一个helloworld.js
-Nui.define(['component'], function(component){
-	//必须继承component模块或者已有的组件模块
-	return this.extend(component, {
-		//类成员在此处定义
+//编写一个简单的copy组件
+//copy.js
+Nui.define(['{core}/component'], function(component){
+	//继承基类或者组件
+	var Copy = this.extend(component, {
+		//定义类成员
 		_static:{
 			//私有类属性
-			_data:{},
+			_cache:[],
 			//私有类方法
-			_set:function(name, value){
-				this._data[name] = value;
+			_save:function(text){
+				this._cache.push(text)
 			},
 			//公开类方法
-			get:function(name){
-				return this._data[name]
+			history:function(){
+				return this._cache
 			}
 		},
-		//实例属性
+		//定义选项参数
 		_options:{
-			text:'hello world'
+			text:''
 		},
-		//实例方法
+		//组件入口
 		_init:function(){
-			//实例之间成员调用
-			this._exec();
+			this._exec()
 		},
 		_exec:function(){
-			//实例方法中通过constructor访问类成员
-			this.constructor._set('text', this._options.text);
-			this.constructor._data['text']; //hello world
+			if(this._getTarget()){
+				this._bind()
+			}
+		},
+		_bind:function(){
+			var self = this;
+			//实例方法中访问构造函数（类）
+			var _class = self.constructor;
+			this._on('click', this.target, function(){
+				//调用类方法
+				_class._save(self._options.text);
+				self._copy()
+			})
+		},
+		_copy:function(){
+			var node = document.createElement('textarea');
+			node.value = this._options.text;
+			document.body.appendChild(node);
+			node.select();
+			document.execCommand('copy');
+			node.remove();
+		},
+		//公开的实例方法
+		destroy:function(){
+			this._off();
+			this._reset();
 		}
 	})
+
+	return Copy
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="调用组件">调用组件</h2>
 <script type="text/highlight" data-javascript-options>
-//demo.js
-Nui.define(['./helloworld'], function(helloworld){
-	//初始化组件
-	var obj = helloworld({
-		text:'hello world2'
-	})
+import copy from './copy';
 
-	//调用类方法
-	helloworld.get('text') //hello world2
-
-	//调用实例方法
-	obj.destroy()
+//-------实例方式调用
+var obj = copy({
+	target:'#demo1',
+	text:'这是复制的内容'
 })
+
+//调用实例方法
+obj.destroy()
+
+
+
+//-------jQuery形式调用
+$('#demo2').copy({
+	text:'这是复制的内容'
+})
+
+//调用实例方法
+$('#demo').copy('destroy')
+
+
+
+//-------类方法自动调用
+copy.init(Nui.doc) //查询容器内带有data-copy-options属性的元素
+
+//调用类方法销毁有所实例
+copy.destroy()
 </script>
 		</div>	
 	</div>
