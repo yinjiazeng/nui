@@ -580,7 +580,7 @@ search({
 			<div class="e-mt15 f-lh22">
 				<p>功能：填充文本框内容或者添加tag标签</p>
 				<p>类型：{Function}</p>
-				<p>参数：data {String, Object, Array} 为对象类型时必须包含text属性，如果需要给标签添加隐藏域则必须包含fields属性</p>
+				<p>参数：data {String, Object, Array} 为对象类型时必须包含text属性，如果需要给标签添加隐藏域则必须包含fields属性；值为null时会清空标签或者文本框内容</p>
 				<p>参数：add {Boolean} 如果为false则不会添加标签</p>
 			</div>
 
@@ -609,6 +609,8 @@ obj.value([{
 		id:2
 	}
 }])
+
+obj.value(null) //清空
 </script>
 
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">类方法</h2>

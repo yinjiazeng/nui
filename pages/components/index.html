@@ -305,12 +305,12 @@ this._callback('Change', [arg1, arg2, ...])
 				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
 				<p>说明：销毁组件</p>
 			</div>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="封装案例">封装案例</h2>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="封装组件">封装组件</h2>
 <script type="text/highlight" data-javascript-options>
 //定义一个helloworld.js
 Nui.define(['component'], function(component){
 	//必须继承component模块或者已有的组件模块
-	return extend(component, {
+	return this.extend(component, {
 		//类成员在此处定义
 		_static:{
 			//私有类属性
@@ -340,7 +340,9 @@ Nui.define(['component'], function(component){
 		}
 	})
 })
-
+</script>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="调用组件">调用组件</h2>
+<script type="text/highlight" data-javascript-options>
 //demo.js
 Nui.define(['./helloworld'], function(helloworld){
 	//初始化组件
@@ -400,9 +402,6 @@ Nui.define(['./helloworld'], function(helloworld){
                                 <a href="#私有实例属性">私有实例属性</a>
                             </li>
                             <li>
-                                <a href="#实例属性">实例属性</a>
-                            </li>
-                            <li>
                                 <a href="#私有实例方法">私有实例方法</a>
                             </li>
                             <li>
@@ -418,7 +417,10 @@ Nui.define(['./helloworld'], function(helloworld){
                                 <a href="#类方法">类方法</a>
                             </li>
                             <li>
-                                <a href="#封装案例">封装案例</a>
+                                <a href="#封装组件">封装组件</a>
+                            </li>
+                            <li>
+                                <a href="#调用组件">调用组件</a>
                             </li>
                         </ul>
                         
