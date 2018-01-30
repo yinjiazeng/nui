@@ -2,6 +2,10 @@
 
 {% block title %}{% endblock %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/nui/pages/components/placeholder/style/page-min.css"/>
+{% endblock %}
+
 {% block nav %}
 	{% import 'nav.tpl' as nav %}
 	{{nav.active('study')}}
@@ -12,7 +16,7 @@
 {% block content %}
 	<div class="g-main f-fr">
 		<div class="mainbox">
-			<h1 class="e-pt20 e-pb20 f-fs28">占位符</h1>
+			<h1 class="e-pt20 e-pb20 f-fs28">输入框占位符</h1>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">先睹为快</h2>
 			<div class="e-mt15">
 				<input type="text" class="ui-input" id="demo" placeholder="请输入...">

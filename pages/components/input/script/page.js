@@ -1,20 +1,31 @@
 import input from '{com}/input';
 
 $('#demo').input({
+    hover:true,
     clear:'清除',
     reveal:{
+        show:true,
+        hover:false,
         content:{
             text:'隐藏',
             password:'显示'
-        },
-        title:true
+        }
     },
     button:[{
         id:'click',
         content:'点我',
-        show:true,
+        hover:false,
         callback:function(){
-            alert('让你点你就点，你是不是傻？')
+            alert('ok')
         }
     }]
+})
+
+$('#demo2').input({
+    clear:'X',
+    text:'请输入...',
+    animate:true,
+    limit:{
+        cn:true
+    }
 })

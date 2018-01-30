@@ -1414,8 +1414,13 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  * @description 输入框占位符
  */
 
-__define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], function(component, util){
+__define('lib/components/placeholder',function(require, imports){
+    imports('../assets/components/placeholder/index');
+
+    var component = require('lib/core/component');
+    var util = require('lib/core/util');
     var supportPlaceholder = util.supportHtml5('placeholder', 'input');
+
     return this.extend(component, {
         _options:{
             /**
@@ -1450,8 +1455,8 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
             onChange:null
         },
         _template:{
-            wrap:'<strong class="<% className %>" style="<%include \'style\'%>" />',
-            elem:'<b style="<%include \'style\'%>"><%text%></b>'
+            wrap:'<span class="<% className %>" style="<%include \'style\'%>" />',
+            elem:'<b class="con-placeholder-text" style="<%include \'style\'%>"><%text%></b>'
         },
         _events:{
             'click b':'_focus',
@@ -1477,14 +1482,16 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
             }
         },
         _setData:function(){
-            var self = this, _class = self.constructor;
-            var isText = self.target.is('textarea');
-            var height = self.target.height();
+            var self = this, _class = self.constructor, height = self.target.height();;
+            self._textarea = self.target.is('textarea');
+            var top = _class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't');
+            if(Nui.bsie7 && 'left right'.indexOf(self.target.css('float')) === -1){
+                top += 1
+            }
             self._data = {
-                top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
-                height:isText ? 'auto' : height+'px',
-                position:'absolute',
-                'line-height':isText ? 'normal' : height+'px'
+                'top':top+'px',
+                'height':self._textarea ? 'auto' : height+'px',
+                'line-height':self._textarea ? 'normal' : height+'px'
             }
         },
         _create:function(){
@@ -1492,11 +1499,8 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
             if(self._condition()){
                 var data = self._tplData();
                 data.style = {
-                    'position':'relative',
-                    'display':'inline-block',
                     'width':self.target.outerWidth()+'px',
-                    'overflow':'hidden',
-                    'cursor':'text'
+                    'height':self.target.outerHeight()+'px'
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._createElems();
@@ -1511,6 +1515,7 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
         },
         _blur:function(){
             delete this.constructor._active;
+            return true
         },
         _indent:function(){
             var _class = this.constructor;
@@ -1520,7 +1525,7 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
             }
         },
         _input:function(){
-            var val = this.target.val(), _class = this.constructor;
+            var val = this._val = this.target.val(), _class = this.constructor;
             if((!this._options.equal && val === this._text) || !val){
                 this.target.val('');
                 if(this.$text){

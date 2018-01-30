@@ -1,0 +1,12 @@
+.nui-placeholder {
+    position: relative;
+    display: inline-block;
+    cursor: text;
+}
+
+.nui-placeholder .con-placeholder-text {
+    position: absolute;
+    line-height: normal;
+    font-weight: normal;
+    font-style: normal;
+}

@@ -1087,7 +1087,7 @@ input:-webkit-autofill {
   display: inline-block;
   width: 83px;
   height: 83px;
-  background: url("../../../lib/assets/images/void.png?v=01ee8b8") no-repeat center;
+  background: url("../../../../lib/assets/images/void.png?v=01ee8b8") no-repeat center;
 }
 .ui-tine {
   display: inline-block;
@@ -1095,15 +1095,37 @@ input:-webkit-autofill {
   font-size: 0;
   border: 6px dashed transparent;
 }
-.nui-input span {
-  background-color: #fff;
-  padding-right: 8px;
-}
-.nui-input span .con-input-button {
-  margin-left: 8px;
+.nui-placeholder {
+  position: relative;
   display: inline-block;
+  cursor: text;
+}
+.nui-placeholder .con-placeholder-text {
+  position: absolute;
   line-height: normal;
-  float: none;
+  font-weight: normal;
+  font-style: normal;
+}
+.nui-input .con-input-wrap {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding-right: 8px;
+  background-color: #fff;
+}
+.nui-input .con-input-limit {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  background-color: #fff;
+}
+.nui-input .con-input-button {
+  margin-left: 8px;
+  line-height: inherit;
   vertical-align: middle;
   cursor: pointer;
+  font-style: normal;
+}
+.nui-input .con-input-wrap-textarea .con-input-button {
+  vertical-align: inherit;
 }

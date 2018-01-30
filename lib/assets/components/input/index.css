@@ -1,0 +1,26 @@
+.nui-input .con-input-wrap {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding-right: 8px;
+    background-color: #fff;
+}
+
+.nui-input .con-input-limit {
+    position: absolute;
+    right: 3px;
+    bottom:3px;
+    background-color: #fff;
+}
+
+.nui-input .con-input-button {
+    margin-left: 8px;
+    line-height: inherit;
+    vertical-align: middle;
+    cursor: pointer;
+    font-style: normal;
+}
+
+.nui-input .con-input-wrap-textarea .con-input-button {
+    vertical-align:inherit;
+}

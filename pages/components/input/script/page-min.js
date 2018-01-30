@@ -1414,8 +1414,13 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
  * @description 输入框占位符
  */
 
-__define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], function(component, util){
+__define('lib/components/placeholder',function(require, imports){
+    imports('../assets/components/placeholder/index');
+
+    var component = require('lib/core/component');
+    var util = require('lib/core/util');
     var supportPlaceholder = util.supportHtml5('placeholder', 'input');
+
     return this.extend(component, {
         _options:{
             /**
@@ -1450,8 +1455,8 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
             onChange:null
         },
         _template:{
-            wrap:'<strong class="<% className %>" style="<%include \'style\'%>" />',
-            elem:'<b style="<%include \'style\'%>"><%text%></b>'
+            wrap:'<span class="<% className %>" style="<%include \'style\'%>" />',
+            elem:'<b class="con-placeholder-text" style="<%include \'style\'%>"><%text%></b>'
         },
         _events:{
             'click b':'_focus',
@@ -1477,14 +1482,16 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
             }
         },
         _setData:function(){
-            var self = this, _class = self.constructor;
-            var isText = self.target.is('textarea');
-            var height = self.target.height();
+            var self = this, _class = self.constructor, height = self.target.height();;
+            self._textarea = self.target.is('textarea');
+            var top = _class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't');
+            if(Nui.bsie7 && 'left right'.indexOf(self.target.css('float')) === -1){
+                top += 1
+            }
             self._data = {
-                top:_class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't')+'px',
-                height:isText ? 'auto' : height+'px',
-                position:'absolute',
-                'line-height':isText ? 'normal' : height+'px'
+                'top':top+'px',
+                'height':self._textarea ? 'auto' : height+'px',
+                'line-height':self._textarea ? 'normal' : height+'px'
             }
         },
         _create:function(){
@@ -1492,11 +1499,8 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
             if(self._condition()){
                 var data = self._tplData();
                 data.style = {
-                    'position':'relative',
-                    'display':'inline-block',
                     'width':self.target.outerWidth()+'px',
-                    'overflow':'hidden',
-                    'cursor':'text'
+                    'height':self.target.outerHeight()+'px'
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._createElems();
@@ -1511,6 +1515,7 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
         },
         _blur:function(){
             delete this.constructor._active;
+            return true
         },
         _indent:function(){
             var _class = this.constructor;
@@ -1520,7 +1525,7 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
             }
         },
         _input:function(){
-            var val = this.target.val(), _class = this.constructor;
+            var val = this._val = this.target.val(), _class = this.constructor;
             if((!this._options.equal && val === this._text) || !val){
                 this.target.val('');
                 if(this.$text){
@@ -1646,6 +1651,7 @@ __define('lib/components/placeholder',['lib/core/component', 'lib/core/util'], f
 
 __define('lib/components/input',function(require, imports){
     imports('../assets/components/input/index');
+
     var placeholder = require('lib/components/placeholder');
 
     return this.extend(placeholder, {
@@ -1679,11 +1685,16 @@ __define('lib/components/input',function(require, imports){
              * @func 按钮集合
              * @type <Array>
              */
-            button:null
+            button:null,
+            /**
+             * @func 最大长度
+             * @type <Boolean,Number,Object>
+             */
+            limit:null
         },
         _template:{
             'button':
-                '<span style="<%include \'style\'%>">'+
+                '<span class="con-input-wrap<%if textarea%> con-input-wrap-textarea<%/if%>" style="<%include \'style\'%>">'+
                 '<%each button%>'+
                     '<%var style = $value.style%>'+
                     '<i style="<%include \'style\'%>" class="con-input-button con-input-<%$value.id%> con-input-type-<%type%>'+
@@ -1710,7 +1721,9 @@ __define('lib/components/input',function(require, imports){
                 '<%$value.content[type]||""%>'+
                 '<%else%>'+
                 '<%$value.content||""%>'+
-                '<%/if%>'
+                '<%/if%>',
+            'limit':
+                '<span class="con-input-limit"<%if style%> style="<%include \'style\'%>"<%/if%>><b><%count%></b>/<%max%></span>'
         },
         _events:{
             'click .con-input-clear':'_clear',
@@ -1718,24 +1731,35 @@ __define('lib/components/input',function(require, imports){
             'mouseenter':'_mouseover',
             'mouseleave':'_mouseout'
         },
-        _input:function(){
+        _input:function(e, elem, data){
             var self = this;
             placeholder.exports._input.call(self);
             if(self._hideElem){
-                var opts = this._options, val = self.target.val();
+                var opts = this._options, val = self._val;
                 var isHide = (!opts.equal && val === self._text) || !val;
                 var type = !isHide ? 'show' : 'hide';
-                self._hideElem[type]()
+                self._hideElem[type]();
+                if(data && !self._hover && self._hoverElem){
+                    self._hoverElem.hide()
+                }
+            }
+            if(!!self.$limit){
+                self._count()
             }
         },
         _mouseover:function(){
-            var target = this.target;
-            if(!target.prop('readonly') && !target.prop('disabled') && target.val()){
-                this._hoverElem.show()
+            var target = this.target, elems = this._hoverElem;
+            this._hover = true;
+            if(elems && !target.prop('readonly') && !target.prop('disabled') && target.val()){
+                elems.show()
             }
         },
         _mouseout:function(){
-            this._hoverElem.hide()
+            var elems = this._hoverElem;
+            if(elems){
+                delete this._hover;
+                elems.hide()
+            }
         },
         _condition:function(){
             var opts = this._options;
@@ -1743,7 +1767,8 @@ __define('lib/components/input',function(require, imports){
                 placeholder.exports._condition.call(this) || 
                 opts.clear || 
                 opts.reveal ||
-                opts.button
+                opts.button ||
+                opts.limit
             ){
                 return true
             }
@@ -1832,19 +1857,106 @@ __define('lib/components/input',function(require, imports){
                 self._events['click .con-input-'+btn.id] = method;
             }
         },
+        _count:function(){
+            var self = this, count = self._getCount(), limit = self._limit, max = limit.max, val = self._val, value = '';
+            if(count > max){
+                if(limit.cn){
+                    count = 0;
+                    for(var i=0; i<max; i++){
+                        var code = val.charCodeAt(i);
+                        var _val = val.charAt(i);
+                        var num = 2;
+                        if(code >= 0 && code <= 128){
+                            num = 1;
+                        }
+                        count += num;
+                        if(count > max){
+                            count -= num;
+                            break;
+                        }
+                        else{
+                            value += _val
+                        }
+                    }
+                }
+                else{
+                    count = max;
+                    value = self._val.substr(0, count)
+                }
+                self.target.val(value)
+            }
+            self.$count.html(count)
+        },
+        _getCount:function(){
+            var self = this, val = self._val||'', len = val.length, count = 0;
+            if(val){
+                if(!self._limit.cn){
+                    count = len
+                }
+                else{
+                    for(var i=0; i<len; i++){
+                        var code = val.charCodeAt(i);
+                        if(code >= 0 && code <= 128){
+                            count += 1
+                        }
+                        else{
+                            count += 2
+                        }
+                    }
+                }
+            }
+            return count
+        },
+        _createLimit:function(){
+            var self = this, opts = self._options, limit = opts.limit, _limit, max, _class = self.constructor;
+            if(limit === true){
+                _limit = {}
+            }
+            else if(limit > 0){
+                _limit = {
+                    max:limit
+                }
+            }
+            else if(typeof limit === 'object'){
+                _limit = limit
+            }
+            if(_limit){
+                if(!_limit.max && (max = self.target.attr('maxlength')) > 0){
+                    _limit.max = max
+                }
+                if(_limit.max > 0){
+                    self._limit = _limit;
+                    if(!self.$limit){
+                        self.$limit = $(self._tpl2html('limit', {
+                            count:self._getCount(),
+                            max:_limit.max,
+                            style:_limit.style
+                        })).appendTo(self.element);
+                        self.$count = self.$limit.children('b');
+                    }
+                }
+            }
+        },
         _createElems:function(){
             var self = this, opts = self._options, _class = self.constructor, hides = [], hovers = [];
             placeholder.exports._createElems.call(self);
-            self.$button = $(self._tpl2html('button', {
-                button:self._createButton(hides, hovers),
-                iconfont:opts.iconfont,
-                type:self.target.attr('type') === 'password' ? 'password' : 'text',
-                style:Nui.extend({
-                    right:_class._getSize(self.target, 'r')+'px'
-                }, self._data)
-            })).appendTo(self.element);
-            self._hideElem = self.element.find(hides.toString());
-            self._hoverElem = self.element.find(hovers.toString());
+            if(opts.limit){
+                self._createLimit()
+            }
+            var buttons = self._createButton(hides, hovers);
+            if(buttons.length){
+                self.$button = $(self._tpl2html('button', {
+                    button:buttons,
+                    iconfont:opts.iconfont,
+                    textarea:self._textarea,
+                    type:self.target.attr('type') === 'password' ? 'password' : 'text',
+                    style:Nui.extend({
+                        right:_class._getSize(self.target, 'r')+'px'
+                    }, self._data)
+                })).appendTo(self.element);
+                self._hideElem = self.element.find(hides.toString());
+                self._hoverElem = self.element.find(hovers.toString());
+            }
         },
         _option:function(type){
             var data = {};
@@ -1897,33 +2009,50 @@ __define('lib/components/input',function(require, imports){
         },
         _reset:function(){
             if(this.$button){
-                this.$button.remove()
+                this.$button.remove();
+                delete this.$button
+            }
+            if(this.$limit){
+                this.$limit.remove();
+                delete this.$count;
+                delete this.$limit
             }
             placeholder.exports._reset.call(this)
         }
     })
 }); 
-__define('./page',function(require,imports,renders,extend,exports){
+__define('./script/page',function(require,imports,renders,extend,exports){
 	var module=this;
 	var input=__requireDefaultModule(require('lib/components/input'));
 	
 	$('#demo').input({
+	    hover:true,
 	    clear:'清除',
 	    reveal:{
+	        show:true,
+	        hover:false,
 	        content:{
 	            text:'隐藏',
 	            password:'显示'
-	        },
-	        title:true
+	        }
 	    },
 	    button:[{
 	        id:'click',
 	        content:'点我',
-	        show:true,
+	        hover:false,
 	        callback:function(){
-	            alert('让你点你就点，你是不是傻？')
+	            alert('ok')
 	        }
 	    }]
+	})
+	
+	$('#demo2').input({
+	    clear:'X',
+	    text:'请输入...',
+	    animate:true,
+	    limit:{
+	        cn:true
+	    }
 	})
 });
 
