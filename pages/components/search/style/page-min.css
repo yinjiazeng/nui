@@ -790,46 +790,46 @@ input:-webkit-autofill {
   opacity: 1;
   filter: opacity(100);
 }
-.ui-button-normal {
+.ui-button.ui-button-normal {
   border: 1px solid #FD6E0E;
   background-color: #FD6E0E;
   color: #fff;
 }
-.ui-button-normal.ui-button-line {
+.ui-button.ui-button-normal.ui-button-line {
   background: none;
   color: #FD6E0E;
 }
-.ui-button-normal.ui-button-line:hover {
+.ui-button.ui-button-normal.ui-button-line:hover {
   border: 1px solid #FD6E0E;
   background-color: #FD6E0E;
   color: #fff;
 }
-.ui-button-blue {
+.ui-button.ui-button-blue {
   border: 1px solid #55C1E3;
   background-color: #55C1E3;
   color: #fff;
 }
-.ui-button-blue.ui-button-line {
+.ui-button.ui-button-blue.ui-button-line {
   background: none;
   color: #55C1E3;
 }
-.ui-button-blue.ui-button-line:hover {
+.ui-button.ui-button-blue.ui-button-line:hover {
   border: 1px solid #55C1E3;
   background-color: #55C1E3;
   color: #fff;
 }
-.ui-button-query {
+.ui-button.ui-button-query {
   padding: 0 12px;
   border-color: #ccc;
   color: #ccc;
   opacity: 1;
   filter: opacity(100);
 }
-.ui-button-query:hover {
+.ui-button.ui-button-query:hover {
   opacity: 1;
   filter: opacity(100);
 }
-.ui-button-disabled {
+.ui-button.ui-button-disabled {
   border-color: #D9D9D9 !important;
   cursor: default;
   background-color: #FBFBFB !important;
@@ -837,22 +837,22 @@ input:-webkit-autofill {
   opacity: 1;
   filter: opacity(100);
 }
-.ui-button-disabled:hover {
+.ui-button.ui-button-disabled:hover {
   color: #C5C5C5;
   opacity: 1;
   filter: opacity(100);
 }
-.ui-button-radius {
+.ui-button.ui-button-radius {
   border-radius: 100px;
 }
-.ui-button-flat {
+.ui-button.ui-button-flat {
   border-radius: 0;
 }
-.ui-button-fixed {
+.ui-button.ui-button-fixed {
   min-width: 90px;
   padding: 0 10px;
 }
-.ui-button-full {
+.ui-button.ui-button-full {
   padding-left: 0;
   padding-right: 0;
   width: 100%;
@@ -1071,16 +1071,16 @@ input:-webkit-autofill {
   font-size: 18px;
   cursor: pointer;
 }
-.ui-tag-circle {
+.ui-tag.ui-tag-circle {
   border-radius: 999px;
 }
-.ui-tag-gray {
+.ui-tag.ui-tag-gray {
   background-color: #E5EDF5;
 }
-.ui-tag-gray .con-tag-text {
+.ui-tag.ui-tag-gray .con-tag-text {
   color: #323232;
 }
-.ui-tag-gray .con-tag-close {
+.ui-tag.ui-tag-gray .con-tag-close {
   color: #969696;
 }
 .ui-void {
