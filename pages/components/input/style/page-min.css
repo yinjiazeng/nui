@@ -1119,7 +1119,13 @@ input:-webkit-autofill {
   bottom: 3px;
   background-color: #fff;
 }
+.nui-input .con-input-limit b {
+  font-style: normal;
+  font-weight: normal;
+}
 .nui-input .con-input-button {
+  float: none;
+  display: inline;
   margin-left: 8px;
   line-height: inherit;
   vertical-align: middle;
