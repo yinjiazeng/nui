@@ -1,0 +1,10 @@
+.ui-table { width: 100%;}
+.ui-table td { height: 60px;}
+.ui-table td, .ui-table th { padding: 5px; line-height: 20px; border:1px solid #ECEDEF; vertical-align: middle; font-size: 13px; word-break:break-all;}
+.ui-table th { text-align: center; background-color: #F7FAFF;}
+.ui-table .rows:hover { background-color: #F1FCFF;}
+.ui-table .rows.s-crt, .ui-table .rows.s-crt:hover { background-color: #D9F6FF;}
+.ui-table .table-row.s-hover { background-color: #F1FCFF;}
+.ui-table .table-row.s-crt { background-color: #D9F6FF;}
+.ui-table-nobd th { border:none;}
+.ui-table-nobd td { border-left:none; border-right:none;}

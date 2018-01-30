@@ -1,0 +1,151 @@
+.ui-form:before,
+.ui-item:before,
+.ui-form:after,
+.ui-item:after {
+  content: '';
+  display: table;
+}
+.ui-form:after,
+.ui-item:after {
+  clear: both;
+}
+.ui-form,
+.ui-item {
+  *zoom: 1;
+}
+.ui-item span,
+.ui-item strong,
+.ui-item em,
+.ui-item del,
+.ui-item i,
+.ui-item b,
+.ui-item s,
+.ui-item u,
+.ui-item label,
+.ui-item input,
+.ui-item button,
+.ui-item select,
+.ui-item .ui-imitselect {
+  float: left;
+}
+.ui-item .f-fn {
+  float: none;
+}
+.ui-label {
+  width: 100px;
+  text-align: right;
+}
+.ui-label-normal {
+  width: 110px;
+  text-align: right;
+}
+.ui-label.f-tal {
+  text-align: left;
+}
+.ui-label.f-tac {
+  text-align: center;
+}
+.ui-label.f-tar {
+  text-align: right;
+}
+.ui-form .nui-placeholder {
+  float: left;
+}
+.ui-form .ui-button-query {
+  position: relative;
+  border-left: none;
+  margin-left: -4px;
+  z-index: 1;
+  border-radius: 0 3px 3px 0;
+}
+.ui-select {
+  position: absolute;
+  top: -999em;
+  left: -999em;
+  opacity: 0;
+}
+.ui-input {
+  padding-left: 8px;
+  width: 150px;
+  border: 1px solid #ccc;
+  height: 28px;
+  line-height: 28px;
+}
+.ui-input-readonly {
+  background-color: #E2E2E2;
+  color: #ABABAB;
+}
+.ui-input-normal {
+  width: 260px;
+}
+.ui-input-short {
+  width: 100px;
+}
+.ui-input-text {
+  padding-top: 5px;
+  width: 260px;
+  height: 100px;
+  line-height: 20px;
+}
+.ui-input-edit {
+  border-top: none;
+  border-right: none;
+  border-left: none;
+}
+.ui-input-radius {
+  border-radius: 3px !important;
+}
+.ui-input-disabled {
+  background-color: #f1f1f1;
+}
+.ui-input-large {
+  padding-left: 10px;
+  height: 33px;
+  line-height: 33px;
+}
+.ui-input.e-pl0 {
+  padding-left: 0;
+}
+.ui-err {
+  position: relative;
+  z-index: 99;
+  white-space: nowrap;
+}
+.ui-err .s-err {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 6px;
+  height: 28px;
+  line-height: 28px;
+  border: 1px solid #f00;
+  font-size: 13px;
+  background-color: #FFDFD5;
+  color: #f00;
+}
+.ui-err .s-err i {
+  position: relative;
+  float: none;
+  margin-right: 4px;
+  font-size: 15px;
+}
+.ui-err .s-err b {
+  left: -12px;
+  margin: -6px 0 0;
+  border: 6px dashed transparent;
+  border-right-color: #f00;
+}
+.ui-err .s-err s {
+  left: -10px;
+  margin-top: -5px;
+  border: 5px dashed transparent;
+  border-right-color: #FFDFD5;
+}
+.ui-err .s-err s,
+.ui-err .s-err b {
+  position: absolute;
+  top: 50%;
+  line-height: normal;
+  font-size: 0;
+  border-right-style: solid;
+}
