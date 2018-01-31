@@ -7878,6 +7878,10 @@ __define('./script/page',function(require, imports){
             empty:'<p class="f-lh20 e-pl5 e-pr5">搜索条件为“<%value%>”未能匹配到数据</p>',
             data:emps,
             nullable:true,
+            tag:{
+                container:'.hidden',
+                multiple:false
+            },
             match:[{
                 field:'name',
                 like:function(data, value){
@@ -7895,7 +7899,18 @@ __define('./script/page',function(require, imports){
                     })
                     return exist
                 }
-            }]
+            }],
+            setValue:function(self, data){
+                return {
+                    text:data.name,
+                    fields:{
+                        id:data.id
+                    }
+                }
+            },
+            onSelect:function(self, data){
+                self.value(data.name)
+            }
         }).search('show')
     })
 
