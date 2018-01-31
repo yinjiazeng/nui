@@ -52,6 +52,7 @@
 			<h1 class="e-pt20 e-pb20 f-fs28">搜索</h1>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">先睹为快</h2>
 			<div class="e-mt15">
+				<span class="f-dn hidden"></span>
 				<input type="text" class="ui-input" id="demo1" data-input-options='{"text":"请输入姓名...","clear":"X"}'>
 			</div>
 			<div class="f-clearfix e-mt15">
@@ -613,7 +614,8 @@ search({
 			<div class="e-mt15 f-lh22">
 				<p>功能：填充文本框内容或者添加tag标签</p>
 				<p>类型：{Function}</p>
-				<p>参数：data {String, Object, Array} 为对象类型时必须包含text属性，如果需要给标签添加隐藏域则必须包含fields属性；值为null时会清空标签或者文本框内容</p>
+				<p>参数：data {String} 设置文本框内容</p>
+				<p>参数：data {Object, Array} 添加tag标签，对象必须包含text属性，如果需要给标签添加隐藏域则必须包含fields属性；值为null时会清空标签或者文本框内容</p>
 				<p>参数：add {Boolean} 如果为false则不会添加标签</p>
 			</div>
 

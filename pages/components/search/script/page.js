@@ -3,6 +3,7 @@ Nui.define(function(require, imports){
     var search = require('{com}/search');
     var input = require('{com}/input');
     var data = require('./data');
+    var pinyin = require('./pinyin');
     var template = require('template');
     var emps = [];
     var depts = [];
@@ -21,12 +22,14 @@ Nui.define(function(require, imports){
 
     Nui.each(data.empList, function(val){
         Nui.each(val.list, function(v){
+            v.pinyin = pinyin(v.name);
             emps.push(v)
         })
     })
 
     Nui.each(data.deptList, function(val){
         Nui.each(val.list, function(v){
+            v.pinyin = pinyin(v.name);
             depts.push(v)
         })
     })
@@ -44,6 +47,18 @@ Nui.define(function(require, imports){
                 like:function(data, value){
                     return data.indexOf(value) !== -1
                 }
+            }, {
+                field:'pinyin',
+                like:function(data, value){
+                    var exist = false;
+                    Nui.each(data, function(v){
+                        if(v.indexOf(value) === 0){
+                            exist = true
+                            return false
+                        }
+                    })
+                    return exist
+                }
             }]
         }).search('show')
     })
@@ -56,7 +71,9 @@ Nui.define(function(require, imports){
         prompt:'搜索条件为“<%value%>”的员工或部门，匹配到<%count%>条数据',
         events:{
             'click .item-history':function(e, elem){
-                this.self.value(elem.text())
+                this.self.value({
+                    text:elem.text()
+                })
             },
             'click .letters > .s-crt':function(e, elem){
                 var letter = elem.text();
@@ -66,15 +83,29 @@ Nui.define(function(require, imports){
                 $list.animate({scrollTop:'+='+top}, 200)
             },
             'click .item-letter':function(e, elem){
-                this.self.value(elem.data('name'))
+                this.self.value({
+                    text:elem.data('name')
+                })
             }
         },
-        match:{
+        match:[{
             field:'name',
             like:function(data, value){
                 return data.indexOf(value) !== -1
             }
-        },
+        }, {
+            field:'pinyin',
+            like:function(data, value){
+                var exist = false;
+                Nui.each(data, function(v){
+                    if(v.indexOf(value) === 0){
+                        exist = true
+                        return false
+                    }
+                })
+                return exist
+            }
+        }],
         size:{
             width:100
         },
@@ -183,7 +214,9 @@ Nui.define(function(require, imports){
             return '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>" data-name="<%$data.name%>"><%$data.name%></li>'
         },
         onSelectBefore:function(self, data){
-            self.value(data[this.field])
+            self.value({
+                text:data[this.field]
+            })
             return false
         },
         onBlur:function(self, elem){
@@ -348,7 +381,9 @@ Nui.define(function(require, imports){
                 this.toggle(data)
             }
             else{
-                self.value(data[this.field])
+                self.value({
+                    text:data.name
+                })
             }
             self.hide();
             return false

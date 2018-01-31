@@ -467,20 +467,27 @@ Nui.define(function(){
         }
     }
 
-    var combo = function(_arr, arr){
-        
-    }
-
     return function(words){
-        var py = [];
         if(words && typeof words === 'string'){
+            var array, pys;
             Nui.each(words.split(''), function(word){
-                if(word){
-                    py.push(data[word])
+                if(word && (pys = data[word])){
+                    if(!array){
+                        array = pys
+                    }
+                    else{
+                        var newArray = [];
+                        Nui.each(pys, function(v){
+                            Nui.each(array, function(val){
+                                newArray.push(val + v)
+                            })
+                        })
+                        array = newArray
+                    }
                 }
             })
-            return combo([], py)
+            return array
         }
-        return py
+        return
     }
 })
