@@ -6741,18 +6741,20 @@ __define('lib/components/search',function(require, imports){
 
             var $tagContainer = self.$tagContainer;
             var $tagScroll = self.$tagScroll;
+            var tag = opts.tag;
             if($tagContainer){
                 self._on('click', $tagContainer, '.ui-tag > .con-tag-close', function(e, elem){
                     elem.closest('.ui-tag').remove();
                     delete self._hover;
-                    if(opts.tag.focus === true){
+                    if(tag.focus === true){
                         show()
                     }
                     self._change(e);
                 })
 
                 if($tagScroll && $tagScroll.find(self.target).length){
-                    if(opts.tag.focus !== true){
+                    //关闭标签时隐藏组件
+                    if(tag.focus !== true){
                         self._on('mouseenter', $tagContainer, '.ui-tag', function(){
                             delete self._hover
                         })
@@ -6777,7 +6779,7 @@ __define('lib/components/search',function(require, imports){
                         }
                     })
                 }
-                else if(opts.tag.focus === true){
+                else if(tag.focus === true){
                     self._on('mouseenter', $tagContainer, '.ui-tag', function(){
                         self._mouseover()
                     })
