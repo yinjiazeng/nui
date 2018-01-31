@@ -6653,6 +6653,13 @@ __define('lib/components/search',function(require, imports){
         },
         _bindEvent:function(){
             var self = this, opts = self._options, storeKeycode = [];
+
+            var show = function(){
+                self._show();
+                self._hover = true;
+                self.target.focus()
+            }
+
             self._on('keyup', self.target, function(e, elem){
                 var code = e.keyCode;
                 //部分用户的IE6-IE8（不清楚会不会有其它浏览器），在列表出来后，如果鼠标拖动下拉框会触发keydown、keyup事件，
@@ -6702,9 +6709,7 @@ __define('lib/components/search',function(require, imports){
                     self.hide()
                 }
                 else{
-                    self._show()
-                    self._hover = true;
-                    elem.focus()
+                    show()
                 }
             })
 
@@ -6738,19 +6743,20 @@ __define('lib/components/search',function(require, imports){
             var $tagScroll = self.$tagScroll;
             if($tagContainer){
                 self._on('click', $tagContainer, '.ui-tag > .con-tag-close', function(e, elem){
-                    var $tag = elem.closest('.ui-tag');
-                    var data = self._getTagData($tag);
-                    $tag.remove();
+                    elem.closest('.ui-tag').remove();
                     delete self._hover;
-                    delete data.$elem;
                     if(opts.tag.focus === true){
-                        self._hover = true;
-                        self.target.focus()
+                        show()
                     }
                     self._change(e);
                 })
 
                 if($tagScroll && $tagScroll.find(self.target).length){
+                    if(opts.tag.focus !== true){
+                        self._on('mouseenter', $tagContainer, '.ui-tag', function(){
+                            delete self._hover
+                        })
+                    }
                     self._on('mouseenter', $tagScroll , function(){
                         self._mouseover()
                     })
@@ -6763,9 +6769,8 @@ __define('lib/components/search',function(require, imports){
                     self._on('click', $tagScroll , function(e){
                         if(!self._tag_event && !self._showed){
                             delete self._hover;
-                            self._show();
-                            self._hover = true;
-                            self.target.focus();
+                            show();
+                            self.resize()
                         }
                         else{
                             delete self._tag_event
@@ -7348,8 +7353,6 @@ __define('./script/page',function(require, imports){
         }
     }]
 
-    console.log(search.data2html(arr))
-
     Nui.each(data.empList, function(val){
         Nui.each(val.list, function(v){
             emps.push(v)
@@ -7411,7 +7414,7 @@ __define('./script/page',function(require, imports){
         },
         tag:{
             multiple:true,
-            focus:true,
+            focus:false,
             backspace:true,
             container:'.demo2Tags > div',
             scroll:'.demo2Tags'

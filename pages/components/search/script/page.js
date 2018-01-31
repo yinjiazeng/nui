@@ -19,8 +19,6 @@ Nui.define(function(require, imports){
         }
     }]
 
-    console.log(search.data2html(arr))
-
     Nui.each(data.empList, function(val){
         Nui.each(val.list, function(v){
             emps.push(v)
@@ -82,7 +80,7 @@ Nui.define(function(require, imports){
         },
         tag:{
             multiple:true,
-            focus:true,
+            focus:false,
             backspace:true,
             container:'.demo2Tags > div',
             scroll:'.demo2Tags'
