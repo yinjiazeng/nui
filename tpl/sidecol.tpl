@@ -257,6 +257,9 @@
                         <a{%if page == 'search' %} class="s-crt"{% endif %} href="/nui/pages/components/search/">搜索</a>
                     </li>
                     <li>
+                        <a{%if page == 'select' %} class="s-crt"{% endif %} href="/nui/pages/components/select/">选择器</a>
+                    </li>
+                    <li>
                         <a{%if page == 'calendar' %} class="s-crt"{% endif %} href="/nui/pages/components/calendar/">日历</a>
                     </li>
                     <li>

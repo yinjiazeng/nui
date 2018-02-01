@@ -1,0 +1,55 @@
+{% extends "layout.tpl" %}
+
+{% block title %}{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/nui/pages/components/select/style/page-min.css"/>
+{% endblock %}
+
+{% block nav %}
+	{% import 'nav.tpl' as nav %}
+	{{nav.active('study')}}
+{% endblock %}
+
+{% block subpage %} class="g-html"{% endblock %}
+
+
+
+{% block content %}
+	<div class="g-main f-fr">
+		<div class="mainbox">
+			<h1 class="e-pt20 e-pb20 f-fs28">选择器</h1>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">先睹为快</h2>
+			
+			<div class="nui-select">
+				<div class="nui-select-wrap">
+					<div class="con-select-inner">
+						<div class="con-select-edit">
+							<input type="text" class="con-select-input" readonly>
+						</div>
+						<div class="con-select-adorn">
+							<span class="con-select-arrow"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<select id="demo" multiple>
+				<option value="1">1111111</option>
+				<option value="2">1111111</option>
+				<option value="3">1111111</option>
+				<option value="4">1111111</option>
+			</select>
+
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10">选项参数</h2>
+
+			
+		</div>	
+	</div>
+	{% import 'sidecol.tpl' as side %}
+	{{side.active('cpns', 'select')}}
+{% endblock %}
+
+{% block script %}
+Nui.load('./script/page')
+{% endblock %}
