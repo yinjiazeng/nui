@@ -43,9 +43,9 @@ Nui.define(function(require, imports){
             data:emps,
             exist:true,
             nullable:true,
-            tag:{
-                container:'.hidden'
-            },
+            // tag:{
+            //     container:'.hidden'
+            // },
             match:[{
                 field:'name',
                 like:function(data, value){
@@ -64,14 +64,14 @@ Nui.define(function(require, imports){
                     return exist
                 }
             }],
-            setValue:function(self, data){
-                return {
-                    text:data.name,
-                    fields:{
-                        id:data.id
-                    }
-                }
-            },
+            // setValue:function(self, data){
+            //     return {
+            //         text:data.name,
+            //         fields:{
+            //             id:data.id
+            //         }
+            //     }
+            // },
             onSelect:function(self, data, e){
                 self.value(data.name)
             },

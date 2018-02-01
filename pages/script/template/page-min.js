@@ -6,13 +6,83 @@
         return module
     }
 /**
+ * Nui&jQuery扩展
+ */
+
+__define('lib/core/extend',function(){
+           
+    Nui.win = $(window);
+
+    Nui.doc = $(document);
+    
+    var prop = $.fn.prop;
+
+    var serializeArray = $.fn.serializeArray; 
+
+    $.fn.extend({
+        /**
+         * @func 添加或者移除表单属性
+         * @param name <String>
+         * @param value <String, Boolean>
+         * @param className <String, Function> 当第二个参数为false时移除类名，否则增加类名
+         */
+        prop:function(){
+            var args = arguments, arr = Array.prototype.slice.call(args, 0, 2), $ele = $(this), cls = args[2];
+            if(typeof cls === 'function'){
+                cls = cls.apply(this, arr)
+            }
+            if(cls){
+                $ele[args[1] === false ? 'removeClass':'addClass'](cls)
+            }
+            return prop.apply(this, arr)
+        },
+        /**
+         * @func 序列化表单值转成url参数形式
+         * @param disabled <Boolean> 是否包含禁用元素
+         */
+        serialize:function(disabled){
+            return $.param(this.serializeArray(disabled));
+        },
+        /**
+         * @func 序列化表单值转为JSON数组
+         * @param disabled <Boolean> 是否包含禁用元素
+         */
+        serializeArray:function(disabled){
+            if(!disabled){
+                return serializeArray.call(this)
+            }
+            return this.map(function(){
+                var elements = $.prop(this, 'elements');
+                return elements ? $.makeArray(elements) : this;
+            })
+            .filter(function(){
+                var type = this.type;
+                return this.name && this.nodeName &&
+                    (/^(?:input|select|textarea|keygen)/i).test(this.nodeName) && 
+                    !(/^(?:submit|button|image|reset|file)$/i).test(type) &&
+                    (this.checked || !(/^(?:checkbox|radio)$/i).test(type));
+            })
+            .map(function(i, elem){
+                var val = $(this).val();
+                return val == null ?
+                    null :
+                    $.isArray(val) ?
+                        $.map(val, function(val){
+                            return {name: elem.name, value: val.replace( /\r?\n/g, "\r\n" )};
+                        }) :
+                        {name: elem.name, value: val.replace( /\r?\n/g, "\r\n" )};
+            }).get();
+        }
+    })
+})
+/**
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
  * @version 1.0.1
  * @description 实用工具集
  */
 
-__define('lib/core/util',function(require){
+__define('lib/core/util',['lib/core/extend'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -248,7 +318,6 @@ __define('lib/core/util',function(require){
             }
             return '-';
         },
-    
         /**
          * @func 获取表单数据集合
          * @return <Object>
@@ -287,9 +356,10 @@ __define('lib/core/util',function(require){
                 'total':0 //总计多少个字段
             }
             if(element.length){
-                var arr = element.serializeArray();
+                //form元素
+                var arr = element.serializeArray(true);
                 if(!arr.length){
-                    arr = element.find('[name]').serializeArray();
+                    arr = element.find('[name]').serializeArray(true);
                 }
                 var div = ',';
                 if(item && typeof item === 'string' && !field){
@@ -314,7 +384,7 @@ __define('lib/core/util',function(require){
                     var once = false;
                     data.result[field] = [];
                     element.find(item).each(function(){
-                        var result = that.getData($(this).find('[name]')).result;
+                        var result = that.getData($(this)).result;
                         if(item !== true && !once){
                             Nui.each(result, function(v, k){
                                 delete data.result[k];

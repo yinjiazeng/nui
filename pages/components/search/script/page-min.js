@@ -6,13 +6,83 @@
         return module
     }
 /**
+ * Nui&jQuery扩展
+ */
+
+__define('lib/core/extend',function(){
+           
+    Nui.win = $(window);
+
+    Nui.doc = $(document);
+    
+    var prop = $.fn.prop;
+
+    var serializeArray = $.fn.serializeArray; 
+
+    $.fn.extend({
+        /**
+         * @func 添加或者移除表单属性
+         * @param name <String>
+         * @param value <String, Boolean>
+         * @param className <String, Function> 当第二个参数为false时移除类名，否则增加类名
+         */
+        prop:function(){
+            var args = arguments, arr = Array.prototype.slice.call(args, 0, 2), $ele = $(this), cls = args[2];
+            if(typeof cls === 'function'){
+                cls = cls.apply(this, arr)
+            }
+            if(cls){
+                $ele[args[1] === false ? 'removeClass':'addClass'](cls)
+            }
+            return prop.apply(this, arr)
+        },
+        /**
+         * @func 序列化表单值转成url参数形式
+         * @param disabled <Boolean> 是否包含禁用元素
+         */
+        serialize:function(disabled){
+            return $.param(this.serializeArray(disabled));
+        },
+        /**
+         * @func 序列化表单值转为JSON数组
+         * @param disabled <Boolean> 是否包含禁用元素
+         */
+        serializeArray:function(disabled){
+            if(!disabled){
+                return serializeArray.call(this)
+            }
+            return this.map(function(){
+                var elements = $.prop(this, 'elements');
+                return elements ? $.makeArray(elements) : this;
+            })
+            .filter(function(){
+                var type = this.type;
+                return this.name && this.nodeName &&
+                    (/^(?:input|select|textarea|keygen)/i).test(this.nodeName) && 
+                    !(/^(?:submit|button|image|reset|file)$/i).test(type) &&
+                    (this.checked || !(/^(?:checkbox|radio)$/i).test(type));
+            })
+            .map(function(i, elem){
+                var val = $(this).val();
+                return val == null ?
+                    null :
+                    $.isArray(val) ?
+                        $.map(val, function(val){
+                            return {name: elem.name, value: val.replace( /\r?\n/g, "\r\n" )};
+                        }) :
+                        {name: elem.name, value: val.replace( /\r?\n/g, "\r\n" )};
+            }).get();
+        }
+    })
+})
+/**
  * @author Aniu[2016-11-11 16:54]
  * @update Aniu[2016-11-11 16:54]
  * @version 1.0.1
  * @description 实用工具集
  */
 
-__define('lib/core/util',function(require){
+__define('lib/core/util',['lib/core/extend'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -248,7 +318,6 @@ __define('lib/core/util',function(require){
             }
             return '-';
         },
-    
         /**
          * @func 获取表单数据集合
          * @return <Object>
@@ -287,9 +356,10 @@ __define('lib/core/util',function(require){
                 'total':0 //总计多少个字段
             }
             if(element.length){
-                var arr = element.serializeArray();
+                //form元素
+                var arr = element.serializeArray(true);
                 if(!arr.length){
-                    arr = element.find('[name]').serializeArray();
+                    arr = element.find('[name]').serializeArray(true);
                 }
                 var div = ',';
                 if(item && typeof item === 'string' && !field){
@@ -314,7 +384,7 @@ __define('lib/core/util',function(require){
                     var once = false;
                     data.result[field] = [];
                     element.find(item).each(function(){
-                        var result = that.getData($(this).find('[name]')).result;
+                        var result = that.getData($(this)).result;
                         if(item !== true && !once){
                             Nui.each(result, function(v, k){
                                 delete data.result[k];
@@ -4236,7 +4306,8 @@ __define('pages/components/search/script/data',function(){
         ]
     }
 })
-__define('lib/core/events',function(){
+
+__define('lib/core/events',['lib/core/extend'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -4308,10 +4379,12 @@ __define('lib/core/events',function(){
  * @description 组件基类
  */
 
-__define('lib/core/component',['lib/core/template', 'lib/core/events'], function(tpl, events){
-    var module = this;
-    var require = this.require;
-    var extend = this.extend;
+__define('lib/core/component',function(require){
+    var template = require('lib/core/template');
+    var events   = require('lib/core/events');
+    var ext     = require('./extend');
+    var extend   = this.extend;
+
     var callMethod = function(method, args, obj){
         //实参大于形参，最后一个实参表示id
         if(args.length > method.length){
@@ -4321,12 +4394,6 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
             }
         }
         method.apply(obj, args)
-    }
-    //去除IE67按钮点击黑边
-    if(Nui.bsie7){
-        Nui.doc.on('focus', 'button, input[type="button"]', function(){
-            this.blur()
-        })
     }
     /**
      * 单和双下划线开头表示私有方法或者属性，只能在内部使用，
@@ -4720,9 +4787,9 @@ __define('lib/core/component',['lib/core/template', 'lib/core/events'], function
                 closeTag:'%>'
             }
             if(arguments.length === 1){
-                return tpl.render(this._template, id, opts)
+                return template.render(this._template, id, opts)
             }
-            return tpl.render.call(this._template, this._template[id], data, opts)
+            return template.render.call(this._template, this._template[id], data, opts)
         },
         _callback:function(method, args){
             var self = this, opts = self._options;
@@ -4841,6 +4908,7 @@ __define('lib/components/placeholder',function(require, imports){
                     self._defaultValue = self._val;
                 }
                 self._text = Nui.trim(text||'');
+                self._disabled = target.prop('disabled');
                 self._setData();
                 self._create()
             }
@@ -4875,7 +4943,9 @@ __define('lib/components/placeholder',function(require, imports){
             }
         },
         _focus:function(){
-            this.target.focus()
+            if(!this._disabled){
+                this.target.focus()
+            }
         },
         _blur:function(){
             delete this.constructor._active;
@@ -5334,7 +5404,7 @@ __define('lib/components/input',function(require, imports){
         },
         _clear:function(e, elem){
             this.value('');
-            this.target.focus();
+            this._focus();
             if(this._option('clear').show !== true){
                 elem.hide();
             }
@@ -6589,6 +6659,11 @@ __define('lib/components/search',function(require, imports){
              */
             focus:false,
             /**
+             * @func 是否禁用
+             * @type <Boolean>
+             */
+            disabled:false,
+            /**
              * @func 是否允许文本框内容为空时展示下拉
              * @type <Boolean> 
              */
@@ -7265,7 +7340,7 @@ __define('lib/components/search',function(require, imports){
 
             self._on('click', self.target, function(e, elem){
                 if(!self._showed){
-                    self.target.focus()
+                    elem.focus()
                 }
             })
 
@@ -7494,7 +7569,7 @@ __define('lib/components/search',function(require, imports){
             }
         },
         _initData:function(){
-            var self = this, opts = self._options, data = opts.data, match = opts.match;
+            var self = this, opts = self._options, data = opts.data, match = opts.match, target = self.target;
             self._caches = {};
 
             self.queryData = [];
@@ -7511,7 +7586,9 @@ __define('lib/components/search',function(require, imports){
 
             self._listHeight = 0;
 
-            self._multiple = self.target.prop('multiple') || opts.tag.multiple;
+            self._multiple = target.prop('multiple') || opts.tag.multiple;
+
+            self._disabled = target.prop('disabled')
 
             self._setTargetData();
 
@@ -7672,7 +7749,7 @@ __define('lib/components/search',function(require, imports){
         _show:function(input){
             var self = this, opts = self._options, _class = self.constructor;
             self.val = Nui.trim(this.target.val());
-            if(self._hover && !input){
+            if(self._disabled || (self._hover && !input)){
                 return
             }
             //页面中只能存在一个显示的组件
@@ -7698,6 +7775,11 @@ __define('lib/components/search',function(require, imports){
             }
         },
         resize:function(){
+
+            if(this._disabled){
+                return
+            }
+
             var self = this, opts = self._options, target = self.target, elem = self.element, targetData = self._targetData, elemData = self._elementData,
             oWidth = elem.outerWidth(), oHeight = elem.outerHeight(), offset = target.offset(), otop = offset.top, oleft = offset.left,
             _class = self.constructor, wWidth = Nui.win.width(), wHeight = Nui.win.height(), notbody = !self._container_body;
@@ -7946,9 +8028,9 @@ __define('./script/page',function(require, imports){
             data:emps,
             exist:true,
             nullable:true,
-            tag:{
-                container:'.hidden'
-            },
+            // tag:{
+            //     container:'.hidden'
+            // },
             match:[{
                 field:'name',
                 like:function(data, value){
@@ -7967,14 +8049,14 @@ __define('./script/page',function(require, imports){
                     return exist
                 }
             }],
-            setValue:function(self, data){
-                return {
-                    text:data.name,
-                    fields:{
-                        id:data.id
-                    }
-                }
-            },
+            // setValue:function(self, data){
+            //     return {
+            //         text:data.name,
+            //         fields:{
+            //             id:data.id
+            //         }
+            //     }
+            // },
             onSelect:function(self, data, e){
                 self.value(data.name)
             },

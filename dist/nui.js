@@ -297,12 +297,6 @@
         document.execCommand('BackgroundImageCache', false, true);
     }
 
-    //常用jq对象
-    if(typeof jQuery !== 'undefined'){
-        Nui.win = jQuery(window);
-        Nui.doc = jQuery(document);
-    }
-
     //------- 修复end -------
 
     var Module = function(attrs, deps){
