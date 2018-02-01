@@ -388,8 +388,9 @@ __define('lib/core/util',['lib/core/extend'], function(){
          * @func 获取表单数据集合
          * @return <Object>
          * @param element <jQuery Object> 表单元素集合或者form元素
-         * @param item <String> 将name相同表单元素值分隔，当设置为jquery选择器时，配合field参数使用，用于获取item中表单元素的数据集合
-         * @param field <String> 字段名，配合item参数使用，返回对象中会包含该字段
+         * @param selector <String> 将name相同表单元素值分隔，当设置为jquery选择器时，配合field参数使用，用于获取item中表单元素的数据集合
+         * @param field <String> 字段名，配合selector参数使用，返回对象中会包含该字段
+         * @param disabled <Boolean> 是否包含禁用元素
          * @example
          * <form id="form">
          *  <input type="hidden" name="name0" value="0">
@@ -414,7 +415,7 @@ __define('lib/core/util',['lib/core/extend'], function(){
          *  }]
          * }
          */
-        getData:function(element, item, field){
+        getData:function(element, selector, field, disabled){
             var that = this;
             var data = {
                 'result':{},
@@ -422,16 +423,25 @@ __define('lib/core/util',['lib/core/extend'], function(){
                 'total':0 //总计多少个字段
             }
             if(element.length){
+                if(typeof selector === 'boolean'){
+                    disabled = selector;
+                    selector = undefined
+                }
+                else if(typeof field === 'boolean'){
+                    disabled = field;
+                    field = undefined
+                }
                 //form元素
-                var arr = element.serializeArray(true);
-                if(!arr.length){
-                    arr = element.find('[name]').serializeArray(true);
+                var array = element.serializeArray(disabled);
+                if(!array.length){
+                    array = element.find('[name]').serializeArray(disabled);
                 }
-                var div = ',';
-                if(item && typeof item === 'string' && !field){
-                    div = item
+                var separator = ',';
+                if(selector && field === undefined){
+                    separator = selector;
+                    selector = undefined
                 }
-                Nui.each(arr, function(v, i){
+                Nui.each(array, function(v, i){
                     var val = Nui.trim(v.value)
                     data.total++;
                     if(!val){
@@ -444,24 +454,26 @@ __define('lib/core/util',['lib/core/extend'], function(){
                     data.result[name].push(val)
                 })
                 Nui.each(data.result, function(v, k){
-                    data.result[k] = v.join(div)
+                    data.result[k] = v.join(separator)
                 })
-                if(item && field){
+                if(selector && field && typeof field === 'string'){
                     var once = false;
                     data.result[field] = [];
-                    element.find(item).each(function(){
-                        var result = that.getData($(this)).result;
-                        if(item !== true && !once){
-                            Nui.each(result, function(v, k){
-                                delete data.result[k];
-                            });
-                            once = true
+                    element.find(selector).each(function(){
+                        var result = that.getData($(this), disabled).result;
+                        if(!$.isEmptyObject(result)){
+                            if(!once){
+                                Nui.each(result, function(v, k){
+                                    delete data.result[k]
+                                });
+                                once = true
+                            }
+                            data.result[field].push(result)
                         }
-                        data.result[field].push(result)
                     })
                 }
             }
-            return data;
+            return data
         },
         /**
          * @func 获取输入框内光标位置
