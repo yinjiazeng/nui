@@ -7187,11 +7187,13 @@ __define('lib/components/search',function(require, imports){
         _bindEvent:function(){
             var self = this, opts = self._options, storeKeycode = [];
 
-            var show = function(){
+            var show = function(callback){
                 self._show();
                 self._hover = true;
+                //部分浏览器不会获得焦点
                 setTimeout(function(){
-                    self.target.focus()
+                    self.target.focus();
+                    callback && callback()
                 })
             }
 
@@ -7275,6 +7277,9 @@ __define('lib/components/search',function(require, imports){
 
             self._on('keydown', self.target, function(e, elem){
                 var code = e.keyCode;
+                if(self._allow(code === 40 || code === 38)){
+                    e.preventDefault()
+                }
                 if(code !== 67){
                     storeKeycode = []
                 }
@@ -7295,9 +7300,13 @@ __define('lib/components/search',function(require, imports){
                     elem.closest('.ui-tag').remove();
                     delete self._hover;
                     if(tag.focus === true){
-                        show()
+                        show(function(){
+                            self._change(e)
+                        })
                     }
-                    self._change(e);
+                    else{
+                        self._change(e);
+                    }
                 })
 
                 if($tagScroll && $tagScroll.find(self.target).length){
@@ -7319,8 +7328,9 @@ __define('lib/components/search',function(require, imports){
                     self._on('click', $tagScroll , function(e){
                         if(!self._tag_event && !self._showed){
                             delete self._hover;
-                            show();
-                            self.resize()
+                            show(function(){
+                                self.resize()
+                            })
                         }
                         else{
                             delete self._tag_event
