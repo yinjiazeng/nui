@@ -7190,7 +7190,9 @@ __define('lib/components/search',function(require, imports){
             var show = function(){
                 self._show();
                 self._hover = true;
-                self.target.focus()
+                setTimeout(function(){
+                    self.target.focus()
+                })
             }
 
             self._on('keyup', self.target, function(e, elem){
@@ -7967,7 +7969,7 @@ __define('./script/page',function(require, imports){
                 self.value(data.name)
             },
             onBlur:function(self, data){
-                console.log(data)
+                
             }
         }).search('show')
     })
@@ -8047,8 +8049,13 @@ __define('./script/page',function(require, imports){
             content:function(){
                 return this.content(data.empList)
             },
-            onShow:function(){
+            onShow:function(self, elem, container){
                 this.data = emps;
+                setTimeout(function(){
+                    container.find('img').each(function(){
+                        $(this).attr('src', $(this).data('src'))
+                    })
+                }, 100)
                 this.toggle()
             }
         }, {
@@ -8075,7 +8082,7 @@ __define('./script/page',function(require, imports){
                         '<ul class="list">'+
                             '<%each $value.list v%>'+
                                 '<li class="con-search-item e-pl0 e-mt5 item-letter" data-name="<%v.name%>">'+
-                                    '<img src="<%photo(v.photo)%>" class="f-fl" width="30" height="30" alt="<%v.name%>">'+
+                                    '<img data-src="<%photo(v.photo)%>" class="f-fl" width="30" height="30" alt="<%v.name%>">'+
                                     '<span class="f-fl e-ml5 f-toe text"><%v.name%></span>'+
                                 '</li>'+
                             '<%/each%>'+

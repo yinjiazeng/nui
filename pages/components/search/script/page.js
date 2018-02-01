@@ -76,7 +76,7 @@ Nui.define(function(require, imports){
                 self.value(data.name)
             },
             onBlur:function(self, data){
-                console.log(data)
+                
             }
         }).search('show')
     })
@@ -156,8 +156,13 @@ Nui.define(function(require, imports){
             content:function(){
                 return this.content(data.empList)
             },
-            onShow:function(){
+            onShow:function(self, elem, container){
                 this.data = emps;
+                setTimeout(function(){
+                    container.find('img').each(function(){
+                        $(this).attr('src', $(this).data('src'))
+                    })
+                }, 100)
                 this.toggle()
             }
         }, {
@@ -184,7 +189,7 @@ Nui.define(function(require, imports){
                         '<ul class="list">'+
                             '<%each $value.list v%>'+
                                 '<li class="con-search-item e-pl0 e-mt5 item-letter" data-name="<%v.name%>">'+
-                                    '<img src="<%photo(v.photo)%>" class="f-fl" width="30" height="30" alt="<%v.name%>">'+
+                                    '<img data-src="<%photo(v.photo)%>" class="f-fl" width="30" height="30" alt="<%v.name%>">'+
                                     '<span class="f-fl e-ml5 f-toe text"><%v.name%></span>'+
                                 '</li>'+
                             '<%/each%>'+
