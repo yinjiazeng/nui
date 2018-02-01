@@ -467,6 +467,8 @@ Nui.define(function(){
         }
     }
 
+    var pinyin;
+
     return function(words){
         if(words && typeof words === 'string'){
             var array, pys;

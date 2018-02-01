@@ -261,7 +261,7 @@
 					</tr>
 					<tr>
 						<td>multiple</td>
-						<td>true</td>
+						<td>false</td>
 						<td>{Boolean}</td>
 						<td>是否多选</td>
 					</tr>
@@ -281,7 +281,7 @@
 						<td>clear</td>
 						<td>false</td>
 						<td>{Boolean}</td>
-						<td>选择完是否清空输入框</td>
+						<td>选择完是否清空输入框，只有多选时才会启用</td>
 					</tr>
 					<tr>
 						<td>title</td>
@@ -441,8 +441,8 @@ search({
 				<p>默认：null</p>
 				<p>类型：{Function}</p>
 				<p>参数：self {Object} 组件实例对象</p>
-				<p>参数：value {String} 当前搜索的值</p>
 				<p>参数：data {Object} 列表数据</p>
+				<p>参数：value {String} 当前输入框的值</p>
 				<p>返回：{Array} 返回过滤后的新数据</p>
 				<p>说明：该参数仅在使用自定义数据时才会启用，与match参数互斥，优先使用该参数</p>
 			</div>
@@ -452,7 +452,7 @@ import search from '{com}/search';
 
 search({
 	target:'#demo',
-	filter:function(self, value, data){
+	filter:function(self, data, value){
 		var arr = [];
 		Nui.each(data, function(v){
 			if(v.name.indexOf(value) === 0){
@@ -463,6 +463,19 @@ search({
 	}
 })
 </script>
+
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> exist</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：输入框失去焦点时校验内容是否存在</p>
+				<p>默认：null</p>
+				<p>类型：{Boolean} 为true时默认取field参数对应的字段</p>
+				<p>类型：{Function}</p>
+				<p>参数：self {Object} 组件实例对象</p>
+				<p>参数：data {Object} 遍历的列表一行数据</p>
+				<p>参数：value {String} 当前输入框的值</p>
+				<p>返回：{Boolean} 返回true则表示数据匹配</p>
+				<p>说明：仅在单选功能才会启用</p>
+			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onResponse</h3>
 			<div class="e-mt15 f-lh22">
@@ -515,7 +528,7 @@ search({
 				<p>默认：null</p>
 				<p>类型：{Function}</p>
 				<p>参数：self {Object} 组件实例对象</p>
-				<p>参数：target {Object} 调用组件jQuery对象</p>
+				<p>参数：data {Object} exist参数启用时该参数才存在，表示已选中数据</p>
 				<p>说明：不建议手动给元素绑定blur事件，应该使用该参数</p>
 			</div>
 

@@ -41,10 +41,10 @@ Nui.define(function(require, imports){
             field:'name',
             empty:'<p class="f-lh20 e-pl5 e-pr5">搜索条件为“<%value%>”未能匹配到数据</p>',
             data:emps,
+            exist:true,
             nullable:true,
             tag:{
-                container:'.hidden',
-                multiple:false
+                container:'.hidden'
             },
             match:[{
                 field:'name',
@@ -72,8 +72,11 @@ Nui.define(function(require, imports){
                     }
                 }
             },
-            onSelect:function(self, data){
+            onSelect:function(self, data, e){
                 self.value(data.name)
+            },
+            onBlur:function(self, data){
+                console.log(data)
             }
         }).search('show')
     })
