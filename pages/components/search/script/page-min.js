@@ -7052,14 +7052,14 @@ __define('lib/components/search',function(require, imports){
             elem.removeClass('s-hover')
         },
         _select:function(e){
-            var self = this, opts = self._options, data = self.queryData[self._activeIndex], args = [data, e, this._activeItem], value = '';
-            if(data === undefined || !this._activeItem){
+            var self = this, opts = self._options, data = self.queryData[self._activeIndex], elem = this._activeItem, value = '';
+            if(data === undefined || !elem){
                 return
             }
             
             self._selectData = data;
 
-            if(self._callback('SelectBefore', args) === false){
+            if(self._callback('SelectBefore', [data, e, elem]) === false){
                 return
             }
 
@@ -7072,7 +7072,7 @@ __define('lib/components/search',function(require, imports){
 
             self.value(value);
             self.hide();
-            self._callback('Select', args);
+            self._callback('Select', [data, e, elem]);
         },
         _match:function(data){
             var self = this, opts = self._options, match = false;

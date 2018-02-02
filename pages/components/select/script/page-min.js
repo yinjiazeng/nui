@@ -3072,14 +3072,14 @@ __define('lib/components/search',function(require, imports){
             elem.removeClass('s-hover')
         },
         _select:function(e){
-            var self = this, opts = self._options, data = self.queryData[self._activeIndex], args = [data, e, this._activeItem], value = '';
-            if(data === undefined || !this._activeItem){
+            var self = this, opts = self._options, data = self.queryData[self._activeIndex], elem = this._activeItem, value = '';
+            if(data === undefined || !elem){
                 return
             }
             
             self._selectData = data;
 
-            if(self._callback('SelectBefore', args) === false){
+            if(self._callback('SelectBefore', [data, e, elem]) === false){
                 return
             }
 
@@ -3092,7 +3092,7 @@ __define('lib/components/search',function(require, imports){
 
             self.value(value);
             self.hide();
-            self._callback('Select', args);
+            self._callback('Select', [data, e, elem]);
         },
         _match:function(data){
             var self = this, opts = self._options, match = false;
@@ -4291,8 +4291,9 @@ __define('lib/components/select',function(require, imports){
             '<div class="nui-select">'+
                 '<div class="con-select-wrap">'+
                     '<div class="con-select-combo">'+
+                        '<%tpl%>'+
                         '<div class="con-select-edit">'+
-                            '<input type="text" class="con-select-input" readonly>'+
+                            '<input type="text" class="con-select-input">'+
                         '</div>'+
                     '</div>'+
                     '<div class="con-select-adorn">'+
@@ -4303,15 +4304,27 @@ __define('lib/components/select',function(require, imports){
         _exec:function(){
             if(this._getTarget()){
                 this.target.hide();
+                var val = this.target.val();
+                var tpl = '';
+                if(val !== null && val !== undefined){
+                    var data = [];
+                    Nui.each([].concat(val), function(v){
+                        data.push({
+                            text:v
+                        })
+                    })
+                    tpl = Search.data2html(data);
+                }
                 this.element = $(this._tpl2html({
-                
+                    tpl:tpl
                 })).insertBefore(this.target)
                 var input = this.element.find('input');
                 input.placeholder({
                     text:'请输入'
                 })
                 var that = this;
-                var multi = this.target.prop('multiple')
+                var multi = this.target.prop('multiple');
+                
                 Search({
                     target:that.element.find('input'),
                     container:that.element,
@@ -4321,7 +4334,8 @@ __define('lib/components/select',function(require, imports){
                     tag:{
                         container:that.element.find('.con-select-combo'),
                         scroll:that.element.find('.con-select-wrap'),
-                        multiple:multi
+                        multiple:multi,
+                        backspace:true
                     },
                     size:{
                         //width:100
@@ -4329,7 +4343,18 @@ __define('lib/components/select',function(require, imports){
                     offset:{
                         top:-1
                     },
+                    match:{
+                        field:'text',
+                        like:function(data, value){
+                            return data.indexOf(value) !== -1
+                        }
+                    },
                     data:this._optionToData(),
+                    toggle:function(elem){
+                        if(elem){
+                            elem.toggleClass('s-crt')
+                        }
+                    },
                     selected:function(self, data){
                         var exist = false;
                         Nui.each(self.tagData, function(v){
@@ -4341,7 +4366,7 @@ __define('lib/components/select',function(require, imports){
                         return exist
                     },
                     item:function(){
-                        return '<%if $data.label%>'+
+                        return '<%if !value && $data.label%>'+
                                     '<li><%$data.label%></li>'+
                                 '<%/if%>'+
                                 '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>">'+
@@ -4350,18 +4375,23 @@ __define('lib/components/select',function(require, imports){
                     },
                     setValue:function(self, data){
                         return {
-                            title:data.text,
                             text:data.value
                         }
                     },
                     onSelectBefore:function(self, data){
                         if(multi){
+                            this.toggle(self._items[self._activeIndex]);
                             self.value(this.setValue(self, data));
                             var text = [];
                             Nui.each(self.tagData, function(v){
-                                text.push(v.title)
+                                Nui.each(self.data, function(val){
+                                    if(v.text === val.value){
+                                        text.push(val.text)
+                                        return false
+                                    }
+                                })
                             })
-                            self.value(text.join(','))
+                            //self.value(text.join(','))
                             return false
                         }
                     },
@@ -4373,6 +4403,13 @@ __define('lib/components/select',function(require, imports){
                     },
                     onHide:function(){
                         that.element.removeClass('s-show')
+                    },
+                    onChange:function(self){
+                        var values = [];
+                        Nui.each(self.tagData, function(v){
+                            values.push(v.text)
+                        })
+                        //that.target.val(values)
                     }
                 })
             }
