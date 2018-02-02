@@ -42,6 +42,7 @@
     height: 30px;
     line-height: 30px;
     overflow: hidden;
+    background-color: #fff;
 }
 .nui-search .con-search-tab-nav {
     display: block;

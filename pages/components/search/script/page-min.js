@@ -4840,6 +4840,22 @@ __define('lib/core/component',function(require){
             }
             return this
         },
+        on:function(name, callback){
+            var self = this, callbacks = {};
+            if(
+                typeof name === 'string' && 
+                typeof callback === 'function'
+            ){
+                callbacks[name] = callback
+            }
+            else if(typeof name === 'object'){
+                callbacks = name
+            }
+            Nui.each(callbacks, function(v, k){
+                self._options['on' + k.substr(0, 1).toUpperCase() + k.substr(1)] = v
+            })
+            return this
+        },
         reset:function(){
             this.option(true);
             this._callback('Reset');
@@ -6674,11 +6690,6 @@ __define('lib/components/search',function(require, imports){
              */
             focus:false,
             /**
-             * @func 是否禁用
-             * @type <Boolean>
-             */
-            disabled:false,
-            /**
              * @func 是否允许文本框内容为空时展示下拉
              * @type <Boolean> 
              */
@@ -7500,9 +7511,6 @@ __define('lib/components/search',function(require, imports){
                     content = ''
                 }
             }
-            else if(name === 'item' && content && !/^\s*\<li\s+/i.test(content)){
-                content = '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>">'+ content +'</li>'
-            }
 
             if(name !== 'item' && content){
                 content = '<div class="con-search-'+ name +'">'+ content +'</div>'
@@ -7788,6 +7796,7 @@ __define('lib/components/search',function(require, imports){
                     self._setDefault()
                 }
                 self._render(input);
+                this._callback('Show');
             }
         },
         resize:function(){
@@ -7848,7 +7857,7 @@ __define('lib/components/search',function(require, imports){
          * @func 显示组件
          */
         show:function(){
-            this._show()
+            this._show();
         },
         /**
          * @func 隐藏组件
@@ -7866,6 +7875,7 @@ __define('lib/components/search',function(require, imports){
             if(self.element){
                 self.element.hide()
             }
+            self._callback('Hide')
         },
         /**
          * @func 销毁组件

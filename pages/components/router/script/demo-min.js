@@ -1482,6 +1482,22 @@ __define('lib/core/component',function(require){
             }
             return this
         },
+        on:function(name, callback){
+            var self = this, callbacks = {};
+            if(
+                typeof name === 'string' && 
+                typeof callback === 'function'
+            ){
+                callbacks[name] = callback
+            }
+            else if(typeof name === 'object'){
+                callbacks = name
+            }
+            Nui.each(callbacks, function(v, k){
+                self._options['on' + k.substr(0, 1).toUpperCase() + k.substr(1)] = v
+            })
+            return this
+        },
         reset:function(){
             this.option(true);
             this._callback('Reset');

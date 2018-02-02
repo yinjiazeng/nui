@@ -1,0 +1,51 @@
+@import '../../style.less';
+
+.nui-select {
+    width: 200px;
+    position: relative;
+    &.s-show {
+        z-index: 19920604;
+    }
+    .con-select-wrap {
+        border:1px solid #ccc;
+        overflow: auto;
+    }
+    .con-select-edit {
+        padding-left: 8px;
+        padding-right: 20px;
+    }
+    .con-select-input {
+        width: 100%;
+        height: 24px;
+        line-height: 24px;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        outline: 0;
+    }
+    .con-select-combo {
+        *zoom:1;
+        &:before, &:after {
+            display:table;
+            content:''; 
+        }
+        &:after {
+            clear:both;
+        }
+        .ui-tag, 
+        .nui-placeholder, 
+        .con-select-edit,
+        .con-select-input {
+            float: left;
+        }
+        .ui-tag {
+            //margin: 0 0 8px 8px;
+            display: none;
+        }
+    }
+    .con-select-adorn {
+        position: absolute;
+        top: 6px;
+        right: 5px;
+    }
+}

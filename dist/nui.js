@@ -627,7 +627,7 @@
                     mod.module = components[name] = Module.Class(mod, obj);
                     delete exports._static.__parent;
                     mod.exports = mod.module.exports = exports;
-                    if(mod.name !== 'component'){
+                    if(name !== 'component'){
                         var Class = mod.module.constructor, method;
                         each(['_$fn', '_$ready'], function(v){
                             method = Class[v];
