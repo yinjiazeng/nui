@@ -6632,8 +6632,8 @@ __define('lib/components/search',function(require, imports){
              * @param self <Object> 组件实例对象
              * @return <String> 返回列表模版
              * @desc 模版中可以使用<%$data%>获取当前行数据，<%$index%>获取当前行索引
-             * @desc 配合选项参数selected方法在模版中调用<%selected($data)%>可以设置当前行是否选中
-             * @desc 模版有效列表类名必须包含con-search-item以及data-index="<%$index%>"属性
+             * @desc 配合选项参数selected方法在模版中类名中加入<%selected($data)%>可以设置当前行是否选中
+             * @desc 模版中有效列表类名必须包含con-search-item以及data-index="<%$index%>"属性
              */
             item:'',
             /**
@@ -8160,11 +8160,6 @@ __define('./script/page',function(require, imports){
             },
             onShow:function(self, elem, container){
                 this.data = emps;
-                setTimeout(function(){
-                    container.find('img').each(function(){
-                        $(this).attr('src', $(this).data('src'))
-                    })
-                }, 100)
                 this.toggle()
             }
         }, {
@@ -8191,7 +8186,7 @@ __define('./script/page',function(require, imports){
                         '<ul class="list">'+
                             '<%each $value.list v%>'+
                                 '<li class="con-search-item e-pl0 e-mt5 item-letter" data-name="<%v.name%>">'+
-                                    '<img data-src="<%photo(v.photo)%>" class="f-fl" width="30" height="30" alt="<%v.name%>">'+
+                                    '<img src="<%photo(v.photo)%>" class="f-fl" width="30" height="30" alt="<%v.name%>">'+
                                     '<span class="f-fl e-ml5 f-toe text"><%v.name%></span>'+
                                 '</li>'+
                             '<%/each%>'+
