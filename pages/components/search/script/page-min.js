@@ -4670,6 +4670,9 @@ __define('lib/core/component',function(require){
             })
             return element
         },
+        _disabled:function(){
+            return this.target.prop('disabled')
+        },
         _tplData:function(data){
             var opts = this._options, 
                 _class = this.constructor,
@@ -4920,7 +4923,6 @@ __define('lib/components/placeholder',function(require, imports){
                     self._defaultValue = self._val;
                 }
                 self._text = Nui.trim(text||'');
-                self._disabled = target.prop('disabled');
                 self._setData();
                 self._create()
             }
@@ -4955,7 +4957,7 @@ __define('lib/components/placeholder',function(require, imports){
             }
         },
         _focus:function(){
-            if(!this._disabled){
+            if(!this._disabled()){
                 this.target.focus()
             }
         },
@@ -6631,6 +6633,7 @@ __define('lib/components/search',function(require, imports){
              * @return <String> 返回列表模版
              * @desc 模版中可以使用<%$data%>获取当前行数据，<%$index%>获取当前行索引
              * @desc 配合选项参数selected方法在模版中调用<%selected($data)%>可以设置当前行是否选中
+             * @desc 模版有效列表类名必须包含con-search-item以及data-index="<%$index%>"属性
              */
             item:'',
             /**
@@ -7384,6 +7387,9 @@ __define('lib/components/search',function(require, imports){
             var tag = opts.tag;
             if($tagContainer){
                 self._on('click', $tagContainer, '.ui-tag > .con-tag-close', function(e, elem){
+                    if(self._disabled()){
+                        return
+                    }
                     elem.closest('.ui-tag').remove();
                     delete self._hover;
                     if(tag.focus === true){
@@ -7600,8 +7606,6 @@ __define('lib/components/search',function(require, imports){
 
             self._multiple = target.prop('multiple') || opts.tag.multiple;
 
-            self._disabled = target.prop('disabled')
-
             self._setTargetData();
 
             self._initTag();
@@ -7668,7 +7672,7 @@ __define('lib/components/search',function(require, imports){
                 var selectedIndex;
                 self.$list = self.$result.children('.con-search-list');
                 self._items = [];
-                self.$list.children().each(function(i){
+                self.$list.children('.con-search-item').each(function(i){
                     var $elem = $(this);
                     self._items.push($elem);
                     if(!self._isTab && !input && selectedIndex === undefined && $elem.hasClass('s-crt')){
@@ -7761,7 +7765,7 @@ __define('lib/components/search',function(require, imports){
         _show:function(input){
             var self = this, opts = self._options, _class = self.constructor;
             self.val = Nui.trim(this.target.val());
-            if(self._disabled || (self._hover && !input)){
+            if(self._disabled() || (self._hover && !input)){
                 return
             }
             //页面中只能存在一个显示的组件
@@ -7788,7 +7792,7 @@ __define('lib/components/search',function(require, imports){
         },
         resize:function(){
 
-            if(this._disabled){
+            if(!this.element){
                 return
             }
 

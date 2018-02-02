@@ -1306,6 +1306,9 @@ __define('lib/core/component',function(require){
             })
             return element
         },
+        _disabled:function(){
+            return this.target.prop('disabled')
+        },
         _tplData:function(data){
             var opts = this._options, 
                 _class = this.constructor,
@@ -1556,7 +1559,6 @@ __define('lib/components/placeholder',function(require, imports){
                     self._defaultValue = self._val;
                 }
                 self._text = Nui.trim(text||'');
-                self._disabled = target.prop('disabled');
                 self._setData();
                 self._create()
             }
@@ -1591,7 +1593,7 @@ __define('lib/components/placeholder',function(require, imports){
             }
         },
         _focus:function(){
-            if(!this._disabled){
+            if(!this._disabled()){
                 this.target.focus()
             }
         },

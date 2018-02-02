@@ -1309,6 +1309,9 @@ __define('lib/core/component',function(require){
             })
             return element
         },
+        _disabled:function(){
+            return this.target.prop('disabled')
+        },
         _tplData:function(data){
             var opts = this._options, 
                 _class = this.constructor,
