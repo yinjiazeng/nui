@@ -53,21 +53,22 @@
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="命名规范">命名规范</h2>
 			<div class="e-mt15 f-lh22">
-				<p>文件名即是组件名，不能重复且只能由下划线、字母、数字组成</p>
+				<p>文件名即是组件名，不能重复且只能由下划线、字母、数字组成。</p>
 				<p>“_”前缀表示为私有属性或者方法，仅内部使用。</p>
 				<p>“__”前缀表示系统内置的属性或者方法，仅内部使用，不可重写或修改。</p>
 				<p>没有“_”前缀的表示对外公开的属性或方法，可通过“实例对象.方法名”或者“类.方法名”访问。</p>
+				<p>回调方法必须on开头方法名第一个字母大写，例如onDestroy。</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="私有实例属性">私有实例属性</h2>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __id</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：实例标识符</p>
 				<p>类型：{Number}</p>
-				<p>说明：实例标识符</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _options</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：设置选项参数</p>
 				<p>类型：{Object}</p>
-				<p>说明：设置选项参数</p>
 				<p>默认值：</p>
 				<table class="data e-mt5">
 					<tr>
@@ -114,13 +115,13 @@
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _static</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：设置类属性以及方法</p>
 				<p>类型：{Object}</p>
-				<p>说明：设置类属性以及方法</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _template</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：设置模版</p>
 				<p>类型：{Object}</p>
-				<p>说明：设置模版</p>
 				<p>默认：</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
@@ -130,73 +131,73 @@ _template:{
 </script>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _events</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：绑定事件，_event方法调用后才生效</p>
 				<p>类型：{Object}</p>
-				<p>说明：绑定事件，_event方法调用后才生效</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="私有实例方法">私有实例方法</h2>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _init</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：入口函数，实例初始化时仅执行一次，内部必须调用_exec方法</p>
+				<p>功能：入口函数，实例初始化时仅执行一次，内部必须调用_exec方法</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _exec</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：主函数，用于拦截校验，是否执行后续逻辑，执行reset以及option方法时，会重新调用该函数</p>
+				<p>功能：主函数，用于拦截校验，是否执行后续逻辑，执行reset以及option方法时，会重新调用该函数</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _getTarget</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：检测_options中target是否有效，有效则设置实例属性target，并在target上添加“nui_component_组件名”属性，无效返回null</p>
+				<p>功能：检测_options中target是否有效，有效则设置实例属性target，并在target上添加“nui_component_组件名”属性，无效返回null</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _jquery</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：检测元素是否是jQuery对象，是就返回该对象，不是就封装为jQuery对象</p>
 				<p>参数：elem {selector} 元素</p>
-				<p>说明：检测元素是否是jQuery对象，是就返回该对象，不是就封装为jQuery对象</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _bindComponentName</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：给元素添加“nui_component_组件名”属性，并在dom元素上绑定对象实例</p>
 				<p>参数：element {jQuery Object} </p>
-				<p>说明：给元素添加“nui_component_组件名”属性，并在dom元素上绑定对象实例</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _tplData</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：在data中增加className属性，用于设置组件生成的元素外部类名</p>
 				<p>参数：data {Object} 模版数据</p>
-				<p>说明：在data中增加className属性，用于设置组件生成的元素外部类名</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _tpl2html</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：获取编译后的模版</p>
 				<p>参数：id {String} 模版id</p>
 				<p>参数：data {Object, Array} 模版数据</p>
-				<p>说明：获取编译后的模版</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _event</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：绑定事件，实例属性中必须包含element（生成的组件元素）与_events属性，用法参考<a class="f-corange" target="_blank" href="/nui/pages/events.html">代理事件</a></p>
+				<p>功能：绑定事件，实例属性中必须包含element（生成的组件元素）与_events属性，用法参考<a class="f-corange" target="_blank" href="/nui/pages/events.html">代理事件</a></p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _on</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：绑定事件</p>
 				<p>参数：type {String} 事件类型</p>
 				<p>参数：dalegate {Selector} 代理元素</p>
 				<p>参数：selector {String} 触发事件元素</p>
 				<p>参数：callback {Function} 事件回调</p>
 				<p>参数：trigger {Boolean} 是否立即执行事件</p>
-				<p>说明：绑定事件</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _off</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：销毁事件</p>
+				<p>功能：销毁事件</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _delete</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：删除组件实例</p>
+				<p>功能：删除组件实例</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _reset</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：销毁事件并删除element元素</p>
+				<p>功能：销毁事件并删除element元素</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _callback</h3>
 			<div class="e-mt15 f-lh22">
-				<p>参数：method {String} 回调名，不包含on前缀</p>
+				<p>功能：调用选项参数回调函数，不论有没有传递参数，第一个实参都为当前对象实例</p>
+				<p>参数：method {String} 回调名，不包含on前缀，第一个字母大写</p>
 				<p>参数：args {Array} 回调传递参数</p>
-				<p>说明：调用选项参数回调函数，不论有没有传递参数，第一个实参都为当前对象实例</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 this._callback('Change', [arg1, arg2, ...])
@@ -209,20 +210,27 @@ this._callback('Change', [arg1, arg2, ...])
 })
 </script>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="实例方法">实例方法</h2>
+			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> on</h3>
+			<div class="e-mt15 f-lh22">
+				<p>功能：绑定回调方法，设置后覆盖之前已经启用的回调方法</p>
+				<p>参数：name {String} 回调方法名称，不包含前缀on，第一个字母不区分大小写</p>
+				<p>参数：name {Object} 设置多个回调方法，使用后第2个参数将无效</p>
+				<p>参数：callback {Function} 回调方法</p> 
+			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> option</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：设置组件选项参数</p> 
 				<p>参数：options {String} 设置单个参数</p> 
 				<p>参数：options {Object} 设置参数集合</p> 
 				<p>参数：isOriginal {Boolean} 是否在最初的选项参数基础上设置</p>
-				<p>说明：设置组件选项参数</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> reset</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：重置组件</p>
+				<p>功能：重置组件</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> destroy</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：销毁组件</p>
+				<p>功能：销毁组件</p>
 			</div>
 			<div class="e-mt15 f-lh22 f-cred">
 				<p>若组件不需要option/reset/destroy实例方法，继承后设置为null即可</p>
@@ -230,80 +238,80 @@ this._callback('Change', [arg1, arg2, ...])
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="私有类属性">私有类属性</h2>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __instances</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：组件实例集合</p>
 				<p>类型：{Object}</p>
-				<p>说明：组件实例集合</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __parent</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：返回父组件对象信息</p>
 				<p>类型：{Object}</p>
-				<p>说明：返回父组件对象信息</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> __component_name</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：返回组件名</p>
 				<p>类型：{String}</p>
-				<p>说明：返回组件名</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="私有类方法">私有类方法</h2>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _init</h3>
 			<div class="e-mt15 f-lh22">
-				<p>说明：组件被创建时被调用一次</p>
+				<p>功能：组件被创建时被调用一次</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _getSize</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：返回元素边缘大小</p>
 				<p>参数：elem {jQuery Object} 元素</p>
 				<p>参数：dir {String} 方向（l, r, lr, t, b, tb），l表示left，r表示right以此类推，默认值为tb</p>
 				<p>参数：attr {String} 边缘属性（border, padding, margin, all），默认值为border</p>
-				<p>说明：返回元素边缘大小</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _$fn</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：将组件封装为jQuery插件形式，不需要的话设置为null</p>
 				<p>参数：name {String} 组件名</p>
 				<p>参数：module {Function} 组件模块</p>
-				<p>说明：将组件封装为jQuery插件形式，不需要的话设置为null</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> _$ready</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：自执行组件，元素上必须包含data-组件名-options="选项参数"，不需要的话设置为null</p>
 				<p>参数：name {String} 组件名</p>
 				<p>参数：module {Function} 组件模块</p>
-				<p>说明：自执行组件，元素上必须包含data-组件名-options="选项参数"，不需要的话设置为null</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="类方法">类方法</h2>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> config</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：设置组件默认参数</p>
 				<p>参数：attr {String, Object} 选项参数名或者集合</p>
 				<p>参数：value 选项参数值</p>
-				<p>说明：设置组件默认参数</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> hasInstance</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：校验包含该id的实例是否存在，如果存在则返回实例对象，否则返回false</p>
 				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
-				<p>说明：校验包含该id的实例是否存在，如果存在则返回实例对象，否则返回false</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> init</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：初始化容器内包含data-组件名-options="选项参数"属性的组件</p>
 				<p>参数：container {Object} 容器元素</p>
-				<p>说明：初始化容器内包含data-组件名-options="选项参数"属性的组件</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> reset</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：重置组件</p>
 				<p>参数：container {Object} 容器元素（选填）</p>
 				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
-				<p>说明：重置组件</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> option</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：设置组件选项参数</p>
 				<p>参数：container {Object} 容器元素（选填）</p>
 				<p>参数：options {String} 设置单个参数</p> 
 				<p>参数：options {Object} 设置参数集合</p> 
 				<p>参数：isOriginal {Boolean} 是否在最初的选项参数基础上设置</p>
 				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
-				<p>说明：设置组件选项参数</p>
 			</div>
 			<h3 class="e-mt20 f-fs20"><b class="f-corange">#</b> destroy</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：销毁组件</p>
 				<p>参数：container {Object} 容器元素（选填）</p>
 				<p>参数：id {Number, String} 组件实例_options中的id或者实例返回的__id</p>
-				<p>说明：销毁组件</p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="封装组件">封装组件</h2>
 <script type="text/highlight" data-javascript-options>
