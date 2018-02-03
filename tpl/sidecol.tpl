@@ -263,16 +263,22 @@
                         <a{%if page == 'calendar' %} class="s-crt"{% endif %} href="/nui/pages/components/calendar/">日历</a>
                     </li>
                     <li>
-                        <a{%if page == 'slider' %} class="s-crt"{% endif %} href="/nui/pages/components/slider/">滑块</a>
+                        <a{%if page == 'tab' %} class="s-crt"{% endif %} href="/nui/pages/components/tab/">选项卡</a>
                     </li>
                     <li>
-                        <a{%if page == 'carousel' %} class="s-crt"{% endif %} href="/nui/pages/components/carousel/">轮播图</a>
+                        <a{%if page == 'paging' %} class="s-crt"{% endif %} href="/nui/pages/components/paging/">分页</a>
+                    </li>
+                    <li>
+                        <a{%if page == 'carousel' %} class="s-crt"{% endif %} href="/nui/pages/components/carousel/">走马灯</a>
                     </li>
                     <li>
                         <a{%if page == 'upload' %} class="s-crt"{% endif %} href="/nui/pages/components/upload/">文件上传</a>
                     </li>
                     <li>
-                        <a{%if page == 'upload' %} class="s-crt"{% endif %} href="/nui/pages/components/upload/">单复选框</a>
+                        <a{%if page == 'radio' %} class="s-crt"{% endif %} href="/nui/pages/components/radio/">单选框</a>
+                    </li>
+                    <li>
+                        <a{%if page == 'checkbox' %} class="s-crt"{% endif %} href="/nui/pages/components/checkbox/">复选框</a>
                     </li>
                     <li>
                         <a{%if page == 'fixed' %} class="s-crt"{% endif %} href="/nui/pages/components/fixed/">固钉</a>
@@ -281,28 +287,10 @@
                         <a{%if page == 'numeral' %} class="s-crt"{% endif %} href="/nui/pages/components/fixed/">数字输入</a>
                     </li>
                     <li>
-                        <a{%if page == 'paging' %} class="s-crt"{% endif %} href="/nui/pages/components/paging/">分页</a>
-                    </li>
-                    <li>
-                        <a{%if page == 'scrollbar' %} class="s-crt"{% endif %} href="/nui/pages/components/scrollbar/">滚动条</a>
-                    </li>
-                    <li>
-                        <a{%if page == 'tab' %} class="s-crt"{% endif %} href="/nui/pages/components/tab/">选项卡</a>
-                    </li>
-                    <li>
                         <a{%if page == 'print' %} class="s-crt"{% endif %} href="/nui/pages/components/print/">打印</a>
                     </li>
                     <li>
-                        <a{%if page == 'copy' %} class="s-crt"{% endif %} href="/nui/pages/components/copy/">拷贝</a>
-                    </li>
-                    <li>
                         <a{%if page == 'collapse' %} class="s-crt"{% endif %} href="/nui/pages/components/collapse/">折叠面板</a>
-                    </li>
-                    <li>
-                        <a{%if page == 'timer' %} class="s-crt"{% endif %} href="/nui/pages/components/timer/">定时器</a>
-                    </li>
-                    <li>
-                        <a{%if page == 'waterfall' %} class="s-crt"{% endif %} href="/nui/pages/components/waterfall/">瀑布流</a>
                     </li>
                     <li>
                         <a{%if page == 'validate' %} class="s-crt"{% endif %} href="/nui/pages/components/validate/">表单校验</a>
