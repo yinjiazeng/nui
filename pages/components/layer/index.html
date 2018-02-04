@@ -74,277 +74,273 @@ Nui.define(['../src/components/layer'], function(layer){
 			
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> content</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{String, jQuery Object}</p>
-				<p>默认值：''</p>
-				<p>说明：弹出层内容，可以是标签字符串，也可以是jQuery对象</p>
+				<p>功能：弹出层内容</p>
+				<p>类型：{String}</p>
+				<p>类型：{Object} DOM或者jQuery对象，自动获取元素内容</p>
+				<p>默认：''</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> template</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{String, Object}</p>
-				<p>默认值：''</p>
-				<p>说明：弹出层内容模版，优先级高于content，当是Object类型时，必须包含main属性作为主模版</p>
+				<p>功能：弹出层内容模版，配合data参数使用，优先级高于content</p>
+				<p>类型：{String}</p>
+				<p>类型：{Object} 必须包含main属性作为主模版</p>
+				<p>默认：''</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> data</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：弹出层模版数据</p>
 				<p>类型：{Object}</p>
-				<p>默认值：{}</p>
-				<p>说明：弹出层模版数据，用于渲染模版</p>
+				<p>默认：{}</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> events</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：绑定事件，用法参考<a class="f-corange" target="_blank" href="/nui/pages/events.html">代理事件</a></p>
 				<p>类型：{Object}</p>
-				<p>默认值：null</p>
-				<p>说明：用于绑定事件，用法参考<a class="f-corange" target="_blank" href="/nui/pages/events.html">代理事件</a></p>
+				<p>默认：null</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> className</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：弹出层最外层元素添加类名，多个时空格分隔</p>
 				<p>类型：{String}</p>
-				<p>默认值：''</p>
-				<p>说明：添加一个或一组类名</p>
+				<p>默认：''</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> width</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：宽度，可以设置为auto或者100%</p>
 				<p>类型：{String, Number}</p>
-				<p>默认值：320</p>
-				<p>说明：宽度，可以设置为auto或者100%</p>
+				<p>默认：320</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> height</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：高度，可以设置为auto或者100%</p>
 				<p>类型：{String, Number}</p>
-				<p>默认值：'auto'</p>
-				<p>说明：高度，可以设置为auto或者100%</p>
+				<p>默认：'auto'</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> maxWidth</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：最大宽度</p>
 				<p>类型：{Number}</p>
-				<p>默认值：0</p>
-				<p>说明：最大宽度</p>
+				<p>默认：0</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> maxHeight</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：最大高度</p>
 				<p>类型：{Number}</p>
-				<p>默认值：0</p>
-				<p>说明：最大高度</p>
+				<p>默认：0</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> zIndex</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：弹出层层级</p>
 				<p>类型：{Number}</p>
 				<p>默认值：null</p>
-				<p>说明：弹出层层级</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> id</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：标识符名称，弹出层最外层元素会增加layer-标识符名称的类名</p>
 				<p>类型：{String}</p>
-				<p>默认值：''</p>
-				<p>说明：标识符名称，弹出层最外层元素会增加layer-标识符名称的类名，</p>
+				<p>默认：''</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> skin</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：皮肤名称，弹出层最外层元素会增加nui-layer-皮肤名称的类名</p>
 				<p>类型：{String}</p>
-				<p>默认值：''</p>
-				<p>说明：皮肤名称，弹出层最外层元素会增加nui-layer-皮肤名称的类名</p>
-			</div>
-
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> className</h3>
-			<div class="e-mt15 f-lh22">
-				<p>类型：{String}</p>
-				<p>默认值：''</p>
-				<p>说明：最外层元素增加类，多个类空格分隔</p>
+				<p>默认：''</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> timer</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：自动关闭倒计时毫秒时间</p>
 				<p>类型：{Number}</p>
-				<p>默认值：0</p>
-				<p>说明：自动关闭倒计时毫秒时间</p>
+				<p>默认：0</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> edge</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：距离容器四周边缘距离</p>
 				<p>类型：{Number}</p>
-				<p>默认值：0</p>
-				<p>说明：距离容器四周边缘距离</p>
+				<p>默认：0</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> container</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{Selector}</p>
-				<p>默认值：'body'</p>
-				<p>说明：显示容器</p>
+				<p>功能：显示容器</p>
+				<p>类型：{String, OBject} 选择器、DOM、jQuery对象</p>
+				<p>默认：'body'</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> title</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：头部标题，隐藏标题设置为null</p>
 				<p>类型：{String}</p>
-				<p>默认值：'温馨提示'</p>
-				<p>说明：头部标题，隐藏标题设置为null</p>
+				<p>默认：'温馨提示'</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isMove</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否可以拖动</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：false</p>
-				<p>说明：是否可以拖动</p>
+				<p>默认：false</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isInnerMove</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否只能在不超过容器边缘的区域内拖动</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：false</p>
-				<p>说明：是否只能在不超过容器边缘的区域内拖动</p>
+				<p>默认：false</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isMask</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否显示背景遮罩</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：true</p>
-				<p>说明：是否显示背景遮罩</p>
+				<p>默认：true</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isClickMask</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否点击背景遮罩关闭弹出层</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：false</p>
-				<p>说明：是否点击背景遮罩关闭弹出层</p>
+				<p>默认：false</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isMoveMask</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否在拖动弹出层时，显示一个与弹出层同等大小的背景遮罩随鼠标移动</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：false</p>
-				<p>说明：是否在拖动弹出层时，显示一个与弹出层同等大小的背景遮罩随鼠标移动</p>
+				<p>默认：false</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isHide</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否能使用hide方法关闭</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：false</p>
-				<p>说明：是否能使用hide方法关闭</p>
+				<p>默认：false</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isCenter</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否垂直水平居中显示</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：true</p>
-				<p>说明：是否垂直水平居中显示</p>
+				<p>默认：true</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isFull</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否全屏显示</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：false</p>
-				<p>说明：是否全屏显示</p>
+				<p>默认：false</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isTop</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否置顶显示</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：false</p>
-				<p>说明：是否置顶显示</p>
+				<p>默认：false</p>
 			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isTips</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否以贴士形式展示，无标题与底部按钮</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：false</p>
-				<p>说明：是否以贴士形式展示，无标题与底部按钮</p>
+				<p>默认：false</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> isFixed</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否拖动容器滚动条时弹出层固定所在位置</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：true</p>
-				<p>说明：是否拖动容器滚动条时弹出层固定所在位置</p>
+				<p>默认：true</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> scrollbar</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：当内容超出时，是否显示滚动条，如果设置为false并且内容区域超出了maxHeight，也会有滚动条</p>
 				<p>类型：{Boolean}</p>
-				<p>默认值：true</p>
-				<p>说明：当内容超出时，是否显示滚动条，如果设置为false并且内容区域超出了maxHeight，也会有滚动条</p>
+				<p>默认：true</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> align</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{String}</p>
-				<p>默认值：'center'</p>
-				<p>说明：底部按钮对齐方式，left / center / right</p>
+				<p>功能：底部按钮对齐方式</p>
+				<p>类型：{String} left / center / right</p>
+				<p>默认：'center'</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> bubble</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：是否以气泡形式显示，弹出层边缘会多出箭头</p>
 				<p>类型：{Object}</p>
 				<p>属性：enable {Boolean} false 是否启用</p>
 				<p>属性：dir {String} 'top' 箭头方向 top / right / bottom / left</p>
-				<p>说明：是否以气泡形式显示，弹出层边缘会多出箭头</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> iframe</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：加载iframe内容，不建议跨域使用</p>
 				<p>类型：{Object}</p>
 				<p>属性：enable {Boolean} false 是否启用</p>
 				<p>属性：cache {Boolean} false 是否缓存页面</p>
 				<p>属性：src {String} '' 请求地址</p>
-				<p>说明：加载iframe内容，不建议跨域使用</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> close</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：头部关闭按钮</p>
 				<p>类型：{Object}</p>
 				<p>属性：enable {Boolean} true 是否启用</p>
 				<p>属性：text {String} 'X' 按钮内容</p>
-				<p>说明：头部关闭按钮</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> confirm</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：底部确认按钮</p>
 				<p>类型：{Object}</p>
 				<p>属性：enable {Boolean} false 是否启用</p>
 				<p>属性：text {String} '确定' 按钮内容</p>
 				<p>属性：name {String} 'normal' 设置按钮类型名称，具体参考<a class="f-corange">按钮元素</a></p>
 				<p>属性：callback {Function} function(){return true} 触发回调，返回值为true时才能关闭弹出层</p>
-				<p>说明：底部确认按钮</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> cancel</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：底部取消按钮</p>
 				<p>类型：{Object}</p>
 				<p>属性：enable {Boolean} true 是否启用</p>
 				<p>属性：text {String} '取消' 按钮内容</p>
 				<p>属性：callback {Function} undefined 触发回调，若返回值是false，则无法关闭弹出层</p>
-				<p>说明：底部取消按钮</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> button</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：设置底部自定义按钮</p>
 				<p>类型：{Array Object}</p>
-				<p>默认值：null</p>
+				<p>默认：null</p>
 				<p>属性：id {String} 按钮id，若取名为cancel / confirm / cancel会覆盖内置这三个按钮的配置属性</p>
 				<p>属性：text {String} 按钮内容</p>
 				<p>属性：name {String} 设置按钮类型名称，当值设置为disabled时，表示按钮被禁用，无法触发回调，具体参考<a class="f-corange">按钮元素</a></p>
 				<p>属性：style {Object} 设置按钮行内样式</p>
 				<p>属性：callback {Function} 触发回调，若返回值是false，则无法关闭弹出层，若id是confirm，返回值必须是true才能关闭</p>
-				<p>说明：设置底部自定义按钮</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> position</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：弹出层定位</p>
 				<p>类型：{Object}</p>
 				<p>属性：top {Number, String} 0 距离容器顶部距离</p>
 				<p>属性：right {Number, String} 0 距离容器右侧距离</p>
 				<p>属性：bottom {Number, String} 0 距离容器底部距离</p>
 				<p>属性：left {Number, String} 0 距离容器左侧距离</p>
-				<p>说明：弹出层定位，top/bottom或者left/right不可同时设置，只能设置top/left、top/right...以此类推。属性值中可使用运算符计算距离，其中self表示定位方向弹窗大小，例如top中的self表示弹出层自身高度，left中的self表示弹出层自身宽度。</p>
+				<p>说明：top/bottom或者left/right不可同时设置，只能设置top/left、top/right...以此类推。属性值中可使用运算符计算距离，其中self表示定位方向弹窗大小，例如top中的self表示弹出层自身高度，left中的self表示弹出层自身宽度。</p>
 			</div>
 <script type="text/highlight" data-javascript-options>
 layer({
@@ -374,105 +370,107 @@ layer({
 			<button class="ui-button e-mt10 j-position">右下角弹出</button>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> under</h3>
 			<div class="e-mt15 f-lh22">
-				<p>类型：{Array, Layer Object}</p>
-				<p>默认值：null</p>
-				<p>说明：将一个或者一组弹出层置于背景遮罩底部，参数值只能是layer实例或者layer实例的集合，在当前弹出层关闭时，被置于底部的弹出层会恢复原来的层级状态。</p>
+				<p>功能：将一个或者多个弹出层置于背景遮罩底部</p>
+				<p>类型：{Array, Object} 参数值只能是layer实例或者layer实例的集合，在当前弹出层关闭时，被置于底部的弹出层会恢复原来的层级状态</p>
+				<p>默认：null</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onInit</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：弹出层初始化时回调函数</p>
 				<p>类型：{Function}</p>
-				<p>参数：self {Layer Object} 当前layer实例</p>
-				<p>说明：弹出层初始化时回调函数。</p>
+				<p>参数：self {Object} 当前layer实例</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onHideBefore</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：关闭前回调函数</p>
 				<p>类型：{Function}</p>
-				<p>参数：self {Layer Object} 当前layer实例</p>
+				<p>参数：self {Object} 当前layer实例</p>
 				<p>说明：弹出层调用hide方法被销毁之前回调，若返回false，则不能销毁该弹出层。</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onDestroy</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：弹出层关闭销毁时回调函数。</p>
 				<p>类型：{Function}</p>
-				<p>参数：self {Layer Object} 当前layer实例</p>
-				<p>说明：弹出层关闭销毁时回调函数。</p>
+				<p>参数：self {Object} 当前layer实例</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onDestroyBefore</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：弹出层在销毁之前回调，若返回false，则不能销毁该弹出层。</p>
 				<p>类型：{Function}</p>
-				<p>参数：self {Layer Object} 当前layer实例</p>
-				<p>说明：弹出层在销毁之前回调，若返回false，则不能销毁该弹出层。</p>
+				<p>参数：self {Object} 当前layer实例</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onMove</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：拖动弹出层重新定位时回调函数，isMove为true时才会触发。</p>
 				<p>类型：{Function}</p>
-				<p>参数：self {Layer Object} 当前layer实例</p>
-				<p>说明：拖动弹出层重新定位时回调函数，isMove为true时才会触发。</p>
+				<p>参数：self {Object} 当前layer实例</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onResize</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：窗口改变大小，使弹出层位置发生变化时回调，在设置position或者isCenter为true时才会触发。</p>
 				<p>类型：{Function}</p>
-				<p>参数：self {Layer Object} 当前layer实例</p>
-				<p>说明：窗口改变大小，使弹出层位置发生变化时回调，在设置position或者isCenter为true时才会触发。</p>
+				<p>参数：self {Object} 当前layer实例</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onReset</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：重置实例为初始化状态时回调。</p>
 				<p>类型：{Function}</p>
-				<p>参数：self {Layer Object} 当前layer实例</p>
-				<p>说明：重置实例为初始化状态时回调。</p>
+				<p>参数：self {Object} 当前layer实例</p>
 			</div>
 			
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onScroll</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：容器滚动时触发回调。</p>
 				<p>类型：{Function}</p>
 				<p>参数：self {Object} 当前layer实例</p>
 				<p>参数：event {Event Object} 事件对象</p>
 				<p>参数：elem {jQuery Object} 滚动元素jQuery对象</p>
 				<p>参数：data {Object} 滚动数据，包含top以及left</p>
-				<p>说明：容器滚动时触发回调。</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> onTimer</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：定时关闭弹出时触发回调，选项参数timer大于0时才会启用。</p>
 				<p>类型：{Function}</p>
-				<p>参数：self {Layer Object} 当前layer实例</p>
+				<p>参数：self {Object} 当前layer实例</p>
 				<p>参数：time {Number} 定时毫秒数</p>
-				<p>说明：定时关闭弹出时触发回调，选项参数timer大于0时才会启用。</p>
 			</div>
 
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例属性</h2>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> element</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：对应类名为nui-layer元素</p>
 				<p>类型：{jQuery Object}</p>
-				<p>说明：对应类名为nui-layer元素</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> head</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：对应类名为layer-head元素</p>
 				<p>类型：{jQuery Object}</p>
-				<p>说明：对应类名为layer-head元素</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> main</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：对应类名为layer-main元素</p>
 				<p>类型：{jQuery Object}</p>
-				<p>说明：对应类名为layer-main元素</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> foot</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：对应类名为layer-foot元素</p>
 				<p>类型：{jQuery Object}</p>
-				<p>说明：对应类名为layer-foot元素</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> data</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：弹出层自身属性</p>
 				<p>类型：{Object}</p>
 				<p>属性：width {Number} 自身宽度，不包含边框边距</p>
 				<p>属性：height {Number} 自身高度，不包含边框边距</p>
@@ -482,37 +480,36 @@ layer({
 				<p>属性：left {Number} 距离容器左侧距离，包括水平滚动距离</p>
 				<p>属性：offsetTop {Number} 距离容器顶部距离</p>
 				<p>属性：offsetLeft {Number} 距离容器左侧距离</p>
-				<p>说明：弹出层自身属性</p>
 			</div>
 
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">实例方法</h2>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> resize</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：改变实例大小位置为正常状态</p>
 				<p>类型：{Function}</p>
-				<p>说明：改变实例大小位置为正常状态</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> hide</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：销毁实例，当实例选项参数中的isHide为false，则无法销毁</p>
 				<p>类型：{Function}</p>
-				<p>说明：销毁实例，当实例选项参数中的isHide为false，则无法销毁</p>
 			</div>
 
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10">类方法</h2>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> resize</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：改变实例大小位置为正常状态，不传id则对所有实例操作</p>
 				<p>类型：{Function}</p>
 				<p>参数：id {Number, String} 实例id或者选项参数id</p>
-				<p>说明：改变实例大小位置为正常状态，不传id则对所有实例操作</p>
 			</div>
 
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> hide</h3>
 			<div class="e-mt15 f-lh22">
+				<p>功能：销毁实例，当实例选项参数中的isHide为false，则无法销毁，不传id则对所有实例操作</p>
 				<p>类型：{Function}</p>
 				<p>参数：id {Number, String} 实例id或者选项参数id</p>
-				<p>说明：销毁实例，当实例选项参数中的isHide为false，则无法销毁，不传id则对所有实例操作</p>
 			</div>
 		</div>	
 	</div>
