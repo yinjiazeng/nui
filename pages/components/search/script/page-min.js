@@ -7389,7 +7389,7 @@ __define('lib/components/search',function(require, imports){
                     self['_code'+code](e)
                 }
                 else if(code === 8){
-                    self._delete(e)
+                    self._backspace(e)
                 }
             })
 

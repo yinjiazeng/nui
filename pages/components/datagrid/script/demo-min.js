@@ -1519,6 +1519,7 @@ __define('lib/components/datagrid',function(require, imports){
     var paging = require('lib/components/paging');
     var checkradio = require('lib/components/checkradio');
 
+    //获取滚动条宽度
     var scrollBarWidth = (function(){
         var oldWidth, newWidth, div = document.createElement('div');
         div.style.cssText = 'position:absolute; top:-10000em; left:-10000em; width:100px; height:100px; overflow:hidden;';
