@@ -3284,7 +3284,7 @@ __define('lib/components/search',function(require, imports){
             this._select(e)
         },
         //退格键删除
-        _delete:function(e){
+        _backspace:function(e){
             var self = this;
             //光标位置在输入框起始处时删除末尾的标签
             if(self._tag.backspace === true){
