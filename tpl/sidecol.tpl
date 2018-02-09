@@ -88,7 +88,7 @@
                 {% endif %}
             </li>
             <li>
-                <a class="f-fs16{%if current == 'util' %} s-crt{% endif %}" href="/nui/pages/util.html">实用工具</a>
+                <a class="f-fs16{%if current == 'util' %} s-crt{% endif %}" href="/nui/pages/util.html">工具集</a>
                 {%if current == 'util' %}
                 <ul>
                     <li>
@@ -191,11 +191,11 @@
                     <li>
                         <a href="/nui/pages/element/footer/">页脚</a>
                     </li>
-                    <li>
-                        <a href="/nui/pages/element/skin/">皮肤</a>
-                    </li>
                 </ul>
                 {% endif %}
+            </li>
+            <li>
+                <a class="f-fs16{%if current == 'request' %} s-crt{% endif %}" href="/nui/pages/request.html">网络请求</a>
             </li>
             <li>
                 <a class="f-fs16{%if current == 'cpns' %} s-crt{% endif %}" href="/nui/pages/components/">交互组件</a>
