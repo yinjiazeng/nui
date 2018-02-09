@@ -50,7 +50,11 @@
 			<h1 class="e-pt20 e-pb20 f-fs28">介绍</h1>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="Nui是什么">Nui是什么</h2>
 			<div class="e-mt15 f-lh22">
-				<p>Nui是由诺诺网前端团队开发的基于jQuery模块化UI框架，主要由加载器、实用工具、模版引擎、代理事件、组件五个核心模块构成，使用时能够自动管理模块之间的依赖关系，让编码方式更加简单、自然、规范，使开发者更为专心的享受编码的乐趣！</p>
+				<p>Nui是一个经典模块化开发框架，核心思想借鉴了
+					<a href="https://github.com/requirejs/requirejs" class="f-cblue" target="_blank">requirejs</a>
+					/
+					<a href="https://github.com/seajs/seajs" class="f-cblue" target="_blank">seajs</a>，
+					但不同的是，它们仅仅是一个模块加载器，Nui则根据自身特性增加对组件（基于jQuery封装）的支持，弥补了传统jQuery封装组件诸如无法继承、拓展性差等缺点。配合模板引擎、工具集、代理事件、界面元素等核心模块形成了一套完整的UI框架体系。</p>
 			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 兼容性</h3>
 			<div class="e-mt15 f-lh22">
@@ -72,11 +76,15 @@
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 引入</h3>
 			<div class="e-mt15 f-lh22">
 				<p>下载任意版本放到项目中并用script标签引入，Nui会被注册为一个全局变量。</p>
-				<p>如果要使用Nui组件，在引入Nui之前需先引入jQuery，使用版本需1.8以及以上版本。</p>
+			</div>
+<script type="text/highlight" data-xml-options>
+&lt;script src="/nui/src/nui.js"&gt;&lt;/script&gt;
+</script>
+			<div class="e-mt15 f-lh22">
+				<p>因为组件依赖jQuery，使用前需通过标签手动引入jQuery，版本请使用1.8+。</p>
 			</div>
 <script type="text/highlight" data-xml-options>
 &lt;script src="/nui/assets/jquery.js"&gt;&lt;/script&gt;
-&lt;script src="/nui/src/nui.js"&gt;&lt;/script&gt;
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 编写模块</h3>
 <script type="text/highlight" data-javascript-options>

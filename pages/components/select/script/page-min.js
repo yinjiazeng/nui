@@ -3888,7 +3888,6 @@ __define('lib/components/search',function(require, imports){
             delete self._showed;
             delete self._itemHeight;
             delete self._selectTab;
-            delete self._caches;
             if(_class._active === self){
                 delete _class._active
             }
