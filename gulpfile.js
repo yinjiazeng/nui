@@ -21,17 +21,17 @@ gulp.task('concat', function() {
         .pipe(gulp.dest('./dist/'))
     
     //打包所有模块
-    gulp.src(['./src/load.js'])
-        .pipe(rename('nui.js'))
-        .pipe(gulp.dest('./dist/'))
-        .pipe(uglify({
-            mangle: true,
-            output: {
-                keep_quoted_props: true
-            }
-        }))
-        .pipe(rename('nui-min.js'))
-        .pipe(gulp.dest('./dist/'))
+    // gulp.src(['./src/load.js'])
+    //     .pipe(rename('nui.js'))
+    //     .pipe(gulp.dest('./dist/'))
+    //     .pipe(uglify({
+    //         mangle: true,
+    //         output: {
+    //             keep_quoted_props: true
+    //         }
+    //     }))
+    //     .pipe(rename('nui-min.js'))
+    //     .pipe(gulp.dest('./dist/'))
 });
 
 var options = {

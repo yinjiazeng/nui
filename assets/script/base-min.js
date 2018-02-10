@@ -1523,7 +1523,7 @@ __define('lib/components/highlight/highlight',function(require, imports){
                     if(self._active){
                         Nui.each(self.__instances, function(val){
                             if(val._active){
-                                val.element.find('.con-highlight-tr.s-crt').removeClass('s-crt');
+                                val.element.find('.con-highlight-row.s-crt').removeClass('s-crt');
                                 val._active = false;
                             }
                         })
@@ -1658,9 +1658,9 @@ __define('lib/components/highlight/highlight',function(require, imports){
 __define('lib/components/highlight/style',function(){
     return this.extend('lib/components/highlight/highlight', {
         _title:'css',
-        _getCode:function(){
+        _getCode:function(_code){
             var self = this;
-            var code = self.code;
+            var code = _code || self.code;
             var _class = self.constructor;
             var str = '';
             var match = code.match(/(\/\*(.|\s)*?\*\/)|(\{[^\{\}\/]*\})/g);
@@ -1701,9 +1701,9 @@ __define('lib/components/highlight/style',function(){
 __define('lib/components/highlight/javascript',function(){
     return this.extend('lib/components/highlight/highlight', {
         _title:'js',
-        _getCode:function(){
+        _getCode:function(_code){
             var self = this;
-            var code = self.code;
+            var code = _code || self.code;
             var _class = self.constructor;
             var str = '';
             var kws = 'abstract|arguments|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|elseif|each|enum|eval|export|'+
@@ -1713,7 +1713,7 @@ __define('lib/components/highlight/javascript',function(){
             var match = code.match(/(\/\/.*)|(\/\*(.|\s)*?\*\/)|('[^']*')|("[^"]*")/g);
             var array = _class._getarr(match, code);
             Nui.each(array, function(v){
-                if($.trim(v)){
+                if(Nui.trim(v)){
                     //单行注释
                     if(/^\s*\/\//.test(v)){
                         v = _class._getcode('comment', v);
@@ -1798,7 +1798,7 @@ __define('lib/components/highlight/xml',['lib/components/highlight/javascript', 
                             }
                             //内容
                             else{
-                                var tagname = $.trim(v1[0]).toLowerCase();
+                                var tagname = Nui.trim(v1[0]).toLowerCase().split(/\s+/)[0];
                                 if(tagname == 'style'){
                                     v2 = css.exports._getCode.call(self, v2)
                                 }

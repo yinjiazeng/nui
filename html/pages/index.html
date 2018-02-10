@@ -31,11 +31,11 @@
 				<p>移动端 <b class="f-cgreen f-fs16">✔</b></p>
 			</div>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="快速上手">快速上手</h2>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 下载</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 下载加载器</h3>
 			<div class="e-mt15 f-lh22">
 				<p>
-					<a href="/nui/src/nui.js" class="f-corange f-tdu">未压缩版</a> 
-					<a href="/nui/src/nui-min.js" class="f-corange f-tdu e-ml10">压缩版</a>
+					<a href="/nui/dist/nui-load.js" class="f-corange f-tdu">未压缩版</a> 
+					<a href="/nui/dist/nui-load-min.js" class="f-corange f-tdu e-ml10">压缩版</a>
 				</p>
 			</div>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 引入</h3>
@@ -43,13 +43,13 @@
 				<p>下载任意版本放到项目中并用script标签引入，Nui会被注册为一个全局变量。</p>
 			</div>
 <script type="text/highlight" data-xml-options>
-&lt;script src="/nui/src/nui.js"&gt;&lt;/script&gt;
+&lt;script src="nui-load.js"&gt;&lt;/script&gt;
 </script>
 			<div class="e-mt15 f-lh22">
-				<p>因为组件依赖jQuery，使用前需通过标签手动引入jQuery，版本请使用1.8+。</p>
+				<p>因为组件依赖jQuery，若模块中使用了组件，则需手动引入，版本请使用1.8+。</p>
 			</div>
 <script type="text/highlight" data-xml-options>
-&lt;script src="/nui/assets/jquery.js"&gt;&lt;/script&gt;
+&lt;script src="jquery.js"&gt;&lt;/script&gt;
 </script>
 			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 编写模块</h3>
 <script type="text/highlight" data-javascript-options>
@@ -71,7 +71,7 @@ Nui.define(function(){
     }
 })
 </script>
-			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 入口模块调用</h3>
+			<h3 class="e-mt20 f-fs16"><b class="f-corange">#</b> 加载入口模块</h3>
 <script type="text/highlight" data-xml-options>
 &lt;script type="text/javascript"&gt;
 Nui.load('./page', function(page){
