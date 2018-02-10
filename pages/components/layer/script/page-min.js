@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('lib/core/extend',function(){
+__define('src/core/extend',function(){
            
     Nui.win = $(window);
 
@@ -75,7 +75,7 @@ __define('lib/core/extend',function(){
         }
     })
 })
-__define('lib/core/events',['lib/core/extend'], function(){
+__define('src/core/events',['src/core/extend'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -147,7 +147,7 @@ __define('lib/core/events',['lib/core/extend'], function(){
  * @description 实用工具集
  */
 
-__define('lib/core/util',['lib/core/extend'], function(){
+__define('src/core/util',['src/core/extend'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -723,7 +723,7 @@ __define('lib/core/util',['lib/core/extend'], function(){
  * @description 模版引擎
  */
 
-__define('lib/core/template',['lib/core/util'], function(util){
+__define('src/core/template',['src/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -1027,9 +1027,9 @@ __define('lib/core/template',['lib/core/util'], function(util){
  * @description 组件基类
  */
 
-__define('lib/core/component',function(require){
-    var template = require('lib/core/template');
-    var events   = require('lib/core/events');
+__define('src/core/component',function(require){
+    var template = require('src/core/template');
+    var events   = require('src/core/events');
     var ext     = require('./extend');
     var extend   = this.extend;
 
@@ -1512,12 +1512,12 @@ __define('lib/core/component',function(require){
  * @description layer弹出层
  */
 
-__define('lib/components/layer/layer',function(require, imports){
+__define('src/components/layer/layer',function(require, imports){
     imports('../../assets/components/layer/index');
     
-    var component = require('lib/core/component');
-    var util = require('lib/core/util');
-    var template = require('lib/core/template');
+    var component = require('src/core/component');
+    var util = require('src/core/util');
+    var template = require('src/core/template');
 
     var statics = {
         _maskzIndex:10000,
@@ -2294,7 +2294,7 @@ __define('lib/components/layer/layer',function(require, imports){
         }
     })
 });
-__define('./script/page',['lib/components/layer/layer', 'lib/core/events'], function(layer, events){
+__define('./script/page',['src/components/layer/layer', 'src/core/events'], function(layer, events){
     var renders = this.renders;
     return events({
         element:document,

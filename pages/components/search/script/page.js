@@ -5,7 +5,7 @@ Nui.define(function(require, imports){
     var data = require('./data');
     var pinyin = require('./pinyin');
     var template = require('template');
-    var util = require('../../../../lib/core/util');
+    var util = require('../../../../src/core/util');
     var emps = [];
     var depts = [];
 

@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('lib/core/extend',function(){
+__define('src/core/extend',function(){
            
     Nui.win = $(window);
 
@@ -82,7 +82,7 @@ __define('lib/core/extend',function(){
  * @description 实用工具集
  */
 
-__define('lib/core/util',['lib/core/extend'], function(){
+__define('src/core/util',['src/core/extend'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -652,7 +652,7 @@ __define('lib/core/util',['lib/core/extend'], function(){
 })
 
 
-__define('lib/core/events',['lib/core/extend'], function(){
+__define('src/core/events',['src/core/extend'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -724,7 +724,7 @@ __define('lib/core/events',['lib/core/extend'], function(){
  * @description 模版引擎
  */
 
-__define('lib/core/template',['lib/core/util'], function(util){
+__define('src/core/template',['src/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -1027,9 +1027,9 @@ __define('lib/core/template',['lib/core/util'], function(util){
  * @description 组件基类
  */
 
-__define('lib/core/component',function(require){
-    var template = require('lib/core/template');
-    var events   = require('lib/core/events');
+__define('src/core/component',function(require){
+    var template = require('src/core/template');
+    var events   = require('src/core/events');
     var ext     = require('./extend');
     var extend   = this.extend;
 
@@ -1512,11 +1512,11 @@ __define('lib/core/component',function(require){
  * @description 输入框占位符
  */
 
-__define('lib/components/placeholder',function(require, imports){
+__define('src/components/placeholder',function(require, imports){
     imports('../assets/components/placeholder/index');
 
-    var component = require('lib/core/component');
-    var util = require('lib/core/util');
+    var component = require('src/core/component');
+    var util = require('src/core/util');
     var supportPlaceholder = util.supportHtml5('placeholder', 'input');
 
     return this.extend(component, {
@@ -1749,10 +1749,10 @@ __define('lib/components/placeholder',function(require, imports){
  * @description input增强
  */
 
-__define('lib/components/input',function(require, imports){
+__define('src/components/input',function(require, imports){
     imports('../assets/components/input/index');
 
-    var placeholder = require('lib/components/placeholder');
+    var placeholder = require('src/components/placeholder');
 
     return this.extend(placeholder, {
         _options:{
@@ -2123,7 +2123,7 @@ __define('lib/components/input',function(require, imports){
 }); 
 __define('./script/page',function(require,imports,renders,extend,exports){
 	var module=this;
-	var input=__requireDefaultModule(require('lib/components/input'));
+	var input=__requireDefaultModule(require('src/components/input'));
 	
 	$('#demo').input({
 	    hover:true,

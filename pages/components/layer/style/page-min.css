@@ -1087,7 +1087,7 @@ input:-webkit-autofill {
   display: inline-block;
   width: 83px;
   height: 83px;
-  background: url("../../../../lib/assets/images/void.png?v=01ee8b8") no-repeat center;
+  background: url("../../../../src/assets/images/void.png?v=01ee8b8") no-repeat center;
 }
 .ui-tine {
   display: inline-block;
@@ -1264,7 +1264,7 @@ input:-webkit-autofill {
 }
 .nui-layer.layer-loading .layer-main div {
   padding: 15px 15px 30px 15px;
-  background: url("../../../../lib/assets/images/loadingdata.gif?v=7ff1ab3") no-repeat center -10px;
+  background: url("../../../../src/assets/images/loadingdata.gif?v=7ff1ab3") no-repeat center -10px;
 }
 .nui-layer.layer-message .layer-button-close {
   top: -7px;

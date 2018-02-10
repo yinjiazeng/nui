@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('lib/core/extend',function(){
+__define('src/core/extend',function(){
            
     Nui.win = $(window);
 
@@ -75,7 +75,7 @@ __define('lib/core/extend',function(){
         }
     })
 })
-__define('lib/core/events',['lib/core/extend'], function(){
+__define('src/core/events',['src/core/extend'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -148,7 +148,7 @@ __define('lib/core/events',['lib/core/extend'], function(){
  * @description 实用工具集
  */
 
-__define('lib/core/util',['lib/core/extend'], function(){
+__define('src/core/util',['src/core/extend'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -724,7 +724,7 @@ __define('lib/core/util',['lib/core/extend'], function(){
  * @description 模版引擎
  */
 
-__define('lib/core/template',['lib/core/util'], function(util){
+__define('src/core/template',['src/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -1027,9 +1027,9 @@ __define('lib/core/template',['lib/core/util'], function(util){
  * @description 组件基类
  */
 
-__define('lib/core/component',function(require){
-    var template = require('lib/core/template');
-    var events   = require('lib/core/events');
+__define('src/core/component',function(require){
+    var template = require('src/core/template');
+    var events   = require('src/core/events');
     var ext     = require('./extend');
     var extend   = this.extend;
 
@@ -1512,10 +1512,10 @@ __define('lib/core/component',function(require){
  * @description 语法高亮组件
  */
 
-__define('lib/components/highlight/highlight',function(require, imports){
+__define('src/components/highlight/highlight',function(require, imports){
     imports('../../assets/components/highlight/index');
     
-    return this.extend('lib/core/component', {
+    return this.extend('src/core/component', {
         _static:{
             _init:function(){
                 var self = this;
@@ -1655,8 +1655,8 @@ __define('lib/components/highlight/highlight',function(require, imports){
  * @description css语法高亮组件
  */
 
-__define('lib/components/highlight/style',function(){
-    return this.extend('lib/components/highlight/highlight', {
+__define('src/components/highlight/style',function(){
+    return this.extend('src/components/highlight/highlight', {
         _title:'css',
         _getCode:function(_code){
             var self = this;
@@ -1698,8 +1698,8 @@ __define('lib/components/highlight/style',function(){
  * @description javascript语法高亮组件
  */
 
-__define('lib/components/highlight/javascript',function(){
-    return this.extend('lib/components/highlight/highlight', {
+__define('src/components/highlight/javascript',function(){
+    return this.extend('src/components/highlight/highlight', {
         _title:'js',
         _getCode:function(_code){
             var self = this;
@@ -1752,8 +1752,8 @@ __define('lib/components/highlight/javascript',function(){
  * @description xml语法高亮组件
  */
 
-__define('lib/components/highlight/xml',['lib/components/highlight/javascript', 'lib/components/highlight/style'],function(js, css){
-    return this.extend('lib/components/highlight/highlight', {
+__define('src/components/highlight/xml',['src/components/highlight/javascript', 'src/components/highlight/style'],function(js, css){
+    return this.extend('src/components/highlight/highlight', {
         _title:'xml',
         _getCode:function(){
             var self = this;
@@ -1824,7 +1824,7 @@ __define('lib/components/highlight/xml',['lib/components/highlight/javascript', 
     })
 })
 
-__define('{script}/base',['lib/components/highlight/xml', 'lib/core/events'], function(xml, events){
+__define('{script}/base',['src/components/highlight/xml', 'src/core/events'], function(xml, events){
     this.imports('../style/base');
     var hash = location.hash ? location.hash.replace('#', '') : '';
     var main = $('.g-main');

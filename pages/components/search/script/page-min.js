@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('lib/core/extend',function(){
+__define('src/core/extend',function(){
            
     Nui.win = $(window);
 
@@ -82,7 +82,7 @@ __define('lib/core/extend',function(){
  * @description 实用工具集
  */
 
-__define('lib/core/util',['lib/core/extend'], function(){
+__define('src/core/util',['src/core/extend'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -658,7 +658,7 @@ __define('lib/core/util',['lib/core/extend'], function(){
  * @description 模版引擎
  */
 
-__define('lib/core/template',['lib/core/util'], function(util){
+__define('src/core/template',['src/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -4319,7 +4319,7 @@ __define('pages/components/search/script/data',function(){
     }
 })
 
-__define('lib/core/events',['lib/core/extend'], function(){
+__define('src/core/events',['src/core/extend'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -4391,9 +4391,9 @@ __define('lib/core/events',['lib/core/extend'], function(){
  * @description 组件基类
  */
 
-__define('lib/core/component',function(require){
-    var template = require('lib/core/template');
-    var events   = require('lib/core/events');
+__define('src/core/component',function(require){
+    var template = require('src/core/template');
+    var events   = require('src/core/events');
     var ext     = require('./extend');
     var extend   = this.extend;
 
@@ -4876,11 +4876,11 @@ __define('lib/core/component',function(require){
  * @description 输入框占位符
  */
 
-__define('lib/components/placeholder',function(require, imports){
+__define('src/components/placeholder',function(require, imports){
     imports('../assets/components/placeholder/index');
 
-    var component = require('lib/core/component');
-    var util = require('lib/core/util');
+    var component = require('src/core/component');
+    var util = require('src/core/util');
     var supportPlaceholder = util.supportHtml5('placeholder', 'input');
 
     return this.extend(component, {
@@ -5113,10 +5113,10 @@ __define('lib/components/placeholder',function(require, imports){
  * @description input增强
  */
 
-__define('lib/components/input',function(require, imports){
+__define('src/components/input',function(require, imports){
     imports('../assets/components/input/index');
 
-    var placeholder = require('lib/components/placeholder');
+    var placeholder = require('src/components/placeholder');
 
     return this.extend(placeholder, {
         _options:{
@@ -5492,12 +5492,12 @@ __define('lib/components/input',function(require, imports){
  * @description layer弹出层
  */
 
-__define('lib/components/layer/layer',function(require, imports){
+__define('src/components/layer/layer',function(require, imports){
     imports('../../assets/components/layer/index');
     
-    var component = require('lib/core/component');
-    var util = require('lib/core/util');
-    var template = require('lib/core/template');
+    var component = require('src/core/component');
+    var util = require('src/core/util');
+    var template = require('src/core/template');
 
     var statics = {
         _maskzIndex:10000,
@@ -6274,7 +6274,7 @@ __define('lib/components/layer/layer',function(require, imports){
         }
     })
 });
-__define('lib/components/layer/loading',['lib/components/layer/layer'], function(layer){
+__define('src/components/layer/loading',['src/components/layer/layer'], function(layer){
     return function(content, width, height){
         var opts;
         if(typeof content === 'object'){
@@ -6300,9 +6300,9 @@ __define('lib/components/layer/loading',['lib/components/layer/layer'], function
         }))
     }
 })
-__define('lib/core/request',function(require){
-    var util = require('lib/core/util');
-    var loading = require('lib/components/layer/loading');
+__define('src/core/request',function(require){
+    var util = require('src/core/util');
+    var loading = require('src/components/layer/loading');
     var ajax = $.ajax;
 
     var defaults = {
@@ -6556,12 +6556,12 @@ __define('lib/core/request',function(require){
  * @description 搜索
  */
 
-__define('lib/components/search',function(require, imports){
+__define('src/components/search',function(require, imports){
     imports('../assets/components/search/index');
     
-    var component = require('lib/core/component');
-    var util = require('lib/core/util');
-    var request = require('lib/core/request');
+    var component = require('src/core/component');
+    var util = require('src/core/util');
+    var request = require('src/core/request');
 
     var Search = this.extend(component, {
         _static:{
@@ -8010,12 +8010,12 @@ __define('lib/components/search',function(require, imports){
 }); 
 __define('./script/page',function(require, imports){
     imports('../style/page.less');
-    var search = require('lib/components/search');
-    var input = require('lib/components/input');
+    var search = require('src/components/search');
+    var input = require('src/components/input');
     var data = require('pages/components/search/script/data');
     var pinyin = require('pages/components/search/script/pinyin');
-    var template = require('lib/core/template');
-    var util = require('lib/core/util');
+    var template = require('src/core/template');
+    var util = require('src/core/util');
     var emps = [];
     var depts = [];
 

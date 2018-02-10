@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('lib/core/extend',function(){
+__define('src/core/extend',function(){
            
     Nui.win = $(window);
 
@@ -82,7 +82,7 @@ __define('lib/core/extend',function(){
  * @description 实用工具集
  */
 
-__define('lib/core/util',['lib/core/extend'], function(){
+__define('src/core/util',['src/core/extend'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -658,7 +658,7 @@ __define('lib/core/util',['lib/core/extend'], function(){
  * @description 模版引擎
  */
 
-__define('lib/core/template',['lib/core/util'], function(util){
+__define('src/core/template',['src/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -955,7 +955,7 @@ __define('lib/core/template',['lib/core/util'], function(util){
 })
 
 
-__define('lib/core/events',['lib/core/extend'], function(){
+__define('src/core/events',['src/core/extend'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -1027,9 +1027,9 @@ __define('lib/core/events',['lib/core/extend'], function(){
  * @description 组件基类
  */
 
-__define('lib/core/component',function(require){
-    var template = require('lib/core/template');
-    var events   = require('lib/core/events');
+__define('src/core/component',function(require){
+    var template = require('src/core/template');
+    var events   = require('src/core/events');
     var ext     = require('./extend');
     var extend   = this.extend;
 
@@ -1512,12 +1512,12 @@ __define('lib/core/component',function(require){
  * @description layer弹出层
  */
 
-__define('lib/components/layer/layer',function(require, imports){
+__define('src/components/layer/layer',function(require, imports){
     imports('../../assets/components/layer/index');
     
-    var component = require('lib/core/component');
-    var util = require('lib/core/util');
-    var template = require('lib/core/template');
+    var component = require('src/core/component');
+    var util = require('src/core/util');
+    var template = require('src/core/template');
 
     var statics = {
         _maskzIndex:10000,
@@ -2294,7 +2294,7 @@ __define('lib/components/layer/layer',function(require, imports){
         }
     })
 });
-__define('lib/components/layer/loading',['lib/components/layer/layer'], function(layer){
+__define('src/components/layer/loading',['src/components/layer/layer'], function(layer){
     return function(content, width, height){
         var opts;
         if(typeof content === 'object'){
@@ -2320,9 +2320,9 @@ __define('lib/components/layer/loading',['lib/components/layer/layer'], function
         }))
     }
 })
-__define('lib/core/request',function(require){
-    var util = require('lib/core/util');
-    var loading = require('lib/components/layer/loading');
+__define('src/core/request',function(require){
+    var util = require('src/core/util');
+    var loading = require('src/components/layer/loading');
     var ajax = $.ajax;
 
     var defaults = {
@@ -2576,12 +2576,12 @@ __define('lib/core/request',function(require){
  * @description 搜索
  */
 
-__define('lib/components/search',function(require, imports){
+__define('src/components/search',function(require, imports){
     imports('../assets/components/search/index');
     
-    var component = require('lib/core/component');
-    var util = require('lib/core/util');
-    var request = require('lib/core/request');
+    var component = require('src/core/component');
+    var util = require('src/core/util');
+    var request = require('src/core/request');
 
     var Search = this.extend(component, {
         _static:{
@@ -4035,11 +4035,11 @@ __define('lib/components/search',function(require, imports){
  * @description 输入框占位符
  */
 
-__define('lib/components/placeholder',function(require, imports){
+__define('src/components/placeholder',function(require, imports){
     imports('../assets/components/placeholder/index');
 
-    var component = require('lib/core/component');
-    var util = require('lib/core/util');
+    var component = require('src/core/component');
+    var util = require('src/core/util');
     var supportPlaceholder = util.supportHtml5('placeholder', 'input');
 
     return this.extend(component, {
@@ -4272,12 +4272,12 @@ __define('lib/components/placeholder',function(require, imports){
  * @description 选择器组件
  */
 
-__define('lib/components/select',function(require, imports){
+__define('src/components/select',function(require, imports){
     imports('../assets/components/select/index');
 
-    var Component = require('lib/core/component');
-    var Placeholder = require('lib/components/placeholder');
-    var Search = require('lib/components/search');
+    var Component = require('src/core/component');
+    var Placeholder = require('src/components/placeholder');
+    var Search = require('src/components/search');
 
     var Select = this.extend(Component, {
         _static:{
@@ -4445,7 +4445,7 @@ __define('lib/components/select',function(require, imports){
 __define('./script/page',function(require,imports,renders,extend,exports){
 	var module=this;
 	imports('../style/page.less');
-	require('lib/components/select');
+	require('src/components/select');
 	
 	
 	$('select').select()

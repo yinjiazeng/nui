@@ -5,7 +5,7 @@
         }
         return module
     }
-__define('lib/components/checkradio',function(){
+__define('src/components/checkradio',function(){
     
 })
 
@@ -13,7 +13,7 @@ __define('lib/components/checkradio',function(){
  * Nui&jQuery扩展
  */
 
-__define('lib/core/extend',function(){
+__define('src/core/extend',function(){
            
     Nui.win = $(window);
 
@@ -79,7 +79,7 @@ __define('lib/core/extend',function(){
         }
     })
 })
-__define('lib/core/events',['lib/core/extend'], function(){
+__define('src/core/events',['src/core/extend'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -151,7 +151,7 @@ __define('lib/core/events',['lib/core/extend'], function(){
  * @description 实用工具集
  */
 
-__define('lib/core/util',['lib/core/extend'], function(){
+__define('src/core/util',['src/core/extend'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -727,7 +727,7 @@ __define('lib/core/util',['lib/core/extend'], function(){
  * @description 模版引擎
  */
 
-__define('lib/core/template',['lib/core/util'], function(util){
+__define('src/core/template',['src/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -1030,9 +1030,9 @@ __define('lib/core/template',['lib/core/util'], function(util){
  * @description 组件基类
  */
 
-__define('lib/core/component',function(require){
-    var template = require('lib/core/template');
-    var events   = require('lib/core/events');
+__define('src/core/component',function(require){
+    var template = require('src/core/template');
+    var events   = require('src/core/events');
     var ext     = require('./extend');
     var extend   = this.extend;
 
@@ -1508,16 +1508,16 @@ __define('lib/core/component',function(require){
     })
 })
 
-__define('lib/components/paging',['lib/core/component'], function(component){
+__define('src/components/paging',['src/core/component'], function(component){
     
 })
-__define('lib/components/datagrid',function(require, imports){
+__define('src/components/datagrid',function(require, imports){
     imports('../assets/components/datagrid/index');
     
-    var component = require('lib/core/component');
-    var util = require('lib/core/util');
-    var paging = require('lib/components/paging');
-    var checkradio = require('lib/components/checkradio');
+    var component = require('src/core/component');
+    var util = require('src/core/util');
+    var paging = require('src/components/paging');
+    var checkradio = require('src/components/checkradio');
 
     //获取滚动条宽度
     var scrollBarWidth = (function(){
@@ -3013,8 +3013,8 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	var module=this;
 	var paging = require('pages/components/datagrid/script/paging');
 	var checkradio = require('pages/components/datagrid/script/checkradio');
-	var template = require('lib/core/template');
-	var datagrid = require('lib/components/datagrid');
+	var template = require('src/core/template');
+	var datagrid = require('src/components/datagrid');
 	
 	var a=__requireDefaultModule(imports('./a.css'));
 	

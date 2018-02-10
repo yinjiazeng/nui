@@ -1022,4 +1022,4 @@
         })
     }
 
-})(this, document)
+})(window, document)

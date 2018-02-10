@@ -63,7 +63,7 @@ gulp.task('revhtml', ['nunjucks'], function(){
 })
 
 gulp.task('revcss', function(){
-    gulp.src(['./{pages,assets,lib}/**/*.{css,less}'])
+    gulp.src(['./{pages,assets,src}/**/*.{css,less}'])
         .pipe(nui())
         .pipe(gulp.dest('./'))
 })
@@ -71,7 +71,7 @@ gulp.task('revcss', function(){
 gulp.task('watch', function() {    
     gulp.watch(['{pages,assets}/**/*.{js,css,less}', '!{pages,assets}/**/*-min.{js,css}','!assets/script/config.js'], ['revhtml']);
     gulp.watch(['{pages,assets}/**/*.{jpg,png,gif,eot,svg,ttf,woff}'], ['revcss']);
-    gulp.watch(['lib/**/*.{js,css,less}'], ['concat', 'revhtml']);
+    gulp.watch(['src/**/*.{js,css,less}'], ['concat', 'revhtml']);
     gulp.watch(['html/**/*.html', 'tpl/*.tpl'], ['nunjucks', 'revhtml']);
     gulp.watch(['src/**/*'], ['concat', 'revhtml']);
 });

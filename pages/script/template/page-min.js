@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('lib/core/extend',function(){
+__define('src/core/extend',function(){
            
     Nui.win = $(window);
 
@@ -82,7 +82,7 @@ __define('lib/core/extend',function(){
  * @description 实用工具集
  */
 
-__define('lib/core/util',['lib/core/extend'], function(){
+__define('src/core/util',['src/core/extend'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -658,7 +658,7 @@ __define('lib/core/util',['lib/core/extend'], function(){
  * @description 模版引擎
  */
 
-__define('lib/core/template',['lib/core/util'], function(util){
+__define('src/core/template',['src/core/util'], function(util){
 
     var template = function(tplid, data, opts){
         if(this.tplid = tplid){
@@ -954,7 +954,7 @@ __define('lib/core/template',['lib/core/util'], function(util){
     return template
 })
 
-__define('./script/template/page',['lib/core/template'], function(tpl){
+__define('./script/template/page',['src/core/template'], function(tpl){
 	var renders = this.renders;
 	var chart = echarts.init(document.getElementById('data'));
 	var setOption = function(){
