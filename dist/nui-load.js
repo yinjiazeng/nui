@@ -188,6 +188,15 @@
         return true;
     }
 
+    var isComponent = function(exports, name){
+        var _static = exports._static;
+        var _init = exports._init;
+        return (
+            (_static && _init && /\/component$/.test(name)) ||
+            (_static && _static.__parent instanceof Module.ComponentParent)
+        )
+    }
+
     var domain = location.protocol+'//'+location.host;
     //获取当前页面的uri
     var getPath = function(){
@@ -457,12 +466,12 @@
         var methods = {};
 
         //导入模块
-        methods.require = function(id, all){
+        methods.require = function(id, data){
             var _mod;
             if(id){
                 id = replaceExt(id);
                 if(_mod = (mod.depmodules[id] || cacheModules[id] || cacheModules[dirname+id])){
-                    if(all){
+                    if(data){
                         return _mod
                     }
                     return _mod.module || _mod.exports
@@ -504,7 +513,7 @@
             else if(type(module, 'Function')){
                 if(module.exports){
                     exports = extend(true, {}, module.exports, members);
-                    exports._static.__parent = new Module.Class.parent(module)
+                    exports._static.__parent = new Module.ComponentParent(module)
                 }
                 else{
                     exports = extend(true, noop, module, members)
@@ -588,44 +597,14 @@
             }
 
             //组件
-            if(exports._static && exports._init && (/\/component$/.test(mod.name) || exports._static.__parent instanceof Module.Class.parent)){
-                var obj = {
-                    statics:{},
-                    propertys:{},
-                    methods:{},
-                    apis:{init:true}
-                }
-
-                if(config.skin && !exports._options.skin){
-                    exports._options.skin = config.skin
-                }
-
-                each(exports, function(val, key){
-                    //静态属性以及方法
-                    if(key === '_static'){
-                        obj['statics'] = val
-                    }
-                    //实例方法
-                    else if(typeof val === 'function'){
-                        obj.methods[key] = val;
-                        if(!/^_/.test(key)){
-                            obj.apis[key] = true
-                        }
-                    }
-                    //实例属性
-                    else{
-                        obj.propertys[key] = val
-                    }
-                })
+            if(isComponent(exports, mod.name)){
                 //文件名作为组件名
                 var name = mod.name.substr(mod.name.lastIndexOf('/')+1).replace(/\W/g, '');
                 if(components[name]){
                     mod.module = components[name]
                 }
                 else{
-                    obj.statics.__component_name = name;
-                    mod.module = components[name] = Module.Class(mod, obj);
-                    delete exports._static.__parent;
+                    mod.module = components[name] = Module.Class(exports, name)
                     mod.exports = mod.module.exports = exports;
                     if(name !== 'component'){
                         var Class = mod.module.constructor, method;
@@ -675,10 +654,12 @@
     }
 
     //创建组件类
-    Module.Class = function(mod, object){
+    Module.Class = function(exports, name){
+        var props = Module.getComponentProps(exports);
+        
         var Class = function(options){
             var that = this;
-            extend(true, that, object.propertys, {
+            extend(true, that, props.propertys, {
                 //实例对象唯一标记
                 __id:Class.__id++,
                 //实例对象事件集合
@@ -690,16 +671,27 @@
             Class.__instances[that.__id] = that;
             that._init()
         }
-        extend(true, Class, object.statics);
-        extend(true, Class.prototype, object.methods);
-        Class.__setMethod(object.apis, components);
+
+        extend(true, Class, props.statics, {
+            __component_name:name
+        });
+
+        delete exports._static.__parent;
+
+        extend(true, Class.prototype, props.methods);
+
+        Class.__setMethod(props.apis, components);
+
         if(typeof Class._init === 'function'){
             Class._init()
         }
+
         var module = function(options){
             return new Class(options)
         }
+
         module.constructor = Class;
+
         each(Class, function(v, k){
             if(typeof v === 'function' && !/^_/.test(k) && k !== 'constructor'){
                 if(typeof v === 'function'){
@@ -709,10 +701,44 @@
                 }
             }
         })
+
         return module
     }
 
-    Module.Class.parent = function(module){
+    Module.getComponentProps = function(exports){
+        var props = {
+            statics:{},
+            propertys:{},
+            methods:{},
+            apis:{init:true}
+        }
+
+        if(config.skin && !exports._options.skin){
+            exports._options.skin = config.skin
+        }
+
+        each(exports, function(val, key){
+            //静态属性以及方法
+            if(key === '_static'){
+                props['statics'] = val
+            }
+            //实例方法
+            else if(typeof val === 'function'){
+                props.methods[key] = val;
+                if(!/^_/.test(key)){
+                    props.apis[key] = true
+                }
+            }
+            //实例属性
+            else{
+                props.propertys[key] = val
+            }
+        })
+
+        return props
+    }
+
+    Module.ComponentParent = function(module){
         this.exports = module.exports;
         this.constructor = module.constructor;
     }
@@ -946,6 +972,23 @@
         }
     }
 
+    Nui.__moduleExtend = function(name, obj, ext){
+        var exports;
+        if(obj.exports){
+            exports = extend(true, {}, obj.exports, ext);
+            exports._static.__parent = new Module.ComponentParent(obj);
+        }
+        else{
+            exports = extend(true, {}, obj, ext)
+        }
+        if(isComponent(exports, name)){
+            var _exports = exports;
+            exports = Module.Class(exports, name);
+            exports.exports = _exports
+        }
+        return exports
+    }
+    
     Nui.load = Module.loader(true);
 
     //不会生成压缩文件
