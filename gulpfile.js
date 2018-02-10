@@ -8,7 +8,7 @@ var nunjucks = require('gulp-nunjucks-render');
 var babel = require('babel-core');
 
 gulp.task('concat', function() {
-    gulp.src(['./src/load.js'])
+    gulp.src(['./src/core/load.js'])
         .pipe(rename('nui-load.js'))
         .pipe(gulp.dest('./dist/'))
         .pipe(uglify({
