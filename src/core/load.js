@@ -302,7 +302,7 @@
     }
 
     //防止不支持该对象的浏览器报错
-    window.console = window.console || {
+    global.console = global.console || {
         log:noop,
         debug:noop,
         error:noop,
