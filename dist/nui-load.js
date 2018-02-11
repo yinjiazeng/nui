@@ -484,13 +484,10 @@
         }
 
         //继承模块
-        methods.extend = function(module, members, inserts){
-            var exports;
-
-            if(!module){
-                return
-            }
-
+        methods.extend = function(){
+            var module = arguments[0];
+            var args = Array.prototype.slice.call(arguments, 1);
+    
             if(typeof module === 'string'){
                 var _mod = methods.require(module);
                 if(_mod === undefined){
@@ -499,57 +496,9 @@
                 module = _mod
             }
 
-            if(isArray(module)){
-                exports = extend(true, [], module)
-                if(inserts === true){
-                    if(!isArray(members)){
-                        exports.push(members)
-                    }
-                    else{
-                        exports = exports.concat(members)
-                    }
-                }
-            }
-            else if(type(module, 'Function')){
-                if(module.exports){
-                    exports = extend(true, {}, module.exports, members);
-                    exports._static.__parent = new Module.ComponentParent(module)
-                }
-                else{
-                    exports = extend(true, noop, module, members)
-                }
-            }
-            else if(type(module, 'Object')){
-                exports = extend(true, {}, module, members)
-            }
-            else{
-                exports = module
-            }
+            args.unshift(module);
 
-            if(isArray(inserts) && type(exports, ['Object', 'Function'])){
-                each(inserts, function(val){
-                    if(val.method && val.content){
-                        var arr = val.method.split('->');
-                        var lastkey = arr[arr.length-1];
-                        var object, key;
-                        while(key = arr.shift()){
-                            object = object || exports;
-                            if(key === lastkey){
-                                break;
-                            }
-                            object = object[key]
-                        }
-                        var func = object[lastkey];
-                        if(type(func, 'Function')){
-                            var code = func.toString().replace(/(\})$/, ';'+val.content+'$1');
-                            func = new Function('return '+code);
-                            object[lastkey] = func();
-                        }
-                    }
-                })
-            }
-
-            return exports
+            return Module.getExports.apply(Module, args)
         }
 
         //导入资源
@@ -604,17 +553,8 @@
                     mod.module = components[name]
                 }
                 else{
-                    mod.module = components[name] = Module.Class(exports, name)
+                    mod.module = Module.Class(exports, name)
                     mod.exports = mod.module.exports = exports;
-                    if(name !== 'component'){
-                        var Class = mod.module.constructor, method;
-                        each(['_$fn', '_$ready'], function(v){
-                            method = Class[v];
-                            if(typeof method === 'function'){
-                                method.call(Class, name, mod.module)
-                            }
-                        })
-                    }
                 }
             }
             else{
@@ -653,6 +593,42 @@
         return path.replace(/([\w]+)\/?(\.\/)+/g, '$1/')
     }
 
+    Module.getExports = function(module, members, inserts){
+        var exports;
+
+        if(!module && members){
+            exports = members
+        }
+        else if(isArray(module)){
+            exports = extend(true, [], module)
+            if(inserts === true){
+                if(!isArray(members)){
+                    exports.push(members)
+                }
+                else{
+                    exports = exports.concat(members)
+                }
+            }
+        }
+        else if(type(module, 'Function')){
+            if(module.exports){
+                exports = extend(true, {}, module.exports, members);
+                exports._static.__parent = new Module.ComponentParent(module);
+            }
+            else{
+                exports = extend(true, noop, module, members)
+            }
+        }
+        else if(type(module, 'Object')){
+            exports = extend(true, {}, module, members)
+        }
+        else{
+            exports = module
+        }
+
+        return exports
+    }
+
     //创建组件类
     Module.Class = function(exports, name){
         var props = Module.getComponentProps(exports);
@@ -686,18 +662,21 @@
             Class._init()
         }
 
-        var module = function(options){
+        var module = components[name] = function(options){
             return new Class(options)
         }
 
         module.constructor = Class;
 
         each(Class, function(v, k){
-            if(typeof v === 'function' && !/^_/.test(k) && k !== 'constructor'){
-                if(typeof v === 'function'){
+            if(typeof v === 'function'){
+                if(!/^_/.test(k) && k !== 'constructor'){
                     module[k] = function(){
                         return Class[k].apply(Class, arguments)
                     }
+                }
+                else if(k === '_$fn' || k === '_$ready'){
+                    v.call(Class, name, module)
                 }
             }
         })
@@ -972,19 +951,19 @@
         }
     }
 
-    Nui.__moduleExtend = function(name, obj, ext){
-        var exports;
-        if(obj.exports){
-            exports = extend(true, {}, obj.exports, ext);
-            exports._static.__parent = new Module.ComponentParent(obj);
-        }
-        else{
-            exports = extend(true, {}, obj, ext)
-        }
+    Nui.__moduleExtend = function(){
+        var name = arguments[0];
+        var args = Array.prototype.slice.call(arguments, 1);
+        var exports = Module.getExports.apply(Module, args);
         if(isComponent(exports, name)){
-            var _exports = exports;
-            exports = Module.Class(exports, name);
-            exports.exports = _exports
+            if(components[name]){
+                exports = components[name]
+            }
+            else{
+                var _exports = exports;
+                exports = Module.Class(exports, name);
+                exports.exports = _exports
+            }
         }
         return exports
     }
