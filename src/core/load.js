@@ -2,15 +2,19 @@
  * @author Aniu[2016-11-10 22:39]
  * @update Aniu[2016-11-10 22:39]
  * @version 1.0.1
- * @description NUI框架核心
+ * @description NUI框架加载器
  */
 
-;!(function(window, document, undefined){
-    if(window.Nui){
-        return
+;!(function(global, factory){
+    if(typeof exports === 'object' && typeof module !== 'undefined'){
+        module.exports = factory()
     }
-
-    var Nui = window.Nui = {};
+    else if(!global.Nui){
+        global.Nui = factory()
+    }
+})(window, function(){
+    
+    var Nui = {};
 
     var isType = function(type){
         return function(obj){
@@ -219,7 +223,7 @@
     }
 
     var mid = 0;
-    
+
     var async_mid = 0;
 
     var getModuleid = function(async){
@@ -487,7 +491,7 @@
         methods.extend = function(){
             var module = arguments[0];
             var args = Array.prototype.slice.call(arguments, 1);
-    
+
             if(typeof module === 'string'){
                 var _mod = methods.require(module);
                 if(_mod === undefined){
@@ -967,7 +971,7 @@
         }
         return exports
     }
-    
+
     Nui.load = Module.loader(true);
 
     //不会生成压缩文件
@@ -1001,4 +1005,5 @@
         })
     }
 
-})(window, document)
+    return Nui
+})
