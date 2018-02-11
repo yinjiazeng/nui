@@ -1031,18 +1031,52 @@ __define('src/core/component',function(require){
     var template = require('src/core/template');
     var events   = require('src/core/events');
     var ext     = require('./extend');
-    var extend   = this.extend;
+
+    var slice = Array.prototype.slice;
 
     var callMethod = function(method, args, obj){
-        //实参大于形参，最后一个实参表示id
-        if(args.length > method.length){
-            var id = args[args.length-1];
-            if(id && Nui.type(id, ['String', 'Number']) && obj._options.id !== id && obj.__id !== id){
-                return
+        if(typeof method === 'function'){
+            //实参大于形参，最后一个实参表示id
+            if(args.length > method.length){
+                var id = args[args.length-1];
+                if(id && Nui.type(id, ['String', 'Number']) && obj._options.id !== id && obj.__id !== id){
+                    return
+                }
+            }
+            method.apply(obj, args)
+        }
+    }
+
+    var bindComponent = function(name, elem, mod, options){
+        //不能重复绑定
+        if(elem.nui && elem.nui[name]){
+            return
+        }
+        var $elem = jQuery(elem), _mod;
+        if(options === undefined){
+            options = $elem.data(name+'Options');
+        }
+        if(options && typeof options === 'string'){
+            if(/^{[\s\S]*}$/.test(options)){
+                options = eval('('+ options +')');
+            }
+            else if(_mod = require(options, true)){
+                if(typeof _mod.exports === 'function'){
+                    options = _mod.exports($elem)
+                }
+                else{
+                    options = _mod.exports;
+                }
             }
         }
-        method.apply(obj, args)
+        if(typeof options !== 'object'){
+            options = {};
+        }
+        mod(Nui.extend({}, options, {
+            target:elem
+        }))
     }
+
     /**
      * 单和双下划线开头表示私有方法或者属性，只能在内部使用，
      * 单下划线继承后可重写或修改，双下划线为系统预置无法修改
@@ -1063,66 +1097,72 @@ __define('src/core/component',function(require){
             Nui.each(apis, function(val, methodName){
                 if(self[methodName] === undefined){
                     self[methodName] = function(){
-                        var self = this, args = arguments, container = args[0], name = self.__component_name;
-                        if(name && name !== 'component'){
-                            if(container && container instanceof jQuery){
-                                if(methodName === 'init'){
-                                    var mod = components[name];
-                                    if(mod){
-                                        container.find('[data-'+name+'-options]').each(function(){
-                                            //不能重复调用
-                                            if(this.nui && this.nui[name]){
-                                                return
-                                            }
-                                            var elem = jQuery(this);
-                                            var options = elem.data(name+'Options');
-                                            var _mod;
-                                            if(options && typeof options === 'string'){
-                                                if(/^{[\s\S]*}$/.test(options)){
-                                                    options = eval('('+ options +')');
-                                                }
-                                                else if(_mod = require(options, true)){
-                                                    if(typeof _mod.exports === 'function'){
-                                                        options = _mod.exports(elem)
-                                                    }
-                                                    else{
-                                                        options = _mod.exports;
-                                                    }
-                                                }
-                                            }
-                                            if(typeof options !== 'object'){
-                                                options = {};
-                                            }
-                                            mod(extend(options, {
-                                                target:elem
-                                            }))
-                                        })
-                                    }
+                        var self = this, name = self.__component_name, args = arguments, container = args[0], 
+                            isContainer = container && container instanceof jQuery,
+                            mod = components[name], init = methodName === 'init';
+                        if(name && name !== 'component' && mod){
+                            if(isContainer){
+                                if(init){
+                                    container.find('[data-'+name+'-options]').each(function(){
+                                        bindComponent(name, this, mod)
+                                    })
                                 }
                                 else{
                                     container.find('[nui_component_'+ name +']').each(function(){
-                                        var obj, method;
-                                        if(this.nui && (obj = this.nui[name]) && typeof (method = obj[methodName]) === 'function'){
-                                            callMethod(method, Array.prototype.slice.call(args, 1), obj)
+                                        var obj, nui = this.nui;
+                                        if(nui && (obj = nui[name])){
+                                            callMethod(obj[methodName], slice.call(args, 1), obj)
                                         }
                                     })
                                 }
                             }
                             else{
                                 Nui.each(self.__instances, function(obj){
-                                    var method = obj[methodName];
-                                    if(typeof method === 'function'){
-                                        callMethod(method, args, obj)
-                                    }
+                                    callMethod(obj[methodName], args, obj)
                                 })
                             }
                         }
-                        else{
+                        else if(name === 'component'){
+                            var attributes = [];
                             Nui.each(components, function(v, k){
                                 if(k !== 'component' && typeof v[methodName] === 'function'){
-                                    v[methodName].apply(v, args)
+                                    if(isContainer){
+                                        if(init){
+                                            attributes.push('[data-'+ k +'-options]')
+                                        }
+                                        else{
+                                            attributes.push('[nui_component_'+ k +']')
+                                        }
+                                    }
+                                    else{
+                                        Nui.each(v.constructor.__instances, function(obj){
+                                            callMethod(obj[methodName], args, obj)
+                                        })
+                                    }
                                 }
                             })
+                            if(attributes.length){
+                                var matchRegexp = init ? /^data-(\w+)-options/i : /^nui_component_(\w+)/i;
+                                container.find(attributes.join(',')).each(function(index, elem){
+                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length;
+                                    while(i--){
+                                        var attr = attrs[i];
+                                        if(attr && attr.name){
+                                            var match = attr.name.match(matchRegexp);
+                                            if(match){
+                                                var _name = match[1];
+                                                var mod = components[_name];
+                                                if(init){
+                                                    bindComponent(_name, elem, mod, attr.value)
+                                                }
+                                                else if(nui && (obj = nui[_name])){
+                                                    callMethod(obj[methodName], slice.call(args, 1), obj)
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+                            }
                         }
                     }
                 }
@@ -1188,7 +1228,7 @@ __define('src/core/component',function(require){
                                 var attr = object[options];
                                 
                                 if(typeof attr === 'function'){
-                                    attr.apply(object, Array.prototype.slice.call(args, 1))
+                                    attr.apply(object, slice.call(args, 1))
                                 }
                             }
                         }
@@ -1211,17 +1251,17 @@ __define('src/core/component',function(require){
                 })
             }
         },
-        _$ready:function(name, module){
-            if(typeof this.init === 'function'){
-                this.init(Nui.doc)
-            }
-        },
+        // _$ready:function(name, module){
+        //     if(typeof this.init === 'function'){
+        //         this.init(Nui.doc)
+        //     }
+        // },
         config:function(){
             var args = arguments;
             var len = args.length;
             var attr = args[0];
             if(Nui.type(attr, 'Object')){
-                return this._options = jQuery.extend(true, this._options, attr)
+                return this._options = Nui.extend(true, this._options, attr)
             }
             else if(Nui.type(attr, 'String')){
                 if(args.length === 1){
@@ -1470,7 +1510,7 @@ __define('src/core/component',function(require){
                 isdef = args[2]
             }
             if(options||isdef){
-                this._options = jQuery.extend(true, {}, this[isdef === true ? '_defaultOptions' : '_options'], options)
+                this._options = Nui.extend(true, {}, this[isdef === true ? '_defaultOptions' : '_options'], options)
                 this._reset();
                 this._exec();
             }

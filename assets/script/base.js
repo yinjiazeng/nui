@@ -1,10 +1,13 @@
 Nui.define(['{light}/xml', 'events'], function(xml, events){
+    var component = this.require('component');
     this.imports('../style/base');
     var hash = location.hash ? location.hash.replace('#', '') : '';
     var main = $('.g-main');
     var items = main.find('h2');
     var length = items.length;
     var menus = $('.m-menu ul');
+    component.init(Nui.doc);
+
     return ({
         init:function(){
             this.setYear();

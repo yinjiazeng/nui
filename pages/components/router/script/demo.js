@@ -3,8 +3,6 @@ var require = this.require;
 var placeholder = require('{com}/placeholder');
 var router = require('{com}/router');
 var placeholder_opts = require('./options', true);
-console.log(1)
-
 
 router({
 	target:'#home',
@@ -30,7 +28,7 @@ router({
 			'</ul>',
 		detail:'<div>'+
 					'<h3><%params.title%></h3>'+
-					'<p>这是<%params.title%>详情，id是<%params.id%>。<input type="text" data-placeholder-options="'+ placeholder_opts.id +'"></p>'+
+					'<p>这是<%params.title%>详情，id是<%params.id%>。<input type="text" data-placeholder-options="'+ placeholder_opts.name +'"></p>'+
 					'<%include "aa.b"%>'+
 				'</div>',
 		aa:{
