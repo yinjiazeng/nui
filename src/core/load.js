@@ -7,14 +7,18 @@
 
 ;!(function(global, factory){
     if(typeof exports === 'object' && typeof module !== 'undefined'){
-        module.exports = factory()
+        module.exports = factory(global)
     }
-    else if(!global.Nui){
-        global.Nui = factory()
+    else{
+        factory(global)
     }
-})(window, function(){
+})(window, function(global){
+
+    if(global.Nui){
+        return global.Nui
+    }
     
-    var Nui = {};
+    var Nui = global.Nui = {};
 
     var isType = function(type){
         return function(obj){
