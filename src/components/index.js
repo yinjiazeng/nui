@@ -6,8 +6,6 @@ export {default as confirm} from './layer/confirm';
 
 export {default as form} from './layer/form';
 
-export {default as form} from './layer/form';
-
 export {default as iframe} from './layer/iframe';
 
 export {default as loading} from './layer/loading';
@@ -18,9 +16,9 @@ export {default as tips} from './layer/tips';
 
 export {default as datagrid} from './datagrid';
 
-export {default as placeholder} from './layer/placeholder';
+export {default as placeholder} from './placeholder';
 
-export {default as input} from './layer/input';
+export {default as input} from './input';
 
 export {default as popover} from './popover';
 
