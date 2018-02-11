@@ -832,7 +832,7 @@ __define('src/components/layer/confirm',['src/components/layer/layer'], function
  * Nui&jQuery扩展
  */
 
-__define('src/core/extend',function(require){
+__define('src/core/extend',function(){
            
     Nui.win = $(window);
 

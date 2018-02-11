@@ -2,7 +2,7 @@
  * Nui&jQuery扩展
  */
 
-Nui.define(function(require){
+Nui.define(function(){
            
     Nui.win = $(window);
 

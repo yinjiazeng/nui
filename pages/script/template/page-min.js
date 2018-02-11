@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('src/core/extend',function(require){
+__define('src/core/extend',function(){
            
     Nui.win = $(window);
 
