@@ -1,8 +1,5 @@
 Nui.define(['../core/component', './layer/layer'], function(component, layer){
-    var module = this;
-    var require = this.require;
-    var extend = this.extend;
-    return extend(component, {
+    return this.extend(component, {
         _static:{
             _init:function(){
                 var self = this;

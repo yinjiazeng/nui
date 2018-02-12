@@ -5,8 +5,8 @@
  * @description 选择器组件
  */
 
-Nui.define(function(require, imports){
-    imports('../assets/components/select/index');
+Nui.define(function(require){
+    this.imports('../assets/components/select/index');
 
     var Component = require('../core/component');
     var Placeholder = require('./placeholder');

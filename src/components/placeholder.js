@@ -5,8 +5,8 @@
  * @description 输入框占位符
  */
 
-Nui.define(function(require, imports){
-    imports('../assets/components/placeholder/index');
+Nui.define(function(require){
+    this.imports('../assets/components/placeholder/index');
 
     var component = require('../core/component');
     var util = require('../core/util');

@@ -5,8 +5,8 @@
  * @description 搜索
  */
 
-Nui.define(function(require, imports){
-    imports('../assets/components/search/index');
+Nui.define(function(require){
+    this.imports('../assets/components/search/index');
     
     var component = require('../core/component');
     var util = require('../core/util');

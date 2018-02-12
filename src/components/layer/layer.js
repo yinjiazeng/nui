@@ -5,8 +5,8 @@
  * @description layer弹出层
  */
 
-Nui.define(function(require, imports){
-    imports('../../assets/components/layer/index');
+Nui.define(function(require){
+    this.imports('../../assets/components/layer/index');
     
     var component = require('../../core/component');
     var util = require('../../core/util');

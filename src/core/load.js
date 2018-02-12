@@ -200,7 +200,7 @@
         var _static = exports._static;
         var _init = exports._init;
         return (
-            (_static && _init && /\/component$/.test(name)) ||
+            (_static && _init && /\/?component$/.test(name)) ||
             (_static && _static.__parent instanceof Module.ComponentParent)
         )
     }
@@ -552,7 +552,6 @@
             if(typeof exports === 'undefined'){
                 exports = methods.exports
             }
-
             //组件
             if(isComponent(exports, mod.name)){
                 //文件名作为组件名

@@ -268,7 +268,7 @@ Nui.define(function(require){
         }
     }
 
-    return ({
+    return this.extend({
         _static:statics,
         _options:{
             target:null,

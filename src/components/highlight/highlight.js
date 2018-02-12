@@ -5,8 +5,8 @@
  * @description 语法高亮组件
  */
 
-Nui.define(function(require, imports){
-    imports('../../assets/components/highlight/index');
+Nui.define(function(require){
+    this.imports('../../assets/components/highlight/index');
     
     return this.extend('../../core/component', {
         _static:{

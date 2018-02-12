@@ -1,5 +1,5 @@
-Nui.define(function(require, imports){
-    imports('../assets/components/datagrid/index');
+Nui.define(function(require){
+    this.imports('../assets/components/datagrid/index');
     
     var component = require('../core/component');
     var util = require('../core/util');

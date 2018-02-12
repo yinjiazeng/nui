@@ -5,8 +5,8 @@
  * @description input增强
  */
 
-Nui.define(function(require, imports){
-    imports('../assets/components/input/index');
+Nui.define(function(require){
+    this.imports('../assets/components/input/index');
 
     var placeholder = require('./placeholder');
 
