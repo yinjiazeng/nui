@@ -154,17 +154,41 @@ Nui.define(function(require){
                 注意看你gulpfile.js中监听文件这部分代码，监听的只是js文件，找到问题之后修改内容如下：
             </p>
 <script type="text/highlight" data-javascript-options>
-gulp.watch('./src/**/*.{js|css}', ['pack'])
-</script>
-            <p class="e-mt15 f-lh22">等等，细想一下，那后面如果还要监听其它文件，那岂不是还要再修改一下？现在将代码修改监听所有可能的文件类型：</p>
-<script type="text/highlight" data-javascript-options>
-gulp.watch('./src/**/*.*', ['pack'])
+gulp.watch('./src/**/*.{js,css}', ['pack'])
 </script>
             <p class="e-mt15 f-lh22">因为改的是配置文件，因此需要重新执行gulp，先Ctrl+C退出，重新执行后，刷新页面内容变为了蓝色，这时再修改为其它颜色，都可以看到效果。</p>
             <p class="e-mt15 f-lh22">
-                假设nui-demo文件夹是建在桌面上的，现在桌面上有张图片，我想引入到页面中，但是又不想手动拷贝图片到nui-demo/src/images/中。
-                gulp-nui提供一个图片打包的功能，能够将非项目中的资源自动拷贝到项目中，下面介绍一下怎么实现吧。
+                现在假设nui-demo文件夹同级目录中有张图片，我想引入到页面中，但是又不想手动拷贝图片到nui-demo/src/images/中。
+                gulp-nui则提供一个图片打包的功能，能够将非项目中的资源自动拷贝到项目中，下面介绍一下怎么实现吧。
             </p>
+            <p class="e-mt15 f-lh22">编辑config.js，输入以下内容：</p>
+<script type="text/highlight" data-javascript-options>
+Nui.config({
+    paths:{
+        asset:'../'
+    }
+})
+</script>
+            <p class="e-mt15 f-lh22">然后编辑gulpfile.js，修改内容如下：</p>
+<script type="text/highlight" data-javascript-options>
+var gulp = require('gulp');
+var nui = require('gulp-nui');
+var path = require('path');
+
+gulp.task('pack', function(){
+    gulp.src(['html/index.html'])
+        .pipe(nui({
+            url:path.join(__dirname, './config.js'),
+            syncAsset:'asset'
+        }))
+})
+
+gulp.task('watch', function(){
+    gulp.watch('./src/**/*.{js,css}', ['pack'])
+})
+
+gulp.task('default', ['pack', 'watch'])
+</script>
             <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="notice">注意</h2>
 		</div>
 	</div>
