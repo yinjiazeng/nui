@@ -574,7 +574,13 @@
     //获取正确规范的路径
     Module.normalize = function(path){
         // a///b///c => a/b/c
-        path = path.replace(/([^:])\/{2,}/g, '$1/');
+        //忽略https:// file:/// ....
+        path = path.replace(/^(([^:]+:)?\/+)?.+/i, function(str, protocol){
+            if(protocol){
+                return protocol + str.replace(protocol, '').replace(/\/{2,}/g, '/')
+            }
+            return str.replace(/\/{2,}/g, '/')
+        })
 
         // a/b...../c => a/b../c
         path = path.replace(/\.{2,}/g, '..');

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="g-html">
+<head>
+	<meta charset="utf-8" />
+	<meta name="renderer" content="webkit" />
+	<meta name="keywords" content="Nui,Nui框架,Nui组件,axnfex,诺诺框架,诺诺前端,爱信诺框架,爱信诺前端" />
+	<meta name="description" content="Nui框架是诺诺网前端团队根据自身业务的特点开发出来的模块化前端框架，提供了丰富的组件以适应不同业务需求进行快速开发。" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<title>Nui.js</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
+	<link rel="icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
+	<link rel="shortcut icon" type="image/x-icon" href="/nui/assets/images/favicon.ico?v=f076652"/>
+	<link rel="stylesheet" type="text/css" href="/nui/assets/style/base-min.css?v=f5766b5"/>
+    
+</head>
+<body class="g-body">
+	<!-- header -->
+	<div class="g-header f-clearfix">
+	    <a class="m-logo f-fl" href="/nui/">
+            <img src="/nui/assets/images/logo.png?v=a987f30" alt="Nui.js" class="f-fl" />
+            <em class="f-fl e-ml10 f-fs24">Nui.js</em>
+        </a>
+        <ul class="m-nav f-fr f-fs16">
+            
+	
+	
+    <li class="f-fl">
+        <a class="s-crt" href="/nui/pages/">教程</a>
+    </li>
+    <li class="f-fl">
+        <a href="//nuofe.github.io/blog/2017/02/28/jobs/" target="_blank">加入我们</a>
+    </li>
+    <li class="f-fl">
+        <a href="//zjaisino.github.io/" target="_blank">前端规范</a>
+    </li>
+    <li class="f-fl">
+        <a href="//nuofe.github.io/blog/" target="_blank">团队博客</a>
+    </li>
+
+
+        </ul>
+	</div>
+	<!-- /header -->
+
+	<!-- content -->
+	<div class="g-content">
+    
+	<div class="g-main f-fr">
+		<div class="mainbox">
+            <h1 class="e-pt20 e-pb20 f-fs28">gulp</h1>
+			<div class="e-mt15 f-lh22">
+                <p>gulp是一个构建工具，本身不支持打包功能，但是完善的插件机制让它什么都能做，<a href="//npm.taobao.org/package/gulp-nui" target="_blank" class="f-cblue">gulp-nui</a>就是用于打包nui框架模块的插件，当然功能不仅限于打包，下面介绍一下它如何使用：</p>
+            </div>
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="install">安装</h2>
+            <p class="e-mt15 f-lh22">使用之前需先全局安装gulp，这样才能在终端使用gulp命令：</p>
+<script type="text/highlight" data-highlight-options>
+cnpm install -g gulp
+</script>
+            <p class="e-mt15 f-lh22">新建一个nui-demo文件夹，目录结构是如下形式：</p>
+<script type="text/highlight" data-highlight-options>
+- html
+    - index.html
+- src
+    - script
+        - app.js
+        - content.js
+- config.js
+- gulpfile.js
+</script>
+            <p class="e-mt15 f-lh22">终端中路径切换到该文件夹根目录，然后分别安装gulp以及gulp-nui，这里再次安装gulp是因为需要作为模块使用。</p>
+<script type="text/highlight" data-highlight-options>
+cnpm install --save-dev gulp gulp-nui
+</script>
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="use">使用</h2>
+            <p class="e-mt15 f-lh22">编辑/src/script/app.js文件，添加如下代码：</p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(function(require){
+    var content = require('./content');
+    document.getElementById('app').innerHTML = content;
+})
+</script>
+            <p class="e-mt15 f-lh22">编辑/src/script/content.js文件，添加如下代码：</p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(function(require){
+    return 'Hello World'
+})
+</script>
+            <p class="e-mt15 f-lh22">编辑/html/index.html文件，添加如下代码：</p>
+<script type="text/highlight" data-xml-options>
+&lt;!doctype html&gt;
+    &lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;title&gt;nui-demo&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id="app"&gt;&lt;/div&gt;
+        &lt;script src="https://yinjiazeng.github.io/nui/dist/nui-load-min.js"&gt;&lt;/script&gt;
+        &lt;script&gt;
+        Nui.load('../src/script/app')
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</script>
+            <p class="e-mt15 f-lh22">
+                浏览器打开/html/index.html文件，你会发现并没有输出Hello World，并且有个404错误，错误文件名是app-min.js。
+                咦？不是加载的是app.js吗？这是因为Nui.load默认加载的就是带-min后缀的文件，不要捉急，继续下一步操作。
+            </p>
+            <p class="e-mt15 f-lh22">编辑gulpfile.js，添加如下代码：</p>
+<script type="text/highlight" data-javascript-options>
+var gulp = require('gulp');
+var nui = require('gulp-nui');
+
+gulp.task('pack', function(){
+    gulp.src(['./html/index.html'])
+        .pipe(nui())
+})
+
+gulp.task('default', ['pack'])
+</script>
+            <p class="e-mt15 f-lh22">
+                如果之前终端窗口没有关闭，输入gulp，回车之后，你会发现app.js所在目录多了app-min.js以及app-min.js.map 2个文件，
+                浏览器打开/html/index.html，页面出现了Hello World。
+            </p>
+            <p class="e-mt15 f-lh22">
+                我们再次打开content.js，将里面的Hello World改为Hello World2，然后刷新浏览器，发现内容并没有改变，这是怎么回事呢？
+                如果你之前已经熟悉了gulp，那肯定知道原因，先不谈为什么，我们在终端再次输入gulp并回车（这里提供一个小技巧，可以按方向键“↑”，内容会自动变更为上一次输入内容），
+                刷新浏览器后内容变了。此时你可能会想，WTF！难道每次改过代码都要重新执行一次？当然肯定不会这样做项目，咱们编辑一下gulpfile.js，改为如下代码：
+            </p>
+<script type="text/highlight" data-javascript-options>
+var gulp = require('gulp');
+var nui = require('gulp-nui');
+
+gulp.task('pack', function(){
+    gulp.src(['./html/index.html'])
+        .pipe(nui())
+})
+
+gulp.task('watch', function(){
+    gulp.watch('./src/**/*.js', ['pack'])
+})
+
+gulp.task('default', ['pack', 'watch'])
+</script>
+            <p class="e-mt15 f-lh22">
+                再次执行gulp后，编辑js文件，你会发现每次输入新的内容，都会生效，这就是gulp的任务监听功能，监听文件的变化重新执行任务。
+            </p>
+            <p class="e-mt15 f-lh22">
+                现在显示的内容没有样式，希望文字能够显示红色，/src/中新建一个style文件夹，并新建一个color.css（也可以是less文件），文件内容如下：
+            </p>
+<script type="text/highlight" data-style-options>
+body {
+    color:red;
+}
+</script>
+            <p class="e-mt15 f-lh22">
+                编辑app.js，修改为以下内容：
+            </p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(function(require){
+    this.imports('../style/color');
+    var content = require('./content');
+    document.getElementById('app').innerHTML = content;
+})
+</script>
+            <p class="e-mt15 f-lh22">
+                这时你会发现style文件夹中多了app-min.css以及app-min.css-map2个文件，但是刷新页面没有任何效果，
+                这是因为样式并没有引入到页面中，我们编辑index.html，修改内容如下：
+            </p>
+<script type="text/highlight" data-xml-options>
+&lt;!doctype html&gt;
+    &lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;title&gt;nui-demo&lt;/title&gt;
+        &lt;link rel="stylesheet" type="text/css" href="../src/style/app-min.css"/&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id="app"&gt;&lt;/div&gt;
+        &lt;script src="https://yinjiazeng.github.io/nui/dist/nui-load-min.js"&gt;&lt;/script&gt;
+        &lt;script&gt;
+        Nui.load('../src/script/app')
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</script>
+            <p class="e-mt15 f-lh22">
+                刷新页面，文件变为了红色，现在我们想把文字颜色变为蓝色，修改内容后却发现没有生效，奇怪了，之前不是已经设置了文件监听吗？
+                注意看你gulpfile.js中监听文件这部分代码，监听的只是js文件，找到问题之后修改内容如下：
+            </p>
+<script type="text/highlight" data-javascript-options>
+gulp.watch('./src/**/*.{js|css}', ['pack'])
+</script>
+            <p class="e-mt15 f-lh22">等等，细想一下，那后面如果还要监听其它文件，那岂不是还要再修改一下？现在将代码修改监听所有可能的文件类型：</p>
+<script type="text/highlight" data-javascript-options>
+gulp.watch('./src/**/*.*', ['pack'])
+</script>
+            <p class="e-mt15 f-lh22">因为改的是配置文件，因此需要重新执行gulp，先Ctrl+C退出，重新执行后，刷新页面内容变为了蓝色，这时再修改为其它颜色，都可以看到效果。</p>
+            <p class="e-mt15 f-lh22">
+                假设nui-demo文件夹是建在桌面上的，现在桌面上有张图片，我想引入到页面中，但是又不想手动拷贝图片到nui-demo/src/images/中。
+                gulp-nui提供一个图片打包的功能，能够将非项目中的资源自动拷贝到项目中，下面介绍一下怎么实现吧。
+            </p>
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="notice">注意</h2>
+		</div>
+	</div>
+	
+	
+<div class="f-fl g-sidecol">
+    <div class="side">
+        <ul class="m-menu f-lh28">
+            <li>
+                <a class="f-fs16" href="/nui/pages/">介绍</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/doc.html">API文档</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/util.html">工具集</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/template.html">模板引擎</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/events.html">代理事件</a>
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/element.html">页面元素</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/request.html">网络请求</a>
+            </li>
+            <li>
+                <a class="f-fs16" href="/nui/pages/components/">交互组件</a>
+                
+            </li>
+            <li>
+                <a class="f-fs16 s-crt" href="/nui/pages/pack.html">打包工具</a>
+                
+                <ul>
+                    <li>
+                        <a href="/nui/pages/pack/gulp.html" class="s-crt">gulp</a>
+                        
+                        <ul>
+                            <li>
+                                <a href="#install">安装</a>
+                            </li>
+                            <li>
+                                <a href="#use">使用</a>
+                            </li>
+                            <li>
+                                <a href="#notice">注意</a>
+                            </li>
+                        </ul>
+                        
+                    </li>
+                    <li>
+                        <a href="/nui/pages/pack/webpack.html">webpack</a>
+                        
+                    </li>
+                </ul>
+                
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+	</div>
+	<!-- /content -->
+
+	
+
+    <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=4223d4c"></script>
+<script type="text/javascript" src="/nui/dist/nui-load.js?v=0099769"></script>
+<script type="text/javascript" src="/nui/config.js?v=cbac690"></script>
+    
+    <script type="text/javascript">
+	Nui.load("{script}/base-min", function(page){
+        page.init()
+    })
+    </script>
+    
+    <script type="text/javascript">
+    
+    </script>
+</body>
+</html>

@@ -49,100 +49,37 @@
         <div class="mainbox">
             <h1 class="e-pt20 e-pb20 f-fs28">打包工具</h1>
             <div class="e-mt15 f-lh22">
-                <p>模块化开发就是将一个系统拆分为多个独立的功能模块，每个功能模块又可无限拆分为更小的模块。在Nui.js中一个模块就是一个js文件，如果开发时模块很多，就会导致http请求过多，使页面载入变的很慢。</p>
-                <p>可以使用<a href="https://www.npmjs.com/package/gulp-nui" target="_blank" class="f-corange">gulp-nui</a>对模块进行压缩合并，该工具是一个<a href="http://www.gulpjs.com.cn/" target="_blank" class="f-corange">gulp</a>插件，不仅可以合并js模块，也可以对css模块进行合并，以及给静态资源添加版本号用于清理文件缓存。</p>
-            </div>
-            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="安装使用">安装使用</h2>
-            <p class="e-mt15 f-lh22">gulp在node环境中运行，使用之前先安装<a href="http://nodejs.cn/" target="_blank" class="f-corange">nodejs</a>，由于npm是从国外下载包非常慢，因此需将服务器切换为国内：</p>
+                <p class="f-ti2">
+                    模块化开发就是将一个系统拆分为多个功能模块，为了提高复用率，每个功能模块又可无限拆分为更小的模块。
+                    在Nui框架中一个模块就是一个文件，在页面加载时就是一个http请求，如果项目模块很多，就会提升页面的加载时间。
+                    有方法可以将零碎的模块合并成一个文件吗？
+                </p>
+                <p class="f-ti2">
+                    答案肯定是，目前有很多工具可以实现模块的打包，例如
+                    <a href="//gulpjs.com" target="_blank" class="f-cblue">gulp</a> /
+                    <a href="//gruntjs.com" target="_blank" class="f-cblue">grunt</a> /
+                    <a href="//parceljs.org/" target="_blank" class="f-cblue">parcel</a> /
+                    <a href="//webpack.js.org/" target="_blank" class="f-cblue">webpack</a> 等，
+                    但是它们是基于标准规范进行文件解析并打包的，由于Nui是一个具有自身模块化特性的框架，因此这些工具只能合并模块，
+                    无法解析模块里的内容，好在它们都提供了方法来解决这一问题。
+                </p>
+                <p class="f-ti2">
+                    目前Nui框架打包工具支持gulp和webpack，它们都是构建在<a href="//nodejs.cn/" target="_blank" class="f-cblue">nodejs</a>之上的，
+                    使用之前需先安装好环境，由于用npm安装包非常慢，可以使用淘宝镜像解决：
+                </p>
 <script type="text/highlight" data-highlight-options>
 npm install -g cnpm --registry=https://registry.npm.taobao.org
 </script>
-            <p class="e-mt15 f-lh22">完成后使用cnpm代替npm，然后全局安装gulp</p>
+                <p class="e-mt15 f-ti2">
+                    安装好后，用cnpm代替npm安装包即可。
+                </p>
 <script type="text/highlight" data-highlight-options>
-cnpm install -g gulp
+cnpm install xxx
 </script>
-            <p class="e-mt15 f-lh22">
-                因为打包工具需要配合项目才能使用，因此先<a class="f-corange" href="/nui/assets/file/nui-demo.rar">下载</a>项目案例，打开index.html后并不能看到页面效果，这是因为加载的压缩文件还没有生成。命令行定位到project目录中安装gulp以及gulp-nui：
-            </p>
-<script type="text/highlight" data-highlight-options>
-cnpm install --save-dev gulp gulp-nui
-</script>
-            <p class="e-mt15 f-lh22">执行gulp命令后，在项目目录style文件夹中会生成main-min.css、main-min.css.map文件，script文件夹中会生成main-min.js、main-min.js.map文件，后缀为map的为sourcemap文件用于浏览器调试。再次打开index.html后即可看到案例效果，查看页面源代码，你会发现引用的资源末尾被添加上了版本号，只要修改文件版本号都会更改，这样浏览器就不会存在缓存问题了。</p>
-            <p class="e-mt15 f-lh22">细心的你可能会发现，模块文件外部没有Nui.define却可以直接使用，因为打包工具会自动添加上，如果你了解nodejs，那对这样的写法一定不陌生，想象一下在浏览器端js中书写node代码是不是很激动。</p>
-<script type="text/highlight" data-javascript-options>
-//模块文件
-require('./a');
-imports('./b');
-extend('./c', {
-
-});
-renders({
-    <div></div>
-})
-module.exports = {
-
-}
-
-
-
-//模块文件打包后：
-;(function(__define){
-    __define(function(require, imports, extend, renders){
-        var module = this;
-        require('./a');
-        imports('./b');
-        extend('./c', {
-            
-        });
-        renders(
-            '<div></div>'
-        )
-        module.exports = {
-        
-        }
-    })
-})(Nui['_module_1_define'])
-</script>
-            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="注意事项">注意事项</h2>
-            <p class="e-mt15 f-lh22">匹配文件时一定要排除掉生成的压缩文件以及config文件，不然可能会导致任务多次执行。原因是生成或修改压缩文件本身就相当于文件修改，因此又会触发监听任务。</p>
-<script type="text/highlight" data-javascript-options>
-                                                    //注意这里
-gulp.src(['./style/**/*.{css,less}', '!./style/**/*-{min}.css'])
-                                                                    //注意这里
-gulp.watch(['{script,style}/**/*.{js,css,less}', '!script/**/*-min.{js,css}', '!script/config.js'], ['pageRev'])
-</script>
-            <p class="e-mt15 f-lh22">监听文件路径去掉前面的“./”，不然无法监听新增的文件</p>
-<script type="text/highlight" data-javascript-options>
-//错误写法
-gulp.watch(['./images/**/*.{jpg,png,gif,jpeg}', './style/**/*.{eot,svg,ttf,woff}'], ['cssRev'])
-
-//正确写法
-gulp.watch(['images/**/*.{jpg,png,gif,jpeg}', 'style/**/*.{eot,svg,ttf,woff}'], ['cssRev'])
-</script>
-            <p class="e-mt15 f-lh22">文件监听任务执行过慢时，首先考虑是不是一次性监听的文件太多，尽量分开监听，如果项目中js和css过多，可以使用mintype参数，压缩指定类型文件</p>
-<script type="text/highlight" data-javascript-options>
-var pageRev = function(type){
-    if(!type){
-        //压缩css和js
-		delete options.mintype
-	}
-	else{
-        //压缩指定类型
-		options.mintype = type
-	}
-	gulp.src(['./**/*.html'])
-		.pipe(nui(options))
-		.pipe(gulp.dest('./'))
-}
-
-gulp.watch(['./style/**/*.{css,less}', '!./style/**/*-min.css'], function(){
-    pageRev('css')
-})
-
-gulp.watch(['./style/**/*.js', '!./style/**/*-min.js'], function(){
-    pageRev('js')
-})
-</script>
+                <p class="e-mt15 f-ti2">
+                    一切准备就绪之后就可以学习和使用打包工具了。
+                </p>
+            </div>
         </div>	
     </div>
     
@@ -185,10 +122,12 @@ gulp.watch(['./style/**/*.js', '!./style/**/*-min.js'], function(){
                 
                 <ul>
                     <li>
-                        <a href="#安装使用">安装使用</a>
+                        <a href="/nui/pages/pack/gulp.html">gulp</a>
+                        
                     </li>
                     <li>
-                        <a href="#注意事项">注意事项</a>
+                        <a href="/nui/pages/pack/webpack.html">webpack</a>
+                        
                     </li>
                 </ul>
                 
@@ -204,7 +143,7 @@ gulp.watch(['./style/**/*.js', '!./style/**/*-min.js'], function(){
 	
 
     <script type="text/javascript" src="/nui/assets/script/jquery.min.js?v=4223d4c"></script>
-<script type="text/javascript" src="/nui/dist/nui-load.js?v=4e48572"></script>
+<script type="text/javascript" src="/nui/dist/nui-load.js?v=0099769"></script>
 <script type="text/javascript" src="/nui/config.js?v=5b64b06"></script>
     
     <script type="text/javascript">

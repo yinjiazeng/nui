@@ -303,10 +303,36 @@
                 {%if current == 'pack' %}
                 <ul>
                     <li>
-                        <a href="#安装使用">安装使用</a>
+                        <a href="/nui/pages/pack/gulp.html"{%if page == 'gulp' %} class="s-crt"{% endif %}>gulp</a>
+                        {%if page == 'gulp' %}
+                        <ul>
+                            <li>
+                                <a href="#install">安装</a>
+                            </li>
+                            <li>
+                                <a href="#use">使用</a>
+                            </li>
+                            <li>
+                                <a href="#notice">注意</a>
+                            </li>
+                        </ul>
+                        {% endif %}
                     </li>
                     <li>
-                        <a href="#注意事项">注意事项</a>
+                        <a href="/nui/pages/pack/webpack.html"{%if page == 'webpack' %} class="s-crt"{% endif %}>webpack</a>
+                        {%if page == 'webpack' %}
+                        <ul>
+                            <li>
+                                <a href="#webpack_install">安装</a>
+                            </li>
+                            <li>
+                                <a href="#webpack_use">使用</a>
+                            </li>
+                            <li>
+                                <a href="#webpack_notice">注意</a>
+                            </li>
+                        </ul>
+                        {% endif %}
                     </li>
                 </ul>
                 {% endif %}
