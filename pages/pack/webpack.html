@@ -48,7 +48,19 @@
 	<div class="g-main f-fr">
 		<div class="mainbox">
             <h1 class="e-pt20 e-pb20 f-fs28">webpack</h1>
-			
+			<div class="e-mt15 f-lh22">
+                <p>
+					webpack是一个非常强大的打包工具，但是默认只能打包符合标准规范（如CommonJS/AMD）的语法，
+					由于Nui框架模块化方式没有按照规范实现，因此webpack无法识别其模块代码，好在工具提供了plugin以及loader2种方式解决这个问题，
+					<a href="//npm.taobao.org/package/nui-loader" target="_blank" class="f-cblue">nui-loader</a>
+					就是一个将Nui模块语法转化为webpack可识别语法的解释器，能让我们在使用Nui模块特性的同时使用webpack进行打包。
+				</p>
+            </div>
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="install">安装</h2>
+            <p class="e-mt15 f-lh22">使用之前需先全局安装webpack，这样才能在终端使用webpack命令：</p>
+<script type="text/highlight" data-highlight-options>
+cnpm install -g webpack
+</script>
 		</div>
 	</div>
 	
