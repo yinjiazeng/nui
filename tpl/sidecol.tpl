@@ -313,7 +313,7 @@
                                 <a href="#use">使用</a>
                             </li>
                             <li>
-                                <a href="#notice">注意</a>
+                                <a href="#notice">注意事项</a>
                             </li>
                         </ul>
                         {% endif %}
@@ -323,13 +323,13 @@
                         {%if page == 'webpack' %}
                         <ul>
                             <li>
-                                <a href="#webpack_install">安装</a>
+                                <a href="#install">安装</a>
                             </li>
                             <li>
-                                <a href="#webpack_use">使用</a>
+                                <a href="#use">使用</a>
                             </li>
                             <li>
-                                <a href="#webpack_notice">注意</a>
+                                <a href="#notice">注意事项</a>
                             </li>
                         </ul>
                         {% endif %}

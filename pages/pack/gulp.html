@@ -264,9 +264,61 @@ gulp.task('default', ['pack', 'watch'])
                 只要编辑了文件，版本号都会自动修改，无需担心项目发布后资源缓存的问题。
             </p>
             <p class="e-mt15 f-lh22">
-                至此gulp-nui的主要功能都介绍完毕，当然工具有很多参数，这里没有全部介绍，请自行参考API去使用。
+                至此gulp-nui的主要功能都介绍完毕，当然工具有很多参数，这里没有全部介绍，请自行参考<a href="//npm.taobao.org/package/gulp-nui" target="_blank" class="f-cblue">API</a>去使用。
             </p>
-            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="notice">注意</h2>
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="notice">注意事项</h2>
+            <p class="e-mt15 f-lh22">监听文件路径去掉前面的“./”，不然无法监听新增的文件</p>
+<script type="text/highlight" data-javascript-options>
+gulp.watch(['./src/**/*.*'], ['task'])
+//应该改为
+gulp.watch(['src/**/*.*', ['task'])
+</script>
+            <p class="e-mt15 f-lh22">如果使用了jQuery.validate.js插件，jsmin参数一定要添加以下配置，不然IE8-浏览器会报错</p>
+<script type="text/highlight" data-javascript-options>
+jsmin:{
+    mangle:{
+        except:['$']
+    } 
+}
+</script>
+            <p class="e-mt15 f-lh22">建议js和css分开监听，并通过mintype设置需要压缩的文件。如果都写一起的话，只修改了css文件，也会对js重新合并压缩，显然有些浪费且耗时</p>
+<script type="text/highlight" data-javascript-options>
+var options = {
+    //配置参数
+}
+
+var pack = function(type){
+	if(!type){
+		delete options.mintype
+	}
+	else{
+		options.mintype = type
+	}
+    return gulp.src(['./html/**/*.html'])
+               .pipe(nui(options))
+}
+
+gulp.task('pack', function(){
+	return pack()
+})
+
+gulp.task('pack_js', function(){
+	return pack('js')
+})
+
+gulp.task('pack_css', function(){
+	return pack('css')
+})
+
+gulp.task('watch', function(){
+    //只监听js文件
+    gulp.watch(['xxx.js'], 'pack_js');
+    //只监听css文件
+    gulp.watch(['xxx.{css,less}'], 'pack_css');
+    //其它监听任务
+    //...
+})
+</script>
 		</div>
 	</div>
 	
@@ -319,7 +371,7 @@ gulp.task('default', ['pack', 'watch'])
                                 <a href="#use">使用</a>
                             </li>
                             <li>
-                                <a href="#notice">注意</a>
+                                <a href="#notice">注意事项</a>
                             </li>
                         </ul>
                         
