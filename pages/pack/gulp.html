@@ -199,12 +199,46 @@ gulp.watch('./src/**/*.{js,css}', ['pack'])
             <p class="e-mt15 f-lh22">编辑config.js，输入以下内容：</p>
 <script type="text/highlight" data-javascript-options>
 Nui.config({
+    base:'../',
     paths:{
         asset:'../'
     }
 })
 </script>
-            <p class="e-mt15 f-lh22">然后编辑gulpfile.js，修改内容如下：</p>
+            <p class="e-mt15 f-lh22">
+                base属性表示项目根目录，我的页面是直接访问的，不是在服务器环境下，但是index.html不在根目录，因此设置为“../”，如果你的项目是放在服务器环境，并且根目录就是nui-demo，可不用设置，因为默认值就是当前域名。
+                paths属性可设置路径别名，其中路径是基于根目录的，这里的asset你可以看成base + asset，也就是“../../”。
+            </p>
+            <p class="e-mt15 f-lh22">添加完之后，我们还要把这个js引入到页面中：</p>
+<script type="text/highlight" data-xml-options>
+&lt;!doctype html&gt;
+    &lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;title&gt;nui-demo&lt;/title&gt;
+        &lt;link rel="stylesheet" type="text/css" href="../src/style/app-min.css"/&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id="app"&gt;&lt;/div&gt;
+        &lt;script src="https://yinjiazeng.github.io/nui/dist/nui-load-min.js"&gt;&lt;/script&gt;
+        &lt;script src="../config.js"&gt;&lt;/script&gt;
+        &lt;script&gt;
+        Nui.load('../src/script/app')
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</script>
+            <p class="e-mt15 f-lh22">编辑app.js，引入图片：</p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(function(require){
+    var url = this.imports('{asset}/demo.png');
+    var img = document.createElement('img');
+    img.src = url;
+    document.getElementById('app').appendChild(img);
+})
+</script>
+            <p class="e-mt15 f-lh22">引入图片只能是imports方法，不能用require，使用别名需“{别名}”的方式。引入任意资源都可以用别名，例如js、css等。</p>
+            <p class="e-mt15 f-lh22">最后编辑gulpfile.js，修改内容如下：</p>
 <script type="text/highlight" data-javascript-options>
 var gulp = require('gulp');
 var nui = require('gulp-nui');
@@ -224,6 +258,14 @@ gulp.task('watch', function(){
 
 gulp.task('default', ['pack', 'watch'])
 </script>
+            <p class="e-mt15 f-lh22">
+                syncAsset属性值就是在config.js中设置的路径别名，重新执行下gulp，会看到src目录下多了images/packs/文件夹，打包后的图片就存放在里面。
+                刷新浏览器后你会看到页面上显示了那张图片。如果你足够细心，会发现app-min.js的请求地址后面多了“v=xxx”的版本号，没错，这就是工具的清缓存功能，
+                只要编辑了文件，版本号都会自动修改，无需担心项目发布后资源缓存的问题。
+            </p>
+            <p class="e-mt15 f-lh22">
+                至此gulp-nui的主要功能都介绍完毕，当然工具有很多参数，这里没有全部介绍，请自行参考API去使用。
+            </p>
             <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="notice">注意</h2>
 		</div>
 	</div>
