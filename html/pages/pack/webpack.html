@@ -19,11 +19,26 @@
 					<a href="//npm.taobao.org/package/nui-loader" target="_blank" class="f-cblue f-wsn">nui-loader</a>
 					就是一个将Nui模块化语法转化为webpack可识别语法的解释器，能让我们在使用Nui模块特性的同时使用webpack进行打包。
 				</p>
+				<p class="e-mt15 f-cred">本页面内容仅介绍nui-loader的使用，默认认为你对webpack有一定的了解，因此不会对webpack的使用做过多的解释。</p>
             </div>
-            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="install">安装</h2>
-            <p class="e-mt15 f-lh22">使用之前需先全局安装webpack，这样才能在终端使用webpack命令：</p>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="install">安装</h2>
+			<p class="e-mt15 f-lh22">新建一个nui-demo文件夹，目录结构是如下形式：</p>
+<script type="text/highlight" data-highlight-options>
+- html
+    - index.html
+- src
+    - script
+        - app.js
+        - content.js
+- webpack.config.js
+</script>
+            <p class="e-mt15 f-lh22">全局安装webpack：</p>
 <script type="text/highlight" data-highlight-options>
 cnpm install -g webpack
+</script>
+			<p class="e-mt15 f-lh22">终端中路径切换到nui-demo目录，然后分别安装webpack、nui-loader、html-webpack-plugin、clean-webpack-plugin：</p>
+<script type="text/highlight" data-highlight-options>
+cnpm install --save-dev webpack nui-loader html-webpack-plugin clean-webpack-plugin
 </script>
 		</div>
 	</div>

@@ -17,10 +17,6 @@
                 <p>gulp是一个构建工具，本身不支持打包功能，但是完善的插件机制让它什么都能做，<a href="//npm.taobao.org/package/gulp-nui" target="_blank" class="f-cblue">gulp-nui</a>就是用于打包nui框架模块的插件，当然功能不仅限于打包，下面介绍一下它如何使用：</p>
             </div>
             <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="install">安装</h2>
-            <p class="e-mt15 f-lh22">使用之前需先全局安装gulp，这样才能在终端使用gulp命令：</p>
-<script type="text/highlight" data-highlight-options>
-cnpm install -g gulp
-</script>
             <p class="e-mt15 f-lh22">新建一个nui-demo文件夹，目录结构是如下形式：</p>
 <script type="text/highlight" data-highlight-options>
 - html
@@ -32,7 +28,11 @@ cnpm install -g gulp
 - config.js
 - gulpfile.js
 </script>
-            <p class="e-mt15 f-lh22">终端中路径切换到该文件夹根目录，然后分别安装gulp以及gulp-nui，这里再次安装gulp是因为需要作为模块使用。</p>
+            <p class="e-mt15 f-lh22">全局安装gulp：</p>
+<script type="text/highlight" data-highlight-options>
+cnpm install -g gulp
+</script>
+            <p class="e-mt15 f-lh22">终端中路径切换到nui-demo目录，然后分别安装gulp以及gulp-nui：</p>
 <script type="text/highlight" data-highlight-options>
 cnpm install --save-dev gulp gulp-nui
 </script>
