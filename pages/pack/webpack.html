@@ -22,8 +22,8 @@
         </a>
         <ul class="m-nav f-fr f-fs16">
             
-	
-	
+    
+    
     <li class="f-fl">
         <a class="s-crt" href="/nui/pages/">教程</a>
     </li>
@@ -45,19 +45,19 @@
 	<!-- content -->
 	<div class="g-content">
     
-	<div class="g-main f-fr">
-		<div class="mainbox">
+    <div class="g-main f-fr">
+        <div class="mainbox">
             <h1 class="e-pt20 e-pb20 f-fs28">webpack</h1>
-			<div class="e-mt15 f-lh22">
+            <div class="e-mt15 f-lh22">
                 <p>
-					webpack是一个非常强大的打包工具，可以打包符合标准规范（如CommonJS/AMD）的模块，也可以封装loader来支持其它模块化特性。
-					<a href="//npm.taobao.org/package/nui-loader" target="_blank" class="f-cblue f-wsn">nui-loader</a>
-					就是一个将Nui模块化语法转化为webpack可识别语法的解释器，能让我们在使用Nui模块特性的同时使用webpack进行打包。
-				</p>
-				<p class="e-mt15 f-cred">本页面内容仅介绍nui-loader的使用，默认认为你对webpack有一定的了解，因此不会对webpack的使用做过多的解释。</p>
+                    webpack是一个非常强大的打包工具，可以打包符合标准规范（如CommonJS/AMD）的模块，也可以封装loader来支持其它模块化特性。
+                    <a href="//npm.taobao.org/package/nui-loader" target="_blank" class="f-cblue f-wsn">nui-loader</a>
+                    就是一个将Nui模块化语法转化为webpack可识别语法的解释器，能让我们在使用Nui模块特性的同时使用webpack进行打包。
+                </p>
+                <p class="e-mt15 f-cred">本页面内容仅介绍nui-loader的使用，默认认为你对webpack有一定的了解，因此不会对webpack的使用做过多的解释。</p>
             </div>
-			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="install">安装</h2>
-			<p class="e-mt15 f-lh22">新建一个nui-demo文件夹，目录结构是如下形式：</p>
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="install">安装</h2>
+            <p class="e-mt15 f-lh22">新建一个nui-demo文件夹，目录结构是如下形式：</p>
 <script type="text/highlight" data-highlight-options>
 - html
     - index.html
@@ -71,14 +71,148 @@
 <script type="text/highlight" data-highlight-options>
 cnpm install -g webpack
 </script>
-			<p class="e-mt15 f-lh22">终端中路径切换到nui-demo目录，然后分别安装webpack、nui-loader、html-webpack-plugin、clean-webpack-plugin：</p>
+            <p class="e-mt15 f-lh22">终端中路径切换到nui-demo目录，然后分别安装webpack、nui-loader、html-webpack-plugin、clean-webpack-plugin：</p>
 <script type="text/highlight" data-highlight-options>
 cnpm install --save-dev webpack nui-loader html-webpack-plugin clean-webpack-plugin
 </script>
-		</div>
-	</div>
-	
-	
+            <h2 class="e-pt20 f-fs22 f-bb e-pb10" id="use">使用</h2>
+            <p class="e-mt15 f-lh22">编辑/src/script/app.js文件，添加如下代码：</p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(function(require){
+    var content = require('./content');
+    document.getElementById('app').innerHTML = content;
+})
+</script>
+            <p class="e-mt15 f-lh22">编辑/src/script/content.js文件，添加如下代码：</p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(function(require){
+    return 'Hello World'
+})
+</script>
+            <p class="e-mt15 f-lh22">编辑/html/index.html文件，添加如下代码：</p>
+<script type="text/highlight" data-xml-options>
+&lt;!doctype html&gt;
+    &lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;title&gt;nui-demo&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id="app"&gt;&lt;/div&gt;
+        &lt;script src="https://yinjiazeng.github.io/nui/dist/nui-load-min.js"&gt;&lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</script>
+            <p class="e-mt15 f-lh22">编辑webpack.config.js，添加如下代码：</p>
+<script type="text/highlight" data-javascript-options>
+var path = require('path');
+var htmlWebpackPlugin = require('html-webpack-plugin');
+var webpack = require('webpack');
+var cleanWebpackPlugin = require('clean-webpack-plugin');
+
+module.exports = {
+    entry:{
+        app:'./src/script/app.js'
+    },
+    plugins:[
+        new htmlWebpackPlugin({
+            template:'./html/index.html'
+        }),
+        new cleanWebpackPlugin(['dist']),
+    ],
+    module:{
+        rules:[{
+			test:/\.js$/,
+			use:[{
+				loader:'nui-loader'
+			}]
+		}]
+    },
+    output:{
+        filename:'[name].[chunkhash].js',
+        path:path.resolve(__dirname, 'dist')
+    }
+};
+</script>
+			<p class="e-mt15 f-lh22">在终端中执行webpack --watch，打开/dist/index.html，页面显示了hello world，修改content.js，页面内容也会及时更新。</p>
+			<p class="e-mt15 f-lh22">webpack和Nui都支持别名，可是使用方式不一样，如果你习惯了Nui框架的别名书写方式，可以通过nui-loader参数进行设置。编辑webpack.config.js，修改module部分如下：</p>
+<script type="text/highlight" data-javascript-options>
+module:{
+	rules:[{
+		test:/\.js|css|less$/,
+		use:[{
+			loader:'nui-loader',
+			options:{
+				paths:{
+					src:'/src/script/'
+				}
+			}
+		}]
+	}]
+}
+</script>
+			<p class="e-mt15 f-lh22">编辑app.js，修改内容如下：</p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(function(require){
+	var content = require('{src}/content');
+	document.getElementById('app').innerHTML = content;
+})
+</script>
+			<p class="e-mt15 f-lh22">重新执行webpack --watch，页面正常显示内容。</p>
+			<p class="e-mt15 f-lh22">如果你的项目使用了非常多的别名，或者使用gulp-nui的项目迁移到webpack，可以通过url参数将别名配置到一个文件中。项目根目录新建一个config.js，添加内容如下：</p>
+<script type="text/highlight" data-javascript-options>
+Nui.config({
+	paths:{
+		src:'/src/script/'
+	}
+})
+</script>
+			<p class="e-mt15 f-lh22">编辑webpack.config.js，修改module部分如下：</p>			
+<script type="text/highlight" data-javascript-options>
+module:{
+	rules:[{
+		test:/\.js|css|less$/,
+		use:[{
+			loader:'nui-loader',
+			options:{
+				url:path.join(__dirname, './config.js')
+			}
+		}]
+	}]
+}
+</script>
+			<p class="e-mt15 f-lh22">重新执行webpack --watch，页面正常显示内容。</p>
+			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="notice">注意事项</h2>
+			<p class="e-mt15 f-lh22">由于Nui组件中加载样式文件没有添加后缀，因此需配置样式文件加载顺序，less优先。</p>
+<script type="text/highlight" data-javascript-options>
+module.exports = {
+	...,
+	resolve:{
+		extensions:['.js', '.less', '.css']
+	}
+}
+</script>
+			<p class="e-mt15 f-lh22">Nui框架中为了解决低版本浏览器的一些bug用到了background-image:url(about:blank)，这在使用css-loader时会报错，因此需要将url参数设置为false。</p>
+<script type="text/highlight" data-javascript-options>
+module.exports = {
+	...,
+	module:{
+		rules:[{
+			test:/\.css$/,
+			use:[{
+				loader:'css-loader',
+				options:{
+					url:false
+				}
+			}]
+		}]
+	}
+}
+</script>
+        </div>
+    </div>
+    
+    
 <div class="f-fl g-sidecol">
     <div class="side">
         <ul class="m-menu f-lh28">
