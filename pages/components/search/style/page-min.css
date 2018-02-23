@@ -1199,7 +1199,7 @@ input:-webkit-autofill {
   background: none;
 }
 .nui-layer-mask {
-  background-image: url(data:blank) \9;;
+  background-image: url(data:blank) \9;
 }
 .nui-layer-mask .layer-mask {
   position: relative;
