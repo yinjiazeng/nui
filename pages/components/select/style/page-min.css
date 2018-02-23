@@ -210,10 +210,6 @@ legend {
   font: 14px/1.14 '\5fae\8f6f\96c5\9ed1', helvetica, sans-serif;
   color: #232323;
 }
-html {
-  _background-image: url(about:blank);
-  _background-attachment: fixed;
-}
 a {
   color: #232323;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -1163,7 +1159,7 @@ input:-webkit-autofill {
   background: none;
 }
 .nui-layer-mask {
-  background-image: url(about:blank) \9;;
+  background-image: url(data:blank) \9;;
 }
 .nui-layer-mask .layer-mask {
   position: relative;

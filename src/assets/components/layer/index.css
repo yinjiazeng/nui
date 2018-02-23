@@ -11,7 +11,7 @@
 .nui-layer .layer-foot .layer-inner { overflow:hidden;}
 .nui-layer .layer-foot .ui-button { margin:0 6px; height: 30px;}
 .nui-layer .layer-button-close { position:absolute; top:3px; right:5px; padding:0; width:25px; height:25px; line-height: 25px; font-size:25px; overflow: hidden; color:#666; border:none; z-index:1; background: none;}
-.nui-layer-mask { background-image:url(about:blank)\9;}
+.nui-layer-mask { background-image:url(data:blank)\9;}
 .nui-layer-mask .layer-mask { position:relative; width:100%; height:100%; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000); background:rgba(0,0,0,.5); background:transparent\;}
 .nui-layer-movemask { filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000); background:rgba(0,0,0,0.5); background:transparent\;}
 .nui-layer .layer-bubble, .nui-layer .layer-bubble b, .nui-layer .layer-bubble i { position:absolute;}

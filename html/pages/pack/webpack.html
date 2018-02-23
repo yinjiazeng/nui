@@ -157,23 +157,6 @@ module.exports = {
 	}
 }
 </script>
-			<p class="e-mt15 f-lh22">Nui框架中为了解决低版本浏览器的一些bug用到了background-image:url(about:blank)，这在使用css-loader时会报错，因此需要将url参数设置为false。</p>
-<script type="text/highlight" data-javascript-options>
-module.exports = {
-	...,
-	module:{
-		rules:[{
-			test:/\.css$/,
-			use:[{
-				loader:'css-loader',
-				options:{
-					url:false
-				}
-			}]
-		}]
-	}
-}
-</script>
         </div>
     </div>
     {% import 'sidecol.tpl' as side %}
