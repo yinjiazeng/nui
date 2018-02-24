@@ -122,17 +122,17 @@ module.exports = {
     ],
     module:{
         rules:[{
-			test:/\.js$/,
-			use:[{
-				loader:'nui-loader'
-			}]
-		}]
+            test:/\.js$/,
+            use:[{
+                loader:'nui-loader'
+            }]
+        }]
     },
     output:{
         filename:'[name].[chunkhash].js',
         path:path.resolve(__dirname, 'dist')
     }
-};
+}
 </script>
 			<p class="e-mt15 f-lh22">在终端中执行webpack --watch，打开/dist/index.html，页面显示了hello world，修改content.js，页面内容也会及时更新。</p>
 			<p class="e-mt15 f-lh22">webpack和Nui都支持别名，可是使用方式不一样，如果你习惯了Nui框架的别名书写方式，可以通过nui-loader参数进行设置。编辑webpack.config.js，修改module部分如下：</p>
