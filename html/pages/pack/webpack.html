@@ -148,7 +148,7 @@ module:{
 </script>
 			<p class="e-mt15 f-lh22">重新执行webpack --watch，页面正常显示内容。</p>
 			<h2 class="e-pt20 f-fs22 f-bb e-pb10" id="notice">注意事项</h2>
-			<p class="e-mt15 f-lh22">由于Nui组件中加载样式文件没有添加后缀，因此需配置样式文件加载顺序，less优先。</p>
+			<p class="e-mt15 f-lh22">由于Nui组件中加载样式文件没有添加后缀，因此需配置文件类型加载顺序，less优先。</p>
 <script type="text/highlight" data-javascript-options>
 module.exports = {
 	...,
@@ -156,6 +156,26 @@ module.exports = {
 		extensions:['.js', '.less', '.css']
 	}
 }
+</script>
+            <p class="e-mt15 f-lh22">
+                使用Nui框架编写模块时，4个工厂函数require/imports/extend/renders中除了require，
+                其它三个必须加this.或者module.前缀，否则解释器无法识别。<span class="f-cred">gulp-nui转webpack的要注意</span>。
+            </p>
+<script type="text/highlight" data-javascript-options>
+Nui.define(function(){
+    var module = this
+    
+    this.imports('xxxx')
+    
+    this.extend('xxxx', {
+    
+    })
+    
+    module.renders({
+        <div></div>
+    })
+    
+})
 </script>
         </div>
     </div>
