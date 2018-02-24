@@ -1769,7 +1769,12 @@ __define('src/components/highlight/javascript',function(){
                         //关键字、符号、单词
                         else{
                             v = v.replace(new RegExp('('+ symbol +')', 'g'), _class._getcode('symbol', '$1'))
-                                .replace(new RegExp('('+ kws +')(\\s+|\\\<code)', 'g'), _class._getcode('keyword', '$1')+'$2')
+                                .replace(new RegExp('([\\w$]?)('+ kws +')(\\s+|\\\<code)', 'g'), function(str, m1, m2, m3){
+                                    if(m1){
+                                        return str
+                                    }
+                                    return m1 + _class._getcode('keyword', m2) + m3
+                                })
                                 .replace(/(\/code>\s*)(\d+)/g, '$1'+_class._getcode('number', '$2'))
                                 .replace(/(\/code>\s*)?([^<>\s]+)(\s*<code)/g, '$1'+_class._getcode('word', '$2')+'$3')
 
