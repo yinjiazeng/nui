@@ -511,7 +511,7 @@
 
         //导入资源
         methods.imports = function(id){
-            return (config.paths.base || '') + id
+            return (config.base || '') + id
         }
 
         //渲染字符串
@@ -1005,8 +1005,9 @@
         }
         var base = config.base || config.paths.base || '';
         if(!isHttp(base)){
-            base = config.paths.base = domain+base
+            base = domain + base
         }
+        config.base = config.paths.base = base;
         each(config.paths, function(v, k){
             if(k !== 'base' && !isHttp(v)){
                 config.paths[k] = base+'/' + v
