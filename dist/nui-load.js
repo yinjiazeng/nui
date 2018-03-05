@@ -897,18 +897,18 @@
         var len = args.length;
         var params = [];
 
-        //Nui.define()
-        //Nui.define('')
-        //Nui.define([])
-        //Nui.define({})
+        //define()
+        //define('')
+        //define([])
+        //define({})
         if(!len || (len === 1 && !type(args[0], 'Function'))){
             params.push(function(){
                 return args[0]
             })
         }
 
-        //Nui.define('id', [])
-        //Nui.define('id', {})
+        //define('id', [])
+        //define('id', {})
         else if((len === 2 && !type(args[1], 'Function')) || (len == 3 && !type(args[2], 'Function'))){
             params.push(args[0]);
             params.push(function(){
@@ -916,24 +916,24 @@
             })
         }
 
-        //Nui.define({}, function(){})
+        //define({}, function(){})
         else if(len === 2 && !type(args[0], ['Array', 'String']) && type(args[1], 'Function')){
             params.push(args[1])
         }
 
-        //Nui.define('id', {}, function(){})
-        //Nui.define('id', '', function(){})
+        //define('id', {}, function(){})
+        //define('id', '', function(){})
         else if(len === 3 && !isArray(args[1]) && type(args[2], 'Function')){
             params.push(args[0]);
             params.push(args[2]);
         }
 
-        //Nui.define('id', [], function(){})
+        //define('id', [], function(){})
         else{
             params = args
         }
 
-        //Nui.define(function(){})
+        //define(function(){})
         if(type(params[0], 'Function')){
             params[2] = params[0];
             params[0] = undefined;
@@ -941,11 +941,11 @@
         }
         else if(type(params[1], 'Function')){
             params[2] = params[1];
-            //Nui.define('id', function(){})
+            //define('id', function(){})
             if(type(params[0], 'String')){
                 params[1] = [];
             }
-            //Nui.define(['mod1', 'mod2', ..], function(){})
+            //define(['mod1', 'mod2', ..], function(){})
             else{
                 params[1] = params[0];
                 params[0] = undefined;
