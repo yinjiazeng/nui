@@ -327,25 +327,28 @@ Nui.define(function(require){
         _disabled:function(){
             return this.target.prop('disabled')
         },
+        _getName:function(_class, array){
+            var skin = Nui.trim(this._options.skin);
+            _class = _class || this.constructor;
+            if(_class.__parent){
+                var _pclass = _class.__parent.constructor;
+                var _name = _pclass.__component_name;
+                if(_name !== 'component'){
+                    if(skin){
+                        array.unshift('nui-'+_name+'-'+skin);
+                    }
+                    array.unshift('nui-'+_name);
+                    return this._getName(_pclass, array)
+                }
+            }
+            return array
+        },
         _tplData:function(data){
             var opts = this._options, 
+                skin = Nui.trim(opts.skin),
                 _class = this.constructor,
                 name = 'nui-' + _class.__component_name, 
-                skin = Nui.trim(opts.skin),
-                getName = function(_class, arrs){
-                    if(_class.__parent){
-                        var _pclass = _class.__parent.constructor;
-                        var _name = _pclass.__component_name;
-                        if(_name !== 'component'){
-                            if(skin){
-                                arrs.unshift('nui-'+_name+'-'+skin);
-                            }
-                            arrs.unshift('nui-'+_name);
-                            return getName(_pclass, arrs)
-                        }
-                    }
-                    return arrs
-                }, className = getName(_class, []);
+                className = this._getName(_class, []);
 
             className.push(name);
             if(skin){
