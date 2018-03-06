@@ -1,0 +1,14 @@
+{
+  "name": "nuijs",
+  "version": "0.0.9",
+  "description": "nui框架",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nui"
+  ],
+  "author": "yinjiazeng",
+  "license": "ISC"
+}
