@@ -1,0 +1,67 @@
+@blue:#3F91F1;
+
+.ui-checkradio, .ui-checkradio em, .ui-checkradio i { display:inline-block;}
+.ui-checkradio em { cursor:pointer;}
+.ui-checkradio input { opacity:0; filter:alpha(opacity=0);}
+.ui-checkradio i { width:14px; height:14px; background:url("../../images/check.png?v=4476ed8") no-repeat;}
+.ui-checkradio .ui-checkbox.s-checked i { background-position:-20px 0;}
+.ui-checkradio .ui-checkbox.s-dis i { background-position:-40px 0;}
+.ui-checkradio .ui-radio i { background-image:url("../../images/radio.png?v=474eea8"); background-position: 0 -15px;}
+.ui-checkradio .ui-radio.s-checked i { background-position:-15px -15px;}
+.ui-checkradio .ui-radio.s-dis i { background-position: 0 0;}
+.ui-checkradio .ui-radio.s-dis, .ui-checkradio .ui-checkbox.s-dis { cursor:default; color: #c5c5c5;}
+.ui-checkradio .ui-radio.s-checked.s-dis i { background-position: -15px 0;}
+.ui-checkradio .txt { margin-top: -1px; margin-left: 5px;}
+
+.ui-checkradio-switches .ui-checkbox { position:relative; height:25px; line-height:25px; color:#fff; background-color:#9B9B9B; border-radius:100px; text-align:right;}
+.ui-checkradio-switches .ui-checkbox i { position:absolute; left:2px; top:2px; background:#fff; width:21px; height:21px; border-radius:100px;}
+.ui-checkradio-switches .ui-checkbox s { margin-left:21px; padding:0 8px; white-space:nowrap;}
+.ui-checkradio-switches .ui-checkbox.s-checked { text-align:left; background-color:#3F91F1;}
+.ui-checkradio-switches .ui-checkbox.s-checked i { left:auto; right:2px;}
+.ui-checkradio-switches .ui-checkbox.s-checked s { margin-left:0; margin-right:21px;}
+
+.ui-checkradio-hooks {
+    em {
+        width: 132px;
+        height: 33px;
+        border: 1px solid #ccc;
+        position: relative;
+        i {
+            display: none;
+        }
+        s {
+            position: absolute;
+            bottom: -2px;
+            right: -1px;
+            display: none;
+        }
+        b {
+            width: 100%;
+            text-align: center;
+            line-height: 33px;
+        }
+        &.s-checked {
+            border-color: @blue;
+            color: @blue;
+            s {
+                display: inline;
+            }
+        }
+        &.s-dis {
+            border-color: #ccc;
+            background-color: #f1f1f1;
+        }
+    }
+    &.ui-checkradio-large {
+        em {
+            width: 163px;
+            height: 43px;
+            s {
+                font-size: 18px;
+            }
+            b {
+                line-height: 43px;
+            }
+        }
+    }
+}

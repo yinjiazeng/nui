@@ -1,5 +1,3 @@
-var paging = require('./paging');
-var checkradio = require('./checkradio');
 var template = require('template');
 var datagrid = require('{com}/datagrid');
 

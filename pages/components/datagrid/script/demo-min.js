@@ -5,9 +5,6 @@
         }
         return module
     }
-__define('src/components/checkradio',function(){
-    
-})
 /**
  * Nui&jQuery扩展
  */
@@ -1550,8 +1547,1655 @@ __define('src/core/component',function(require){
     })
 })
 
-__define('src/components/paging',['src/core/component'], function(component){
+__define('src/components/checkradio',function(require){
+    this.imports('../assets/components/checkradio/index');
+
+    var component = require('src/core/component');
+
+    $.fn.checkradio = function(attr, value){
+		if(!attr || $.isPlainObject(attr)){
+			var o = $.extend({
+				/**
+				 * @func 配置开关按钮
+				 * @type <Object>
+				 */
+				switches:{
+					off:'',
+					on:''
+				},
+				/**
+				 * @func 点击元素状态改变前回调，如返回值为false则将阻止状态改变
+				 * @type <Function>
+				 * @return <undefined, Boolean>
+				 */
+				beforeCallback:$.noop,
+				/**
+				 * @func 点击元素状态改变后回调
+				 * @type <Function>
+				 */
+				callback:$.noop
+			}, attr||{});
+			return this.each(function(){
+				var me = $(this);
+				var checkradio = me.closest('.ui-checkradio');
+				if(!checkradio.length){
+					return;
+				}
+				var checked = me.prop('checked') ? ' s-checked' : '';
+				var disabled = me.prop('disabled') || me.prop('readonly') ? ' s-dis' : '';
+				var name = me.attr('name');
+				var switches = $.extend({}, o.switches, me.data()||{});
+				var switchElem = checkradio.find('.text');
+				var type = 'radio';
+				if(me.is(':checkbox')){
+					type = 'checkbox';
+				}
+				if(checkradio.children().attr('checkname')){
+					checkradio.children().attr('class', 'ui-'+ type + checked + disabled);
+				}
+				else{
+					if(switches.off && switches.on){
+						checkradio.addClass('ui-switches');
+						switchElem = $('<s class="text">'+ (me.prop('checked') ? switches.on : switches.off) +'</s>').insertBefore(me);
+					}
+					me.css({position:'absolute', top:'-999em', left:'-999em', opacity:0}).wrap('<i></i>');
+					checkradio.wrapInner('<em class="ui-'+ type + checked + disabled +'" checkname="'+ name +'"></em>')
+					.children().click(function(e){
+						var ele = $(this);
+						if(me.prop('disabled') || me.prop('readonly') || o.beforeCallback(me, e) === false){
+							return;
+						}
+						if(me.is(':checkbox')){
+							var checked = me.prop('checked');
+							me.prop('checked', !checked);
+							ele[(checked ? 'remove' : 'add') + 'Class']('s-checked');
+							if(switchElem.length){
+								switchElem.text(checked ? switches.off : switches.on);
+							}
+						}
+						else{
+							if(me.prop('checked')){
+								return
+							}
+							me.prop('checked', true);
+							$('.ui-radio[checkname="'+ name +'"]').removeClass('s-checked');
+							ele.addClass('s-checked');
+						}
+						o.callback(me, e)
+					});
+				}
+				if(o.init && !me.prop('disabled') && !me.prop('readonly') && o.beforeCallback(me) !== false){
+					o.callback(me, 'init')
+				}
+			});
+		}
+		else{
+			return $(this).prop(attr, value == true).checkradio();
+		}
+    }
+})
+/**
+ * @author Aniu[2016-11-10 22:39]
+ * @update Aniu[2016-11-10 22:39]
+ * @version 1.0.1
+ * @description layer弹出层
+ */
+
+__define('src/components/layer/layer',function(require){
+    this.imports('../../assets/components/layer/index');
     
+    var component = require('src/core/component');
+    var util = require('src/core/util');
+    var template = require('src/core/template');
+
+    var statics = {
+        _maskzIndex:10000,
+        _zIndex:10000,
+        _init:function(){
+            var _class = this;
+            var timer = null;
+            Nui.win.on('resize', function(){
+                clearTimeout(timer);
+                timer = setTimeout(function(){
+                    Nui.each(_class.__instances, function(val){
+                        var opts = val._options;
+                        if(opts.position || opts.isCenter === true){
+                            val.resize()
+                        }
+                    })
+                })
+            })
+        },
+        _$fn:null,
+        _$ready:null,
+        init:null
+    }
+
+    var options = {
+        //内容
+        content:'',
+        //内容模版
+        template:'',
+        //模版数据
+        data:{},
+        //高度
+        width:320,
+        //宽度
+        height:'auto',
+        //弹出层层级
+        zIndex:null,
+        //最大宽度
+        maxWidth:0,
+        //最大高度
+        maxHeight:0,
+        //定时器，N毫秒后自动关闭
+        timer:0,
+        //弹窗四周距离窗口边缘距离
+        edge:0,
+        //弹窗容器
+        container:'body',
+        //弹窗标题
+        title:'温馨提示',
+        //是否可以拖动
+        isMove:false,
+        //是否有遮罩
+        isMask:true,
+        //是否只能在窗口内拖动
+        isInnerMove:false,
+        //点击遮罩是否关闭弹窗
+        isClickMask:false,
+        //是否使用遮罩拖动
+        isMoveMask:false,
+        //是否能用hide方法关闭遮罩
+        isHide:true,
+        //弹窗是否浏览器改变大小时显示在窗口中央
+        isCenter:true,
+        //是否全屏显示
+        isFull:false,
+        //是否在点击弹窗时将其置顶
+        isTop:false,
+        //是否以提示框展示，没有标题，按钮
+        isTips:false,
+        //是否拖动滚动条固定位置
+        isFixed:true,
+        //当内容超过弹出层容器，是否显示滚动条
+        scrollbar:true,
+        //是否点击弹窗或者点击遮罩层是否阻止事件冒泡
+        isStopProp:false,
+        //按钮对齐方式
+        align:'center',
+        //是否以气泡形式展示，弹出层边缘会多出箭头
+        bubble:{
+            enable:false,
+            dir:'top'
+        },
+        //弹出层内容展示iframe，不建议跨域使用
+        iframe:{
+            enable:false,
+            cache:false,
+            src:''
+        },
+        //关闭按钮
+        close:{
+            enable:true,
+            text:'×'
+        },
+        //确定按钮
+        confirm:{
+            enable:false,
+            name:'normal',
+            text:'确定',
+            callback:function(){
+                return true
+            }
+        },
+        //取消按钮
+        cancel:{
+            enable:true,
+            text:'取消'
+        },
+        /*弹出层定位 top/left/right/bottom
+        position:{
+            top:10,
+            left:10
+        }
+        */
+        position:null,
+        /*将弹出层置于遮罩层底部
+        under:[layer1, layer2]
+        */
+        under:null,
+        /*配置按钮，若id为confirm/cancel/close将会覆盖内置按钮参数
+        button:[{
+            id:'confirm',
+            text:'确定',
+            name:'normal',
+            callback:function(){
+
+            }
+        }]
+        */
+        button:null,
+        //onInit：弹出层显示时回调
+        //onDestroy：弹出层注销时回调
+        //当拖动弹出层移动后回调
+        onMove:null,
+        //窗口改变大小位置时回调
+        onResize:null,
+        //容器滚动时回调
+        onScroll:null,
+        //弹窗隐藏前回调，若返回false则不能隐藏
+        onHideBefore:null,
+        //弹窗销毁前回调，若返回false则不能销毁
+        onDestroyBefore:null,
+        //定时关闭弹窗回调
+        onTimer:null
+    }
+
+    return this.extend(component, {
+        _static:statics,
+        _options:options,
+        _template:{
+            layout:
+                '<div class="<% className %>" style="<% include \'style\' %>">'+
+                    '<div class="layer-box">'+
+                        '<%if close%>'+
+                            '<% var btn = close %>'+
+                            '<% include "button" %>'+
+                        '<%/if%>'+
+                        '<%if bubble%>'+
+                        '<span class="layer-bubble layer-bubble-<%bubble.dir||"top"%>"'+
+                        '<%if bubble.style%>'+
+                        ' style="<%each bubble.style v n%><%n%>:<%v%>;<%/each%>"'+
+                        '<%/if%>'+
+                        '><b></b><i></i></span>'+
+                        '<%/if%>'+
+                        '<%if title%>'+
+                        '<div class="layer-head">'+
+                            '<span class="layer-title"><%title%></span>'+
+                        '</div>'+
+                        '<%/if%>'+
+                        '<div class="layer-body">'+
+                            '<div class="layer-main">'+
+                            '<%content%>'+
+                            '</div>'+
+                        '</div>'+
+                        '<%if button && button.length%>'+
+                        '<div class="layer-foot" style="text-align:<%align%>">'+
+                        '<div class="layer-inner">'+
+                        '<%each button btn%>'+
+                            '<%include "button"%>'+
+                        '<%/each%>'+
+                        '</div>'+
+                        '</div>'+
+                        '<%/if%>'+
+                    '</div>'+
+                '</div>',
+            button:
+                '<button class="ui-button'+
+                    '<%if btn.name%>'+
+                    '<%each [].concat(btn.name) name%> ui-button-<%name%><%/each%>'+
+                    '<%/if%> layer-button-<%btn.id%>"'+
+                    '<%if btn.style%>'+
+                    ' style="<%each btn.style v n%><%n%>:<%v%>;<%/each%>"'+
+                    '<%/if%>><%btn.text || "按钮"%></button>',
+            iframe:
+                '<iframe<%each attr%> <%$index%>="<%$value%>"<%/each%>></iframe>',
+            mask:
+                '<div class="nui-layer-mask'+
+                    '<%if skin%> nui-layer-mask-<%skin%><%/if%>" style="<%include \'style\'%>">'+
+                    '<div class="layer-mask"></div>'+
+                '</div>',
+            movemask:
+                '<div class="nui-layer-movemask'+
+                    '<%if skin%> nui-layer-movemask-<%skin%><%/if%>" style="<%include \'style\'%>">'+
+                '</div>',
+            style:
+                '<%each style%><%$index%>:<%$value%>;<%/each%>'
+        },
+        /*
+        top:弹窗距离窗口顶部距离
+        left:弹窗距离窗口左边距离
+        width:弹窗宽度
+        height:弹窗高度
+        */
+        data:{},
+        _init:function(){
+            this._zIndex = ++this.constructor._zIndex;
+            this._exec()
+        },
+        _exec:function(){
+            var self = this, opts = self._options;
+            self._container = self._jquery(opts.container);
+            if(self._container){
+                self._containerDOM = self._container.get(0);
+                if(self._containerDOM.tagName !== 'BODY'){
+                    self._window = self._container;
+                    self._isWindow = false;
+                    var pos = self._container.css('position');
+                    if('absolute relative fixed'.indexOf(pos) === -1){
+                        self._container.css('position', 'relative')
+                    }
+                }
+                else{
+                    self._window = Nui.win;
+                    self._isWindow = true;
+                }
+                self._isFixed = opts.isFixed && !Nui.bsie6 && self._isWindow;
+                self._create();
+            }
+        },
+        _create:function(){
+            var self = this, opts = self._options;
+            var buttons = self._createButton(), isTitle = false;
+            if(opts.isTips !== true){
+                isTitle = typeof opts.title === 'string';
+            }
+            var data = self._tplData({
+                content:self._getContent(),
+                close:buttons.close,
+                button:buttons.button,
+                title:isTitle ? (opts.title||'温馨提示') : null,
+                bubble:opts.bubble.enable === true ? opts.bubble : null,
+                align:opts.align || 'center',
+                style:{
+                    'z-index':isNaN(parseInt(opts.zIndex)) ? self._zIndex : opts.zIndex,
+                    'position':'absolute',
+                    'display':'block'
+                }
+            });
+            if(self._isFixed){
+                data.style.position = 'fixed';
+            }
+            self._setTop();
+            self.element = self._bindComponentName($(self._tpl2html('layout', data)).appendTo(self._container));
+            self._box = self.element.children('.layer-box');
+			self.head = self._box.children('.layer-head');
+			self._body = self._box.children('.layer-body');
+			self.main = self._body.children('.layer-main');
+			self.foot = self._box.children('.layer-foot');
+            if(opts.isTips !== true){
+                if(opts.iframe.enable === true){
+                    self._iframe = self.main.children('iframe');
+                    self._iframeOnload()
+                }
+                if(opts.isMove === true && isTitle){
+                    self._bindMove();
+                }
+                if(opts.isStopProp === true){
+                    self._stopProp();
+                }
+                if(opts.isTop === true){
+                    self._bindTop();
+                }
+            }
+            if(self._button.length){
+                self._buttonEvent();
+            }
+            if(opts.isFixed === true && !self._isFixed === true){
+                self._bindScroll()
+            }
+            self._event();
+            self._show()
+        },
+        _getContent:function(){
+            var self = this, opts = self._options, content = '', tpl = opts.template;
+            if(opts.isTips !== true && opts.iframe.enable === true){
+                content = self._createIframe();
+            }
+            else{
+                if(tpl){
+                    if(typeof tpl === 'string'){
+                        content = template.render(tpl, opts.data)
+                    }
+                    else if(Nui.type(opts.template, 'Object')){
+                        content = template.render.call(tpl, tpl.main, opts.data)
+                    }
+                }
+                else if(typeof opts.content === 'string'){
+                    content = opts.content
+                }
+                else if(opts.content instanceof jQuery){
+                    content = opts.content.prop('outerHTML')
+                }
+            }
+            return content
+        },
+        _createIframe:function(){
+            var self = this, opts = self._options, name = 'layer-iframe'+self.__id, src = opts.iframe.src;
+            if(opts.iframe.cache === false){
+                src = util.setParam('_', new Date().getTime(), src)
+            }
+            return self._tpl2html('iframe', {
+                attr:{
+                    frameborder:'0',
+                    name:name,
+                    id:name,
+                    src:src,
+                    scroll:'hidden',
+                    style:'width:100%;'
+                }
+            })
+        },
+        _iframeOnload:function(){
+            var self = this;
+            self._iframe.load(function(){
+                self._iframeDocument = self._iframe.contents();
+                self._resize()
+            })
+        },
+        _createButton:function(){
+            var self = this, opts = self._options, defaults = {}, buttons = {}, caches = {}, isTips = opts.isTips === true;
+            var add = function(id, btn){
+                self._button[id === 'close' ? 'unshift' : 'push'](btn)
+            }
+            self._button = [];
+
+            Nui.each(['close', 'confirm', 'cancel'], function(id){
+                var btn = opts[id];
+                if(btn && btn.enable === true && (!isTips || id === 'close')){
+                    defaults[id] = {
+                        id:id,
+                        name:btn.name,
+                        style:btn.style,
+                        text:btn.text,
+                        callback:btn.callback
+                    }
+                }
+            });
+
+            if(!isTips && opts.button && opts.button.length){
+                Nui.each(opts.button, function(val){
+                    var id = val.id, btn = val, def;
+                    if(!caches[id]){
+                        caches[id] = true;
+                        if(def = defaults[id]){
+                            btn = $.extend(true, {}, def, val);
+                            delete defaults[id]
+                        }
+                        add(id, btn)
+                    }
+                })
+            }
+
+            Nui.each(defaults, function(val, id){
+                add(id, val)
+            });
+
+            if(self._button[0] && self._button[0].id === 'close'){
+                buttons.close = self._button[0],
+                buttons.button = self._button.slice(1);
+            }
+            else{
+                buttons.button = self._button
+            }
+
+            return buttons
+        },
+        _buttonEvent:function(){
+            var self = this, opts = self._options;
+            Nui.each(self._button, function(val){
+                self._on('click', self.element, '.layer-button-'+val.id, function(e, button){
+                    if(!button.hasClass('nui-button-disabled')){
+                        var id = val.id, callback = val.callback;
+                        var isCall = typeof callback === 'function' ? callback.call(opts, self, e, button) : null;
+                        if((id === 'confirm' && isCall === true) || (id !== 'confirm' && isCall !== false)){
+                            self.destroy()
+                        }
+                    }
+                })
+            })
+        },
+        _stopProp:function(){
+            this._on('click', this.element, function(e){
+                e.stopPropagation()
+            });
+        },
+        _bindTop:function(){
+            var self = this;
+            self._on('click', self.element, function(){
+                self._setzIndex();
+            });
+        },
+        _bindMove:function(){
+            var self = this, opts = self._options, element = self.element;
+            var _class = self.constructor, elem = element, isMove = false, x, y, _x, _y;
+            self._on('mousedown', self.head, function(e, ele){
+                isMove = true;
+                self._setzIndex();
+                if(opts.isMoveMask === true){
+                    elem = self._moveMask = $(self._tpl2html('movemask', {
+                        skin:opts.skin,
+                        style:{
+                            'z-index':self._zIndex+1,
+                            'cursor':'move',
+                            'position':self._isFixed ? 'fixed' : 'absolute'
+                        }
+                    })).appendTo(self._container);
+                    elem.css({
+                        width:self.data.outerWidth - _class._getSize(elem, 'lr', 'all'),
+                        height:self.data.outerHeight - _class._getSize(elem, 'tb', 'all'),
+                        top:self.data.top,
+                        left:self.data.left
+                    });
+                }
+                ele.css('cursor','move');
+                x = e.pageX - self.data.left;
+                y = e.pageY - self.data.top;
+                e.stopPropagation();
+            });
+            self._on('mousemove', Nui.doc, function(e){
+                var width = self._container.outerWidth(), height = self._container.outerHeight();
+                if(isMove){
+                    _x = e.pageX - x;
+                    _y = e.pageY - y;
+                    _x < 0 && (_x = 0);
+                    _y < 0 && (_y = 0);
+                    if(opts.isInnerMove === true){
+                        _x + self.data.outerWidth > width && (_x = width - self.data.outerWidth);
+                        _y + self.data.outerHeight > height && (_y = height - self.data.outerHeight);
+                    }
+                    self.data.top = _y;
+                    self.data.left = _x;
+                    elem.css({top:_y, left:_x});
+                    return !isMove;
+                }
+            });
+            self._on('mouseup', Nui.doc, function(e){
+                if(isMove){
+                    isMove = false;
+                    self.head.css('cursor','default');
+                    if(opts.isMoveMask === true){
+                        element.css(self.data);
+                        self._moveMask.remove();
+                        self._moveMask = null;
+                    }
+                    self._callback('Move');
+                    self.data.offsetTop = self.data.top - self._window.scrollTop();
+                    self.data.offsetLeft = self.data.left - self._window.scrollLeft();
+                }
+            });
+        },
+        _bindScroll:function(){
+            var self = this, opts = self._options;
+            self._on('scroll', self._window, function(e, elem){
+                var top = self.data.offsetTop + self._window.scrollTop();
+                var left = self.data.offsetLeft + self._window.scrollLeft();
+                self.data.top = top;
+                self.data.left = left;
+                self.element.css(self.data);
+                self._callback('Scroll', [e, elem, {top:top, left:left}]);
+            })
+        },
+        //鼠标点击弹出层将弹出层层级设置最大
+        _setzIndex:function(){
+            var self = this, _class = self.constructor;
+            if(self._isTop && self.element){
+                self._isTop = false;
+                self._zIndex = ++_class._zIndex;
+                self.element.css('zIndex', self._zIndex);
+                self._setTop();
+            }
+        },
+        _setLower:function(destroy){
+            var self = this, _class = self.constructor, opts = self._options, unders = [];
+            if(opts.under){
+                unders = unders.concat(opts.under);
+                if(unders.length){
+                    Nui.each(unders, function(obj, k){
+                        if(obj && obj.element){
+                            obj.element.css('z-index', destroy ? (isNaN(parseInt(obj._options.zIndex)) ? obj._zIndex : obj._options.zIndex) : _class._maskzIndex-1)
+                        }
+                    })
+                }
+            }
+        },
+        _setTop:function(){
+            var self = this, _class = self.constructor;
+            Nui.each(_class.__instances, function(val){
+                if(val && val !== self && val._options.isTop === true){
+                    val._isTop = true;
+                }
+            });
+        },
+        _position:function(){
+            var self = this, data = self.data, pos = self._options.position;
+            var _pos = {
+                top:pos.top,
+                left:pos.left,
+                right:pos.right,
+                bottom:pos.bottom
+            }, _v;
+
+            if(_pos.top !== undefined && _pos.bottom !== undefined){
+                delete _pos.bottom
+            }
+
+            if(_pos.left !== undefined && _pos.right !== undefined){
+                delete _pos.right
+            }
+
+            Nui.each(_pos, function(v, k){
+                if(v === undefined){
+                    delete _pos[k];
+                    return true;
+                }
+                _v = v;
+                if(typeof v === 'string'){
+                    if(!v){
+                        _v = 0
+                    }
+                    else{
+                        if(k === 'top' || k === 'bottom'){
+                            if(v === 'self'){
+                                _v = data.outerHeight
+                            }
+                            else if(/[\+\-\*\/]/.test(v)){
+                                _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
+                            }
+                        }
+                        else{
+                            if(v === 'self'){
+                                _v = data.outerWidth
+                            }
+                            else if(/[\+\-\*\/]/.test(v)){
+                                _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
+                            }
+                        }
+                    }
+                }
+                _pos[k] = _v === 'auto' ? 'auto' : parseFloat(_v)+'px'
+            })
+
+            return _pos
+        },
+        _resize:function(type){
+            var self = this, _class = self.constructor, opts = self._options, element = self.element;
+            var wWidth = self._window.outerWidth();
+            var wHeight = self._window.outerHeight();
+            var stop = 0;
+            var sleft = 0;
+            if(!self._isFixed){
+                sleft = self._window.scrollLeft();
+                stop = self._window.scrollTop();
+            }
+            self._setSize();
+            if(opts.position){
+                var pos = element.css(self._position()).position();
+                if(Nui.bsie6){
+                    sleft = 0;
+                    stop = 0;
+                }
+                self.data.left = pos.left + sleft;
+                self.data.top = pos.top + stop;
+            }
+            else{
+                if(type === 'init' || opts.isCenter === true){
+                    var left = (wWidth - self.data.outerWidth) / 2 + sleft;
+                    var top = (wHeight - self.data.outerHeight) / 2 + stop;
+                    var edge = opts.edge > 0 ? opts.edge : 0;
+                    self.data.left = left > 0 ? left : edge;
+                    self.data.top = top > 0 ? top : edge;
+                }
+            }
+            self.data.offsetTop = self.data.top - self._window.scrollTop();
+            self.data.offsetLeft = self.data.left - self._window.scrollLeft();
+            element.css(self.data);
+        },
+        _setSize:function(){
+            var self = this, _class = self.constructor, opts = self._options, element = self.element;
+            var edge = opts.edge > 0 ? opts.edge*2 : 0;
+            var wWidth = self._window.outerWidth() - edge;
+            var wHeight = self._window.outerHeight() - edge;
+            var scrollbar = opts.scrollbar;
+
+            self._body.css({height:'auto', overflow:'visible'});
+            element.css({top:'auto', left:'auto', width:'auto', height:'auto'});
+            
+            var edgeSize = _class._getSize(self._box, 'tb', 'all') +
+                self.head.outerHeight() + 
+                _class._getSize(self.head, 'tb', 'margin') + 
+                _class._getSize(self._body, 'tb', 'all') + 
+                self.foot.outerHeight() + 
+                _class._getSize(self.foot, 'tb', 'margin');
+
+            var width = element.outerWidth();
+            if(opts.isFull !== true){
+                if(opts.width > 0){
+                    width = opts.width
+                }
+                else if(opts.width === '100%' || (opts.scrollbar === true && width > wWidth)){
+                    width = wWidth;
+                }
+                if(opts.maxWidth > 0 && width >= opts.maxWidth){
+                    scrollbar = true;
+                    width = opts.maxWidth
+                }
+            }
+            else{
+                width = wWidth;
+            }
+
+            var ws = 'nowrap';
+            if(opts.width > 0 || width == opts.maxWidth || width == wWidth){
+                ws = 'normal';
+            }
+
+            self.data.width = width - _class._getSize(element, 'lr', 'all');
+            self.main.css('white-space', ws);
+            element.width(self.data.width);
+
+            var height = element.outerHeight();
+            if(self._iframeDocument){
+                self._iframeDocument[0].layer = self;
+                height = edgeSize + self._iframeDocument.find('body').outerHeight();
+            }
+
+            if(opts.isFull !== true){
+                if(opts.height > 0){
+                    height = opts.height
+                }
+                else if(opts.height === '100%' || ((opts.scrollbar === true || self._iframeDocument) && height > wHeight)){
+                    height = wHeight
+                }
+                if(opts.maxHeight > 0 && height >= opts.maxHeight){
+                    scrollbar = true;
+                    height = opts.maxHeight
+                }
+            }
+            else{
+                height = wHeight
+            }
+
+            self.data.outerWidth = width;
+            self.data.outerHeight = height;
+            self.data.height = height - _class._getSize(element, 'tb', 'all');
+            element.height(self.data.height);
+            var _height = self.data.height - edgeSize;
+
+            if(self.main.outerHeight() > _height && !self._iframe && scrollbar === true){
+                self._body.css('overflow', 'auto')
+            }
+            if(self._iframe){
+                self._iframe.height(_height);
+            }
+            self._body.height(self.data.contentHeight = _height)
+        },
+        _showMask:function(){
+            var self = this, _class = self.constructor, opts = self._options;
+            if(!self._containerDOM.__layermask__){
+                self._containerDOM.__layermask__ = $(self._tpl2html('mask', {
+                    skin:opts.skin,
+                    style:{
+                        'z-index':_class._maskzIndex,
+                        'position':self._isFixed ? 'fixed' : 'absolute',
+                        'top':'0px',
+                        'left':'0px',
+                        'width':'100%',
+                        'height':self._isFixed ? '100%' : self._container.outerHeight()+'px'
+                    }
+                })).appendTo(self._container);
+            }
+            if(opts.isStopProp === true){
+                self._on('click', self._containerDOM.__layermask__, function(e){
+                    e.stopPropagation()
+                })
+            }
+            if(opts.isClickMask === true){
+                self._on('click', self._containerDOM.__layermask__, function(){
+                    self.hide()
+                })
+            }
+        },
+        _show:function(){
+            var self = this, opts = self._options;
+            component.init(self.main);
+            self._resize('init');
+            self._setLower();
+            if(opts.isMask === true){
+                self._showMask()
+            }
+            if(opts.timer > 0){
+                self._time = opts.timer;
+                self._timer();
+            }
+            self._callback('Init');
+            return self
+        },
+        _timer:function(){
+            var self = this, opts = self._options;
+            if(self._time > 0){
+                self._callback('Timer', [self._time]);
+                self._timerid = setTimeout(function(){
+                    self._time -= 1000;
+                    self._timer();
+                }, self._time > 1000 ? 1000 : self._time)
+            }
+            else{
+                self.hide()
+            }
+        },
+        _reset:function(){
+            var self = this, _class = self.constructor, noMask = true;
+            component.exports._reset.call(this);
+            component.destroy(self.main);
+            Nui.each(_class.__instances, function(val){
+                if(val && val._options.isMask === true && val !== self && val._containerDOM === self._containerDOM){
+                    return (noMask = false);
+                }
+            });
+            if(noMask && self._containerDOM.__layermask__){
+                self._containerDOM.__layermask__.remove();
+                self._containerDOM.__layermask__  = null;
+            }
+            if(self._options.timer > 0){
+                self.timer = 0;
+                clearTimeout(self._timerid);
+            }
+        },
+        resize:function(){
+            var self = this, opts = self._options, element = self.element;
+            self._resize();
+            self._callback('Resize');
+            return self
+        },
+        hide:function(){
+            if(this._options.isHide === true){
+                if(this._callback('HideBefore') === false){
+                    return
+                }
+                this.destroy()
+            }
+        },
+        destroy:function(){
+            var self = this, _class = self.constructor, opts = self._options;
+            if(self._callback('DestroyBefore') === false){
+                return
+            }
+            self._delete();
+            self._reset();
+            self._setLower(true);
+            if(!self._isdestroy){
+                _class._zIndex--;
+                self._isdestroy = true;
+            }
+            self._callback('Destroy');
+        }
+    })
+});
+__define('src/components/layer/loading',['src/components/layer/layer'], function(layer){
+    return function(content, width, height){
+        var opts;
+        if(typeof content === 'object'){
+            opts = content;
+            content = opts.content;
+            delete opts.content;
+        }
+        if(Nui.type(content, 'Number')){
+            height = width;
+            width = content;
+            content = '';
+        }
+        return layer(Nui.extend({
+            content:'<div>'+(content||'正在加载数据...')+'</div>',
+            width:width||'auto',
+            height:height||'auto'
+        }, opts || {}, {
+            id:'loading',
+            isTips:true,
+            close:{
+                enable:false
+            }
+        }))
+    }
+})
+__define('src/core/request',function(require){
+    var util = require('src/core/util');
+    var loading = require('src/components/layer/loading');
+    var ajax = $.ajax;
+
+    var defaults = {
+        //参数配置
+        data:{},        
+        //接口扩展名 .do .php
+        ext:'',
+        //响应成功字段名
+        name:'result',
+        //响应成功字段值
+        value:'success',
+        //拦截器
+        intercept:null
+    }
+
+    var request = function(options, text, under){
+        
+        if(typeof options === 'string'){
+            options = {
+                url:options,
+                type:'GET'
+            }
+        }
+
+        if(!options.url){
+            return
+        }
+
+        if(
+            options.contentType && 
+            options.contentType.indexOf('application/json') !== -1 && 
+            options.data && 
+            typeof options.data !== 'string'
+        ){
+            options.dataType = 'json';
+            options.data = JSON.stringify(options.data);
+        }
+
+        var _loading;
+        
+        if(text !== null){
+            var opts = {
+                content:text||'正在加载数据...'
+            }
+            if(under){
+                opts.under = under
+            }
+            _loading = loading(opts)
+        }
+
+        var success = options.success || $.ajaxSettings.success || $.noop;
+        var error = options.error || $.ajaxSettings.error || $.noop;
+
+        //登录拦截器
+        var intercept = function(){
+            if(typeof defaults.intercept === 'function'){
+                defaults.intercept.apply(this, arguments)
+            }
+        }
+
+        options.success = function(res, status, xhr){
+            if(_loading){
+                _loading.destroy()
+            }
+
+            if(res && options.intercept !== false && intercept.call(this, res, status, xhr) === false){
+                return false
+            }
+
+            success.call(this, res, status, xhr)
+        }
+
+        options.error = function(xhr){
+            if(_loading){
+                _loading.destroy()
+            }
+            error.apply(this, arguments)
+        }
+
+        var paramIndex = options.url.indexOf('?');
+        var params = '?';
+
+        if(paramIndex !== -1){
+            params = options.url.substr(paramIndex);
+            options.url = options.url.substr(0, paramIndex).replace(/\/+$/, '');
+        }
+
+        if(options.url && !/^https?:\/\//.test(options.url) && Nui.domain){
+            options.url = Nui.domain+options.url;
+        }
+
+        if(options.ext !== false && defaults.ext && !/\.\w+$/.test(options.url)){
+            options.url += defaults.ext
+        }
+
+        if(options.cache !== true){
+            params = util.setParam('_', new Date().getTime(), params);
+            delete options.cache
+        }
+
+        if(options.data && (options.type === 'PUT' || options.type === 'DELETE')){
+            params = util.setParam(options.data, params);
+            delete options.data
+        }
+
+        if(params !== '?'){
+            options.url += params
+        }
+
+        return ajax($.extend(true, {}, {
+            dataType:'json',
+            data:(function(data){
+                if(typeof data === 'function'){
+                    return data()
+                }
+                return data
+            })(defaults.data)
+        }, options))
+    }
+
+    request.config = function(){
+        var args = arguments, len = args.length;
+        var defs = {};
+        if(len === 1){
+            if(typeof args[0] === 'object'){
+                defs = args[0]
+            }
+            else if(typeof args[0] === 'string'){
+                return defaults[args[0]]
+            }
+        }
+        else if(len > 1){
+            defs[args[0]] = defs[args[1]]
+        }
+        return $.extend(true, defaults, defs)
+    }
+
+    var method = function(options, msg){
+        return function(url, data, callback, text, under){
+
+            if(typeof data === 'function'){
+                under = text;
+                text = callback;
+                callback = data;
+                data = undefined;
+            }
+            else if(typeof data === 'string' || data === null){
+                under = callback;
+                text = data;
+                data = callback = undefined;
+            }
+
+            if(typeof callback === 'object'){
+                if(callback === null){
+                    under = text;
+                    text = callback;
+                    callback = undefined;
+                }
+                else{
+                    var object = callback;
+                    callback = function(res, status, xhr){
+                        if(res && res[defaults.name]){
+                            Nui.each(object, function(_callback, key){
+                                if((key === 'other' && res[defaults.name] != defaults.value) || res[defaults.name] == key){
+                                    _callback.call(object, res, status, xhr)
+                                    return false
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+
+            if(text && typeof text === 'object'){
+                under = text;
+                text = undefined;
+            }
+
+            if(msg && !text && text !== null){
+                text = msg
+            }
+
+            return request($.extend({
+                url:url,
+                data:data,
+                success:callback
+            }, options), text, under)
+        }
+    }
+
+    request.get = method({
+        type:'GET'
+    });
+
+    request.sync = method({
+        type:'GET',
+        async:false
+    });
+
+    request.update = method({
+        type:'GET'
+    }, '正在保存数据...');
+
+    request.jsonp = method({
+        type:'GET',
+        dataType:'jsonp'
+    });
+
+    request.del = method({
+        type:'DELETE'
+    }, '正在删除数据...');
+
+    request.delSync = method({
+        type:'DELETE',
+        async:false
+    }, '正在删除数据...');
+
+    request.put = method({
+        type:'PUT'
+    }, '正在保存数据...');
+
+    request.putSync = method({
+        type:'PUT',
+        async:false
+    }, '正在保存数据...');
+
+    request.post = method({
+        type:'POST'
+    });
+
+    request.postSync = method({
+        type:'POST',
+        async:false
+    });
+
+    request.postUpdate = method({
+        type:'POST'
+    }, '正在保存数据...');
+
+    request.postJSON = method({
+        type:'POST',
+        contentType:'application/json;charset=utf-8'
+    }, '正在保存数据...');
+
+    return request
+})
+__define('src/components/paging',function(require){
+    this.imports('../assets/components/paging/index')
+
+    var component = require('src/core/component');
+    var request = require('src/core/request');
+    
+    function Paging(options){
+        var that = this;
+        that.load = false;
+        //获取实例对象的名称
+        that.instance = function(){
+            for(var attr in window){
+                if(window[attr] == that){
+                    return attr.toString();
+                }
+            }
+        }
+        $.extend(that, $.extend(true, {
+            /**
+             * @function ajax请求url
+             * @type <String>
+             */
+            url:'',
+            /**
+             * @function 页码容器
+             * @type <Object>
+             */
+            wrap:null,
+            /**
+             * @function 传递参数值
+             * @type <String>
+             * @desc 将传递参数封装为json字符串，后台接收该参数来获取该json
+             */
+            paramJSON:'',
+            /**
+             * @function 当页显示数量
+             * @type <Number>
+             */
+            pCount:10,
+            /**
+             * @function 当前页码
+             * @type <Number>
+             */
+            current:1,
+            /**
+             * @function 列表数据总数
+             * @type <Number>
+             */
+            aCount:0,
+            /**
+             * @function 是否初始化展示最后一页
+             * @type <Boolean>
+             */
+            last:false,
+            /**
+             * @function 是否读取全部数据
+             * @type <Boolean>
+             * @desc 该参数启用后，接口将无法接收到pCount和current参数，前后端约定好，若没接收到这2个参数，将返回全部数据
+             */
+            allData:false,
+            /**
+             * @function 是否完整形式展示分页
+             * @type <Boolean>
+             */
+            isFull:true,
+			/**
+             * @function 滚动分页配置
+             * @type <Obejct>
+             */
+            vars:{
+                aCount:'aCount',
+                pCount:'pCount',
+                current:'current'
+            },
+            dataField:'',
+            //是否显示页码
+            isPage:true,
+            number:null,
+            container:window,
+			scroll:{
+				enable:false
+			},
+            /**
+             * @function ajax配置信息
+             * @type <JSON Obejct, Function>
+             */
+            ajax:{},
+            /**
+             * @function 接口接收参数
+             * @type <JSON Obejct>
+             */
+            condition:{},
+            /**
+             * @function loading加载效果
+             * @type <JSON Obejct>
+             */
+            loading:'正在加载数据...',
+            /**
+             * @function 上一页下一页按钮文字
+             * @type <JSON Obejct>
+             */
+            button:{
+                prev:'«',
+                next:'»',
+                first:'',
+                last:''
+            },
+            /**
+             * @function 拓展分页部分
+             * @type <JSON Obejct>
+             */
+            extPage:{
+                wrap:null,
+                desc:'',
+                prev:'上一页',
+                next:'下一页'
+            },
+            /**
+             * @function 传统页面刷新方式
+             * @type <Null, Function>
+             * @param current <Number> 目标页码
+             * @desc 值为函数将启用
+             */
+            refreshCallback:null,
+            /**
+             * @function ajax响应数据并且分页创建完毕后回调函数
+             * @type <Function>
+             * @param data <JSON Object> 响应数据
+             */
+            endCallback:$.noop,
+            /**
+             * @function 点击分页按钮回调函数
+             * @type <Function>
+             * @param current <Number> 目标页码
+             */
+            jumpCallback:$.noop,
+            /**
+             * @function 分页数据处理
+             * @type <Function>
+             * @param data <JSON Object> 响应数据
+             */
+            echoData:$.noop
+        }, Paging.options, options||{}));
+        that.container = $(that.container||window);
+
+        if(that.number){
+            that.pCount = that.number[0] ||  that.pCount;
+        }
+
+		if(that.scroll.enable === true){
+			that.wrap = null;
+			that.children = that.container[0] === window ? $(document.body) : that.container.children();
+			that.container.scroll(function(){
+				that.resize();
+			}).resize(function(){
+				that.resize();
+			});
+		}
+    }
+    
+    Paging.options = {};
+    Paging.config = function(options){
+    	$.extend(true, Paging.options, options||{})
+    }
+
+    Paging.prototype = {
+        constructor:Paging,
+        //页面跳转
+        jump:function(page){
+            var that = this, count = Math.ceil(that.aCount/that.pCount), current;
+            if(that.aCount > 0){
+                if(typeof(page) === 'object'){
+                    var val;
+                    if(page.nodeName === 'INPUT'){
+                        val = $.trim(page.value);
+                    }
+                    else{
+                        val = $(page).prevAll('input').val();
+                    } 
+                    if(val <= count && val != that.current){
+                        current = parseInt(val);
+                    }
+                    else{
+                        current = that.current;
+                    }
+                }
+                else if(page > 0 && page <= count){
+                    current = page;
+                }
+                else if(page < 0){
+                    current = count + page + 1;
+                }
+                else{
+                    current = count;
+                }
+            }
+            else{
+                current = page;
+            }
+            that.current = that.condition.current = current;
+            that.jumpCallback(current);
+            if(typeof that.refreshCallback === 'function'){
+                that.refreshCallback(current);
+                that.create();
+                return;
+            }
+            that.getData('jump');
+        },
+        query:function(type){
+            var that = this;
+            that.load = false;
+            if(typeof that.refreshCallback !== 'function' || type !== 'refresh'){
+                if(type){
+                    if(type !== 'reload'){
+                        that.current = 1;
+                    }
+                    that.filter();
+                    that.condition.current = that.current;
+                }
+                else{
+                    that.condition = {current:that.current = 1};
+                }
+                that.getData(type||'');
+            }
+            else{
+                that.create();
+            }
+            
+        },
+        filter:function(){
+            var that = this;
+            for(var i in that.condition){
+                if(that.condition[i] === '' || typeof(that.condition[i]) == 'undefined' || that.condition[i] === null){
+                    delete that.condition[i];
+                }
+            }
+        },
+        //ajax请求数据
+        getData:function(type){
+            var that = this;
+            that.condition.pCount = that.pCount;
+            if(that.allData === true){
+                delete that.condition.pCount;
+                delete that.condition.current;
+            }
+            var param = $.extend({}, that.condition);
+            var pCount = param.pCount;
+            var current = param.current;
+            delete param.pCount;
+            delete param.current;
+            param[that.vars.pCount] = pCount;
+            param[that.vars.current] = current;
+            if(that.paramJSON){
+                param = [];
+                $.each(that.condition, function(key, val){
+                    param.push(key+':'+val);
+                });
+                var temp = param.length ? '{'+param.join(',')+'}' : '';
+                param = {};
+                param[that.paramJSON] = temp;
+            }
+            
+            var ajax = typeof that.ajax === 'function' ? that.ajax() : that.ajax;
+            delete ajax.success;
+
+            if(!that.load){
+            	that.load = true;
+            	request($.extend({}, true, {
+                    url:that.url,
+                    data:param,
+                    success:function(res){
+                        var data = res;
+                        if(that.dataField){
+                            data = res[that.dataField]||{}
+                        }
+                        try{
+                            data.current = that.current;
+                        }
+                        catch(e){}
+                        var stop = 0, index;
+                        if(that.container[0] !== window && type !== 'reload' && type !== 'noloading' && (type !== 'jump' || (type === 'jump' && !that.scroll.enable))){
+                        	that.container.scrollTop(0)
+                        	that.container.scrollLeft(0)
+                        }
+                        if(type === 'reload'){
+                            var box = that.container;
+                            if(that.selector){
+                                box = that.container.find(that.selector);
+                                stop = box.scrollTop()
+                            }
+                            else{
+                                stop = box.scrollTop()
+                            }
+                            index = box.find('tr.rows.s-crt').index();
+                        }
+                        that.echoData(data, type);
+
+                        that.aCount = data[that.vars.aCount]||data.aCount;
+                        that.load = false;
+						if(that.scroll.enable === true){
+							that.resize();
+						}
+                        if(stop > 0){
+                            var box = that.container;
+                            if(that.selector){
+                                box = that.container.find(that.selector);
+                                box.scrollTop(stop)
+                            }
+                            else{
+                                box.scrollTop(stop)
+                            }
+                            if(index >= 0){
+                                box.find('tr.rows').eq(index).addClass('s-crt');
+                            }
+                        }
+                        if(that.last === true){
+                            that.last = false;
+                            that.jump(-1);
+                            return;
+                        }
+                        that.create();
+                        that.endCallback(data);
+                    },
+                    error:function(){
+                        that.load = false;
+                    }
+                }, ajax||{}), type === 'jump' && that.scroll.enable === true ? null : that.loading);
+            }
+        },
+        //过滤分页中input值
+        trim:function(o){
+            var val = Math.abs(parseInt($(o).val()));
+            !val && (val = 1);
+            $(o).val(val);
+        },
+        echoList:function(html, i, instance){
+            var that = this;
+            if(that.current == i){
+                html = '<li><span class="s-crt">'+ i +'</span></li>';
+            }
+            else{
+                html = '<li><a href="javascript:'+ instance +'.jump('+ i +');" target="_self">'+ i +'</a></li>';
+            }
+            return html;
+        },
+		resize:function(){
+			var that = this;
+			try{
+				var stop = that.container.scrollTop();
+				var height = that.container.height();
+                var cheight = that.children.outerHeight();
+				if(!that.load && Math.ceil(that.aCount/that.pCount) > that.current && ((stop === 0 && cheight <= height) || (height + stop >= cheight))){
+					that.jump(++that.current);
+				}
+			}
+			catch(e){
+				
+			}
+		},
+        //创建分页骨架
+        create:function(){
+            var that = this, button = that.button,
+                count = Math.ceil(that.aCount/that.pCount), current = that.current,
+                html = '', next = count == current ? 1 : current+1,
+                instance = that.instance(), extPage = that.extPage;
+
+            if(extPage.wrap){
+                var page = '<div>';
+                page += current == count || count == 0 ?
+                     '<span>'+ extPage.next +'</span>' : '<a href="javascript:'+ instance +'.jump('+ (current+1) +');" target="_self">'+ extPage.next +'</a>';
+                page += current == 1 ?
+                     '<span>'+ extPage.prev +'</span>' : '<a href="javascript:'+ instance +'.jump('+ (current-1) +');" target="_self">'+ extPage.prev +'</a>';
+                page += '</div><em>'+ (count !== 0 ? current : 0) +'/'+ count +'</em><strong>共'+ that.aCount + extPage.desc +'</strong>';
+                extPage.wrap.html(page);
+            }
+            
+            if(!that.wrap || !that.isPage){
+                return;
+            }
+            
+            if(!count){
+                that.wrap.empty();
+                return;
+            }
+
+            html += (function(){
+                var tpl = '';
+                if(current == 1){
+                    if(button.first){
+                        tpl += '<li><span>'+ button.first +'</span></li>';
+                    }
+                    tpl += '<li><span>'+ button.prev +'</span></li>';
+                }
+                else{
+                    if(that.button.first){
+                        tpl += '<li><a href="javascript:'+ instance +'.jump(1);" target="_self">'+ button.first +'</a></li>';
+                    }
+                    tpl += '<li><a href="javascript:'+ instance +'.jump('+ (current-1) +');" target="_self">'+ button.prev +'</a></li>';
+                }
+                return tpl;
+            })();
+            if(count <= 7){
+                for(var i = 1; i <= count; i++){
+                    html += that.echoList(html, i, instance);
+                }
+            }
+            else{
+                if(current-3 > 1 && current+3 < count){
+                    html += '<li><a href="javascript:'+ instance +'.jump(1);" target="_self">1</a></li>';
+                    html += '<li><em>...</em></li>';
+                    for(var i = current-2; i <= current+2; i++){
+                        html += that.echoList(html, i, instance);
+                    }
+                    html += '<li><em>...</em></li>';
+                    html += '<li><a href="javascript:'+ instance +'.jump('+ count +');" target="_self">'+ count +'</a></li>';
+                }
+                else if(current-3 <= 1 && current+3 < count){
+                    for(var i = 1; i <= 5; i++){
+                        html += that.echoList(html, i, instance);
+                    }
+                    html += '<li><em>...</em></li>';
+                    html += '<li><a href="javascript:'+ instance +'.jump('+ count +');" target="_self">'+ count +'</a></li>';
+                }
+                else if(current-3 > 1 && current+3 >= count){
+                    html += '<li><a href="javascript:'+ instance +'.jump(1);" target="_self">1</a></li>';
+                    html += '<li><em>...</em></li>';
+                    for(var i = count-5; i <= count; i++){
+                        html += that.echoList(html, i, instance);
+                    }
+                }
+            }
+            html += (function(){
+                var tpl = '';
+                if(current == count){
+                    tpl += '<li><span>'+ button.next +'</span></li>';
+                    if(button.last){
+                        tpl += '<li><span>'+ button.last +'</span></li>';
+                    }
+                }
+                else{
+                    tpl += '<li><a href="javascript:'+ instance +'.jump('+ (current+1) +');" target="_self">'+ button.next +'</a></li>';
+                    if(button.last){
+                        tpl += '<li><a href="javascript:'+ instance +'.jump('+ count +');" target="_self">'+ button.last +'</a></li>';
+                    }
+                }
+                return tpl;
+            })();
+            if(that.isFull){
+                html += '<li><em>跳转到第</em><input type="text" onblur="'+ instance +'.trim(this);" value="'+ next +'" /><em>页</em><button type="button" onclick="'+ instance +'.jump(this);">确定</button></li>';
+            }
+            html = '<div class="nui-paging"><ul class="ui-paging">' + html + '</ul>';
+            if(that.number){
+                html += '<div class="ui-paging-number"><span class="text">当前页显示</span><select style="display:none;">';
+                for(var i=0; i<that.number.length; i++){
+                    html += '<option value="'+ that.number[i] +'">'+ that.number[i] +'</option>'
+                }
+                html += '</select><span class="text">条</span></div>'
+            }
+            html += '</div>'
+            that.wrap.html(html);
+            if(that.number){
+                that.wrap.find('select').imitSelect({
+                    value:that.pCount,
+                    callback:function(me, item){
+                        if(item){
+                            that.pCount = me.val();
+                            that.query(true)
+                        }
+                    }
+                })
+            }
+            if(that.isFull){
+                that.wrap.find('input').on('keyup', function(e){
+                    if(e.keyCode === 13){
+                        that.jump(this)
+                    }
+                })
+            }
+        }
+    }
+    
+    $.extend({
+        paging:function(name, options){
+            if(options === undefined){
+                options = name;
+                name = 'paging';
+            }
+            var page = window[name] = new Paging(options);
+            if(typeof window[name].refreshCallback !== 'function'){
+                page.query(true);
+                return page;
+            }
+            page.query('refresh');
+            return page
+        }
+    });
+    
+    window.Paging = Paging;
 })
 __define('src/components/datagrid',function(require){
     this.imports('../assets/components/datagrid/index');
@@ -2476,585 +4120,8 @@ __define('src/components/datagrid',function(require){
     })
 })
 
-__define('pages/components/datagrid/script/checkradio',function(require,imports,renders,extend,exports){
-	var module=this;
-	/**
-	 * @filename jquery.checkradio.js
-	 * @author Aniu[2016-04-27 14:00]
-	 * @update Aniu[2016-08-23 22:44]
-	 * @version v1.4
-	 * @description 模拟单选复选框
-	 */
-	
-	;!(function($, undefined){
-	    $.fn.checkradio = function(attr, value){
-			if(!attr || $.isPlainObject(attr)){
-				var o = $.extend({
-					/**
-					 * @func 配置开关按钮
-					 * @type <Object>
-					 */
-					switches:{
-						off:'',
-						on:''
-					},
-					/**
-					 * @func 点击元素状态改变前回调，如返回值为false则将阻止状态改变
-					 * @type <Function>
-					 * @return <undefined, Boolean>
-					 */
-					beforeCallback:$.noop,
-					/**
-					 * @func 点击元素状态改变后回调
-					 * @type <Function>
-					 */
-					callback:$.noop
-				}, attr||{});
-				return this.each(function(){
-					var me = $(this);
-					var checkradio = me.closest('.ui-checkradio');
-					if(!checkradio.length){
-						return;
-					}
-					var checked = me.prop('checked') ? ' s-checked' : '';
-					var disabled = me.prop('disabled') ? ' s-dis' : '';
-					var name = me.attr('name');
-					var switches = $.extend({}, o.switches, me.data()||{});
-					var switchElem = checkradio.find('.text');
-					var type = 'radio';
-					if(me.is(':checkbox')){
-						type = 'checkbox';
-					}
-					if(checkradio.children().attr('checkname')){
-						checkradio.children().attr('class', 'ui-'+ type + checked + disabled);
-					}
-					else{
-						if(switches.off && switches.on){
-							checkradio.addClass('ui-switches');
-							switchElem = $('<s class="text">'+ (me.prop('checked') ? switches.on : switches.off) +'</s>').insertBefore(me);
-						}
-						me.css({position:'absolute', top:'-999em', left:'-999em', opacity:0}).wrap('<i></i>');
-						checkradio.wrapInner('<em class="ui-'+ type + checked + disabled +'" checkname="'+ name +'"></em>')
-						.children().click(function(e){
-							var ele = $(this);
-							if(me.is(':disabled') || o.beforeCallback(me, e) === false){
-								return;
-							}
-							if(me.is(':checkbox')){
-								var checked = me.prop('checked');
-								me.prop('checked', !checked);
-								ele[(checked ? 'remove' : 'add') + 'Class']('s-checked');
-								if(switchElem.length){
-									switchElem.text(checked ? switches.off : switches.on);
-								}
-							}
-							else{
-								if(me.prop('checked')){
-									return
-								}
-								me.prop('checked', true);
-								$('.ui-radio[checkname="'+ name +'"]').removeClass('s-checked');
-								ele.addClass('s-checked');
-							}
-							o.callback(me, e)
-						});
-					}
-					if(o.init && !me.is(':disabled') && o.beforeCallback(me) !== false){
-						o.callback(me, 'init')
-					}
-				});
-			}
-			else{
-				return $(this).prop(attr, value == true).checkradio();
-			}
-	    }
-	})(jQuery);
-});
-__define('pages/components/datagrid/script/paging',function(require,imports,renders,extend,exports){
-	var module=this;
-	/**
-	 * @filename jquery.paging.js
-	 * @author Aniu[2014-03-29 10:07]
-	 * @update Aniu[2016-12-06 11:23]
-	 * @version v2.9.1
-	 * @description 分页组件
-	 */
-	
-	;!(function(window, document, $, undefined){
-	    var resize = function(){
-	        
-	    };
-	    var request = function(op){
-	        op.dataType = 'json';
-	        return $.ajax(op)
-	    };
-	    
-	    function Paging(options){
-	        var that = this;
-	        that.load = false;
-	        //获取实例对象的名称
-	        that.instance = function(){
-	            for(var attr in window){
-	                if(window[attr] == that){
-	                    return attr.toString();
-	                }
-	            }
-	        }
-	        $.extend(that, $.extend(true, {
-	            /**
-	             * @function ajax请求url
-	             * @type <String>
-	             */
-	            url:'',
-	            /**
-	             * @function 页码容器
-	             * @type <Object>
-	             */
-	            wrap:null,
-	            /**
-	             * @function 传递参数值
-	             * @type <String>
-	             * @desc 将传递参数封装为json字符串，后台接收该参数来获取该json
-	             */
-	            paramJSON:'',
-	            /**
-	             * @function 当页显示数量
-	             * @type <Number>
-	             */
-	            pCount:10,
-	            /**
-	             * @function 当前页码
-	             * @type <Number>
-	             */
-	            current:1,
-	            /**
-	             * @function 列表数据总数
-	             * @type <Number>
-	             */
-	            aCount:0,
-	            /**
-	             * @function 是否初始化展示最后一页
-	             * @type <Boolean>
-	             */
-	            last:false,
-	            /**
-	             * @function 是否读取全部数据
-	             * @type <Boolean>
-	             * @desc 该参数启用后，接口将无法接收到pCount和current参数，前后端约定好，若没接收到这2个参数，将返回全部数据
-	             */
-	            allData:false,
-	            /**
-	             * @function 是否完整形式展示分页
-	             * @type <Boolean>
-	             */
-	            isFull:true,
-				/**
-	             * @function 滚动分页配置
-	             * @type <Obejct>
-	             */
-	            container:window,
-				scroll:{
-					enable:false
-				},
-	            /**
-	             * @function ajax配置信息
-	             * @type <JSON Obejct, Function>
-	             */
-	            ajax:{},
-	            /**
-	             * @function 接口接收参数
-	             * @type <JSON Obejct>
-	             */
-	            condition:{},
-	            /**
-	             * @function loading加载效果
-	             * @type <JSON Obejct>
-	             */
-	            loading:{
-	                //loading容器
-	                wrap:null,
-	                //显示loading
-	                show:function(){
-	                    var that = this;
-	                    that.hide();
-	                    var wrap = that.wrap;
-	                    wrap && wrap.append('<i class="ui-loading" style="position:absolute;">正在加载数据...</i>').css({position:'relative'});
-	                },
-	                //隐藏loading
-	                hide:function(){
-	                    $('.ui-loading').remove();
-	                }
-	            },
-	            /**
-	             * @function 上一页下一页按钮文字
-	             * @type <JSON Obejct>
-	             */
-	            button:{
-	                prev:'«',
-	                next:'»',
-	                first:'',
-	                last:''
-	            },
-	            /**
-	             * @function 拓展分页部分
-	             * @type <JSON Obejct>
-	             */
-	            extPage:{
-	                wrap:null,
-	                desc:'',
-	                prev:'上一页',
-	                next:'下一页'
-	            },
-	            /**
-	             * @function 传统页面刷新方式
-	             * @type <Null, Function>
-	             * @param current <Number> 目标页码
-	             * @desc 值为函数将启用
-	             */
-	            refreshCallback:null,
-	            /**
-	             * @function ajax响应数据并且分页创建完毕后回调函数
-	             * @type <Function>
-	             * @param data <JSON Object> 响应数据
-	             */
-	            endCallback:$.noop,
-	            /**
-	             * @function 点击分页按钮回调函数
-	             * @type <Function>
-	             * @param current <Number> 目标页码
-	             */
-	            jumpCallback:$.noop,
-	            /**
-	             * @function 分页数据处理
-	             * @type <Function>
-	             * @param data <JSON Object> 响应数据
-	             */
-	            echoData:$.noop
-	        }, Paging.options, options||{}));
-	        that.container = $(that.container||window);
-			if(that.scroll.enable === true){
-				that.wrap = null;
-				that.children = that.container[0] === window ? $(document.body) : that.container.children();
-				that.container.scroll(function(){
-					that.resize();
-				}).resize(function(){
-					that.resize();
-				});
-			}
-	    }
-	    
-	    Paging.options = {};
-	    Paging.config = function(options){
-	    	$.extend(true, Paging.options, options||{})
-	    }
-	
-	    Paging.prototype = {
-	        constructor:Paging,
-	        //页面跳转
-	        jump:function(page){
-	            var that = this, count = Math.ceil(that.aCount/that.pCount), current;
-	            that.showload = true;
-	            if(that.aCount > 0){
-	                if(typeof(page) === 'object'){
-	                    var val = $(page).prevAll('input').val();
-	                    if(val <= count && val != that.current){
-	                        current = parseInt(val);
-	                    }
-	                    else{
-	                        current = that.current;
-	                    }
-	                }
-	                else if(page > 0 && page <= count){
-	                    current = page;
-	                }
-	                else if(page < 0){
-	                    current = count + page + 1;
-	                }
-	                else{
-	                    current = count;
-	                }
-	            }
-	            else{
-	                current = page;
-	            }
-	            that.current = that.condition.current = current;
-	            that.jumpCallback(current);
-	            if(typeof that.refreshCallback === 'function'){
-	                that.refreshCallback(current);
-	                that.create();
-	                return;
-	            }
-	            that.getData('jump');
-	        },
-	        query:function(type){
-	            var that = this;
-	            that.showload = true;
-	            that.load = false;
-	            if(typeof that.refreshCallback !== 'function' || type !== 'refresh'){
-	                if(type){
-	                    if(type === 'noloading'){
-	                        that.showload = false;
-	                    }
-	                    else if(type !== 'reload'){
-	                        that.current = 1;
-	                    }
-	                    that.filter();
-	                    that.condition.current = that.current;
-	                }
-	                else{
-	                    that.condition = {current:that.current = 1};
-	                }
-	                that.getData(type||'');
-	            }
-	            else{
-	                that.create();
-	            }
-	            
-	        },
-	        filter:function(){
-	            var that = this;
-	            for(var i in that.condition){
-	                if(!that.condition[i]){
-	                    delete that.condition[i];
-	                }
-	            }
-	        },
-	        //ajax请求数据
-	        getData:function(type){
-	            var that = this;
-	            //that.showload && that.loading.show(type);
-	            that.condition.pCount = that.pCount;
-	            if(that.allData === true){
-	                delete that.condition.pCount;
-	                delete that.condition.current;
-	            }
-	            var param = that.condition;
-	            if(that.paramJSON){
-	                param = [];
-	                $.each(that.condition, function(key, val){
-	                    param.push(key+':'+val);
-	                });
-	                var temp = param.length ? '{'+param.join(',')+'}' : '';
-	                param = {};
-	                param[that.paramJSON] = temp;
-	            }
-	            
-	            var ajax = typeof that.ajax === 'function' ? that.ajax() : that.ajax;
-	            delete ajax.success;
-	
-	            if(!that.load){
-	            	that.load = true;
-	            	request($.extend({}, true, {
-	                    url:that.url,
-	                    data:param,
-	                    success:function(data){
-	                        //that.showload && that.loading.hide();
-	                        try{
-	                            data.current = that.current;
-	                        }
-	                        catch(e){}
-	                        var stop = 0, index;
-	                        if(that.container[0] !== window && type !== 'reload' && type !== 'noloading' && (type !== 'jump' || (type === 'jump' && !that.scroll.enable))){
-	                        	that.container.scrollTop(0)
-	                        	that.container.scrollLeft(0)
-	                        }
-	                        if(type === 'reload'){
-	                            var box = that.container;
-	                            if(that.selector){
-	                                box = that.container.find(that.selector);
-	                                stop = box.scrollTop()
-	                            }
-	                            else{
-	                                stop = box.scrollTop()
-	                            }
-	                            index = box.find('tr.rows.s-crt').index();
-	                        }
-	                        that.echoData(data, type);
-	
-	                        that.aCount = data.aCount;
-	                        that.load = false;
-							if(that.scroll.enable === true){
-								that.resize();
-							}
-	                        resize();
-	                        if(stop > 0){
-	                            var box = that.container;
-	                            if(that.selector){
-	                                box = that.container.find(that.selector);
-	                                box.scrollTop(stop)
-	                            }
-	                            else{
-	                                box.scrollTop(stop)
-	                            }
-	                            if(index >= 0){
-	                                box.find('tr.rows').eq(index).addClass('s-crt');
-	                            }
-	                        }
-	                        if(that.last === true){
-	                            that.last = false;
-	                            that.jump(-1);
-	                            return;
-	                        }
-	                        that.create();
-	                        that.endCallback(data);
-	                    },
-	                    error:function(){
-	                        that.showload && that.loading.hide();
-	                        that.load = false;
-	                    }
-	                }, ajax||{}));
-	            }
-	        },
-	        //过滤分页中input值
-	        trim:function(o){
-	            var val = Math.abs(parseInt($(o).val()));
-	            !val && (val = 1);
-	            $(o).val(val);
-	        },
-	        echoList:function(html, i, instance){
-	            var that = this;
-	            if(that.current == i){
-	                html = '<li><span class="s-crt">'+ i +'</span></li>';
-	            }
-	            else{
-	                html = '<li><a href="javascript:'+ instance +'.jump('+ i +');" target="_self">'+ i +'</a></li>';
-	            }
-	            return html;
-	        },
-			resize:function(){
-				var that = this;
-				try{
-					var stop = that.container.scrollTop();
-					var height = that.container.height();
-					var cheight = that.children.outerHeight();
-					if(!that.load && Math.ceil(that.aCount/that.pCount) > that.current && ((stop === 0 && cheight <= height) || (height + stop >= cheight))){
-						that.jump(++that.current);
-					}
-				}
-				catch(e){
-					
-				}
-			},
-	        //创建分页骨架
-	        create:function(){
-	            var that = this, button = that.button,
-	                count = Math.ceil(that.aCount/that.pCount), current = that.current,
-	                html = '', next = count == current ? 1 : current+1,
-	                instance = that.instance(), extPage = that.extPage;
-	
-	            if(extPage.wrap){
-	                var page = '<div>';
-	                page += current == count || count == 0 ?
-	                     '<span>'+ extPage.next +'</span>' : '<a href="javascript:'+ instance +'.jump('+ (current+1) +');" target="_self">'+ extPage.next +'</a>';
-	                page += current == 1 ?
-	                     '<span>'+ extPage.prev +'</span>' : '<a href="javascript:'+ instance +'.jump('+ (current-1) +');" target="_self">'+ extPage.prev +'</a>';
-	                page += '</div><em>'+ (count !== 0 ? current : 0) +'/'+ count +'</em><strong>共'+ that.aCount + extPage.desc +'</strong>';
-	                extPage.wrap.html(page);
-	            }
-	            
-	            if(!that.wrap){
-	                return;
-	            }
-	            
-	            if(!count){
-	                that.wrap.empty();
-	                return;
-	            }
-	
-	            html += (function(){
-	                var tpl = '';
-	                if(current == 1){
-	                    if(button.first){
-	                        tpl += '<li><span>'+ button.first +'</span></li>';
-	                    }
-	                    tpl += '<li><span>'+ button.prev +'</span></li>';
-	                }
-	                else{
-	                    if(that.button.first){
-	                        tpl += '<li><a href="javascript:'+ instance +'.jump(1);" target="_self">'+ button.first +'</a></li>';
-	                    }
-	                    tpl += '<li><a href="javascript:'+ instance +'.jump('+ (current-1) +');" target="_self">'+ button.prev +'</a></li>';
-	                }
-	                return tpl;
-	            })();
-	            if(count <= 7){
-	                for(var i = 1; i <= count; i++){
-	                    html += that.echoList(html, i, instance);
-	                }
-	            }
-	            else{
-	                if(current-3 > 1 && current+3 < count){
-	                    html += '<li><a href="javascript:'+ instance +'.jump(1);" target="_self">1</a></li>';
-	                    html += '<li><em>...</em></li>';
-	                    for(var i = current-2; i <= current+2; i++){
-	                        html += that.echoList(html, i, instance);
-	                    }
-	                    html += '<li><em>...</em></li>';
-	                    html += '<li><a href="javascript:'+ instance +'.jump('+ count +');" target="_self">'+ count +'</a></li>';
-	                }
-	                else if(current-3 <= 1 && current+3 < count){
-	                    for(var i = 1; i <= 5; i++){
-	                        html += that.echoList(html, i, instance);
-	                    }
-	                    html += '<li><em>...</em></li>';
-	                    html += '<li><a href="javascript:'+ instance +'.jump('+ count +');" target="_self">'+ count +'</a></li>';
-	                }
-	                else if(current-3 > 1 && current+3 >= count){
-	                    html += '<li><a href="javascript:'+ instance +'.jump(1);" target="_self">1</a></li>';
-	                    html += '<li><em>...</em></li>';
-	                    for(var i = count-5; i <= count; i++){
-	                        html += that.echoList(html, i, instance);
-	                    }
-	                }
-	            }
-	            html += (function(){
-	                var tpl = '';
-	                if(current == count){
-	                    tpl += '<li><span>'+ button.next +'</span></li>';
-	                    if(button.last){
-	                        tpl += '<li><span>'+ button.last +'</span></li>';
-	                    }
-	                }
-	                else{
-	                    tpl += '<li><a href="javascript:'+ instance +'.jump('+ (current+1) +');" target="_self">'+ button.next +'</a></li>';
-	                    if(button.last){
-	                        tpl += '<li><a href="javascript:'+ instance +'.jump('+ count +');" target="_self">'+ button.last +'</a></li>';
-	                    }
-	                }
-	                return tpl;
-	            })();
-	            if(that.isFull){
-	                html += '<li><em>跳转到第</em><input type="text" onblur="'+ instance +'.trim(this);" value="'+ next +'" /><em>页</em><button type="button" onclick="'+ instance +'.jump(this);">确定</button></li>';
-	            }
-	            html = '<ul class="ui-paging">' + html + '</ul>';
-	            that.wrap.html(html);
-	        }
-	    }
-	    
-	    $.extend({
-	        paging:function(name, options){
-	            if(options === undefined){
-	                options = name;
-	                name = 'paging';
-	            }
-	            var page = window[name] = new Paging(options);
-	            if(typeof window[name].refreshCallback !== 'function'){
-	                page.query(true);
-	                return page;
-	            }
-	            page.query('refresh');
-	            return page
-	        }
-	    });
-	    
-	    window.Paging = Paging;
-	    
-	})(window, document, jQuery);
-});
 __define('./script/demo',function(require,imports,renders,extend,exports){
 	var module=this;
-	var paging = require('pages/components/datagrid/script/paging');
-	var checkradio = require('pages/components/datagrid/script/checkradio');
 	var template = require('src/core/template');
 	var datagrid = require('src/components/datagrid');
 	

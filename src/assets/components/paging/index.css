@@ -1,0 +1,32 @@
+.ui-paging {float: left; display: inline; overflow:hidden; zoom:1; background-color:#fff;}
+.ui-paging li { float:left; display:inline; text-align:center; margin-right:5px; line-height:22px;}
+.ui-paging span,.ui-paging a,.ui-paging em,.ui-paging input,.ui-paging button { float:left;}
+.ui-paging span,.ui-paging a { height:22px; width:22px; text-align:center;}
+.ui-paging span { background-color:#efefef;}
+.ui-paging span.s-crt { background-color: #FD7C26; color: #fff;}
+.ui-paging li input { 
+    text-align: center;
+    border:1px solid #E6E6E6;
+    width: 40px;
+    height: 20px;
+    margin: 0 5px;
+}
+.ui-paging li button {
+    height: 22px;
+    width: 40px;
+    color: #fff;
+    background-color: #FD7C26;
+    margin-left: 5px;
+}
+.ui-paging-number {
+    float: left;
+    display: inline;
+    .text {
+        float: left;
+        line-height: 22px;
+    }
+    .ui-imitselect {
+        float: left;
+        margin: 0 5px;
+    }
+}
