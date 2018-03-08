@@ -60,7 +60,7 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                 return
             }
             if(!self.layer || !self.layer.element){
-                var _opts = extend({
+                var _opts = Nui.extend(true, {}, {
                     container:elem,
                     isMask:false,
                     scrollbar:false,
