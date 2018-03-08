@@ -30,4 +30,8 @@ export {default as keep} from './keep';
 
 export {default as router} from './router';
 
+export {default as paging} from './paging';
+
+export {default as checkradio} from './checkradio';
+
 
