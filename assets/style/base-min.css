@@ -121,10 +121,6 @@ ol,
 ul {
   list-style: none;
 }
-sup,
-sub {
-  font-size: 83%;
-}
 blockquote,
 q {
   quotes: none;
@@ -200,18 +196,13 @@ button,
 label {
   cursor: pointer;
 }
-body,
-textarea,
-input,
-button,
-select,
-keygen,
-legend {
-  font: 14px/1.14 '\5fae\8f6f\96c5\9ed1', helvetica, sans-serif;
-  color: #232323;
+body {
+  font-size: 14px;
+  font-family: '\5fae\8f6f\96c5\9ed1', helvetica, sans-serif;
+  color: #333;
 }
 a {
-  color: #232323;
+  color: #333;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 a:hover {
@@ -404,13 +395,13 @@ input:-webkit-autofill {
   color: #f00;
 }
 .f-cnormal {
-  color: #323232;
+  color: #333;
 }
 .f-cgreen {
   color: #39B54A;
 }
 .f-cblue {
-  color: #3487E2;
+  color: #3F91F1;
 }
 .f-csmalt {
   color: #46679E;
