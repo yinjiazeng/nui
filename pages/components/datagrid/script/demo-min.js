@@ -1945,11 +1945,15 @@ __define('src/components/layer/layer',function(require){
             }
             else{
                 if(tpl){
+                    var data = opts.data;
+                    if(typeof data === 'function'){
+                        data = opts.data.call(this)
+                    }
                     if(typeof tpl === 'string'){
-                        content = template.render(tpl, opts.data)
+                        content = template.render(tpl, data)
                     }
                     else if(Nui.type(opts.template, 'Object')){
-                        content = template.render.call(tpl, tpl.main, opts.data)
+                        content = template.render.call(tpl, tpl.main, data)
                     }
                 }
                 else if(typeof opts.content === 'string'){
@@ -3671,8 +3675,9 @@ __define('src/components/datagrid',function(require){
             var self = this, opts = self._options;
             if(opts.paging){
                 delete opts.paging.wrap;
+                var container = opts.paging.container;
                 opts.paging.wrap = self._foot.children('.datagrid-paging');
-                opts.paging.container = self._tableAllBox;
+                opts.paging.container = !container ? self._tableAllBox : container;
                 var pagingId = 'paging_'+self.__id;
                 var echoData = opts.paging.echoData;
                 opts.paging.echoData = function(data, type){

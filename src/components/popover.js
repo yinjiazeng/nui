@@ -4,9 +4,14 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
             _init:function(){
                 var self = this;
                 Nui.doc.click(function(){
-                    Nui.each(self.__instances, function(v){
-                        v._hide();
-                    })
+                    self._hide()
+                })
+            },
+            _hide:function(){
+                Nui.each(this.__instances, function(v){
+                    if(v._isshow){
+                        v.hide()
+                    }
                 })
             },
             _events:{
@@ -17,8 +22,16 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
         _options:{
             //click mouseenter mouseover
             event:'mouseenter',
+            //显示时在容器上添加类名
+            showClass:'',
             //显示之前，return false不显示
-            onBefore:null
+            onBefore:null,
+            //隐藏时是否销毁
+            isDestroy:true,
+            //显示时回调
+            onShow:null,
+            //隐藏是回调
+            onHide:null
         },
         _exec:function(){
             var opts = this._options;
@@ -37,31 +50,33 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                 self._timer = null;
                 self._on(self._event, self.target, function(e, elem){
                     self._timer = setTimeout(function(){
-                        self._isshow = true;
-                        self._show(e, elem)
+                        self.show()
                     }, 100)
                 })
                 self._on(self.constructor._events[self._event], self.target, function(e, elem){
                     clearTimeout(self._timer);
-                    self._isshow = false;
-                    self._hide()
+                    self.hide()
                 })
             }
             else{
                 self._on(self._event, self.target, function(e, elem){
-                    self._show(e, elem);
+                    self.constructor._hide();
+                    self.show();
                     e.stopPropagation()
                 })
             }
         },
-        _show:function(e, elem){
-            var self = this, opts = self._options;
+        show:function(){
+            var self = this, opts = self._options, target = self.target;
             if(this._callback('Before') === false){
                 return
             }
-            if(!self.layer || !self.layer.element){
+            if(!opts.isDestroy && self.layer){
+                self.layer.element.show()
+            }
+            else if(!self.layer || !self.layer.element){
                 var _opts = Nui.extend(true, {}, {
-                    container:elem,
+                    container:target,
                     isMask:false,
                     scrollbar:false,
                     title:null,
@@ -82,18 +97,51 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                     }
                 }, opts);
                 _opts.id = 'popover';
-                self.layer = layer(_opts)
+                self.layer = layer(_opts);
+                self.layer.popover = self;
+                self.layer.resize = Nui.noop;
+            }
+            
+            if(opts.showClass){
+                self.target.addClass(opts.showClass)                
+            }
+
+            self._isshow = true;
+
+            if(typeof opts.onShow === 'function' && self.layer){
+                opts.onShow.call(self.layer._options, self.layer)
             }
         },
-        _hide:function(){
-            if(this.layer && !this._isshow){
+        hide:function(){
+            var self = this, opts = self._options;
+            if(self.layer){
+                if(!opts.isDestroy){
+                    if(self.layer.element){
+                        self.layer.element.hide()
+                    }
+                }
+                else{
+                    self.layer.destroy();
+                    delete self.layer
+                }
+                if(opts.showClass){
+                    self.target.removeClass(opts.showClass)                
+                }
+
+                delete self._isshow;
+
+                if(typeof opts.onHide === 'function' && self.layer){
+                    opts.onHide.call(self.layer._options, self.layer)
+                }
+            }
+        },
+        _reset:function(){
+            if(this.layer){
                 this.layer.destroy();
                 delete this.layer
             }
-        },
-        _delete:function(){
-            this._hide();
-            component.exports._delete.call(this);
+            delete this._isshow
+            component.exports._reset.call(this);
         }
     })
 })

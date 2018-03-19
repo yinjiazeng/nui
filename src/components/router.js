@@ -111,7 +111,30 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
 
                             var wrapper = opts.element = object._wrapper || self._wrapper;
                             
-                            if(typeof opts.onChange === 'function' && opts.onChange.call(opts, object) === false){
+                            var callback = function(){
+                                wrapper.show().siblings('.nui-router-wrapper').hide();
+
+                                if(typeof opts.onAfter === 'function'){
+                                    opts.onAfter.call(opts, object)
+                                }
+
+                                if(Nui.bsie7){
+                                    self._setHistory(_hash);
+                                }
+                                self._initialize = true;
+                            }
+
+                            var changed;
+                            
+                            if(typeof opts.onChange === 'function'){
+                                changed = opts.onChange.call(opts, object)
+                            }
+
+                            //true不渲染，但是执行onAfter
+                            if(typeof changed === 'boolean'){
+                                if(changed === true){
+                                    callback()
+                                }
                                 return false
                             }
                                 
@@ -125,17 +148,7 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
                                 object.loaded = true;
                             }
 
-                            wrapper.show().siblings('.nui-router-wrapper').hide();
-
-                            if(typeof opts.onAfter === 'function'){
-                                opts.onAfter.call(opts, object)
-                            }
-
-                            if(Nui.bsie7){
-                                self._setHistory(_hash);
-                            }
-
-                            self._initialize = true;
+                            callback()
                             
                             return false
                         }

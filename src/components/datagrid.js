@@ -472,8 +472,9 @@ Nui.define(function(require){
             var self = this, opts = self._options;
             if(opts.paging){
                 delete opts.paging.wrap;
+                var container = opts.paging.container;
                 opts.paging.wrap = self._foot.children('.datagrid-paging');
-                opts.paging.container = self._tableAllBox;
+                opts.paging.container = !container ? self._tableAllBox : container;
                 var pagingId = 'paging_'+self.__id;
                 var echoData = opts.paging.echoData;
                 opts.paging.echoData = function(data, type){

@@ -1858,11 +1858,15 @@ __define('src/components/layer/layer',function(require){
             }
             else{
                 if(tpl){
+                    var data = opts.data;
+                    if(typeof data === 'function'){
+                        data = opts.data.call(this)
+                    }
                     if(typeof tpl === 'string'){
-                        content = template.render(tpl, opts.data)
+                        content = template.render(tpl, data)
                     }
                     else if(Nui.type(opts.template, 'Object')){
-                        content = template.render.call(tpl, tpl.main, opts.data)
+                        content = template.render.call(tpl, tpl.main, data)
                     }
                 }
                 else if(typeof opts.content === 'string'){
