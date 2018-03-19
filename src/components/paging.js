@@ -76,7 +76,7 @@ Nui.define(function(require){
             //是否显示页码
             isPage:true,
             number:null,
-            container:window,
+            container:null,
 			scroll:{
 				enable:false
 			},
