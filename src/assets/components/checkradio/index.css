@@ -1,5 +1,3 @@
-@blue:#3F91F1;
-
 .ui-checkradio, .ui-checkradio em, .ui-checkradio i { display:inline-block;}
 .ui-checkradio em { cursor:pointer;}
 .ui-checkradio input { opacity:0; filter:alpha(opacity=0);}

@@ -196,7 +196,7 @@ Nui.define(function(require){
             jQuery.fn[name] = function(){
                 var args = arguments;
                 return this.each(function(){
-                    var object, options = args[0];
+                    var dom = this, object, options = args[0];
                     var execMethod = function(){
                         if(typeof options === 'string'){
                             if(options === 'options'){
@@ -211,19 +211,19 @@ Nui.define(function(require){
                             }
                         }
                     }
-                    if(this.nui && (object = this.nui[name])){
+                    if(dom.nui && (object = dom.nui[name])){
                         execMethod()
                     }
                     else if(!object){
-                        if(Nui.type(options, 'Object')){
-                            options.target = this
-                        }
-                        else{
-                            options = {
-                                target:this
+                        object = module((function(opts){
+                            if(Nui.type(opts, 'Object')){
+                                opts.target = dom
+                                return opts
                             }
-                        }
-                        object = module(options);
+                            else{
+                                return {target:dom}
+                            }
+                        })(options))
                         execMethod()
                     }
                 })

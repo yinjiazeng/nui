@@ -93,8 +93,11 @@ Nui.define(function(require){
             onFocus:null,
             onBlur:null,
 
+            filterQuery:null,
             stringify:null,
             rowRender:null,
+            colRender:null,
+
             onActive:null,
             onCancelActive:null,
             onRowRender:null,
@@ -201,6 +204,50 @@ Nui.define(function(require){
                     '</tr>'+
                     '<%/each%>'+
                 '</thead>',
+            cols:
+                '<%var colLastIndex = cols.length-1%>'+
+                '<%each cols val key%>'+
+                '<%var _value%>'+
+                '<%if val.field && (!val.content || "number checkbox input".indexOf(val.content)===-1)%>'+
+                '<%var _value=$value[val.field]%>'+
+                '<%elseif val.content === "number"%>'+
+                '<%var _value=$index+1%>'+
+                '<%elseif val.content === "checkbox"%>'+
+                '<%var _value={"name":val.field ? val.field : "datagrid-checkbox", "class":"datagrid-checkbox"+(!val.title ? " datagrid-checkbox-choose" : ""), "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
+                '<%elseif val.content === "input"%>'+
+                '<%var _value={"name":val.field ? val.field : "datagrid-input", "class":"datagrid-input", "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
+                '<%else%>'+
+                '<%var _value=val.content%>'+
+                '<%/if%>'+
+                '<%var _classNames = val.className%>'+
+                '<%if typeof _classNames === "function"%>'+
+                    '<%if _classNames = Nui.trim(val.className(_value, val.field, $value, $index)||"")%>'+
+                        '<%var _classNames = " " + _classNames%>'+
+                    '<%/if%>'+
+                '<%/if%>'+
+                '<td class="table-cell<%_classNames%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
+                    '<%if typeof val.filter === "function"%>'+
+                    '<%var _value = val.filter(_value, val.field, $value, $index)%>'+
+                    '<%/if%>'+
+                    '<span class="cell-wrap<%if val.nowrap === true%> cell-nowrap<%/if%>"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>>'+
+                    '<span class="cell-text'+
+                        '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
+                        '<%if val.content === "input"%> cell-text-input<%/if%>"'+
+                        '<%if val.showtitle === true || val.showtitle === "data"%> <%if val.showtitle !==true%>data-<%/if%>title="<%$value[val.field]??%>"<%/if%>>'+
+                    '<%if val.content === "checkbox" && typeof _value === "object"%>'+
+                    '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
+                    '<span class="ui-checkradio">'+
+                    '<input type="checkbox"<%include "_attr"%>>'+
+                    '</span>'+
+                    '<%elseif val.content === "input" && typeof _value === "object"%>'+
+                    '<input type="text" autocomplete="off"<%include "_attr"%>>'+
+                    '<%else%>'+
+                    '<%include "content"%>'+
+                    '<%/if%>'+
+                    '</span>'+
+                    '</span>'+
+                '</td>'+
+                '<%/each%>',
             rows:
                 '<%if list && list.length%>'+
                 '<%var toLower = function(str){'+
@@ -213,49 +260,7 @@ Nui.define(function(require){
                 '<%var className = (rowData.className ? " "+rowData.className : "")%>'+
                 '<%delete rowData.className%>'+
                 '<tr class="table-row table-row-<%$index%><%className%>" row-pagenum="<%pageNum??%>" row-index="<%$index%>"<%include "data"%><%each rowData _v _n%> <%_n%>="<%_v%>"<%/each%>>'+
-                    '<%var colLastIndex = cols.length-1%>'+
-                    '<%each cols val key%>'+
-                    '<%var _value%>'+
-                    '<%if val.field && (!val.content || "number checkbox input".indexOf(val.content)===-1)%>'+
-                    '<%var _value=$value[val.field]%>'+
-                    '<%elseif val.content === "number"%>'+
-                    '<%var _value=$index+1%>'+
-                    '<%elseif val.content === "checkbox"%>'+
-                    '<%var _value={"name":val.field ? val.field : "datagrid-checkbox", "class":"datagrid-checkbox"+(!val.title ? " datagrid-checkbox-choose" : ""), "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
-                    '<%elseif val.content === "input"%>'+
-                    '<%var _value={"name":val.field ? val.field : "datagrid-input", "class":"datagrid-input", "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
-                    '<%else%>'+
-                    '<%var _value=val.content%>'+
-                    '<%/if%>'+
-                    '<%var _classNames = val.className%>'+
-                    '<%if typeof _classNames === "function"%>'+
-                        '<%if _classNames = Nui.trim(val.className(_value, val.field, $value, $index)||"")%>'+
-                            '<%var _classNames = " " + _classNames%>'+
-                        '<%/if%>'+
-                    '<%/if%>'+
-                    '<td class="table-cell<%_classNames%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
-                        '<%if typeof val.filter === "function"%>'+
-                        '<%var _value = val.filter(_value, val.field, $value, $index)%>'+
-                        '<%/if%>'+
-                        '<span class="cell-wrap<%if val.nowrap === true%> cell-nowrap<%/if%>"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>>'+
-                        '<span class="cell-text'+
-                            '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
-                            '<%if val.content === "input"%> cell-text-input<%/if%>"'+
-                            '<%if val.showtitle === true || val.showtitle === "data"%> <%if val.showtitle !==true%>data-<%/if%>title="<%$value[val.field]??%>"<%/if%>>'+
-                        '<%if val.content === "checkbox" && typeof _value === "object"%>'+
-                        '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
-                        '<span class="ui-checkradio">'+
-                        '<input type="checkbox"<%include "_attr"%>>'+
-                        '</span>'+
-                        '<%elseif val.content === "input" && typeof _value === "object"%>'+
-                        '<input type="text" autocomplete="off"<%include "_attr"%>>'+
-                        '<%else%>'+
-                        '<%include "content"%>'+
-                        '<%/if%>'+
-                        '</span>'+
-                        '</span>'+
-                    '</td>'+
-                    '<%/each%>'+
+                    '<%include "cols"%>'+
                 '</tr>'+
                 '<%/each%>'+
                 '<%elseif type === "all"%>'+
@@ -531,6 +536,7 @@ Nui.define(function(require){
             if(isScroll && type === 'reload'){
                 self.element.find('.datagrid-tbody [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
             }
+            
             Nui.each(self._cols, function(v, k){
                 if(v.length){
                     if(self.list.length && typeof opts.rowRender === 'function'){
@@ -571,8 +577,33 @@ Nui.define(function(require){
                     elems.find('.datagrid-checkbox').checkradio(self._checkradio());
                 }
             })
+
             self._resetSize();
             self._callback('Render');
+        },
+        _update:function(index, data){
+            var self = this, opts = self._options, tpl = '';
+            Nui.each(self._cols, function(v, k){
+                if(v.length){
+                    var $row = self.element.find('.datagrid-table-'+k+' .datagrid-tbody > tr').eq(index);
+                    var checked = $row.find('.datagrid-checkbox').prop('checked') || false;
+                    if(typeof opts.colRender === 'function'){
+                        tpl = opts.colRender.call(opts, self, data, v, k)
+                    }
+                    else{
+                        tpl = self._tpl2html('cols', {
+                            cols:v,
+                            $index:index,
+                            $value:data,
+                            checked:false
+                        })
+                    }
+                    $row.html(tpl)
+                        .find('.datagrid-checkbox')
+                            .prop('checked', checked).checkradio(self._checkradio());
+                }
+            })
+            self._resetSize();
         },
         _checkradio:function(){
             var self = this, opts = self._options;
@@ -830,13 +861,18 @@ Nui.define(function(require){
             'keydown .datagrid-input':'_editInput _dirFocus'
         },
         _order:function(e, elem){
+            var self = this, opts = self._options;
             elem.toggleClass('s-crt');
             elem.siblings().removeClass('s-crt');
             var parent = elem.parent();
             var field = parent.attr('field');
             var value = parent.children('b.s-crt').attr('value');
+            var query = this.paging.condition;
             if(this.paging){
-                this.paging.condition[field] = value;
+                query[field] = value;
+                if(typeof opts.filterQuery === 'function'){
+                    this.paging.condition = opts.filterQuery.call(opts, self, query, field) || query
+                }
                 this.paging.query(true)
             }
         },
@@ -918,6 +954,19 @@ Nui.define(function(require){
                 }
             })
             return data;
+        },
+        //更新单行
+        update:function(index, data){
+            var self = this, _data;
+            if(data && typeof data === 'object'){
+                _data = data
+            }
+            else if(self.list){
+                _data = self.list[index]
+            }
+            if(_data){
+                self._update(index, _data)
+            }
         }
     })
 })

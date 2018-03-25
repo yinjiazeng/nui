@@ -1002,10 +1002,6 @@ Nui.define(function(require){
                 self._container_body = true
             }
             self._targetData = {
-                width:target.width(),
-                height:target.height(),
-                oWidth:target.outerWidth(),
-                oHeight:target.outerHeight(),
                 blWidth:_class._getSize(target, 'l', 'border'),
                 brWidth:_class._getSize(target, 'r', 'border'),
                 btWidth:_class._getSize(target, 't', 'border'),
@@ -1264,6 +1260,10 @@ Nui.define(function(require){
                 oleft = offset.left;
                 targetData.oWidth = self.container.outerWidth();
                 targetData.oHeight = self.container.outerHeight();
+            }
+            else{
+                targetData.oWidth = target.outerWidth()
+                targetData.oHeight = target.outerHeight()
             }
 
             var width = targetData.oWidth - elemData.blrWidth - elemData.plrWidth + (self._size.width || 0);

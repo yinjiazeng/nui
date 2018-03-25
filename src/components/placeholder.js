@@ -90,7 +90,7 @@ Nui.define(function(require){
             if(self._condition()){
                 var data = self._tplData();
                 data.style = {
-                    'width':self.target.outerWidth()+'px',
+                   // 'width':self.target.outerWidth()+'px',
                     'height':self.target.outerHeight()+'px'
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();

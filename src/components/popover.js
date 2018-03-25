@@ -9,7 +9,7 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
             },
             _hide:function(){
                 Nui.each(this.__instances, function(v){
-                    if(v._isshow){
+                    if(v._isshow && !v.hover){
                         v.hide()
                     }
                 })
@@ -83,6 +83,12 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                     events:{
                         'click':function(e){
                             e.stopPropagation()
+                        },
+                        'mouseenter':function(){
+                            self.hover = true
+                        },
+                        'mouseleave':function(){
+                            delete self.hover
                         }
                     },
                     close:{
@@ -128,7 +134,8 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                     self.target.removeClass(opts.showClass)                
                 }
 
-                delete self._isshow;
+                delete self._isshow
+                delete self.hover
 
                 if(typeof opts.onHide === 'function' && self.layer){
                     opts.onHide.call(self.layer._options, self.layer)

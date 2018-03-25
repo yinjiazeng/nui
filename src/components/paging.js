@@ -237,7 +237,7 @@ Nui.define(function(require){
         },
         //ajax请求数据
         getData:function(type){
-            var that = this;
+            var that = this, renderType = type;
             that.condition.pCount = that.pCount;
             if(that.allData === true){
                 delete that.condition.pCount;
@@ -278,11 +278,11 @@ Nui.define(function(require){
                         }
                         catch(e){}
                         var stop = 0, index;
-                        if(that.container[0] !== window && type !== 'reload' && type !== 'noloading' && (type !== 'jump' || (type === 'jump' && !that.scroll.enable))){
+                        if(that.container[0] !== window && renderType !== 'reload' && renderType !== 'noloading' && (renderType !== 'jump' || (renderType === 'jump' && !that.scroll.enable))){
                         	that.container.scrollTop(0)
                         	that.container.scrollLeft(0)
                         }
-                        if(type === 'reload'){
+                        if(renderType === 'reload'){
                             var box = that.container;
                             if(that.selector){
                                 box = that.container.find(that.selector);
@@ -293,7 +293,8 @@ Nui.define(function(require){
                             }
                             index = box.find('tr.rows.s-crt').index();
                         }
-                        that.echoData(data, type);
+
+                        that.echoData(data, renderType);
 
                         that.aCount = data[that.vars.aCount]||data.aCount;
                         that.load = false;
@@ -324,7 +325,7 @@ Nui.define(function(require){
                     error:function(){
                         that.load = false;
                     }
-                }, ajax||{}), type === 'jump' && that.scroll.enable === true ? null : that.loading);
+                }, ajax||{}), renderType === 'jump' && that.scroll.enable === true ? null : that.loading);
             }
         },
         //过滤分页中input值
