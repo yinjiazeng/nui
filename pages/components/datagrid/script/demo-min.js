@@ -1217,7 +1217,7 @@ __define('src/core/component',function(require){
             jQuery.fn[name] = function(){
                 var args = arguments;
                 return this.each(function(){
-                    var object, options = args[0];
+                    var dom = this, object, options = args[0];
                     var execMethod = function(){
                         if(typeof options === 'string'){
                             if(options === 'options'){
@@ -1232,19 +1232,19 @@ __define('src/core/component',function(require){
                             }
                         }
                     }
-                    if(this.nui && (object = this.nui[name])){
+                    if(dom.nui && (object = dom.nui[name])){
                         execMethod()
                     }
                     else if(!object){
-                        if(Nui.type(options, 'Object')){
-                            options.target = this
-                        }
-                        else{
-                            options = {
-                                target:this
+                        object = module((function(opts){
+                            if(Nui.type(opts, 'Object')){
+                                opts.target = dom
+                                return opts
                             }
-                        }
-                        object = module(options);
+                            else{
+                                return {target:dom}
+                            }
+                        })(options))
                         execMethod()
                     }
                 })
@@ -2941,7 +2941,7 @@ __define('src/components/paging',function(require){
         },
         //ajax请求数据
         getData:function(type){
-            var that = this;
+            var that = this, renderType = type;
             that.condition.pCount = that.pCount;
             if(that.allData === true){
                 delete that.condition.pCount;
@@ -2982,11 +2982,11 @@ __define('src/components/paging',function(require){
                         }
                         catch(e){}
                         var stop = 0, index;
-                        if(that.container[0] !== window && type !== 'reload' && type !== 'noloading' && (type !== 'jump' || (type === 'jump' && !that.scroll.enable))){
+                        if(that.container[0] !== window && renderType !== 'reload' && renderType !== 'noloading' && (renderType !== 'jump' || (renderType === 'jump' && !that.scroll.enable))){
                         	that.container.scrollTop(0)
                         	that.container.scrollLeft(0)
                         }
-                        if(type === 'reload'){
+                        if(renderType === 'reload'){
                             var box = that.container;
                             if(that.selector){
                                 box = that.container.find(that.selector);
@@ -2997,7 +2997,8 @@ __define('src/components/paging',function(require){
                             }
                             index = box.find('tr.rows.s-crt').index();
                         }
-                        that.echoData(data, type);
+
+                        that.echoData(data, renderType);
 
                         that.aCount = data[that.vars.aCount]||data.aCount;
                         that.load = false;
@@ -3028,7 +3029,7 @@ __define('src/components/paging',function(require){
                     error:function(){
                         that.load = false;
                     }
-                }, ajax||{}), type === 'jump' && that.scroll.enable === true ? null : that.loading);
+                }, ajax||{}), renderType === 'jump' && that.scroll.enable === true ? null : that.loading);
             }
         },
         //过滤分页中input值
@@ -3229,12 +3230,11 @@ __define('src/components/datagrid',function(require){
                     Nui.each(self.__instances, function(val){
                         if(!isRow && val.element && val._activeElem){
                             val._callback('CancelActive', [e, val._activeElem])
-                            val._activeElem.removeClass('s-crt');
+                            Nui.each(val._rowDom, function(v){
+                                $(v[val._activeIndex]).removeClass('s-crt')
+                            })
                             delete val._activeElem;
-                            if(val._activeFixedElem){
-                                val._activeFixedElem.removeClass('s-crt');
-                                delete val._activeFixedElem
-                            }
+                            delete val._activeIndex;
                         }
                     })
                 });
@@ -3296,8 +3296,11 @@ __define('src/components/datagrid',function(require){
             onFocus:null,
             onBlur:null,
 
+            filterQuery:null,
             stringify:null,
             rowRender:null,
+            colRender:null,
+
             onActive:null,
             onCancelActive:null,
             onRowRender:null,
@@ -3404,6 +3407,50 @@ __define('src/components/datagrid',function(require){
                     '</tr>'+
                     '<%/each%>'+
                 '</thead>',
+            cols:
+                '<%var colLastIndex = cols.length-1%>'+
+                '<%each cols val key%>'+
+                '<%var _value%>'+
+                '<%if val.field && (!val.content || "number checkbox input".indexOf(val.content)===-1)%>'+
+                '<%var _value=$value[val.field]%>'+
+                '<%elseif val.content === "number"%>'+
+                '<%var _value=$index+1%>'+
+                '<%elseif val.content === "checkbox"%>'+
+                '<%var _value={"name":val.field ? val.field : "datagrid-checkbox", "class":"datagrid-checkbox"+(!val.title ? " datagrid-checkbox-choose" : ""), "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
+                '<%elseif val.content === "input"%>'+
+                '<%var _value={"name":val.field ? val.field : "datagrid-input", "class":"datagrid-input", "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
+                '<%else%>'+
+                '<%var _value=val.content%>'+
+                '<%/if%>'+
+                '<%var _classNames = val.className%>'+
+                '<%if typeof _classNames === "function"%>'+
+                    '<%if _classNames = Nui.trim(val.className(_value, val.field, $value, $index)||"")%>'+
+                        '<%var _classNames = " " + _classNames%>'+
+                    '<%/if%>'+
+                '<%/if%>'+
+                '<td class="table-cell<%_classNames%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
+                    '<%if typeof val.filter === "function"%>'+
+                    '<%var _value = val.filter(_value, val.field, $value, $index)%>'+
+                    '<%/if%>'+
+                    '<span class="cell-wrap<%if val.nowrap === true%> cell-nowrap<%/if%>"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>>'+
+                    '<span class="cell-text'+
+                        '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
+                        '<%if val.content === "input"%> cell-text-input<%/if%>"'+
+                        '<%if val.showtitle === true || val.showtitle === "data"%> <%if val.showtitle !==true%>data-<%/if%>title="<%$value[val.field]??%>"<%/if%>>'+
+                    '<%if val.content === "checkbox" && typeof _value === "object"%>'+
+                    '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
+                    '<span class="ui-checkradio">'+
+                    '<input type="checkbox"<%include "_attr"%>>'+
+                    '</span>'+
+                    '<%elseif val.content === "input" && typeof _value === "object"%>'+
+                    '<input type="text" autocomplete="off"<%include "_attr"%>>'+
+                    '<%else%>'+
+                    '<%include "content"%>'+
+                    '<%/if%>'+
+                    '</span>'+
+                    '</span>'+
+                '</td>'+
+                '<%/each%>',
             rows:
                 '<%if list && list.length%>'+
                 '<%var toLower = function(str){'+
@@ -3416,49 +3463,7 @@ __define('src/components/datagrid',function(require){
                 '<%var className = (rowData.className ? " "+rowData.className : "")%>'+
                 '<%delete rowData.className%>'+
                 '<tr class="table-row table-row-<%$index%><%className%>" row-pagenum="<%pageNum??%>" row-index="<%$index%>"<%include "data"%><%each rowData _v _n%> <%_n%>="<%_v%>"<%/each%>>'+
-                    '<%var colLastIndex = cols.length-1%>'+
-                    '<%each cols val key%>'+
-                    '<%var _value%>'+
-                    '<%if val.field && (!val.content || "number checkbox input".indexOf(val.content)===-1)%>'+
-                    '<%var _value=$value[val.field]%>'+
-                    '<%elseif val.content === "number"%>'+
-                    '<%var _value=$index+1%>'+
-                    '<%elseif val.content === "checkbox"%>'+
-                    '<%var _value={"name":val.field ? val.field : "datagrid-checkbox", "class":"datagrid-checkbox"+(!val.title ? " datagrid-checkbox-choose" : ""), "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
-                    '<%elseif val.content === "input"%>'+
-                    '<%var _value={"name":val.field ? val.field : "datagrid-input", "class":"datagrid-input", "value":$value[val.field]!==undefined?$value[val.field]:""}%>'+
-                    '<%else%>'+
-                    '<%var _value=val.content%>'+
-                    '<%/if%>'+
-                    '<%var _classNames = val.className%>'+
-                    '<%if typeof _classNames === "function"%>'+
-                        '<%if _classNames = Nui.trim(val.className(_value, val.field, $value, $index)||"")%>'+
-                            '<%var _classNames = " " + _classNames%>'+
-                        '<%/if%>'+
-                    '<%/if%>'+
-                    '<td class="table-cell<%_classNames%> table-cell-<%key%><%if colLastIndex === key%> table-cell-last<%/if%>"<%include "attr"%>>'+
-                        '<%if typeof val.filter === "function"%>'+
-                        '<%var _value = val.filter(_value, val.field, $value, $index)%>'+
-                        '<%/if%>'+
-                        '<span class="cell-wrap<%if val.nowrap === true%> cell-nowrap<%/if%>"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>>'+
-                        '<span class="cell-text'+
-                            '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
-                            '<%if val.content === "input"%> cell-text-input<%/if%>"'+
-                            '<%if val.showtitle === true || val.showtitle === "data"%> <%if val.showtitle !==true%>data-<%/if%>title="<%$value[val.field]??%>"<%/if%>>'+
-                        '<%if val.content === "checkbox" && typeof _value === "object"%>'+
-                        '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
-                        '<span class="ui-checkradio">'+
-                        '<input type="checkbox"<%include "_attr"%>>'+
-                        '</span>'+
-                        '<%elseif val.content === "input" && typeof _value === "object"%>'+
-                        '<input type="text" autocomplete="off"<%include "_attr"%>>'+
-                        '<%else%>'+
-                        '<%include "content"%>'+
-                        '<%/if%>'+
-                        '</span>'+
-                        '</span>'+
-                    '</td>'+
-                    '<%/each%>'+
+                    '<%include "cols"%>'+
                 '</tr>'+
                 '<%/each%>'+
                 '<%elseif type === "all"%>'+
@@ -3531,6 +3536,7 @@ __define('src/components/datagrid',function(require){
             var self = this, opts = self._options;
             self._rows = {};
             self._cols = {};
+            self._rowDom = {};
             self._colTemplates = {};
             self._rowNumber = self._getRowNumber(opts.columns, 0, []);
             self._setTemplate();
@@ -3729,10 +3735,14 @@ __define('src/components/datagrid',function(require){
             return list||[]
         },
         _render:function(type){
-            var self = this, opts = self._options, rowHtml = '', isScroll = opts.paging && opts.paging.scroll && opts.paging.scroll.enable === true;
+            var self = this, 
+                opts = self._options,
+                rowHtml = '', 
+                rowDom = self._rowDom, 
+                isScroll = opts.paging && opts.paging.scroll && opts.paging.scroll.enable === true;
             self.list = self._getList();
             if(isScroll && type === 'reload'){
-                self.element.find('.datagrid-tbody [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
+                self.element.find('.datagrid-tbody > [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
             }
             Nui.each(self._cols, function(v, k){
                 if(v.length){
@@ -3765,17 +3775,48 @@ __define('src/components/datagrid',function(require){
 
                     var tbody = self.element.find('.datagrid-table-'+k+' .datagrid-tbody');
                     var elems;
-                    if(isScroll && (type === 'jump' || type === 'reload')){
-                        elems = $(rowHtml).appendTo(tbody);
+                    if(!rowDom[k]){
+                        rowDom[k] = []
+                    }
+                    if(!isScroll || (type !== 'jump' && type !== 'reload')){
+                        tbody.empty()
+                        rowDom[k] = []
+                    }
+                    elems = $(rowHtml).appendTo(tbody);
+                    rowDom[k] = rowDom[k].concat($.makeArray(elems))
+                    elems.find('.datagrid-checkbox').checkradio(self._checkradio());
+                }
+                else{
+                    delete rowDom[k]
+                }
+            })
+
+            self._resetSize();
+            self._callback('Render');
+        },
+        _update:function(index, data){
+            var self = this, opts = self._options, tpl = '';
+            Nui.each(self._cols, function(v, k){
+                if(v.length){
+                    var $row = self.element.find('.datagrid-table-'+k+' .datagrid-tbody > tr').eq(index);
+                    var checked = $row.find('.datagrid-checkbox').prop('checked') || false;
+                    if(typeof opts.colRender === 'function'){
+                        tpl = opts.colRender.call(opts, self, data, v, k)
                     }
                     else{
-                        elems = tbody.html(rowHtml);
+                        tpl = self._tpl2html('cols', {
+                            cols:v,
+                            $index:index,
+                            $value:data,
+                            checked:false
+                        })
                     }
-                    elems.find('.datagrid-checkbox').checkradio(self._checkradio());
+                    $row.html(tpl)
+                        .find('.datagrid-checkbox')
+                            .prop('checked', checked).checkradio(self._checkradio());
                 }
             })
             self._resetSize();
-            self._callback('Render');
         },
         _checkradio:function(){
             var self = this, opts = self._options;
@@ -4011,17 +4052,17 @@ __define('src/components/datagrid',function(require){
         _events:{
             'click .table-tbody .table-row':'_getRowData _active',
             'mouseenter .table-tbody .table-row':function(e, elem){
-                if(this._tableFixed.length){
-                    this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover');
-                }
-                elem.addClass('s-hover');
+                var index = elem.attr('row-index');
+                Nui.each(this._rowDom, function(v){
+                    $(v[index]).addClass('s-hover')
+                })
                 this._callback('RowMouseover', [e, elem]);
             },
             'mouseleave .table-tbody .table-row':function(e, elem){
-                if(this._tableFixed.length){
-                    this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').removeClass('s-hover');
-                }
-                elem.removeClass('s-hover');
+                var index = elem.attr('row-index');
+                Nui.each(this._rowDom, function(v){
+                    $(v[index]).removeClass('s-hover')
+                })
                 this._callback('RowMouseout', [e, elem]);
             },
             'dblclick .table-tbody .table-row':'_getRowData _rowdblclick',
@@ -4033,13 +4074,18 @@ __define('src/components/datagrid',function(require){
             'keydown .datagrid-input':'_editInput _dirFocus'
         },
         _order:function(e, elem){
+            var self = this, opts = self._options;
             elem.toggleClass('s-crt');
             elem.siblings().removeClass('s-crt');
             var parent = elem.parent();
             var field = parent.attr('field');
             var value = parent.children('b.s-crt').attr('value');
+            var query = this.paging.condition;
             if(this.paging){
-                this.paging.condition[field] = value;
+                query[field] = value;
+                if(typeof opts.filterQuery === 'function'){
+                    this.paging.condition = opts.filterQuery.call(opts, self, query, field) || query
+                }
                 this.paging.query(true)
             }
         },
@@ -4054,10 +4100,11 @@ __define('src/components/datagrid',function(require){
             self._callback('RowClick', [e, elem, data]);
             if(self._options.isActive === true){
                 self.cancelActive();
-                self._activeElem = elem.addClass('s-crt');
-                if(self._tableFixed.length){
-                    self._activeFixedElem = self._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-crt');
-                }
+                self._activeIndex = elem.attr('row-index');
+                self._activeElem = elem;
+                Nui.each(self._rowDom, function(v){
+                    $(v[self._activeIndex]).addClass('s-crt')
+                })
                 self._callback('Active', [e, elem, data]);
             }
         },
@@ -4103,9 +4150,13 @@ __define('src/components/datagrid',function(require){
             elem.scrollLeft(x||0);
         },
         cancelActive:function(){
-            if(this._options.isActive === true && this._activeElem){
-                this._activeElem.removeClass('s-crt');
-                delete this._activeElem
+            var self = this;
+            if(self._options.isActive === true && self._activeElem){
+                Nui.each(self._rowDom, function(v){
+                    $(v[self._activeIndex]).removeClass('s-crt')
+                })
+                delete self._activeIndex;
+                delete self._activeElem;
             }
         },
         checkedData:function(field){
@@ -4121,6 +4172,19 @@ __define('src/components/datagrid',function(require){
                 }
             })
             return data;
+        },
+        //更新单行
+        update:function(index, data){
+            var self = this, _data;
+            if(data && typeof data === 'object'){
+                _data = data
+            }
+            else if(self.list){
+                _data = self.list[index]
+            }
+            if(_data){
+                self._update(index, _data)
+            }
         }
     })
 })
@@ -4130,9 +4194,7 @@ __define('./script/demo',function(require,imports,renders,extend,exports){
 	var template = require('src/core/template');
 	var datagrid = require('src/components/datagrid');
 	
-	var a=__requireDefaultModule(imports('./a.css'));
-	
-	console.log(a)
+	imports('../style/page.less');
 	
 	var a = datagrid({
 	    container:'#data',

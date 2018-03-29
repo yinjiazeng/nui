@@ -502,6 +502,7 @@ Nui.define(function(require){
         },
         _select:function(e){
             var self = this, opts = self._options, data = self.queryData[self._activeIndex], elem = this._activeItem, value = '';
+
             if(data === undefined || !elem){
                 return
             }
@@ -1118,21 +1119,22 @@ Nui.define(function(require){
             }
             return selected
         },
-        _setHeight:function(input){
+        _setHeight:function(){
             var self = this, opts = self._options, len = self.queryData.length;
             if(len > 0 && opts.limit > 0){
                 var height = 0;
-                var selectedIndex;
+                delete self._activeIndex;
                 self.$list = self.$result.children('.con-search-list');
                 self._items = [];
                 self.$list.children('.con-search-item').each(function(i){
                     var $elem = $(this);
                     self._items.push($elem);
-                    if(!self._isTab && !input && selectedIndex === undefined && $elem.hasClass('s-crt')){
+                    if(!self._isTab && self._activeIndex === undefined && $elem.hasClass('s-crt')){
                         self._selectData = self.queryData[i];
-                        selectedIndex = i;
+                        self._activeIndex = i;
                     }
                 })
+                
                 if(!self._itemHeight){
                     if(self._items.length){
                         self._itemHeight = height = self._items[0].outerHeight()
@@ -1150,7 +1152,6 @@ Nui.define(function(require){
                     }
                     self.$list.height(self._listHeight = height);
                 }
-                self._activeIndex = selectedIndex;
             }
             else{
                 delete self.$list;
@@ -1162,13 +1163,13 @@ Nui.define(function(require){
                 this.$list.scrollTop(this._activeIndex * this._itemHeight)
             }
         },
-        _render:function(input){
-            var self = this, opts = self._options, _class = self.constructor, result = self._elemData[0];
+        _render:function(){
+            var self = this, opts = self._options, _class = self.constructor, result = self._elemData[0], punching = self._punching;
             result.$elem.hide();
             result.$container.hide();
             _class._active = self;
             //输入的时候才会显示
-            if((self._isTab && self.val && input) || !self._isTab){
+            if((self._isTab && self.val && punching) || !self._isTab){
                 self.$result.html(self._tpl2html('result', {
                     data:self.queryData,
                     value:self.val,
@@ -1180,7 +1181,7 @@ Nui.define(function(require){
                     self._defaultTab.$elem.hide()
                 }
                 self._toggle(null, result.$elem);
-                self._setHeight(input);
+                self._setHeight();
             }
             else if(self._selectTab){
                 self._defaultTab.$elem.show();
@@ -1213,12 +1214,13 @@ Nui.define(function(require){
             }
         },
         /**
-         * @param input <Boolean> 正在输入操作
+         * @param punching <Boolean> 正在输入操作
          */
-        _show:function(input){
+        _show:function(punching){
             var self = this, opts = self._options, _class = self.constructor;
+            self._punching = !!punching;
             self.val = Nui.trim(this.target.val());
-            if(self._disabled() || (self._hover && !input)){
+            if(self._disabled() || (self._hover && !self._punching)){
                 return
             }
             //页面中只能存在一个显示的组件
@@ -1237,10 +1239,10 @@ Nui.define(function(require){
                     self._setTagsData()
                 }
                 //不论输入框是否有值，获得焦点时显示完整列表
-                if(!input){
+                if(!self._punching){
                     self._setDefault()
                 }
-                self._render(input);
+                self._render();
                 this._callback('Show');
             }
         },

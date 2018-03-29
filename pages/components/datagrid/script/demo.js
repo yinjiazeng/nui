@@ -1,9 +1,7 @@
 var template = require('template');
 var datagrid = require('{com}/datagrid');
 
-import a from './a.css';
-
-console.log(a)
+import '../style/page.less';
 
 var a = datagrid({
     container:'#data',

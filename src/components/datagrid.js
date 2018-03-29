@@ -26,12 +26,11 @@ Nui.define(function(require){
                     Nui.each(self.__instances, function(val){
                         if(!isRow && val.element && val._activeElem){
                             val._callback('CancelActive', [e, val._activeElem])
-                            val._activeElem.removeClass('s-crt');
+                            Nui.each(val._rowDom, function(v){
+                                $(v[val._activeIndex]).removeClass('s-crt')
+                            })
                             delete val._activeElem;
-                            if(val._activeFixedElem){
-                                val._activeFixedElem.removeClass('s-crt');
-                                delete val._activeFixedElem
-                            }
+                            delete val._activeIndex;
                         }
                     })
                 });
@@ -333,6 +332,7 @@ Nui.define(function(require){
             var self = this, opts = self._options;
             self._rows = {};
             self._cols = {};
+            self._rowDom = {};
             self._colTemplates = {};
             self._rowNumber = self._getRowNumber(opts.columns, 0, []);
             self._setTemplate();
@@ -531,12 +531,15 @@ Nui.define(function(require){
             return list||[]
         },
         _render:function(type){
-            var self = this, opts = self._options, rowHtml = '', isScroll = opts.paging && opts.paging.scroll && opts.paging.scroll.enable === true;
+            var self = this, 
+                opts = self._options,
+                rowHtml = '', 
+                rowDom = self._rowDom, 
+                isScroll = opts.paging && opts.paging.scroll && opts.paging.scroll.enable === true;
             self.list = self._getList();
             if(isScroll && type === 'reload'){
-                self.element.find('.datagrid-tbody [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
+                self.element.find('.datagrid-tbody > [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
             }
-            
             Nui.each(self._cols, function(v, k){
                 if(v.length){
                     if(self.list.length && typeof opts.rowRender === 'function'){
@@ -568,13 +571,19 @@ Nui.define(function(require){
 
                     var tbody = self.element.find('.datagrid-table-'+k+' .datagrid-tbody');
                     var elems;
-                    if(isScroll && (type === 'jump' || type === 'reload')){
-                        elems = $(rowHtml).appendTo(tbody);
+                    if(!rowDom[k]){
+                        rowDom[k] = []
                     }
-                    else{
-                        elems = tbody.html(rowHtml);
+                    if(!isScroll || (type !== 'jump' && type !== 'reload')){
+                        tbody.empty()
+                        rowDom[k] = []
                     }
+                    elems = $(rowHtml).appendTo(tbody);
+                    rowDom[k] = rowDom[k].concat($.makeArray(elems))
                     elems.find('.datagrid-checkbox').checkradio(self._checkradio());
+                }
+                else{
+                    delete rowDom[k]
                 }
             })
 
@@ -839,17 +848,17 @@ Nui.define(function(require){
         _events:{
             'click .table-tbody .table-row':'_getRowData _active',
             'mouseenter .table-tbody .table-row':function(e, elem){
-                if(this._tableFixed.length){
-                    this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-hover');
-                }
-                elem.addClass('s-hover');
+                var index = elem.attr('row-index');
+                Nui.each(this._rowDom, function(v){
+                    $(v[index]).addClass('s-hover')
+                })
                 this._callback('RowMouseover', [e, elem]);
             },
             'mouseleave .table-tbody .table-row':function(e, elem){
-                if(this._tableFixed.length){
-                    this._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').removeClass('s-hover');
-                }
-                elem.removeClass('s-hover');
+                var index = elem.attr('row-index');
+                Nui.each(this._rowDom, function(v){
+                    $(v[index]).removeClass('s-hover')
+                })
                 this._callback('RowMouseout', [e, elem]);
             },
             'dblclick .table-tbody .table-row':'_getRowData _rowdblclick',
@@ -887,10 +896,11 @@ Nui.define(function(require){
             self._callback('RowClick', [e, elem, data]);
             if(self._options.isActive === true){
                 self.cancelActive();
-                self._activeElem = elem.addClass('s-crt');
-                if(self._tableFixed.length){
-                    self._activeFixedElem = self._tableFixed.find('.datagrid-tbody .table-row[row-index="'+ elem.attr('row-index') +'"]').addClass('s-crt');
-                }
+                self._activeIndex = elem.attr('row-index');
+                self._activeElem = elem;
+                Nui.each(self._rowDom, function(v){
+                    $(v[self._activeIndex]).addClass('s-crt')
+                })
                 self._callback('Active', [e, elem, data]);
             }
         },
@@ -936,9 +946,13 @@ Nui.define(function(require){
             elem.scrollLeft(x||0);
         },
         cancelActive:function(){
-            if(this._options.isActive === true && this._activeElem){
-                this._activeElem.removeClass('s-crt');
-                delete this._activeElem
+            var self = this;
+            if(self._options.isActive === true && self._activeElem){
+                Nui.each(self._rowDom, function(v){
+                    $(v[self._activeIndex]).removeClass('s-crt')
+                })
+                delete self._activeIndex;
+                delete self._activeElem;
             }
         },
         checkedData:function(field){

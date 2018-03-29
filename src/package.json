@@ -1,6 +1,6 @@
 {
   "name": "nuijs",
-  "version": "0.1.11",
+  "version": "0.1.17",
   "description": "nui框架",
   "main": "index.js",
   "scripts": {

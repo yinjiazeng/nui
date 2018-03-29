@@ -5,9 +5,15 @@
  * @description 路由
  */
 
-Nui.define(['../core/component', '../core/template', '../core/events'], function(component, template, events){
+Nui.define(function(require){
+    var component = require('../core/component');
+    var template = require('../core/template');
+    var events = require('../core/events');
+    var request = require('../core/request');
+
     var statics = {
         _paths:{},
+        _request:{},
         _init:function(){
             var self = this;
             Nui.doc.on('click', '.nui-router-back', function(){
@@ -67,10 +73,35 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
                             var isRender = object._isRender === true;
                             var unWrapper = object._isRender !== false && !object._wrapper;
                             var _isRender = !object.loaded || isRender || unWrapper;
+                            var changed;
                             delete object._isRender;
 
                             if(unWrapper || (object._wrapper && isRender)){
                                 opts.data = $.extend(true, {}, object._defaultOptions.data);
+                            }
+
+                            if(_isRender){
+                                if(opts.wrapper && !object._wrapper){
+                                    if(typeof opts.wrapper !== 'boolean'){
+                                        object._wrapper = object.container.children(opts.wrapper)
+                                    }
+                                    else{
+                                        object._wrapper = self._getWrapper(object.container)
+                                    }
+                                }
+                                else if(!self._wrapper){
+                                    self._wrapper = self._getWrapper(object.container)
+                                }
+
+                                Nui.each(self._request, function(v, i){
+                                    var obj = self.__instances[i];
+                                    if(obj._options.wrapper !== true || obj === object){
+                                        Nui.each(v, function(xhr, url){
+                                            xhr.abort()
+                                        })
+                                        delete self._request[i]
+                                    }
+                                })
                             }
 
                             Nui.each(v.params, function(val, key){
@@ -88,27 +119,6 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
                                 query:query
                             }
 
-                            opts.data = $.extend(true, opts.data, self._active);
-
-                            if(object._send && object._send.data && typeof opts.onData === 'function'){
-                                opts.onData.call(opts, object._send.data, object);
-                                delete object._send;
-                            }
-
-                            if(_isRender){
-                                if(opts.wrapper && !object._wrapper){
-                                    if(typeof opts.wrapper !== 'boolean'){
-                                        object._wrapper = object.container.children(opts.wrapper)
-                                    }
-                                    else{
-                                        object._wrapper = self._getWrapper(object.container)
-                                    }
-                                }
-                                else if(!self._wrapper){
-                                    self._wrapper = self._getWrapper(object.container)
-                                }
-                            }
-
                             var wrapper = opts.element = object._wrapper || self._wrapper;
                             
                             var callback = function(){
@@ -124,7 +134,12 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
                                 self._initialize = true;
                             }
 
-                            var changed;
+                            opts.data = $.extend(true, opts.data, self._active);
+
+                            if(object._send && object._send.data && typeof opts.onData === 'function'){
+                                opts.onData.call(opts, object._send.data, object);
+                                delete object._send;
+                            }
                             
                             if(typeof opts.onChange === 'function'){
                                 changed = opts.onChange.call(opts, object)
@@ -391,6 +406,7 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
             Nui.each(router._paths, function(val, i){
                 if(val.id === self.__id){
                     delete router._paths[i];
+                    delete router._request[i];
                 }
             })
             return self
@@ -409,6 +425,36 @@ Nui.define(['../core/component', '../core/template', '../core/events'], function
                 }
                 component.init(wrapper);
                 self._callback('Render')
+            }
+        },
+        request:function(){
+            var self = this, 
+                _class = self.constructor, 
+                args = arguments, 
+                type = args[0], 
+                method, url;
+            if(type){
+                if(typeof type === 'string' && request[type]){
+                    args = Array.prototype.slice.call(arguments, 1);
+                    url = args[0];
+                    method = request[type]
+                }
+                else if(typeof type === 'object'){
+                    url = type.url;
+                    method = request
+                }
+                var _request = _class._request[self.__id];
+                if(!_request){
+                    _request = _class._request[self.__id] = {}
+                }
+                if(method && url){
+                    var xhr = method.apply(request, args);
+                    var callback = function(){
+                        delete _request[url]
+                    }
+                    _request[url] = xhr;
+                    xhr.then(callback, callback)
+                }
             }
         },
         destroy:null
