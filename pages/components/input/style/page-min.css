@@ -1,45 +1,40 @@
 .nui-placeholder {
-    position: relative;
-    display: inline-block;
-    cursor: text;
+  position: relative;
+  display: inline-block;
+  cursor: text;
 }
-
 .nui-placeholder .con-placeholder-text {
-    position: absolute;
-    line-height: normal;
-    font-weight: normal;
-    font-style: normal;
+  position: absolute;
+  line-height: normal;
+  font-weight: normal;
+  font-style: normal;
 }
 .nui-input .con-input-wrap {
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding-right: 8px;
-    background-color: #fff;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding-right: 8px;
+  background-color: #fff;
 }
-
 .nui-input .con-input-limit {
-    position: absolute;
-    right: 3px;
-    bottom:3px;
-    background-color: #fff;
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  background-color: #fff;
 }
-
 .nui-input .con-input-limit b {
-    font-style: normal;
-    font-weight: normal;
+  font-style: normal;
+  font-weight: normal;
 }
-
 .nui-input .con-input-button {
-    float: none;
-    display: inline;
-    margin-left: 8px;
-    line-height: inherit;
-    vertical-align: middle;
-    cursor: pointer;
-    font-style: normal;
+  float: none;
+  display: inline;
+  margin-left: 8px;
+  line-height: inherit;
+  vertical-align: middle;
+  cursor: pointer;
+  font-style: normal;
 }
-
 .nui-input .con-input-wrap-textarea .con-input-button {
-    vertical-align:inherit;
+  vertical-align: inherit;
 }
