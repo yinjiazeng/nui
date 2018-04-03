@@ -1,4 +1,4 @@
-import Nui from './core/load';
+import Nui from './load';
 
 export default Nui;
 
