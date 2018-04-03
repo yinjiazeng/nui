@@ -2430,8 +2430,9 @@ __define('src/core/request',function(require){
 
         //登录拦截器
         var intercept = function(){
-            if(typeof defaults.intercept === 'function'){
-                defaults.intercept.apply(this, arguments)
+            var callback = defaults.intercept || defaults.success;
+            if(typeof callback === 'function'){
+                callback.apply(this, arguments)
             }
         }
 
@@ -2447,9 +2448,12 @@ __define('src/core/request',function(require){
             success.call(this, res, status, xhr)
         }
 
-        options.error = function(xhr){
+        options.error = function(){
             if(_loading){
                 _loading.destroy()
+            }
+            if(typeof defaults.error === 'function' && defaults.error.apply(this, arguments) === false){
+                return false
             }
             error.apply(this, arguments)
         }
@@ -2536,14 +2540,15 @@ __define('src/core/request',function(require){
                 else{
                     var object = callback;
                     callback = function(res, status, xhr){
-                        if(res && res[defaults.name]){
-                            Nui.each(object, function(_callback, key){
-                                if((key === 'other' && res[defaults.name] != defaults.value) || res[defaults.name] == key){
-                                    _callback.call(object, res, status, xhr)
-                                    return false
-                                }
-                            })
+                        if(!res){
+                            res = {}
                         }
+                        Nui.each(object, function(_callback, key){
+                            if((key === 'other' && res[defaults.name] != defaults.value) || res[defaults.name] == key){
+                                _callback.call(object, res, status, xhr)
+                                return false
+                            }
+                        })
                     }
                 }
             }
