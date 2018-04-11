@@ -1051,7 +1051,7 @@ __define('src/core/component',function(require){
         if(elem.nui && elem.nui[name]){
             return
         }
-        var $elem = jQuery(elem), _mod;
+        var $elem = jQuery(elem), _options;
         if(options === undefined){
             options = $elem.data(name+'Options');
         }
@@ -1059,21 +1059,25 @@ __define('src/core/component',function(require){
             if(/^{[\s\S]*}$/.test(options)){
                 options = eval('('+ options +')');
             }
-            else if(_mod = require(options, true)){
-                if(typeof _mod.exports === 'function'){
-                    options = _mod.exports($elem)
+            else if(_options = require(options)){
+                if(typeof _options === 'function'){
+                    options = _options($elem)
                 }
                 else{
-                    options = _mod.exports;
+                    options = _options
                 }
             }
         }
-        if(typeof options !== 'object'){
-            options = {};
+        if(Nui.type(options, 'Object')){
+            mod(Nui.extend({}, options, {
+                target:elem
+            }))
         }
-        mod(Nui.extend({}, options, {
-            target:elem
-        }))
+        else{
+            mod({
+                target:elem
+            })
+        }
     }
 
     /**
@@ -2460,8 +2464,8 @@ __define('src/core/request',function(require){
             options.url = options.url.substr(0, paramIndex).replace(/\/+$/, '');
         }
 
-        if(options.url && !/^https?:\/\//.test(options.url) && Nui.domain){
-            options.url = Nui.domain+options.url;
+        if(options.url && !/^https?:\/\//.test(options.url) && (defaults.preurl || Nui.domain)){
+            options.url = (defaults.preurl || Nui.domain) + options.url
         }
 
         if(options.ext !== false && defaults.ext && !/\.\w+$/.test(options.url)){
@@ -3583,6 +3587,9 @@ __define('src/components/search',function(require){
                     content = ''
                 }
             }
+	    else if(name === 'item' && content && !/^\s*\<li\s+/i.test(content)){
+                content = '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>">'+ content +'</li>'
+            }
 
             if(name !== 'item' && content){
                 content = '<div class="con-search-'+ name +'">'+ content +'</div>'
@@ -4081,6 +4088,7 @@ __define('src/components/search',function(require){
 
     return Search
 }); 
+
 /**
  * @author Aniu[2016-11-10 22:39]
  * @update Aniu[2017-12-22 10:17]

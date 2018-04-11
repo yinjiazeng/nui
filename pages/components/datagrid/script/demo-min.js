@@ -1058,7 +1058,7 @@ __define('src/core/component',function(require){
         if(elem.nui && elem.nui[name]){
             return
         }
-        var $elem = jQuery(elem), _mod;
+        var $elem = jQuery(elem), _options;
         if(options === undefined){
             options = $elem.data(name+'Options');
         }
@@ -1066,21 +1066,25 @@ __define('src/core/component',function(require){
             if(/^{[\s\S]*}$/.test(options)){
                 options = eval('('+ options +')');
             }
-            else if(_mod = require(options, true)){
-                if(typeof _mod.exports === 'function'){
-                    options = _mod.exports($elem)
+            else if(_options = require(options)){
+                if(typeof _options === 'function'){
+                    options = _options($elem)
                 }
                 else{
-                    options = _mod.exports;
+                    options = _options
                 }
             }
         }
-        if(typeof options !== 'object'){
-            options = {};
+        if(Nui.type(options, 'Object')){
+            mod(Nui.extend({}, options, {
+                target:elem
+            }))
         }
-        mod(Nui.extend({}, options, {
-            target:elem
-        }))
+        else{
+            mod({
+                target:elem
+            })
+        }
     }
 
     /**

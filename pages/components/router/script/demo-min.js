@@ -1057,7 +1057,7 @@ __define('src/core/component',function(require){
         if(elem.nui && elem.nui[name]){
             return
         }
-        var $elem = jQuery(elem), _mod;
+        var $elem = jQuery(elem), _options;
         if(options === undefined){
             options = $elem.data(name+'Options');
         }
@@ -1065,21 +1065,25 @@ __define('src/core/component',function(require){
             if(/^{[\s\S]*}$/.test(options)){
                 options = eval('('+ options +')');
             }
-            else if(_mod = require(options, true)){
-                if(typeof _mod.exports === 'function'){
-                    options = _mod.exports($elem)
+            else if(_options = require(options)){
+                if(typeof _options === 'function'){
+                    options = _options($elem)
                 }
                 else{
-                    options = _mod.exports;
+                    options = _options
                 }
             }
         }
-        if(typeof options !== 'object'){
-            options = {};
+        if(Nui.type(options, 'Object')){
+            mod(Nui.extend({}, options, {
+                target:elem
+            }))
         }
-        mod(Nui.extend({}, options, {
-            target:elem
-        }))
+        else{
+            mod({
+                target:elem
+            })
+        }
     }
 
     /**
@@ -2466,8 +2470,8 @@ __define('src/core/request',function(require){
             options.url = options.url.substr(0, paramIndex).replace(/\/+$/, '');
         }
 
-        if(options.url && !/^https?:\/\//.test(options.url) && Nui.domain){
-            options.url = Nui.domain+options.url;
+        if(options.url && !/^https?:\/\//.test(options.url) && (defaults.preurl || Nui.domain)){
+            options.url = (defaults.preurl || Nui.domain) + options.url
         }
 
         if(options.ext !== false && defaults.ext && !/\.\w+$/.test(options.url)){
@@ -2650,7 +2654,7 @@ __define('src/components/router',function(require){
                 return self.forward()
             })
         },
-        _setpaths:function(rule, paths){
+        _setPaths:function(rule, paths){
             if(!this._paths[rule]){
                 this._paths[rule] = paths
             }
@@ -2688,133 +2692,136 @@ __define('src/components/router',function(require){
             return ret;
         },
         _change:function(){
-            var self = this;
-            delete self._active;
-            if(!$.isEmptyObject(self._paths)){
-                var _hash = location.hash, ret = this._split(_hash), hash = self._replace(ret.url), query = ret.params;
-                Nui.each(self._paths, function(v){
-                    if(hash === v.path || hash.indexOf(v.path) === 0){
-                        var params = hash.replace(v.path, '').replace(/^\//, '');
-                        var object = self.__instances[v.id], opts = object._options, param = {};
-                        params = params ? params.split('/') : [];
-                        if(params.length === v.params.length){
-                            var isRender = object._isRender === true;
-                            var unWrapper = object._isRender !== false && !object._wrapper;
-                            var _isRender = !object.loaded || isRender || unWrapper;
-                            var changed;
-                            delete object._isRender;
+            var self = this, hashTemp = location.hash, 
+                ret = this._split(hashTemp), hash = self._replace(ret.url), 
+                query = ret.params;
+            self.isRender = false;
+            Nui.each(self._paths, function(v){
+                if(hash === v.path || hash.indexOf(v.path + '/') === 0){
+                    var _hash = hash.replace(v.path, '').replace(/^\//, '');
+                    var params = _hash ? _hash.split('/') : [];
+                    var object = self.__instances[v.id], opts = object._options;
+                    var match = params.length === v.params.length;
+                    if(match){
+                        //router.location强制刷新或者公共容器才会重新渲染
+                        var isRender = object._isRender === true || !object._wrapper;
+                        var changed;
+                        delete object._isRender;
 
-                            if(unWrapper || (object._wrapper && isRender)){
-                                opts.data = $.extend(true, {}, object._defaultOptions.data);
+                        if(opts.wrapper && !object._wrapper){
+                            if(typeof opts.wrapper !== 'boolean'){
+                                object._wrapper = object.container.children(opts.wrapper)
                             }
-
-                            if(_isRender){
-                                if(opts.wrapper && !object._wrapper){
-                                    if(typeof opts.wrapper !== 'boolean'){
-                                        object._wrapper = object.container.children(opts.wrapper)
-                                    }
-                                    else{
-                                        object._wrapper = self._getWrapper(object.container)
-                                    }
-                                }
-                                else if(!self._wrapper){
-                                    self._wrapper = self._getWrapper(object.container)
-                                }
-
-                                Nui.each(self._request, function(v, i){
-                                    var obj = self.__instances[i];
-                                    if(obj._options.wrapper !== true || obj === object){
-                                        Nui.each(v, function(xhr, url){
-                                            xhr.abort()
-                                        })
-                                        delete self._request[i]
-                                    }
-                                })
+                            else{
+                                object._wrapper = self._getWrapper(object.container)
                             }
+                        }
+                        else if(!opts.wrapper && !self._wrapper){
+                            self._wrapper = self._getWrapper(object.container)
+                        }
 
-                            Nui.each(v.params, function(val, key){
-                                param[val] = params[key]
+                        if(isRender){
+                            if(object.rendered){
+                                opts.data = Nui.extend(true, {}, object._defaultOptions.data)
+                            }
+                            
+                            //取消前一个页面的所有请求
+                            Nui.each(self._request, function(v, i){
+                                var obj = self.__instances[i];
+                                if(!obj._options.wrapper || obj === object){
+                                    Nui.each(v, function(xhr, url){
+                                        xhr.abort()
+                                    })
+                                    delete self._request[i]
+                                }
                             })
+                        }
 
-                            Nui.each(query, function(val, key){
-                                param[val] = query[key]
-                            })
+                        self._active = {
+                            path:v.path+'/',
+                            url:hash+'/',
+                            params:{},
+                            query:query
+                        }
 
-                            self._active = {
-                                path:v.path+'/',
-                                url:hash+'/',
-                                params:param,
-                                query:query
+                        Nui.each(v.params, function(val, key){
+                            self._active.params[val] = params[key]
+                        })
+
+                        Nui.each(query, function(val, key){
+                            self._active.params[val] = query[key]
+                        })
+
+                        opts.data = Nui.extend(true, opts.data, self._active)
+
+                        var wrapper = opts.element = object._wrapper || self._wrapper
+                        
+                        var callback = function(){
+                            wrapper.show().siblings('.nui-router-wrapper').hide()
+
+                            if(typeof opts.onAfter === 'function'){
+                                opts.onAfter.call(opts, object)
                             }
 
-                            var wrapper = opts.element = object._wrapper || self._wrapper;
-                            
-                            var callback = function(){
-                                wrapper.show().siblings('.nui-router-wrapper').hide();
-
-                                if(typeof opts.onAfter === 'function'){
-                                    opts.onAfter.call(opts, object)
-                                }
-
-                                if(Nui.bsie7){
-                                    self._setHistory(_hash);
-                                }
-                                self._initialize = true;
+                            if(Nui.bsie7){
+                                self._setHistory(hashTemp)
                             }
 
-                            opts.data = $.extend(true, opts.data, self._active);
+                            self.isRender = true
+                        }
 
-                            if(object._send && object._send.data && typeof opts.onData === 'function'){
-                                opts.onData.call(opts, object._send.data, object);
-                                delete object._send;
-                            }
-                            
-                            if(typeof opts.onChange === 'function'){
-                                changed = opts.onChange.call(opts, object)
-                            }
+                        if(object._sendData && typeof opts.onData === 'function'){
+                            opts.onData.call(opts, object._sendData.data, object);
+                            delete object._sendData;
+                        }
+                        
+                        if(typeof opts.onChange === 'function'){
+                            changed = opts.onChange.call(opts, object)
+                        }
 
-                            //true不渲染，但是执行onAfter
-                            if(typeof changed === 'boolean'){
-                                if(changed === true){
-                                    callback()
-                                }
-                                return false
+                        //true不渲染，但是执行onAfter
+                        if(typeof changed === 'boolean'){
+                            if(changed === true){
+                                callback()
                             }
-                                
-                            if(_isRender){
-                                wrapper.off();
-                                object.render.call(object);
-                                if(typeof opts.onInit === 'function'){
-                                    opts.onInit.call(opts, object);
-                                }
-                                events.call(opts);
-                                object.loaded = true;
+                            else{
+                                self.isRender = true
                             }
-
-                            callback()
-                            
                             return false
                         }
+                            
+                        if(isRender){
+                            wrapper.off();
+                            object.render.call(object);
+                            if(typeof opts.onInit === 'function'){
+                                opts.onInit.call(opts, object);
+                            }
+                            events.call(opts);
+                            object.rendered = true;
+                        }
+
+                        callback()
+                        return false
+                    }
+                }
+            })
+
+            if(!self.isRender){
+                //检测当前路由地址是否存在，不存在则跳转到入口页面
+                Nui.each(self.__instances, function(v){
+                    if(v._options.entry === true){
+                        if(v.target){
+                            v._render(v.target.eq(0));
+                        }
+                        else if(v.path){
+                            v._render(v.path);
+                        }
+                        return false
                     }
                 })
-
-                if(!self._initialize){
-                    Nui.each(self.__instances, function(v){
-                        if(!self._isEntry && v._options.entry === true){
-                            self._isEntry = true;
-                            if(v.target){
-                                v._render(v.target.eq(0));
-                            }
-                            else if(v.path){
-                                v._render(v.path);
-                            }
-                            self._initialize = true;
-                            return false
-                        }
-                    })
-                }
             }
-            self._oldhash = _hash;
+            
+            self._oldhash = hashTemp;
         },
         _bindHashchange:function(){
             var self = this;
@@ -2842,10 +2849,8 @@ __define('src/components/router',function(require){
         _$ready:null,
         _$fn:null,
         init:null,
-        start:function(){
-            if(!this._initialize){
-                this._change();
-            }
+        start:function(value){
+            this._change()
         },
         location:function(url, data, render){
             var self = this;
@@ -2854,7 +2859,7 @@ __define('src/components/router',function(require){
                     render = data;
                     data = null;
                 }
-                var temp, _router, query = '';
+                var temp, object, query = '';
                 var match = url.match(/\?[^\/\s]+$/);
                 if(match){
                     query = match[0]
@@ -2864,16 +2869,16 @@ __define('src/components/router',function(require){
                     if(rule === url || (url.indexOf(val.path) === 0 &&
                                         (temp = url.replace(new RegExp('^'+val.path), '').replace(/^\//, '')) && 
                                         temp.split('/').length === val.params.length)){
-                        _router = self.__instances[val.id];
+                                            object = self.__instances[val.id];
                         return false
                     }
                 })
-                if(_router){
-                    _router._send = {
+                if(object){
+                    object._sendData = {
                         data:data
                     }
-                    _router._isRender = render;
-                    _router._render(url + query)
+                    object._isRender = render;
+                    object._render(url + query)
                 }
             }
             else{
@@ -2897,13 +2902,16 @@ __define('src/components/router',function(require){
         statics._history = [];
         statics._setHistory = function(hash){
             if(!this._isHistory){
-                Nui.each(this._history, function(val){
-                    val.active = false
-                });
-                this._history.push({
-                    hash:hash,
-                    active:true
-                })
+                var last = this._history.slice(-1);
+                if(!last.length || last[0].hash !== hash){
+                    Nui.each(this._history, function(val){
+                        val.active = false
+                    });
+                    this._history.push({
+                        hash:hash,
+                        active:true
+                    })
+                }
             }
             this._isHistory = false;
         }
@@ -2959,31 +2967,39 @@ __define('src/components/router',function(require){
             }
         },
         _exec:function(){
-            var self = this, opts = self._options, router = self.constructor;
+            var self = this, opts = self._options;
             if(opts.path && (self.container = self._jquery(opts.container))){
-                self.path = router._replace(opts.path);
-                var paths = self._getpath();
-                var len = paths.params.length;
-                if((!len && opts.level === 1) || opts.level !== 1){
-                    router._setpaths(paths.rule, paths)
-                }
-                if(len && opts.level > 0){
-                    var params = [], split = '/:', param, sub;
-                    while(param = paths.params.shift()){
-                        params.push(param);
-                        sub = params.join(split);
-                        router._setpaths(paths.rule+split+sub, $.extend({}, paths, {
-                            params:sub.split(split)
-                        }))
-                    }
-                }
+                self._initPath();
+                self._setPaths();
                 if(self._getTarget()){
                     self._event()
                 }
                 return self
             }
         },
-        _getpath:function(){
+        _setPaths:function(){
+            var self = this, opts = self._options, router = self.constructor;
+            var paths = self._getPathData();
+            var len = paths.params.length;
+            if((!len && opts.level === 1) || opts.level !== 1){
+                router._setPaths(paths.rule, paths)
+            }
+            if(len && opts.level > 0){
+                var params = [], split = '/:', param, sub;
+                while(param = paths.params.shift()){
+                    params.push(param);
+                    sub = params.join(split);
+                    router._setPaths(paths.rule+split+sub, Nui.extend({}, paths, {
+                        params:sub.split(split)
+                    }))
+                }
+            }
+        },
+        _initPath:function(){
+            var self = this, opts = self._options, router = self.constructor;
+            self.path = router._replace(opts.path)
+        },
+        _getPathData:function(){
             var self = this, path = self.path, opts = self._options, index = path.indexOf('/:');
             var paths = {
                 id:self.__id,
@@ -3001,16 +3017,22 @@ __define('src/components/router',function(require){
             return paths
         },
         _render:function(url){
-            var self = this, opts = self._options, href = url instanceof jQuery ? url.attr('href') : url;
+            var self = this, opts = self._options, href = url instanceof jQuery ? url.attr('href') : url, router = self.constructor;
             if(href){
                 var trigger = false;
                 var change = function(callback){
                     trigger = true;
-                    var hash = '#!'+self.constructor._replace(href);
+                    var hash = '#!'+router._replace(href);
+                    var _hash = location.hash;
                     if(typeof callback === 'function'){
                         hash = callback(hash) || hash;
                     }
-                    location.hash = hash
+                    if(_hash === hash && self._isRender === true){
+                        router._change()
+                    }
+                    else{
+                        location.hash = hash
+                    }
                 }
                 if(typeof opts.onBefore === 'function' && opts.onBefore.call(opts, change) === false){
                     return false
@@ -3084,8 +3106,7 @@ __define('src/components/router',function(require){
                     xhr.then(callback, callback)
                 }
             }
-        },
-        destroy:null
+        }
     })
 })
 /**

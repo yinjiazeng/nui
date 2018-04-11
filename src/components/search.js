@@ -961,6 +961,9 @@ Nui.define(function(require){
                     content = ''
                 }
             }
+	    else if(name === 'item' && content && !/^\s*\<li\s+/i.test(content)){
+                content = '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>">'+ content +'</li>'
+            }
 
             if(name !== 'item' && content){
                 content = '<div class="con-search-'+ name +'">'+ content +'</div>'
