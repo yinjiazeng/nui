@@ -92,8 +92,8 @@ Nui.define(function(require){
             options.url = options.url.substr(0, paramIndex).replace(/\/+$/, '');
         }
 
-        if(options.url && !/^https?:\/\//.test(options.url) && Nui.domain){
-            options.url = Nui.domain+options.url;
+        if(options.url && !/^https?:\/\//.test(options.url) && (defaults.preurl || Nui.domain)){
+            options.url = (defaults.preurl || Nui.domain) + options.url
         }
 
         if(options.ext !== false && defaults.ext && !/\.\w+$/.test(options.url)){

@@ -12,17 +12,18 @@ Nui.define(['./layer'], function(layer){
             width:width,
             height:height,
             align:align || 'right',
-            button:[{
-                id:'cancel',
-                text:'取消',
-                enable:true
-            }],
+            cancel:{
+                text:'取消'
+            },
             confirm:{
                 callback:callback||function(){
                     return true
                 }
             }
         }, opts||{}, {
+            cancel:{
+                enable:true
+            },
             confirm:{
                 enable:true
             }
