@@ -31,7 +31,9 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
             //显示时回调
             onShow:null,
             //隐藏是回调
-            onHide:null
+            onHide:null,
+            //延迟显示
+            delay:true
         },
         _exec:function(){
             var opts = this._options;
@@ -49,9 +51,14 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
             if(this._event !== 'click'){
                 self._timer = null;
                 self._on(self._event, self.target, function(e, elem){
-                    self._timer = setTimeout(function(){
+                    if(opts.delay){
+                        self._timer = setTimeout(function(){
+                            self.show()
+                        }, 100)
+                    }
+                    else{
                         self.show()
-                    }, 100)
+                    }
                 })
                 self._on(self.constructor._events[self._event], self.target, function(e, elem){
                     clearTimeout(self._timer);
