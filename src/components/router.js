@@ -471,7 +471,8 @@ Nui.define(function(require){
                         delete _request[url]
                     }
                     _request[url] = xhr;
-                    xhr.then(callback, callback)
+                    xhr.then(callback, callback);
+                    return xhr
                 }
             }
         }
