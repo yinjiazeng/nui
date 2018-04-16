@@ -569,6 +569,10 @@ Nui.define(function(require){
                         })
                     }
 
+                    if(isScroll && type === 'reload' && rowDom[k]){
+                        rowDom[k] = rowDom[k].slice(0, (self.paging.current - 1) * self.paging.pCount)
+                    }
+
                     var tbody = self.element.find('.datagrid-table-'+k+' .datagrid-tbody');
                     var elems;
                     if(!rowDom[k]){
