@@ -1,5 +1,5 @@
 Nui.define(['./layer'], function(layer){
-    return function(content, callback, title, width, height, align){
+    return function(content, callback, title, width, height, align){        
         var opts;
         if(typeof content === 'object'){
             opts = content;
@@ -11,7 +11,7 @@ Nui.define(['./layer'], function(layer){
             title:title,
             width:width,
             height:height,
-            align:align || 'right',
+            align:align || layer.config('align') || 'right',
             cancel:{
                 text:'取消'
             },

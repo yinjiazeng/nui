@@ -9,14 +9,26 @@ Nui.define(function(require){
         var onInit = options.onInit;
         delete options.onInit;
         var valid = options.valid;
-        var btns = $.extend([], options.button || [{
-            id:'cancel',
-            text:'关闭'
-        }, { 
-            id:'confirm',
-            name:'normal',
-            text:'保存'
-        }])
+        var def = layer.config('button');
+        var button = options.button;
+        if(!button){
+            var confirm = {
+                id:'confirm',
+                name:'normal',
+                text:'保存'
+            }
+            var cancel = {
+                id:'cancel',
+                text:'关闭'
+            }
+            if(def && def[0] && def[0].id === 'confirm'){
+                button = [confirm, cancel]
+            }
+            else{
+                button = [cancel, confirm]
+            }
+        }
+        var btns = Nui.extend(true, [], button)
 
         Nui.each(btns, function(val, i){
             if(val.id === 'confirm' && !val.callback){
@@ -28,9 +40,10 @@ Nui.define(function(require){
         })
 
         delete options.button;
-        var formLayer = layer($.extend(true, {button:btns}, {
+        var formLayer = layer(Nui.extend(true, {
             scrollbar:false,
             id:'form',
+            button:btns,
             onInit:function(self){
                 var main = self.main;
                 var elems = main.find('[name!=""][data-rule]');
