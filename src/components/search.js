@@ -59,10 +59,11 @@ Nui.define(function(require){
                     if(!option){
                         option = {}
                     }
-                    return Search._tpl2html.call(Search, 'tags', {
+                    let _exports = Search.exports || Search;
+                    return _exports._tpl2html.call(_exports, 'tags', {
                         data:[].concat(data),
                         title:option.title === undefined ? true : option.title,
-                        close:option.close||'×',
+                        close:option.close === undefined ? '×' : option.close,
                         type:option.type ? [].concat(option.type) : false
                     })
                 }
@@ -922,7 +923,8 @@ Nui.define(function(require){
             self.element = $(self._tpl2html('wrap', data)).appendTo(self.container);
             self._setElemData();
 
-            self.$body = self.element.children();
+            self.$body = self.element.children('.con-search-body');
+            self.$foot = self.element.children('.con-search-foot');
             self.$inner = self.$body.children('.con-search-inner');
             self.$result = self.$inner.children('.con-search-result');
 
@@ -961,7 +963,7 @@ Nui.define(function(require){
                     content = ''
                 }
             }
-	    else if(name === 'item' && content && !/^\s*\<li\s+/i.test(content)){
+            else if(name === 'item' && content && !/^\s*\<li\s+/i.test(content)){
                 content = '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>">'+ content +'</li>'
             }
 
