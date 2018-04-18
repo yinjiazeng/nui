@@ -7,9 +7,9 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                     self._hide()
                 })
             },
-            _hide:function(){
+            _hide:function(obj){
                 Nui.each(this.__instances, function(v){
-                    if(v._isshow && !v.hover){
+                    if(v._isshow && obj !== v){
                         v.hide()
                     }
                 })
@@ -40,11 +40,13 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
             if(!this._getTarget()){
                 return
             }
-            this._event = opts.event;
-            if($.inArray(this._event, ['click', 'mouseenter', 'mouseleave']) === -1){
-                this._event = 'mouseenter'
+            if(opts.event){
+                this._event = opts.event;
+                if($.inArray(this._event, ['click', 'mouseenter', 'mouseleave']) === -1){
+                    this._event = 'mouseenter'
+                }
+                this._events()
             }
-            this._events();
         },
         _events:function(){
             var self = this, opts = self._options;
@@ -67,7 +69,7 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
             }
             else{
                 self._on(self._event, self.target, function(e, elem){
-                    self.constructor._hide();
+                    self.constructor._hide(self);
                     self.show();
                     e.stopPropagation()
                 })
@@ -75,6 +77,9 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
         },
         show:function(){
             var self = this, opts = self._options, target = self.target;
+            if(!opts.event){
+                self.constructor._hide(self)
+            }
             if(this._callback('Before') === false){
                 return
             }
@@ -90,12 +95,6 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                     events:{
                         'click':function(e){
                             e.stopPropagation()
-                        },
-                        'mouseenter':function(){
-                            self.hover = true
-                        },
-                        'mouseleave':function(){
-                            delete self.hover
                         }
                     },
                     close:{
@@ -142,7 +141,6 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                 }
 
                 delete self._isshow
-                delete self.hover
 
                 if(typeof opts.onHide === 'function' && self.layer){
                     opts.onHide.call(self.layer._options, self.layer)

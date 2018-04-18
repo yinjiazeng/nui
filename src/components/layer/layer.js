@@ -196,7 +196,7 @@ Nui.define(function(require){
                     '</div>'+
                 '</div>',
             button:
-                '<button class="ui-button'+
+                '<button type="button" class="ui-button'+
                     '<%if btn.name%>'+
                     '<%each [].concat(btn.name) name%> ui-button-<%name%><%/each%>'+
                     '<%/if%> layer-button-<%btn.id%>"'+
@@ -527,52 +527,36 @@ Nui.define(function(require){
             });
         },
         _position:function(){
-            var self = this, data = self.data, pos = self._options.position;
-            var _pos = {
-                top:pos.top,
-                left:pos.left,
-                right:pos.right,
-                bottom:pos.bottom
-            }, _v;
+            var self = this, data = self.data, pos = self._options.position, _pos = {}, _v;
 
-            if(_pos.top !== undefined && _pos.bottom !== undefined){
-                delete _pos.bottom
-            }
-
-            if(_pos.left !== undefined && _pos.right !== undefined){
-                delete _pos.right
-            }
-
-            Nui.each(_pos, function(v, k){
-                if(v === undefined){
-                    delete _pos[k];
-                    return true;
-                }
-                _v = v;
-                if(typeof v === 'string'){
-                    if(!v){
-                        _v = 0
-                    }
-                    else{
-                        if(k === 'top' || k === 'bottom'){
-                            if(v === 'self'){
-                                _v = data.outerHeight
-                            }
-                            else if(/[\+\-\*\/]/.test(v)){
-                                _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
-                            }
+            Nui.each(pos, function(v, k){
+                if(Nui.type(v, ['String', 'Number'])){
+                    _v = v;
+                    if(typeof v === 'string' && v !== 'auto'){
+                        if(!v){
+                            _v = 0
                         }
                         else{
-                            if(v === 'self'){
-                                _v = data.outerWidth
+                            if(k === 'top' || k === 'bottom'){
+                                if(v === 'self'){
+                                    _v = data.outerHeight
+                                }
+                                else if(/[\+\-\*\/]/.test(v)){
+                                    _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
+                                }
                             }
-                            else if(/[\+\-\*\/]/.test(v)){
-                                _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
+                            else{
+                                if(v === 'self'){
+                                    _v = data.outerWidth
+                                }
+                                else if(/[\+\-\*\/]/.test(v)){
+                                    _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
+                                }
                             }
                         }
                     }
+                    _pos[k] = _v
                 }
-                _pos[k] = _v === 'auto' ? 'auto' : parseFloat(_v)+'px'
             })
 
             return _pos
