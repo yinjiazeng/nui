@@ -112,6 +112,8 @@ Nui.define(function(require){
                             query:query
                         }
 
+                        self._options = opts
+
                         Nui.each(v.params, function(val, key){
                             self._active.params[val] = params[key]
                         })
@@ -253,7 +255,10 @@ Nui.define(function(require){
                 self.start()
             }
         },
-        active:function(){
+        active:function(isOptions){
+            if(isOptions){
+                return this._options
+            }
             return this._active
         },
         forward:function(index){
