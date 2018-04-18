@@ -59,7 +59,7 @@ Nui.define(function(require){
                     if(!option){
                         option = {}
                     }
-                    let _exports = Search.exports || Search;
+                    var _exports = Search.exports || Search;
                     return _exports._tpl2html.call(_exports, 'tags', {
                         data:[].concat(data),
                         title:option.title === undefined ? true : option.title,
