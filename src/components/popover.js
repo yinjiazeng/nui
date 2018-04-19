@@ -70,7 +70,7 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
             else{
                 self._on(self._event, self.target, function(e, elem){
                     self.constructor._hide(self);
-                    self.show();
+                    self.show()
                     e.stopPropagation()
                 })
             }
