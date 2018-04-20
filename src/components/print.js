@@ -16,7 +16,7 @@ Nui.define(function(require){
              * @type {Object} jQuery对象或者DOM对象
              * @type {Array} 内容列表
              * @type {Function} 
-             * @param {Object} self
+             * @param {Object} self 当前组件实例
              * @return {String, Object, Array}
              */
             content:'',
@@ -39,7 +39,12 @@ Nui.define(function(require){
              * @func 打印页面样式地址
              * @type {String, Array}
              */
-            url:''
+            url:'',
+            /**
+             * @func 打印时回调
+             * @param {Object} self 当前组件实例
+             */
+            onInit:null
         },
         _exec:function(){
             var self = this, opts = self._options;
