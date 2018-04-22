@@ -64,12 +64,14 @@ Nui.define(function(require){
                 ret = this._split(hashTemp), hash = self._replace(ret.url), 
                 query = ret.params;
             self.isRender = false;
+            delete self._active;
+            delete self._options;
             Nui.each(self._paths, function(v){
                 if(hash === v.path || hash.indexOf(v.path + '/') === 0){
                     var _hash = hash.replace(v.path, '').replace(/^\//, '');
                     var params = _hash ? _hash.split('/') : [];
                     var object = self.__instances[v.id], opts = object._options;
-                    var match = params.length === v.params.length;
+                    var match = params.length === v.params.length || opts.level === 3;
                     if(match){
                         //router.location强制刷新或者公共容器才会重新渲染
                         var isRender = object._isRender === true || !object._wrapper;

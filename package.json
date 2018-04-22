@@ -11,6 +11,6 @@
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.1",
     "gulp-watch": "^4.3.11",
-    "nuijs": "^0.1.19"
+    "nuijs": "^0.1.32"
   }
 }
