@@ -15,7 +15,7 @@ __define('pages/components/router/script/options',function(){
  * Nui&jQuery扩展
  */
 
-__define('src/core/extend',function(){
+__define('src/core/extends',function(){
            
     Nui.win = $(window);
 
@@ -88,7 +88,7 @@ __define('src/core/extend',function(){
  * @description 实用工具集
  */
 
-__define('src/core/util',['src/core/extend'], function(){
+__define('src/core/util',['src/core/extends'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -960,7 +960,8 @@ __define('src/core/template',['src/core/util'], function(util){
     return template
 })
 
-__define('src/core/events',['src/core/extend'], function(){
+
+__define('src/core/events',['src/core/extends'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -1035,7 +1036,7 @@ __define('src/core/events',['src/core/extend'], function(){
 __define('src/core/component',function(require){
     var template = require('src/core/template');
     var events   = require('src/core/events');
-    var ext     = require('src/core/extend');
+    var ext     = require('./extends');
 
     var slice = Array.prototype.slice;
 
@@ -1061,7 +1062,8 @@ __define('src/core/component',function(require){
         if(options === undefined){
             options = $elem.data(name+'Options');
         }
-        if(options && typeof options === 'string'){
+        
+        if((options && typeof options === 'string') || typeof options === 'number'){
             if(/^{[\s\S]*}$/.test(options)){
                 options = eval('('+ options +')');
             }
@@ -1153,23 +1155,27 @@ __define('src/core/component',function(require){
                             if(attributes.length){
                                 var matchRegexp = init ? /^data-(\w+)-options/i : /^nui_component_(\w+)/i;
                                 container.find(attributes.join(',')).each(function(index, elem){
-                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length;
+                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length, data = [];
                                     while(i--){
                                         var attr = attrs[i];
                                         if(attr && attr.name){
                                             var match = attr.name.match(matchRegexp);
                                             if(match){
-                                                var _name = match[1];
-                                                var mod = components[_name];
-                                                if(init){
-                                                    bindComponent(_name, elem, mod, attr.value)
-                                                }
-                                                else if(nui && (obj = nui[_name])){
-                                                    callMethod(obj[methodName], slice.call(args, 1), obj)
-                                                }
+                                                data.push({
+                                                    name:match[1],
+                                                    value:attr.value
+                                                })
                                             }
                                         }
                                     }
+                                    Nui.each(data, function(v){
+                                        if(init){
+                                            bindComponent(v.name, elem, components[v.name], v.value)
+                                        }
+                                        else if(nui && (obj = nui[v.name])){
+                                            callMethod(obj[methodName], slice.call(args, 1), obj)
+                                        }
+                                    })
                                 })
                             }
                         }
@@ -1260,11 +1266,6 @@ __define('src/core/component',function(require){
                 })
             }
         },
-        // _$ready:function(name, module){
-        //     if(typeof this.init === 'function'){
-        //         this.init(Nui.doc)
-        //     }
-        // },
         config:function(){
             var args = arguments;
             var len = args.length;
@@ -1755,7 +1756,7 @@ __define('src/components/layer/layer',function(require){
                     '</div>'+
                 '</div>',
             button:
-                '<button class="ui-button'+
+                '<button type="button" class="ui-button'+
                     '<%if btn.name%>'+
                     '<%each [].concat(btn.name) name%> ui-button-<%name%><%/each%>'+
                     '<%/if%> layer-button-<%btn.id%>"'+
@@ -2086,52 +2087,40 @@ __define('src/components/layer/layer',function(require){
             });
         },
         _position:function(){
-            var self = this, data = self.data, pos = self._options.position;
-            var _pos = {
-                top:pos.top,
-                left:pos.left,
-                right:pos.right,
-                bottom:pos.bottom
-            }, _v;
+            var self = this, data = self.data, pos = self._options.position, _pos = {}, _v;
 
-            if(_pos.top !== undefined && _pos.bottom !== undefined){
-                delete _pos.bottom
+            if(typeof pos === 'function'){
+                pos = pos.call(self._options, self)
             }
 
-            if(_pos.left !== undefined && _pos.right !== undefined){
-                delete _pos.right
-            }
-
-            Nui.each(_pos, function(v, k){
-                if(v === undefined){
-                    delete _pos[k];
-                    return true;
-                }
-                _v = v;
-                if(typeof v === 'string'){
-                    if(!v){
-                        _v = 0
-                    }
-                    else{
-                        if(k === 'top' || k === 'bottom'){
-                            if(v === 'self'){
-                                _v = data.outerHeight
-                            }
-                            else if(/[\+\-\*\/]/.test(v)){
-                                _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
-                            }
+            Nui.each(pos, function(v, k){
+                if(Nui.type(v, ['String', 'Number'])){
+                    _v = v;
+                    if(typeof v === 'string' && v !== 'auto'){
+                        if(!v){
+                            _v = 0
                         }
                         else{
-                            if(v === 'self'){
-                                _v = data.outerWidth
+                            if(k === 'top' || k === 'bottom'){
+                                if(v === 'self'){
+                                    _v = data.outerHeight
+                                }
+                                else if(/[\+\-\*\/]/.test(v)){
+                                    _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
+                                }
                             }
-                            else if(/[\+\-\*\/]/.test(v)){
-                                _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
+                            else{
+                                if(v === 'self'){
+                                    _v = data.outerWidth
+                                }
+                                else if(/[\+\-\*\/]/.test(v)){
+                                    _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
+                                }
                             }
                         }
                     }
+                    _pos[k] = _v
                 }
-                _pos[k] = _v === 'auto' ? 'auto' : parseFloat(_v)+'px'
             })
 
             return _pos
@@ -2304,6 +2293,9 @@ __define('src/components/layer/layer',function(require){
         },
         _reset:function(){
             var self = this, _class = self.constructor, noMask = true;
+            if(this._iframe){
+                this._iframe.remove()
+            }
             component.exports._reset.call(this);
             component.destroy(self.main);
             Nui.each(_class.__instances, function(val){
@@ -2696,12 +2688,14 @@ __define('src/components/router',function(require){
                 ret = this._split(hashTemp), hash = self._replace(ret.url), 
                 query = ret.params;
             self.isRender = false;
+            delete self._active;
+            delete self._options;
             Nui.each(self._paths, function(v){
                 if(hash === v.path || hash.indexOf(v.path + '/') === 0){
                     var _hash = hash.replace(v.path, '').replace(/^\//, '');
                     var params = _hash ? _hash.split('/') : [];
                     var object = self.__instances[v.id], opts = object._options;
-                    var match = params.length === v.params.length;
+                    var match = params.length === v.params.length || opts.level === 3;
                     if(match){
                         //router.location强制刷新或者公共容器才会重新渲染
                         var isRender = object._isRender === true || !object._wrapper;
@@ -2744,6 +2738,8 @@ __define('src/components/router',function(require){
                             query:query
                         }
 
+                        self._options = opts
+
                         Nui.each(v.params, function(val, key){
                             self._active.params[val] = params[key]
                         })
@@ -2757,7 +2753,6 @@ __define('src/components/router',function(require){
                         var wrapper = opts.element = object._wrapper || self._wrapper
                         
                         var callback = function(){
-                            wrapper.show().siblings('.nui-router-wrapper').hide()
 
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts, object)
@@ -2768,6 +2763,10 @@ __define('src/components/router',function(require){
                             }
 
                             self.isRender = true
+                        }
+
+                        var showWrapper = function(){
+                            wrapper.show().siblings('.nui-router-wrapper').hide()
                         }
 
                         if(object._sendData && typeof opts.onData === 'function'){
@@ -2782,6 +2781,7 @@ __define('src/components/router',function(require){
                         //true不渲染，但是执行onAfter
                         if(typeof changed === 'boolean'){
                             if(changed === true){
+                                showWrapper()
                                 callback()
                             }
                             else{
@@ -2789,6 +2789,8 @@ __define('src/components/router',function(require){
                             }
                             return false
                         }
+
+                        showWrapper()
                             
                         if(isRender){
                             wrapper.off();
@@ -2807,21 +2809,29 @@ __define('src/components/router',function(require){
             })
 
             if(!self.isRender){
-                //检测当前路由地址是否存在，不存在则跳转到入口页面
-                Nui.each(self.__instances, function(v){
-                    if(v._options.entry === true){
-                        if(v.target){
-                            v._render(v.target.eq(0));
-                        }
-                        else if(v.path){
-                            v._render(v.path);
-                        }
-                        return false
-                    }
-                })
+                self._entry(hash)
             }
             
             self._oldhash = hashTemp;
+        },
+        //检测当前路由地址是否存在，不存在则跳转到入口页面
+        _entry:function(hash){
+            var entry = false
+            Nui.each(this.__instances, function(v){
+                if(v._options.entry === true){
+                    if(v.target){
+                        v._render(v.target.eq(0));
+                    }
+                    else if(v.path){
+                        v._render(v.path);
+                    }
+                    entry = true;
+                    return false
+                }
+            })
+            if(!entry && typeof this._error === 'function'){
+                this._error(hash)
+            }
         },
         _bindHashchange:function(){
             var self = this;
@@ -2852,12 +2862,19 @@ __define('src/components/router',function(require){
         start:function(value){
             this._change()
         },
+        reload:function(){
+            var active = this.active(true);
+            if(active){
+                active.self._isRender = true;
+                this._change()
+            }
+        },
         location:function(url, data, render){
             var self = this;
             if(url){
                 if(arguments.length <=2 && typeof data === 'boolean'){
                     render = data;
-                    data = null;
+                    data = undefined;
                 }
                 var temp, object, query = '';
                 var match = url.match(/\?[^\/\s]+$/);
@@ -2874,8 +2891,10 @@ __define('src/components/router',function(require){
                     }
                 })
                 if(object){
-                    object._sendData = {
-                        data:data
+                    if(data !== undefined){
+                        object._sendData = {
+                            data:data
+                        }
                     }
                     object._isRender = render;
                     object._render(url + query)
@@ -2885,7 +2904,10 @@ __define('src/components/router',function(require){
                 self.start()
             }
         },
-        active:function(){
+        active:function(isOptions){
+            if(isOptions){
+                return this._options
+            }
             return this._active
         },
         forward:function(index){
@@ -2895,6 +2917,9 @@ __define('src/components/router',function(require){
         back:function(index){
             history.back(index);
             return false
+        },
+        error:function(callback){
+            this._error = callback
         }
     }
 
@@ -2973,6 +2998,9 @@ __define('src/components/router',function(require){
                 self._setPaths();
                 if(self._getTarget()){
                     self._event()
+                }
+                else if(opts.relTarget){
+                    self.target = self._jquery(opts.relTarget)
                 }
                 return self
             }
@@ -3103,7 +3131,8 @@ __define('src/components/router',function(require){
                         delete _request[url]
                     }
                     _request[url] = xhr;
-                    xhr.then(callback, callback)
+                    xhr.then(callback, callback);
+                    return xhr
                 }
             }
         }
@@ -3184,7 +3213,7 @@ __define('src/components/placeholder',function(require){
             }
         },
         _setData:function(){
-            var self = this, _class = self.constructor, height = self.target.height();;
+            var self = this, _class = self.constructor, height = self.target.height();
             self._textarea = self.target.is('textarea');
             var top = _class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't');
             if(Nui.bsie7 && 'left right'.indexOf(self.target.css('float')) === -1){
@@ -3201,8 +3230,8 @@ __define('src/components/placeholder',function(require){
             if(self._condition()){
                 var data = self._tplData();
                 data.style = {
-                   // 'width':self.target.outerWidth()+'px',
-                    'height':self.target.outerHeight()+'px'
+                    // 'width':self.target.outerWidth()+'px',
+                    // 'height':self.target.outerHeight()+'px'
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._createElems();
@@ -3285,19 +3314,22 @@ __define('src/components/placeholder',function(require){
             self._createRules()
         },
         _createStyle:function(){
-            var self = this;
-            var style = document.createElement('style');
-            document.head.appendChild(style);
-            self.constructor.style = style.sheet
+            var self = this, sheet;
+            if(document.createStyleSheet){
+                sheet = document.createStyleSheet()
+            }
+            else{
+                var style = document.createElement('style');
+                document.head.appendChild(style);
+                sheet = style.sheet;
+            }
+            self.constructor.style = sheet
         },
         _createRules:function(){
             var self = this;
             var sheet = self.constructor.style;
             var id = self.__id;
-            try{
-                sheet.deleteRule(id)
-            }
-            catch(e){}
+            self._deleteRule()
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
                 var selector = '.'+self.className+v;
                 var rules = 'opacity:1; color:'+(self._options.color||'');
@@ -3312,6 +3344,21 @@ __define('src/components/placeholder',function(require){
                 catch(e){}
             })
         },
+        _deleteRule:function(){
+            var sheet = this.constructor.style;
+            var id = this.__id;
+            if(sheet){
+                try{
+                    if(sheet.deleteRule){
+                        sheet.deleteRule(id)
+                    }
+                    else if(sheet.removeRule){
+                        sheet.removeRule(id)
+                    }
+                }
+                catch(e){}
+            }
+        },
         _reset:function(){
             var self = this;
             self._off();
@@ -3320,6 +3367,7 @@ __define('src/components/placeholder',function(require){
             }
             if(self.target){
                 self.target.removeClass(self.className);
+                self._deleteRule()
                 if(self.element){
                     self.target.unwrap();
                     self.element = null

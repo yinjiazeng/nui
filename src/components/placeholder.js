@@ -73,7 +73,7 @@ Nui.define(function(require){
             }
         },
         _setData:function(){
-            var self = this, _class = self.constructor, height = self.target.height();;
+            var self = this, _class = self.constructor, height = self.target.height();
             self._textarea = self.target.is('textarea');
             var top = _class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't');
             if(Nui.bsie7 && 'left right'.indexOf(self.target.css('float')) === -1){
@@ -90,8 +90,8 @@ Nui.define(function(require){
             if(self._condition()){
                 var data = self._tplData();
                 data.style = {
-                   // 'width':self.target.outerWidth()+'px',
-                    'height':self.target.outerHeight()+'px'
+                    // 'width':self.target.outerWidth()+'px',
+                    // 'height':self.target.outerHeight()+'px'
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._createElems();
@@ -174,19 +174,22 @@ Nui.define(function(require){
             self._createRules()
         },
         _createStyle:function(){
-            var self = this;
-            var style = document.createElement('style');
-            document.head.appendChild(style);
-            self.constructor.style = style.sheet
+            var self = this, sheet;
+            if(document.createStyleSheet){
+                sheet = document.createStyleSheet()
+            }
+            else{
+                var style = document.createElement('style');
+                document.head.appendChild(style);
+                sheet = style.sheet;
+            }
+            self.constructor.style = sheet
         },
         _createRules:function(){
             var self = this;
             var sheet = self.constructor.style;
             var id = self.__id;
-            try{
-                sheet.deleteRule(id)
-            }
-            catch(e){}
+            self._deleteRule()
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
                 var selector = '.'+self.className+v;
                 var rules = 'opacity:1; color:'+(self._options.color||'');
@@ -201,6 +204,21 @@ Nui.define(function(require){
                 catch(e){}
             })
         },
+        _deleteRule:function(){
+            var sheet = this.constructor.style;
+            var id = this.__id;
+            if(sheet){
+                try{
+                    if(sheet.deleteRule){
+                        sheet.deleteRule(id)
+                    }
+                    else if(sheet.removeRule){
+                        sheet.removeRule(id)
+                    }
+                }
+                catch(e){}
+            }
+        },
         _reset:function(){
             var self = this;
             self._off();
@@ -209,6 +227,7 @@ Nui.define(function(require){
             }
             if(self.target){
                 self.target.removeClass(self.className);
+                self._deleteRule()
                 if(self.element){
                     self.target.unwrap();
                     self.element = null

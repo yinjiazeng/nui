@@ -47,7 +47,7 @@ Nui.define(function(require){
             onInit:function(self){
                 var main = self.main;
                 var elems = main.find('[name!=""][data-rule]');
-                var form = main.find('form');
+                var form = main.find('form:visible');
                 var rules = {};
                 var messages = {};
                 var setting = form.data('setting');
@@ -115,13 +115,13 @@ Nui.define(function(require){
                             success:function(res, xhr){
                                 _loading.hide();
                                 if(typeof self._options.onSuccess === 'function'){
-                                    self._options.onSuccess.call(self._options, self, res, xhr)
+                                    self._options.onSuccess.call(self._options, self, res, xhr, param)
                                 }
                             },
                             error:function(xhr){
                                 _loading.hide();
                                 if(typeof self._options.onError === 'function'){
-                                    self._options.onError.call(self._options, self, xhr)
+                                    self._options.onError.call(self._options, self, xhr, param)
                                 }
                             }
                         }, self._options.ajax||{}), null)

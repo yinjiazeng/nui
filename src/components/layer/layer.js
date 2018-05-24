@@ -529,6 +529,10 @@ Nui.define(function(require){
         _position:function(){
             var self = this, data = self.data, pos = self._options.position, _pos = {}, _v;
 
+            if(typeof pos === 'function'){
+                pos = pos.call(self._options, self)
+            }
+
             Nui.each(pos, function(v, k){
                 if(Nui.type(v, ['String', 'Number'])){
                     _v = v;
@@ -729,6 +733,9 @@ Nui.define(function(require){
         },
         _reset:function(){
             var self = this, _class = self.constructor, noMask = true;
+            if(this._iframe){
+                this._iframe.remove()
+            }
             component.exports._reset.call(this);
             component.destroy(self.main);
             Nui.each(_class.__instances, function(val){

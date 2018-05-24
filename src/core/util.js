@@ -5,7 +5,7 @@
  * @description 实用工具集
  */
 
-Nui.define(['./extend'], function(){
+Nui.define(['./extends'], function(){
     return ({
         /**
          * @func 常用正则表达式

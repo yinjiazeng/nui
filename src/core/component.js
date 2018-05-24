@@ -8,7 +8,7 @@
 Nui.define(function(require){
     var template = require('./template');
     var events   = require('./events');
-    var ext     = require('./extend');
+    var ext     = require('./extends');
 
     var slice = Array.prototype.slice;
 
@@ -34,7 +34,8 @@ Nui.define(function(require){
         if(options === undefined){
             options = $elem.data(name+'Options');
         }
-        if(options && typeof options === 'string'){
+        
+        if((options && typeof options === 'string') || typeof options === 'number'){
             if(/^{[\s\S]*}$/.test(options)){
                 options = eval('('+ options +')');
             }
@@ -126,23 +127,27 @@ Nui.define(function(require){
                             if(attributes.length){
                                 var matchRegexp = init ? /^data-(\w+)-options/i : /^nui_component_(\w+)/i;
                                 container.find(attributes.join(',')).each(function(index, elem){
-                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length;
+                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length, data = [];
                                     while(i--){
                                         var attr = attrs[i];
                                         if(attr && attr.name){
                                             var match = attr.name.match(matchRegexp);
                                             if(match){
-                                                var _name = match[1];
-                                                var mod = components[_name];
-                                                if(init){
-                                                    bindComponent(_name, elem, mod, attr.value)
-                                                }
-                                                else if(nui && (obj = nui[_name])){
-                                                    callMethod(obj[methodName], slice.call(args, 1), obj)
-                                                }
+                                                data.push({
+                                                    name:match[1],
+                                                    value:attr.value
+                                                })
                                             }
                                         }
                                     }
+                                    Nui.each(data, function(v){
+                                        if(init){
+                                            bindComponent(v.name, elem, components[v.name], v.value)
+                                        }
+                                        else if(nui && (obj = nui[v.name])){
+                                            callMethod(obj[methodName], slice.call(args, 1), obj)
+                                        }
+                                    })
                                 })
                             }
                         }
@@ -233,11 +238,6 @@ Nui.define(function(require){
                 })
             }
         },
-        // _$ready:function(name, module){
-        //     if(typeof this.init === 'function'){
-        //         this.init(Nui.doc)
-        //     }
-        // },
         config:function(){
             var args = arguments;
             var len = args.length;

@@ -24,7 +24,7 @@ export {default as popover} from './popover';
 
 export {default as search} from './search';
 
-export {default as select} from './select';
+export {default as dropdown} from './dropdown';
 
 export {default as keep} from './keep';
 
@@ -33,5 +33,9 @@ export {default as router} from './router';
 export {default as paging} from './paging';
 
 export {default as checkradio} from './checkradio';
+
+export {default as print} from './print';
+
+export {default as number} from './number';
 
 

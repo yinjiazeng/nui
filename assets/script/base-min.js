@@ -5,11 +5,12 @@
         }
         return module
     }
+
 /**
  * Nui&jQuery扩展
  */
 
-__define('src/core/extend',function(){
+__define('src/core/extends',function(){
            
     Nui.win = $(window);
 
@@ -75,7 +76,7 @@ __define('src/core/extend',function(){
         }
     })
 })
-__define('src/core/events',['src/core/extend'], function(){
+__define('src/core/events',['src/core/extends'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -147,7 +148,7 @@ __define('src/core/events',['src/core/extend'], function(){
  * @description 实用工具集
  */
 
-__define('src/core/util',['src/core/extend'], function(){
+__define('src/core/util',['src/core/extends'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -1029,7 +1030,7 @@ __define('src/core/template',['src/core/util'], function(util){
 __define('src/core/component',function(require){
     var template = require('src/core/template');
     var events   = require('src/core/events');
-    var ext     = require('src/core/extend');
+    var ext     = require('./extends');
 
     var slice = Array.prototype.slice;
 
@@ -1055,7 +1056,8 @@ __define('src/core/component',function(require){
         if(options === undefined){
             options = $elem.data(name+'Options');
         }
-        if(options && typeof options === 'string'){
+        
+        if((options && typeof options === 'string') || typeof options === 'number'){
             if(/^{[\s\S]*}$/.test(options)){
                 options = eval('('+ options +')');
             }
@@ -1147,23 +1149,27 @@ __define('src/core/component',function(require){
                             if(attributes.length){
                                 var matchRegexp = init ? /^data-(\w+)-options/i : /^nui_component_(\w+)/i;
                                 container.find(attributes.join(',')).each(function(index, elem){
-                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length;
+                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length, data = [];
                                     while(i--){
                                         var attr = attrs[i];
                                         if(attr && attr.name){
                                             var match = attr.name.match(matchRegexp);
                                             if(match){
-                                                var _name = match[1];
-                                                var mod = components[_name];
-                                                if(init){
-                                                    bindComponent(_name, elem, mod, attr.value)
-                                                }
-                                                else if(nui && (obj = nui[_name])){
-                                                    callMethod(obj[methodName], slice.call(args, 1), obj)
-                                                }
+                                                data.push({
+                                                    name:match[1],
+                                                    value:attr.value
+                                                })
                                             }
                                         }
                                     }
+                                    Nui.each(data, function(v){
+                                        if(init){
+                                            bindComponent(v.name, elem, components[v.name], v.value)
+                                        }
+                                        else if(nui && (obj = nui[v.name])){
+                                            callMethod(obj[methodName], slice.call(args, 1), obj)
+                                        }
+                                    })
                                 })
                             }
                         }
@@ -1254,11 +1260,6 @@ __define('src/core/component',function(require){
                 })
             }
         },
-        // _$ready:function(name, module){
-        //     if(typeof this.init === 'function'){
-        //         this.init(Nui.doc)
-        //     }
-        // },
         config:function(){
             var args = arguments;
             var len = args.length;

@@ -289,6 +289,7 @@ Nui.define(function(require){
                             style:_limit.style
                         })).appendTo(self.element);
                         self.$count = self.$limit.children('b');
+                        self._count()
                     }
                 }
             }

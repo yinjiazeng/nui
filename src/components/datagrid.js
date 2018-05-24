@@ -26,8 +26,8 @@ Nui.define(function(require){
                     Nui.each(self.__instances, function(val){
                         if(!isRow && val.element && val._activeElem){
                             val._callback('CancelActive', [e, val._activeElem])
-                            Nui.each(val._rowDom, function(v){
-                                $(v[val._activeIndex]).removeClass('s-crt')
+                            Nui.each(val._rowElems, function(v){
+                                v[val._activeIndex] && v[val._activeIndex].removeClass('s-crt')
                             })
                             delete val._activeElem;
                             delete val._activeIndex;
@@ -232,7 +232,14 @@ Nui.define(function(require){
                     '<span class="cell-text'+
                         '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
                         '<%if val.content === "input"%> cell-text-input<%/if%>"'+
-                        '<%if val.showtitle === true || val.showtitle === "data"%> <%if val.showtitle !==true%>data-<%/if%>title="<%$value[val.field]??%>"<%/if%>>'+
+                        '<%if val.showtitle === true || val.showtitle === "data" || typeof val.showtitle === "function"%> '+
+                            '<%if typeof val.showtitle === "function"%>'+
+                            '<%var _showtitle = val.showtitle(_value, val.field, $value, $index)%>'+
+                            'title="<%_showtitle??%>"'+
+                            '<%else%>'+
+                            '<%if val.showtitle !==true%>data-<%/if%>title="<%$value[val.field]??%>"'+
+                            '<%/if%>'+
+                        '<%/if%>>'+
                     '<%if val.content === "checkbox" && typeof _value === "object"%>'+
                     '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
                     '<span class="ui-checkradio">'+
@@ -254,7 +261,8 @@ Nui.define(function(require){
                         'return "-"+a.toLowerCase()'+
                     '})'+
                 '}%>'+
-                '<%each list%>'+
+                '<%each list $value _index%>'+
+                '<%var $index = insertIndex || _index%>'+
                 '<%var rowData = rowRender($value, $index)||{}%>'+
                 '<%var className = (rowData.className ? " "+rowData.className : "")%>'+
                 '<%delete rowData.className%>'+
@@ -332,7 +340,7 @@ Nui.define(function(require){
             var self = this, opts = self._options;
             self._rows = {};
             self._cols = {};
-            self._rowDom = {};
+            self._rowElems = {};
             self._colTemplates = {};
             self._rowNumber = self._getRowNumber(opts.columns, 0, []);
             self._setTemplate();
@@ -530,20 +538,15 @@ Nui.define(function(require){
             }
             return list||[]
         },
-        _render:function(type){
+        _renderRow:function(index, data, callback){
             var self = this, 
                 opts = self._options,
                 rowHtml = '', 
-                rowDom = self._rowDom, 
-                isScroll = opts.paging && opts.paging.scroll && opts.paging.scroll.enable === true;
-            self.list = self._getList();
-            if(isScroll && type === 'reload'){
-                self.element.find('.datagrid-tbody > [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
-            }
+                rowElems = self._rowElems;
             Nui.each(self._cols, function(v, k){
                 if(v.length){
-                    if(self.list.length && typeof opts.rowRender === 'function'){
-                        rowHtml = opts.rowRender.call(opts, self, self.list, v, k)
+                    if(data.length && typeof opts.rowRender === 'function'){
+                        rowHtml = opts.rowRender.call(opts, self, data, v, k)
                     }
                     else{
                         rowHtml = self._tpl2html('rows', {
@@ -551,7 +554,8 @@ Nui.define(function(require){
                             isFixed:opts.isFixed === true,
                             cols:v,
                             fields:opts.fields ? (opts.fields === true ? opts.fields : [].concat(opts.fields)) : null,
-                            list:self.list,
+                            list:data,
+                            insertIndex:index,
                             placeholder:opts.placeholder,
                             pageNum:opts.paging && self.paging ? self.paging.current : undefined,
                             checked:self._checked,
@@ -569,54 +573,44 @@ Nui.define(function(require){
                         })
                     }
 
-                    if(isScroll && type === 'reload' && rowDom[k]){
-                        rowDom[k] = rowDom[k].slice(0, (self.paging.current - 1) * self.paging.pCount)
-                    }
-
-                    var tbody = self.element.find('.datagrid-table-'+k+' .datagrid-tbody');
-                    var elems;
-                    if(!rowDom[k]){
-                        rowDom[k] = []
-                    }
-                    if(!isScroll || (type !== 'jump' && type !== 'reload')){
-                        tbody.empty()
-                        rowDom[k] = []
-                    }
-                    elems = $(rowHtml).appendTo(tbody);
-                    rowDom[k] = rowDom[k].concat($.makeArray(elems))
-                    elems.find('.datagrid-checkbox').checkradio(self._checkradio());
+                    callback(v, k, $(rowHtml))
                 }
-                else{
-                    delete rowDom[k]
+                else if(index === false){
+                    delete rowElems[k]
                 }
             })
+        },
+        _render:function(type){
+            var self = this, 
+                opts = self._options,
+                rowElems = self._rowElems, 
+                isScroll = opts.paging && opts.paging.scroll && opts.paging.scroll.enable === true;
+            self.list = self._getList();
+            if(isScroll && type === 'reload'){
+                self.element.find('.datagrid-tbody > [row-pagenum="'+ (self.paging.current) +'"]').nextAll().addBack().remove();
+            }
+            self._renderRow(false, self.list, function(v, k, $elems){
+                if(isScroll && type === 'reload' && rowElems[k]){
+                    rowElems[k] = rowElems[k].slice(0, (self.paging.current - 1) * self.paging.pCount)
+                }
 
+                var tbody = self.element.find('.datagrid-table-'+k+' .datagrid-tbody');
+                var elems;
+                if(!rowElems[k]){
+                    rowElems[k] = []
+                }
+                if(!isScroll || (type !== 'jump' && type !== 'reload')){
+                    tbody.empty()
+                    rowElems[k] = []
+                }
+                $elems.appendTo(tbody).each(function(i, elem){
+                    var $elem = $(elem)
+                    rowElems[k].push($elem)
+                    $elem.find('.datagrid-checkbox').checkradio(self._checkradio())
+                })
+            });
             self._resetSize();
             self._callback('Render');
-        },
-        _update:function(index, data){
-            var self = this, opts = self._options, tpl = '';
-            Nui.each(self._cols, function(v, k){
-                if(v.length){
-                    var $row = self.element.find('.datagrid-table-'+k+' .datagrid-tbody > tr').eq(index);
-                    var checked = $row.find('.datagrid-checkbox').prop('checked') || false;
-                    if(typeof opts.colRender === 'function'){
-                        tpl = opts.colRender.call(opts, self, data, v, k)
-                    }
-                    else{
-                        tpl = self._tpl2html('cols', {
-                            cols:v,
-                            $index:index,
-                            $value:data,
-                            checked:false
-                        })
-                    }
-                    $row.html(tpl)
-                        .find('.datagrid-checkbox')
-                            .prop('checked', checked).checkradio(self._checkradio());
-                }
-            })
-            self._resetSize();
         },
         _checkradio:function(){
             var self = this, opts = self._options;
@@ -624,8 +618,9 @@ Nui.define(function(require){
                 var className = 'datagrid-checkbox-choose';
                 if(elem.hasClass(className)){
                     var checked = elem.prop('checked');
+                    var index = elem.closest('.table-row').attr('row-index');
                     if(!elem.closest('.datagrid-table').hasClass('datagrid-table-all')){
-                        self._tableAllBox.find('.table-row[row-index="'+ elem.closest('.table-row').attr('row-index') +'"]').find('.'+className).checkradio('checked', checked)
+                        self._rowElems.all[elem.closest('.table-row').attr('row-index')].find('.'+className).checkradio('checked', checked)
                     }
                     if(elem.attr('name') === 'datagrid-checkbox-all'){
                         self._checked = checked;
@@ -681,6 +676,7 @@ Nui.define(function(require){
                 }
                 self._tableAllBox.scrollTop(stop);
             }
+            this._callback('Resize')
         },
         _theadHeight:function(){
             var self = this;
@@ -697,13 +693,14 @@ Nui.define(function(require){
         _rowHeight:function(){
             var self = this;
             if(self._hasLeftRight){
-                var LeftRow = self._tableLeft.find('.table-tbody .table-row');
-                var RightRow = self._tableLeft.find('.table-tbody .table-row');
-
-                self._tableAll.find('.table-tbody .table-row').each(function(i){
-                    var height = $(this).outerHeight();
-                    LeftRow.eq(i).height(height);
-                    RightRow.eq(i).height(height);
+                Nui.each(self._rowElems.all, function(v, k){
+                    var height = v.outerHeight();
+                    if(self._rowElems.left){
+                        self._rowElems.left[k].height(height)
+                    }
+                    if(self._rowElems.right){
+                        self._rowElems.right[k].height(height)
+                    }
                 })
             }
         },
@@ -776,7 +773,7 @@ Nui.define(function(require){
                 if(input.length && !input.prop('readonly') && !input.prop('disabled')){
                     input.focus();
                     setTimeout(function(){
-                        input.select();
+                        input.select()
                     })
                 }
                 else{
@@ -805,25 +802,34 @@ Nui.define(function(require){
                     })
                 }
                 if(input){
-                    this._verticalFocus(e, input, type)
+                    this._verticalFocus(e, input, type, true)
                 }
             }
         },
-        _verticalFocus:function(e, elem, type){
+        _verticalFocus:function(e, elem, type, flag){
+            var self = this;
             var td = elem.closest('td.table-cell');
             var index = td.index();
             var tr = td.closest('.table-row')[type]();
             if(tr.length){
-                var _td = tr.children('td.table-cell').eq(index);
-                var input = _td.find('.datagrid-input');
-                if(input.length && !input.prop('readonly') && !input.prop('disabled')){
-                    input.focus();
-                    setTimeout(function(){
-                        input.select();
-                    })
+                var callback = function(){
+                    var _td = tr.children('td.table-cell').eq(index);
+                    var input = _td.find('.datagrid-input');
+                    if(input.length && !input.prop('readonly') && !input.prop('disabled')){
+                        input.focus()
+                        setTimeout(function(){
+                            input.select()
+                        })
+                    }
+                    else if(type === 'prev' && flag){
+                        self._horzFocus(e, _td.children(), type, flag)
+                    }
+                    else{
+                        self._verticalFocus(e, _td.children(), type, flag)
+                    }
                 }
-                else{
-                    this._verticalFocus(e, _td.children(), type)
+                if(flag || this._callback('VerticalFocusBefore', [e, elem, type, callback]) !== false){
+                    callback()
                 }
             }
             e.preventDefault();
@@ -853,15 +859,15 @@ Nui.define(function(require){
             'click .table-tbody .table-row':'_getRowData _active',
             'mouseenter .table-tbody .table-row':function(e, elem){
                 var index = elem.attr('row-index');
-                Nui.each(this._rowDom, function(v){
-                    $(v[index]).addClass('s-hover')
+                Nui.each(this._rowElems, function(v){
+                    v[index].addClass('s-hover')
                 })
                 this._callback('RowMouseover', [e, elem]);
             },
             'mouseleave .table-tbody .table-row':function(e, elem){
                 var index = elem.attr('row-index');
-                Nui.each(this._rowDom, function(v){
-                    $(v[index]).removeClass('s-hover')
+                Nui.each(this._rowElems, function(v){
+                    v[index].removeClass('s-hover')
                 })
                 this._callback('RowMouseout', [e, elem]);
             },
@@ -897,13 +903,16 @@ Nui.define(function(require){
         },
         _active:function(e, elem, data){
             var self = this;
-            self._callback('RowClick', [e, elem, data]);
+            if(self._callback('RowClick', [e, elem, data]) === false){
+                self.cancelActive();
+                return
+            }
             if(self._options.isActive === true){
                 self.cancelActive();
                 self._activeIndex = elem.attr('row-index');
                 self._activeElem = elem;
-                Nui.each(self._rowDom, function(v){
-                    $(v[self._activeIndex]).addClass('s-crt')
+                Nui.each(self._rowElems, function(v){
+                    v[self._activeIndex] && v[self._activeIndex].addClass('s-crt')
                 })
                 self._callback('Active', [e, elem, data]);
             }
@@ -939,10 +948,24 @@ Nui.define(function(require){
             self._tableFixedBox.scrollTop(scrollTop);
             self._tableAllThead.scrollLeft(scrollLeft);
         },
+        _resetIndex:function(nexts, index, callback){
+            var opts = this._options;
+            Nui.each(nexts, function(v, k){
+                if(v && v.length){
+                    Nui.each(v, function(elem, i){
+                        var rowIndex = elem.attr('row-index');
+                        var newIndex = index + 1 + i;
+                        elem.removeClass('table-row-' + rowIndex).attr('row-index', newIndex).addClass('table-row-' + newIndex);
+                        if(typeof callback === 'function'){
+                            callback.call(opts, elem, newIndex, k)
+                        }
+                    })
+                }
+            })
+        },
         resize:function(){
             this._theadHeight();
             this._resetSize();
-            this._callback('Resize')
         },
         scrollTo:function(x, y){
             var elem = this._tableAllBox;
@@ -952,8 +975,10 @@ Nui.define(function(require){
         cancelActive:function(){
             var self = this;
             if(self._options.isActive === true && self._activeElem){
-                Nui.each(self._rowDom, function(v){
-                    $(v[self._activeIndex]).removeClass('s-crt')
+                Nui.each(self._rowElems, function(v){
+                    if(v[self._activeIndex]){
+                        v[self._activeIndex].removeClass('s-crt')
+                    }
                 })
                 delete self._activeIndex;
                 delete self._activeElem;
@@ -973,17 +998,176 @@ Nui.define(function(require){
             })
             return data;
         },
-        //更新单行
-        update:function(index, data){
-            var self = this, _data;
-            if(data && typeof data === 'object'){
-                _data = data
+        //新增行
+        insert:function(data, index, callback){
+            var self = this, opts = self._options;
+            if(self.list && data && typeof data === 'object'){
+
+                if(typeof index === 'function'){
+                    callback = index;
+                    index = undefined
+                }
+
+                var len = self.list.length, rowElems = self._rowElems, _index, nexts = {};
+
+                if(index < 0){
+                    _index = 0
+                }
+                else if(index >= len || index === undefined){
+                    _index = len
+                }
+                else{
+                    _index = (index|0) + 1
+                }
+                Nui.each([].concat(data), function(_data, i){
+                    index = _index + i
+                    self._renderRow(index, [_data], function(v, k, $elem){
+                        var $tbody;
+                        if(!rowElems[k]){
+                            $tbody = self.element.find('.datagrid-table-'+k+' .datagrid-tbody');
+                            rowElems[k] = []
+                        }
+                        if(index === 0){
+                            if($tbody){
+                                $elem = $elem.prependTo($tbody);
+                            }
+                            else{
+                                $elem = $elem.insertBefore(rowElems[k][index])
+                            }
+                            nexts[k] = rowElems[k].slice(0);
+                            self.list.unshift(_data)
+                            rowElems[k].unshift($elem)
+                        }
+                        else if(index === self.list.length){
+                            if($tbody){
+                                $elem = $elem.appendTo($tbody);
+                            }
+                            else{
+                                $elem = $elem.insertAfter(rowElems[k][index-1])
+                            }
+                            self.list.push(_data)
+                            rowElems[k].push($elem)
+                        }
+                        else{
+                            $elem = $elem.insertAfter(rowElems[k][index-1])
+                            self.list = self.list.slice(0, index).concat(_data, self.list.slice(index))
+                            rowElems[k] = rowElems[k].slice(0, index).concat($elem, nexts[k] = rowElems[k].slice(index))
+                        }
+                        $elem.find('.datagrid-checkbox').checkradio(self._checkradio())
+                    })
+                })
+
+                self._resetIndex(nexts, index, callback);
+                self._callback('Insert');
+                self._resetSize()
             }
-            else if(self.list){
-                _data = self.list[index]
+        },
+        //删除行
+        remove:function(index, callback){
+            var self = this, list = self.list, rowElems = self._rowElems;
+            if(typeof index === 'function'){
+                callback = index;
+                index = undefined
             }
+            if(list.length){
+                if(index === undefined){
+                    Nui.each(rowElems, function(v, i){
+                        Nui.each(v, function($elem){
+                            $elem.remove()
+                        })
+                        delete rowElems[i]
+                    })
+                    self.list = []
+                }
+                else{
+                    var indexs = [], temp = {}, newList = [], nexts = {};
+                    Nui.each([].concat(index), function(v){
+                        var _index = parseInt(v);
+                        if(!isNaN(_index) && _index >= 0 && !temp[_index]){
+                            temp[_index] = true
+                            indexs.push(_index)
+                        }
+                    })
+                    if(indexs.length){
+                        Nui.each(indexs.sort(), function(i){
+                            if(list[i]){
+                                Nui.each(rowElems, function(v){
+                                    if(v[i]){
+                                        v[i].remove()
+                                        delete v[i]
+                                    }
+                                })
+                                delete list[i]
+                            }
+                        })
+                        Nui.each(list, function(v){
+                            if(v){
+                                newList.push(v)
+                            }
+                        })
+                        Nui.each(rowElems, function(v, i){
+                            var elems = [];
+                            Nui.each(v, function($elem){
+                                if($elem){
+                                    elems.push($elem)
+                                }
+                            })
+                            if(elems.length){
+                                rowElems[i] = elems
+                            }
+                            else{
+                                delete rowElems[i]
+                            }
+                            nexts[i] = elems.slice(indexs[0])
+                        })
+                        self.list = newList;
+                        self._resetIndex(nexts, indexs[0]-1, callback);
+                    }
+                }
+                self._callback('Remove');
+                self._resetSize()
+            }
+        },
+        //更新行
+        update:function(index, data, callback){
+            var self = this, _data = self.list[index];
             if(_data){
-                self._update(index, _data)
+                if(typeof data === 'function'){
+                    callback = data;
+                    data = undefined
+                }
+                if(data && typeof data === 'object'){
+                    Nui.each(data, function(v, i){
+                        _data[i] = v
+                    })
+                }
+                var self = this, opts = self._options, tpl = '';
+                Nui.each(self._cols, function(v, k){
+                    if(v.length && self._rowElems[k]){
+                        var $row = self._rowElems[k][index];
+                        var checked = $row.find('.datagrid-checkbox').prop('checked') || false;
+                        if(typeof opts.colRender === 'function'){
+                            tpl = opts.colRender.call(opts, self, _data, v, k)
+                        }
+                        else{
+                            tpl = self._tpl2html('cols', {
+                                cols:v,
+                                $index:index,
+                                $value:_data,
+                                checked:false
+                            })
+                        }
+                        $row.html(tpl)
+                            .find('.datagrid-checkbox')
+                                .prop('checked', checked).checkradio(self._checkradio());
+
+                        if(typeof callback === 'function'){
+                            callback.call(opts, $row, index, k)
+                        }
+                    }
+                })
+                self._callback('Update');
+                self._resetSize()
             }
         }
     })

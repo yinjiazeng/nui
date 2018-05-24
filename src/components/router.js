@@ -129,7 +129,6 @@ Nui.define(function(require){
                         var wrapper = opts.element = object._wrapper || self._wrapper
                         
                         var callback = function(){
-                            wrapper.show().siblings('.nui-router-wrapper').hide()
 
                             if(typeof opts.onAfter === 'function'){
                                 opts.onAfter.call(opts, object)
@@ -140,6 +139,10 @@ Nui.define(function(require){
                             }
 
                             self.isRender = true
+                        }
+
+                        var showWrapper = function(){
+                            wrapper.show().siblings('.nui-router-wrapper').hide()
                         }
 
                         if(object._sendData && typeof opts.onData === 'function'){
@@ -154,6 +157,7 @@ Nui.define(function(require){
                         //true不渲染，但是执行onAfter
                         if(typeof changed === 'boolean'){
                             if(changed === true){
+                                showWrapper()
                                 callback()
                             }
                             else{
@@ -161,6 +165,8 @@ Nui.define(function(require){
                             }
                             return false
                         }
+
+                        showWrapper()
                             
                         if(isRender){
                             wrapper.off();
@@ -179,21 +185,29 @@ Nui.define(function(require){
             })
 
             if(!self.isRender){
-                //检测当前路由地址是否存在，不存在则跳转到入口页面
-                Nui.each(self.__instances, function(v){
-                    if(v._options.entry === true){
-                        if(v.target){
-                            v._render(v.target.eq(0));
-                        }
-                        else if(v.path){
-                            v._render(v.path);
-                        }
-                        return false
-                    }
-                })
+                self._entry(hash)
             }
             
             self._oldhash = hashTemp;
+        },
+        //检测当前路由地址是否存在，不存在则跳转到入口页面
+        _entry:function(hash){
+            var entry = false
+            Nui.each(this.__instances, function(v){
+                if(v._options.entry === true){
+                    if(v.target){
+                        v._render(v.target.eq(0));
+                    }
+                    else if(v.path){
+                        v._render(v.path);
+                    }
+                    entry = true;
+                    return false
+                }
+            })
+            if(!entry && typeof this._error === 'function'){
+                this._error(hash)
+            }
         },
         _bindHashchange:function(){
             var self = this;
@@ -224,12 +238,19 @@ Nui.define(function(require){
         start:function(value){
             this._change()
         },
+        reload:function(){
+            var active = this.active(true);
+            if(active){
+                active.self._isRender = true;
+                this._change()
+            }
+        },
         location:function(url, data, render){
             var self = this;
             if(url){
                 if(arguments.length <=2 && typeof data === 'boolean'){
                     render = data;
-                    data = null;
+                    data = undefined;
                 }
                 var temp, object, query = '';
                 var match = url.match(/\?[^\/\s]+$/);
@@ -246,8 +267,10 @@ Nui.define(function(require){
                     }
                 })
                 if(object){
-                    object._sendData = {
-                        data:data
+                    if(data !== undefined){
+                        object._sendData = {
+                            data:data
+                        }
                     }
                     object._isRender = render;
                     object._render(url + query)
@@ -270,6 +293,9 @@ Nui.define(function(require){
         back:function(index){
             history.back(index);
             return false
+        },
+        error:function(callback){
+            this._error = callback
         }
     }
 
@@ -348,6 +374,9 @@ Nui.define(function(require){
                 self._setPaths();
                 if(self._getTarget()){
                     self._event()
+                }
+                else if(opts.relTarget){
+                    self.target = self._jquery(opts.relTarget)
                 }
                 return self
             }

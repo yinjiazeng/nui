@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('src/core/extend',function(){
+__define('src/core/extends',function(){
            
     Nui.win = $(window);
 
@@ -82,7 +82,7 @@ __define('src/core/extend',function(){
  * @description 实用工具集
  */
 
-__define('src/core/util',['src/core/extend'], function(){
+__define('src/core/util',['src/core/extends'], function(){
     return ({
         /**
          * @func 常用正则表达式

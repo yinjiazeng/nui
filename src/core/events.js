@@ -1,4 +1,4 @@
-Nui.define(['./extend'], function(){
+Nui.define(['./extends'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,

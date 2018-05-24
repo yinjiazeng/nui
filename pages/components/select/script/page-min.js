@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('src/core/extend',function(){
+__define('src/core/extends',function(){
            
     Nui.win = $(window);
 
@@ -82,7 +82,7 @@ __define('src/core/extend',function(){
  * @description 实用工具集
  */
 
-__define('src/core/util',['src/core/extend'], function(){
+__define('src/core/util',['src/core/extends'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -954,7 +954,8 @@ __define('src/core/template',['src/core/util'], function(util){
     return template
 })
 
-__define('src/core/events',['src/core/extend'], function(){
+
+__define('src/core/events',['src/core/extends'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -1029,7 +1030,7 @@ __define('src/core/events',['src/core/extend'], function(){
 __define('src/core/component',function(require){
     var template = require('src/core/template');
     var events   = require('src/core/events');
-    var ext     = require('src/core/extend');
+    var ext     = require('./extends');
 
     var slice = Array.prototype.slice;
 
@@ -1055,7 +1056,8 @@ __define('src/core/component',function(require){
         if(options === undefined){
             options = $elem.data(name+'Options');
         }
-        if(options && typeof options === 'string'){
+        
+        if((options && typeof options === 'string') || typeof options === 'number'){
             if(/^{[\s\S]*}$/.test(options)){
                 options = eval('('+ options +')');
             }
@@ -1147,23 +1149,27 @@ __define('src/core/component',function(require){
                             if(attributes.length){
                                 var matchRegexp = init ? /^data-(\w+)-options/i : /^nui_component_(\w+)/i;
                                 container.find(attributes.join(',')).each(function(index, elem){
-                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length;
+                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length, data = [];
                                     while(i--){
                                         var attr = attrs[i];
                                         if(attr && attr.name){
                                             var match = attr.name.match(matchRegexp);
                                             if(match){
-                                                var _name = match[1];
-                                                var mod = components[_name];
-                                                if(init){
-                                                    bindComponent(_name, elem, mod, attr.value)
-                                                }
-                                                else if(nui && (obj = nui[_name])){
-                                                    callMethod(obj[methodName], slice.call(args, 1), obj)
-                                                }
+                                                data.push({
+                                                    name:match[1],
+                                                    value:attr.value
+                                                })
                                             }
                                         }
                                     }
+                                    Nui.each(data, function(v){
+                                        if(init){
+                                            bindComponent(v.name, elem, components[v.name], v.value)
+                                        }
+                                        else if(nui && (obj = nui[v.name])){
+                                            callMethod(obj[methodName], slice.call(args, 1), obj)
+                                        }
+                                    })
                                 })
                             }
                         }
@@ -1254,11 +1260,6 @@ __define('src/core/component',function(require){
                 })
             }
         },
-        // _$ready:function(name, module){
-        //     if(typeof this.init === 'function'){
-        //         this.init(Nui.doc)
-        //     }
-        // },
         config:function(){
             var args = arguments;
             var len = args.length;
@@ -1749,7 +1750,7 @@ __define('src/components/layer/layer',function(require){
                     '</div>'+
                 '</div>',
             button:
-                '<button class="ui-button'+
+                '<button type="button" class="ui-button'+
                     '<%if btn.name%>'+
                     '<%each [].concat(btn.name) name%> ui-button-<%name%><%/each%>'+
                     '<%/if%> layer-button-<%btn.id%>"'+
@@ -2080,52 +2081,40 @@ __define('src/components/layer/layer',function(require){
             });
         },
         _position:function(){
-            var self = this, data = self.data, pos = self._options.position;
-            var _pos = {
-                top:pos.top,
-                left:pos.left,
-                right:pos.right,
-                bottom:pos.bottom
-            }, _v;
+            var self = this, data = self.data, pos = self._options.position, _pos = {}, _v;
 
-            if(_pos.top !== undefined && _pos.bottom !== undefined){
-                delete _pos.bottom
+            if(typeof pos === 'function'){
+                pos = pos.call(self._options, self)
             }
 
-            if(_pos.left !== undefined && _pos.right !== undefined){
-                delete _pos.right
-            }
-
-            Nui.each(_pos, function(v, k){
-                if(v === undefined){
-                    delete _pos[k];
-                    return true;
-                }
-                _v = v;
-                if(typeof v === 'string'){
-                    if(!v){
-                        _v = 0
-                    }
-                    else{
-                        if(k === 'top' || k === 'bottom'){
-                            if(v === 'self'){
-                                _v = data.outerHeight
-                            }
-                            else if(/[\+\-\*\/]/.test(v)){
-                                _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
-                            }
+            Nui.each(pos, function(v, k){
+                if(Nui.type(v, ['String', 'Number'])){
+                    _v = v;
+                    if(typeof v === 'string' && v !== 'auto'){
+                        if(!v){
+                            _v = 0
                         }
                         else{
-                            if(v === 'self'){
-                                _v = data.outerWidth
+                            if(k === 'top' || k === 'bottom'){
+                                if(v === 'self'){
+                                    _v = data.outerHeight
+                                }
+                                else if(/[\+\-\*\/]/.test(v)){
+                                    _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
+                                }
                             }
-                            else if(/[\+\-\*\/]/.test(v)){
-                                _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
+                            else{
+                                if(v === 'self'){
+                                    _v = data.outerWidth
+                                }
+                                else if(/[\+\-\*\/]/.test(v)){
+                                    _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
+                                }
                             }
                         }
                     }
+                    _pos[k] = _v
                 }
-                _pos[k] = _v === 'auto' ? 'auto' : parseFloat(_v)+'px'
             })
 
             return _pos
@@ -2298,6 +2287,9 @@ __define('src/components/layer/layer',function(require){
         },
         _reset:function(){
             var self = this, _class = self.constructor, noMask = true;
+            if(this._iframe){
+                this._iframe.remove()
+            }
             component.exports._reset.call(this);
             component.destroy(self.main);
             Nui.each(_class.__instances, function(val){
@@ -2685,14 +2677,18 @@ __define('src/components/search',function(require){
                     if(!option){
                         option = {}
                     }
-                    return Search._tpl2html.call(Search, 'tags', {
+                    var _exports = Search.exports || Search;
+                    return _exports._tpl2html.call(_exports, 'tags', {
                         data:[].concat(data),
                         title:option.title === undefined ? true : option.title,
-                        close:option.close||'×',
+                        close:option.close === undefined ? '×' : option.close,
                         type:option.type ? [].concat(option.type) : false
                     })
                 }
                 return ''
+            },
+            active:function(){
+                return this._active
             }
         },
         _options:{
@@ -2769,6 +2765,17 @@ __define('src/components/search',function(require){
              * @type <Boolean> 
              */
             nullable:false,
+            /**
+             * @func 是否允许单选时重复匹配
+             * @type <Boolean> 
+             * @desc 当列表有重复的值时，如果设为false，那么只会匹配第一条
+             */
+            repeat:true,
+            /**
+             * @func 是否等到中文输入完成再执行查询
+             * @type <Boolean> 
+             */
+            complete:true,
             /**
              * @func 搜索时是否缓存数据
              * @type <Boolean>
@@ -3174,13 +3181,13 @@ __define('src/components/search',function(require){
             })
             return match
         },
-        _storage:function(data){
+        _storage:function(data, value){
             var self = this, opts = self._options;
             if(!Nui.type(data, 'Array')){
                 data = []
             }
             if(opts.cache === true){
-                self._caches[self.val] = data
+                self.cacheData[value !== undefined ? value : self.val] = data
             }
             self.queryData = data;
             self._show(true)
@@ -3214,6 +3221,13 @@ __define('src/components/search',function(require){
             }
             self._storage(data)
         },
+        _clear:function(){
+            clearTimeout(this._timer);
+            if(this._ajax){
+                this._timer = null;
+                this._ajax.abort()
+            }
+        },
         _request:function(){
             var self = this, opts = self._options, data = {}, value = self.val;
             if(opts.query && typeof opts.query === 'string'){
@@ -3240,11 +3254,7 @@ __define('src/components/search',function(require){
                 delete opts.ajax.success
             }
 
-            clearTimeout(self._timer);
-
-            if(self._ajax){
-                self._ajax.abort()
-            }
+            self._clear()
 
             self._timer = setTimeout(function(){
                 self._ajax = request(jQuery.extend(true, {
@@ -3262,7 +3272,7 @@ __define('src/components/search',function(require){
                         if(typeof opts.onResponse === 'function'){
                             _data = opts.onResponse.call(opts, self, res)
                         }
-                        self._storage(_data);
+                        self._storage(_data, value);
                     }
                 }, opts.ajax||{}), null)
             }, 50)
@@ -3362,7 +3372,7 @@ __define('src/components/search',function(require){
             return /^(9|13|37|38|39|40)$/.test(code);
         },
         _bindEvent:function(){
-            var self = this, opts = self._options, storeKeycode = [];
+            var self = this, opts = self._options, storeKeycode = [], complete = true;
 
             var show = function(callback){
                 self._show();
@@ -3374,7 +3384,19 @@ __define('src/components/search',function(require){
                 })
             }
 
+            if(opts.complete){
+                self._on('compositionstart', self.target, function(e, elem){
+                    complete = false
+                })
+                self._on('compositionend', self.target, function(e, elem){
+                    complete = true
+                })
+            }
+
             self._on('keyup', self.target, function(e, elem){
+                if(!complete){
+                    return
+                }
                 var code = e.keyCode;
                 //部分用户的IE6-IE8（不清楚会不会有其它浏览器），在列表出来后，如果鼠标拖动下拉框会触发keydown、keyup事件，
                 //按键keyCode分别是17和67，也就是Ctrl+C，不同的时keydown事件时先C后Ctrl，keyup事件时先Ctrl后C，
@@ -3401,10 +3423,11 @@ __define('src/components/search',function(require){
 
                 if(self.val = Nui.trim(elem.val())){
                     var cache;
-                    if(self.val && opts.cache === true && (cache = self._caches[self.val])){
+                    if(self.val && opts.cache === true && (cache = self.cacheData[self.val])){
                         self._storage(cache);
                     }
                     else if(opts.url){
+                        self.queryData = []
                         self._request()
                     }
                     else{
@@ -3432,7 +3455,8 @@ __define('src/components/search',function(require){
                             self._select(e);
                         }
                     }
-                    self._callback('Blur', args)
+                    self._clear()
+                    self._callback('Blur', [].concat(args, e, elem))
                     self.hide()
                 }
                 else{
@@ -3548,7 +3572,8 @@ __define('src/components/search',function(require){
             self.element = $(self._tpl2html('wrap', data)).appendTo(self.container);
             self._setElemData();
 
-            self.$body = self.element.children();
+            self.$body = self.element.children('.con-search-body');
+            self.$foot = self.element.children('.con-search-foot');
             self.$inner = self.$body.children('.con-search-inner');
             self.$result = self.$inner.children('.con-search-result');
 
@@ -3587,7 +3612,7 @@ __define('src/components/search',function(require){
                     content = ''
                 }
             }
-	    else if(name === 'item' && content && !/^\s*\<li\s+/i.test(content)){
+            else if(name === 'item' && content && !/^\s*\<li\s+/i.test(content)){
                 content = '<li class="con-search-item<%selected($data)%>" data-index="<%$index%>">'+ content +'</li>'
             }
 
@@ -3671,7 +3696,7 @@ __define('src/components/search',function(require){
         },
         _initData:function(){
             var self = this, opts = self._options, data = opts.data, match = opts.match, target = self.target;
-            self._caches = {};
+            self.cacheData = {};
 
             self.queryData = [];
 
@@ -3718,12 +3743,17 @@ __define('src/components/search',function(require){
         },
         _getSelected:function(){
             var self = this, opts = self._options;
+            delete self._selected
             var selected = function(){
-                return '';
+                return ''
             }
             if(typeof opts.selected === 'function'){
                 selected = function(data){
+                    if(!opts.repeat && self._selected && !opts.tag.multiple){
+                        return ''
+                    }
                     if(opts.selected.call(opts, self, data) === true){
+                        self._selected = true
                         return ' s-crt'
                     }
                     return ''
@@ -3732,18 +3762,23 @@ __define('src/components/search',function(require){
             else if(opts.field){
                 selected = function(data){
                     var cls = '';
+                    if(!opts.repeat && self._selected && !opts.tag.multiple){
+                        return cls
+                    }
                     if(self.tagData){
                         Nui.each(self.tagData, function(v){
                             if(data[opts.field] === v.text){
-                                cls = ' s-crt';
+                                self._selected = true
+                                cls = ' s-crt'
                                 return false
                             }
                         })
                     }
                     else if(self.val && data[opts.field] === self.val){
+                        self._selected = true
                         cls = ' s-crt'
                     }
-                    return cls;
+                    return cls
                 }
             }
             return selected
@@ -3840,7 +3875,13 @@ __define('src/components/search',function(require){
             if(self._getTarget() && (self.container = self._jquery(opts.container))){
                 self._initData();
                 self._bindEvent();
+                self._callback('Init')
             }
+        },
+        _reset:function(){
+            component.exports._reset.call(this);
+            this.hide();
+            delete this._selectData;
         },
         /**
          * @param punching <Boolean> 正在输入操作
@@ -3871,8 +3912,13 @@ __define('src/components/search',function(require){
                 if(!self._punching){
                     self._setDefault()
                 }
-                self._render();
-                this._callback('Show');
+                if(self.queryData.length || opts.empty || self._isTab){
+                    self._render();
+                    this._callback('Show');
+                }
+                else{
+                    self.hide()
+                }
             }
         },
         resize:function(){
@@ -3937,7 +3983,7 @@ __define('src/components/search',function(require){
          * @func 显示组件
          */
         show:function(){
-            this._show();
+            this._show()
         },
         /**
          * @func 隐藏组件
@@ -3955,13 +4001,6 @@ __define('src/components/search',function(require){
                 self.element.hide()
             }
             self._callback('Hide')
-        },
-        /**
-         * @func 销毁组件
-         */
-        destroy:function(){
-            this.hide();
-            component.exports.destroy.call(this);
         },
         /**
          * @func 填充文本框内容或者添加tag标签，添加tag必须是对象或者数组类型
@@ -3990,6 +4029,9 @@ __define('src/components/search',function(require){
             var self = this, target = self.target, opts = self._options, 
                 _class = self.constructor, name = _class.__component_name
                 $tagContainer = self.$tagContainer;
+            if(data === null){
+                delete this._selectData
+            }
             if($tagContainer && typeof data === 'object'){
                 if(data !== null){
                     var array = [], html;
@@ -4088,7 +4130,6 @@ __define('src/components/search',function(require){
 
     return Search
 }); 
-
 /**
  * @author Aniu[2016-11-10 22:39]
  * @update Aniu[2017-12-22 10:17]
@@ -4164,7 +4205,7 @@ __define('src/components/placeholder',function(require){
             }
         },
         _setData:function(){
-            var self = this, _class = self.constructor, height = self.target.height();;
+            var self = this, _class = self.constructor, height = self.target.height();
             self._textarea = self.target.is('textarea');
             var top = _class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't');
             if(Nui.bsie7 && 'left right'.indexOf(self.target.css('float')) === -1){
@@ -4181,8 +4222,8 @@ __define('src/components/placeholder',function(require){
             if(self._condition()){
                 var data = self._tplData();
                 data.style = {
-                   // 'width':self.target.outerWidth()+'px',
-                    'height':self.target.outerHeight()+'px'
+                    // 'width':self.target.outerWidth()+'px',
+                    // 'height':self.target.outerHeight()+'px'
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._createElems();
@@ -4265,19 +4306,22 @@ __define('src/components/placeholder',function(require){
             self._createRules()
         },
         _createStyle:function(){
-            var self = this;
-            var style = document.createElement('style');
-            document.head.appendChild(style);
-            self.constructor.style = style.sheet
+            var self = this, sheet;
+            if(document.createStyleSheet){
+                sheet = document.createStyleSheet()
+            }
+            else{
+                var style = document.createElement('style');
+                document.head.appendChild(style);
+                sheet = style.sheet;
+            }
+            self.constructor.style = sheet
         },
         _createRules:function(){
             var self = this;
             var sheet = self.constructor.style;
             var id = self.__id;
-            try{
-                sheet.deleteRule(id)
-            }
-            catch(e){}
+            self._deleteRule()
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
                 var selector = '.'+self.className+v;
                 var rules = 'opacity:1; color:'+(self._options.color||'');
@@ -4292,6 +4336,21 @@ __define('src/components/placeholder',function(require){
                 catch(e){}
             })
         },
+        _deleteRule:function(){
+            var sheet = this.constructor.style;
+            var id = this.__id;
+            if(sheet){
+                try{
+                    if(sheet.deleteRule){
+                        sheet.deleteRule(id)
+                    }
+                    else if(sheet.removeRule){
+                        sheet.removeRule(id)
+                    }
+                }
+                catch(e){}
+            }
+        },
         _reset:function(){
             var self = this;
             self._off();
@@ -4300,6 +4359,7 @@ __define('src/components/placeholder',function(require){
             }
             if(self.target){
                 self.target.removeClass(self.className);
+                self._deleteRule()
                 if(self.element){
                     self.target.unwrap();
                     self.element = null

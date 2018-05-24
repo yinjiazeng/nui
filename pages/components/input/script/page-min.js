@@ -9,7 +9,7 @@
  * Nui&jQuery扩展
  */
 
-__define('src/core/extend',function(){
+__define('src/core/extends',function(){
            
     Nui.win = $(window);
 
@@ -82,7 +82,7 @@ __define('src/core/extend',function(){
  * @description 实用工具集
  */
 
-__define('src/core/util',['src/core/extend'], function(){
+__define('src/core/util',['src/core/extends'], function(){
     return ({
         /**
          * @func 常用正则表达式
@@ -651,7 +651,8 @@ __define('src/core/util',['src/core/extend'], function(){
     })
 })
 
-__define('src/core/events',['src/core/extend'], function(){
+
+__define('src/core/events',['src/core/extends'], function(){
     return function(opts){
         var self = this, that = opts || self,
             constr = that.constructor,
@@ -1029,7 +1030,7 @@ __define('src/core/template',['src/core/util'], function(util){
 __define('src/core/component',function(require){
     var template = require('src/core/template');
     var events   = require('src/core/events');
-    var ext     = require('src/core/extend');
+    var ext     = require('./extends');
 
     var slice = Array.prototype.slice;
 
@@ -1055,7 +1056,8 @@ __define('src/core/component',function(require){
         if(options === undefined){
             options = $elem.data(name+'Options');
         }
-        if(options && typeof options === 'string'){
+        
+        if((options && typeof options === 'string') || typeof options === 'number'){
             if(/^{[\s\S]*}$/.test(options)){
                 options = eval('('+ options +')');
             }
@@ -1147,23 +1149,27 @@ __define('src/core/component',function(require){
                             if(attributes.length){
                                 var matchRegexp = init ? /^data-(\w+)-options/i : /^nui_component_(\w+)/i;
                                 container.find(attributes.join(',')).each(function(index, elem){
-                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length;
+                                    var attrs = elem.attributes, nui = elem.nui, obj, i = attrs.length, data = [];
                                     while(i--){
                                         var attr = attrs[i];
                                         if(attr && attr.name){
                                             var match = attr.name.match(matchRegexp);
                                             if(match){
-                                                var _name = match[1];
-                                                var mod = components[_name];
-                                                if(init){
-                                                    bindComponent(_name, elem, mod, attr.value)
-                                                }
-                                                else if(nui && (obj = nui[_name])){
-                                                    callMethod(obj[methodName], slice.call(args, 1), obj)
-                                                }
+                                                data.push({
+                                                    name:match[1],
+                                                    value:attr.value
+                                                })
                                             }
                                         }
                                     }
+                                    Nui.each(data, function(v){
+                                        if(init){
+                                            bindComponent(v.name, elem, components[v.name], v.value)
+                                        }
+                                        else if(nui && (obj = nui[v.name])){
+                                            callMethod(obj[methodName], slice.call(args, 1), obj)
+                                        }
+                                    })
                                 })
                             }
                         }
@@ -1254,11 +1260,6 @@ __define('src/core/component',function(require){
                 })
             }
         },
-        // _$ready:function(name, module){
-        //     if(typeof this.init === 'function'){
-        //         this.init(Nui.doc)
-        //     }
-        // },
         config:function(){
             var args = arguments;
             var len = args.length;
@@ -1626,7 +1627,7 @@ __define('src/components/placeholder',function(require){
             }
         },
         _setData:function(){
-            var self = this, _class = self.constructor, height = self.target.height();;
+            var self = this, _class = self.constructor, height = self.target.height();
             self._textarea = self.target.is('textarea');
             var top = _class._getSize(self.target, 't', 'padding')+_class._getSize(self.target, 't');
             if(Nui.bsie7 && 'left right'.indexOf(self.target.css('float')) === -1){
@@ -1643,8 +1644,8 @@ __define('src/components/placeholder',function(require){
             if(self._condition()){
                 var data = self._tplData();
                 data.style = {
-                   // 'width':self.target.outerWidth()+'px',
-                    'height':self.target.outerHeight()+'px'
+                    // 'width':self.target.outerWidth()+'px',
+                    // 'height':self.target.outerHeight()+'px'
                 }
                 self.element = self.target.wrap(self._tpl2html('wrap', data)).parent();
                 self._createElems();
@@ -1727,19 +1728,22 @@ __define('src/components/placeholder',function(require){
             self._createRules()
         },
         _createStyle:function(){
-            var self = this;
-            var style = document.createElement('style');
-            document.head.appendChild(style);
-            self.constructor.style = style.sheet
+            var self = this, sheet;
+            if(document.createStyleSheet){
+                sheet = document.createStyleSheet()
+            }
+            else{
+                var style = document.createElement('style');
+                document.head.appendChild(style);
+                sheet = style.sheet;
+            }
+            self.constructor.style = sheet
         },
         _createRules:function(){
             var self = this;
             var sheet = self.constructor.style;
             var id = self.__id;
-            try{
-                sheet.deleteRule(id)
-            }
-            catch(e){}
+            self._deleteRule()
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
                 var selector = '.'+self.className+v;
                 var rules = 'opacity:1; color:'+(self._options.color||'');
@@ -1754,6 +1758,21 @@ __define('src/components/placeholder',function(require){
                 catch(e){}
             })
         },
+        _deleteRule:function(){
+            var sheet = this.constructor.style;
+            var id = this.__id;
+            if(sheet){
+                try{
+                    if(sheet.deleteRule){
+                        sheet.deleteRule(id)
+                    }
+                    else if(sheet.removeRule){
+                        sheet.removeRule(id)
+                    }
+                }
+                catch(e){}
+            }
+        },
         _reset:function(){
             var self = this;
             self._off();
@@ -1762,6 +1781,7 @@ __define('src/components/placeholder',function(require){
             }
             if(self.target){
                 self.target.removeClass(self.className);
+                self._deleteRule()
                 if(self.element){
                     self.target.unwrap();
                     self.element = null
@@ -2079,6 +2099,7 @@ __define('src/components/input',function(require){
                             style:_limit.style
                         })).appendTo(self.element);
                         self.$count = self.$limit.children('b');
+                        self._count()
                     }
                 }
             }

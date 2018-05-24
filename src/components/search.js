@@ -68,6 +68,9 @@ Nui.define(function(require){
                     })
                 }
                 return ''
+            },
+            active:function(){
+                return this._active
             }
         },
         _options:{
@@ -144,6 +147,17 @@ Nui.define(function(require){
              * @type <Boolean> 
              */
             nullable:false,
+            /**
+             * @func 是否允许单选时重复匹配
+             * @type <Boolean> 
+             * @desc 当列表有重复的值时，如果设为false，那么只会匹配第一条
+             */
+            repeat:true,
+            /**
+             * @func 是否等到中文输入完成再执行查询
+             * @type <Boolean> 
+             */
+            complete:true,
             /**
              * @func 搜索时是否缓存数据
              * @type <Boolean>
@@ -549,13 +563,13 @@ Nui.define(function(require){
             })
             return match
         },
-        _storage:function(data){
+        _storage:function(data, value){
             var self = this, opts = self._options;
             if(!Nui.type(data, 'Array')){
                 data = []
             }
             if(opts.cache === true){
-                self._caches[self.val] = data
+                self.cacheData[value !== undefined ? value : self.val] = data
             }
             self.queryData = data;
             self._show(true)
@@ -589,6 +603,13 @@ Nui.define(function(require){
             }
             self._storage(data)
         },
+        _clear:function(){
+            clearTimeout(this._timer);
+            if(this._ajax){
+                this._timer = null;
+                this._ajax.abort()
+            }
+        },
         _request:function(){
             var self = this, opts = self._options, data = {}, value = self.val;
             if(opts.query && typeof opts.query === 'string'){
@@ -615,11 +636,7 @@ Nui.define(function(require){
                 delete opts.ajax.success
             }
 
-            clearTimeout(self._timer);
-
-            if(self._ajax){
-                self._ajax.abort()
-            }
+            self._clear()
 
             self._timer = setTimeout(function(){
                 self._ajax = request(jQuery.extend(true, {
@@ -637,7 +654,7 @@ Nui.define(function(require){
                         if(typeof opts.onResponse === 'function'){
                             _data = opts.onResponse.call(opts, self, res)
                         }
-                        self._storage(_data);
+                        self._storage(_data, value);
                     }
                 }, opts.ajax||{}), null)
             }, 50)
@@ -737,7 +754,7 @@ Nui.define(function(require){
             return /^(9|13|37|38|39|40)$/.test(code);
         },
         _bindEvent:function(){
-            var self = this, opts = self._options, storeKeycode = [];
+            var self = this, opts = self._options, storeKeycode = [], complete = true;
 
             var show = function(callback){
                 self._show();
@@ -749,7 +766,19 @@ Nui.define(function(require){
                 })
             }
 
+            if(opts.complete){
+                self._on('compositionstart', self.target, function(e, elem){
+                    complete = false
+                })
+                self._on('compositionend', self.target, function(e, elem){
+                    complete = true
+                })
+            }
+
             self._on('keyup', self.target, function(e, elem){
+                if(!complete){
+                    return
+                }
                 var code = e.keyCode;
                 //部分用户的IE6-IE8（不清楚会不会有其它浏览器），在列表出来后，如果鼠标拖动下拉框会触发keydown、keyup事件，
                 //按键keyCode分别是17和67，也就是Ctrl+C，不同的时keydown事件时先C后Ctrl，keyup事件时先Ctrl后C，
@@ -776,10 +805,11 @@ Nui.define(function(require){
 
                 if(self.val = Nui.trim(elem.val())){
                     var cache;
-                    if(self.val && opts.cache === true && (cache = self._caches[self.val])){
+                    if(self.val && opts.cache === true && (cache = self.cacheData[self.val])){
                         self._storage(cache);
                     }
                     else if(opts.url){
+                        self.queryData = []
                         self._request()
                     }
                     else{
@@ -807,7 +837,8 @@ Nui.define(function(require){
                             self._select(e);
                         }
                     }
-                    self._callback('Blur', args)
+                    self._clear()
+                    self._callback('Blur', [].concat(args, e, elem))
                     self.hide()
                 }
                 else{
@@ -1047,7 +1078,7 @@ Nui.define(function(require){
         },
         _initData:function(){
             var self = this, opts = self._options, data = opts.data, match = opts.match, target = self.target;
-            self._caches = {};
+            self.cacheData = {};
 
             self.queryData = [];
 
@@ -1094,12 +1125,17 @@ Nui.define(function(require){
         },
         _getSelected:function(){
             var self = this, opts = self._options;
+            delete self._selected
             var selected = function(){
-                return '';
+                return ''
             }
             if(typeof opts.selected === 'function'){
                 selected = function(data){
+                    if(!opts.repeat && self._selected && !opts.tag.multiple){
+                        return ''
+                    }
                     if(opts.selected.call(opts, self, data) === true){
+                        self._selected = true
                         return ' s-crt'
                     }
                     return ''
@@ -1108,18 +1144,23 @@ Nui.define(function(require){
             else if(opts.field){
                 selected = function(data){
                     var cls = '';
+                    if(!opts.repeat && self._selected && !opts.tag.multiple){
+                        return cls
+                    }
                     if(self.tagData){
                         Nui.each(self.tagData, function(v){
                             if(data[opts.field] === v.text){
-                                cls = ' s-crt';
+                                self._selected = true
+                                cls = ' s-crt'
                                 return false
                             }
                         })
                     }
                     else if(self.val && data[opts.field] === self.val){
+                        self._selected = true
                         cls = ' s-crt'
                     }
-                    return cls;
+                    return cls
                 }
             }
             return selected
@@ -1216,7 +1257,13 @@ Nui.define(function(require){
             if(self._getTarget() && (self.container = self._jquery(opts.container))){
                 self._initData();
                 self._bindEvent();
+                self._callback('Init')
             }
+        },
+        _reset:function(){
+            component.exports._reset.call(this);
+            this.hide();
+            delete this._selectData;
         },
         /**
          * @param punching <Boolean> 正在输入操作
@@ -1247,8 +1294,13 @@ Nui.define(function(require){
                 if(!self._punching){
                     self._setDefault()
                 }
-                self._render();
-                this._callback('Show');
+                if(self.queryData.length || opts.empty || self._isTab){
+                    self._render();
+                    this._callback('Show');
+                }
+                else{
+                    self.hide()
+                }
             }
         },
         resize:function(){
@@ -1313,7 +1365,7 @@ Nui.define(function(require){
          * @func 显示组件
          */
         show:function(){
-            this._show();
+            this._show()
         },
         /**
          * @func 隐藏组件
@@ -1331,13 +1383,6 @@ Nui.define(function(require){
                 self.element.hide()
             }
             self._callback('Hide')
-        },
-        /**
-         * @func 销毁组件
-         */
-        destroy:function(){
-            this.hide();
-            component.exports.destroy.call(this);
         },
         /**
          * @func 填充文本框内容或者添加tag标签，添加tag必须是对象或者数组类型
@@ -1366,6 +1411,9 @@ Nui.define(function(require){
             var self = this, target = self.target, opts = self._options, 
                 _class = self.constructor, name = _class.__component_name
                 $tagContainer = self.$tagContainer;
+            if(data === null){
+                delete this._selectData
+            }
             if($tagContainer && typeof data === 'object'){
                 if(data !== null){
                     var array = [], html;
