@@ -1722,7 +1722,7 @@ __define('src/components/placeholder',function(require){
             var self = this, opts = self._options;
             self.className = '_nui_'+ self.constructor.__component_name +'_'+self.__id;
             self.target.addClass(self.className);
-            if(!self.constructor.style){
+            if(!self.constructor.sheet){
                 self._createStyle()
             }
             self._createRules()
@@ -1737,40 +1737,51 @@ __define('src/components/placeholder',function(require){
                 document.head.appendChild(style);
                 sheet = style.sheet;
             }
-            self.constructor.style = sheet
+            self.constructor.sheet = sheet
         },
         _createRules:function(){
             var self = this;
-            var sheet = self.constructor.style;
-            var id = self.__id;
-            self._deleteRule()
+            var sheet = self.constructor.sheet;
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
                 var selector = '.'+self.className+v;
                 var rules = 'opacity:1; color:'+(self._options.color||'');
                 try{
-                    if('addRule' in sheet){
-                        sheet.addRule(selector, rules, id)
+                    if(sheet.addRule){
+                        sheet.addRule(selector, rules)
                     }
-                    else if('insertRule' in sheet){
-                        sheet.insertRule(selector + '{' + rules + '}', id)
+                    else if(sheet.insertRule){
+                        sheet.insertRule(selector + '{' + rules + '}')
                     }
+                    self._cssRuleSelector = selector
                 }
-                catch(e){}
+                catch(e){
+                    
+                }
             })
         },
         _deleteRule:function(){
-            var sheet = this.constructor.style;
-            var id = this.__id;
-            if(sheet){
+            var self = this;
+            var sheet = self.constructor.sheet;
+            var selector = self._cssRuleSelector;
+            if(sheet && selector !== undefined){
                 try{
-                    if(sheet.deleteRule){
-                        sheet.deleteRule(id)
-                    }
-                    else if(sheet.removeRule){
-                        sheet.removeRule(id)
+                    var rules = sheet.cssRules;
+                    for(var i=0; i<rules.length; i++){
+                        if(rules[i].selectorText === selector){
+                            if(sheet.deleteRule){
+                                sheet.deleteRule(i)
+                            }
+                            else if(sheet.removeRule){
+                                sheet.removeRule(i)
+                            }
+                            delete self._cssRuleSelector;
+                            break;
+                        }
                     }
                 }
-                catch(e){}
+                catch(e){
+                    
+                }
             }
         },
         _reset:function(){

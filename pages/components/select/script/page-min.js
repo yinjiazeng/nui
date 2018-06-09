@@ -2775,7 +2775,7 @@ __define('src/components/search',function(require){
              * @func 是否等到中文输入完成再执行查询
              * @type <Boolean> 
              */
-            complete:true,
+            complete:false,
             /**
              * @func 搜索时是否缓存数据
              * @type <Boolean>
@@ -3367,76 +3367,36 @@ __define('src/components/search',function(require){
             }
         },
         //无效的按键
-        _invalid:function(code){
-            //tab 回车 上 下 左 右
-            return /^(9|13|37|38|39|40)$/.test(code);
-        },
+        // _invalid:function(code){
+        //     //tab 回车 上 下 左 右
+        //     return /^(9|13|37|38|39|40)$/.test(code);
+        // },
         _bindEvent:function(){
-            var self = this, opts = self._options, storeKeycode = [], complete = true;
+            var self = this, opts = self._options, complete = true;
 
             var show = function(callback){
                 self._show();
                 self._hover = true;
-                //部分浏览器不会获得焦点
+                //添加定时器是因为部分浏览器不会获得焦点
                 setTimeout(function(){
+                    self._focus = false;
                     self.target.focus();
                     callback && callback()
                 })
             }
 
-            if(opts.complete){
-                self._on('compositionstart', self.target, function(e, elem){
-                    complete = false
-                })
-                self._on('compositionend', self.target, function(e, elem){
-                    complete = true
-                })
-            }
+            self._on('click', self.target, function(e, elem){
+                if(!self._showed){
+                    elem.focus()
+                }
+            })
 
-            self._on('keyup', self.target, function(e, elem){
-                if(!complete){
-                    return
+            self._on('focus', self.target, function(e, elem){
+                if(self._focus !== false){
+                    self._focus = true
                 }
-                var code = e.keyCode;
-                //部分用户的IE6-IE8（不清楚会不会有其它浏览器），在列表出来后，如果鼠标拖动下拉框会触发keydown、keyup事件，
-                //按键keyCode分别是17和67，也就是Ctrl+C，不同的时keydown事件时先C后Ctrl，keyup事件时先Ctrl后C，
-                //创建一个数组，在keydown事件时存储keyCode，如果这个bug存在，那么最终数组值肯定是[17, 67]，
-                //在keyup事件中判断如果数组值等于[17, 67]，则不执行后续操作，等这个bug流程走完后清空数组即可
-                if(storeKeycode[0] === 17 && storeKeycode[1] === 67){
-                    if(code === 17){
-                        storeKeycode = []
-                    }
-                    return
-                }
-                
-                if(self._invalid(code)){
-                    if(self._allow(code === 40 || code === 38)){
-                        if(self._showed === true){
-                            self['_code'+code](e)
-                        }
-                        else{
-                            self._show()
-                        }
-                    }
-                    return
-                }
-
-                if(self.val = Nui.trim(elem.val())){
-                    var cache;
-                    if(self.val && opts.cache === true && (cache = self.cacheData[self.val])){
-                        self._storage(cache);
-                    }
-                    else if(opts.url){
-                        self.queryData = []
-                        self._request()
-                    }
-                    else{
-                        self._filter()
-                    }
-                }
-                else{
-                    self._setDefault();
-                    self._show(true)
+                if(opts.focus === true){
+                    self._show()
                 }
             })
 
@@ -3464,33 +3424,71 @@ __define('src/components/search',function(require){
                 }
             })
 
-            self._on('click', self.target, function(e, elem){
-                if(!self._showed){
-                    elem.focus()
-                }
-            })
-
-            if(opts.focus === true){
-                self._on('focus', self.target, function(e, elem){
-                    self._show()
-                })
-            }
-
             self._on('keydown', self.target, function(e, elem){
                 var code = e.keyCode;
-                if(self._allow(code === 40 || code === 38)){
-                    e.preventDefault()
-                }
-                if(code !== 67){
-                    storeKeycode = []
-                }
-                storeKeycode.push(code)
+                self._focus = true;
                 if(self._allow(code === 13)){
                     self['_code'+code](e)
                 }
                 else if(code === 8){
                     self._backspace(e)
                 }
+            })
+
+            self._on('contextmenu', self.target, function(e, elem){
+                self._focus = true;
+            })
+
+            self._on('keyup', self.target, function(e, elem){
+                var code = e.keyCode;
+                if(self._allow(code === 40 || code === 38)){
+                    if(self._showed === true){
+                        self['_code'+code](e)
+                    }
+                    else{
+                        self._show()
+                    }
+                }
+            })
+
+            if(opts.complete){
+                self._on('compositionstart', self.target, function(e, elem){
+                    complete = false
+                })
+                self._on('compositionend', self.target, function(e, elem){
+                    complete = true
+                })
+            }
+
+            var timer = null;
+            self._on('input propertychange', self.target, function(e, elem){
+                clearTimeout(timer)
+                //因为input事件会在compositionend之前触发，因此加个定时器延迟执行
+                timer = setTimeout(function(){
+                    //self._focus是为了防止IE8-下js赋值时执行搜索
+                    //self._bsie是为了防止IE8-事件执行多次
+                    if(self._focus && !self._bsie && complete){
+                        self._bsie = true
+                        if(self.val = Nui.trim(elem.val())){
+                            var cache;
+                            if(opts.cache === true && (cache = self.cacheData[self.val])){
+                                self._storage(cache);
+                            }
+                            else if(opts.url){
+                                self.queryData = []
+                                self._request()
+                            }
+                            else{
+                                self._filter()
+                            }
+                        }
+                        else{
+                            self._setDefault()
+                            self._show(true)
+                        }
+                        self._bsie = false
+                    }
+                })
             })
 
             var $tagContainer = self.$tagContainer;
@@ -3712,6 +3710,8 @@ __define('src/components/search',function(require){
 
             self._listHeight = 0;
 
+            self._focus = true;
+
             self._multiple = target.prop('multiple') || opts.tag.multiple;
 
             self._setTargetData();
@@ -3856,8 +3856,8 @@ __define('src/components/search',function(require){
             }
             self.element.show();
             self._showed = true;
+            self.resize();
             self._scrollto();
-            self.resize()
         },
         _change:function(e){
             var self = this, opts = self._options;
@@ -3994,6 +3994,8 @@ __define('src/components/search',function(require){
             delete self._showed;
             delete self._itemHeight;
             delete self._selectTab;
+            delete self._focus;
+            delete self._bsie;
             if(_class._active === self){
                 delete _class._active
             }
@@ -4300,7 +4302,7 @@ __define('src/components/placeholder',function(require){
             var self = this, opts = self._options;
             self.className = '_nui_'+ self.constructor.__component_name +'_'+self.__id;
             self.target.addClass(self.className);
-            if(!self.constructor.style){
+            if(!self.constructor.sheet){
                 self._createStyle()
             }
             self._createRules()
@@ -4315,40 +4317,51 @@ __define('src/components/placeholder',function(require){
                 document.head.appendChild(style);
                 sheet = style.sheet;
             }
-            self.constructor.style = sheet
+            self.constructor.sheet = sheet
         },
         _createRules:function(){
             var self = this;
-            var sheet = self.constructor.style;
-            var id = self.__id;
-            self._deleteRule()
+            var sheet = self.constructor.sheet;
             Nui.each(['::-webkit-input-placeholder', ':-ms-input-placeholder', '::-moz-placeholder'], function(v){
                 var selector = '.'+self.className+v;
                 var rules = 'opacity:1; color:'+(self._options.color||'');
                 try{
-                    if('addRule' in sheet){
-                        sheet.addRule(selector, rules, id)
+                    if(sheet.addRule){
+                        sheet.addRule(selector, rules)
                     }
-                    else if('insertRule' in sheet){
-                        sheet.insertRule(selector + '{' + rules + '}', id)
+                    else if(sheet.insertRule){
+                        sheet.insertRule(selector + '{' + rules + '}')
                     }
+                    self._cssRuleSelector = selector
                 }
-                catch(e){}
+                catch(e){
+                    
+                }
             })
         },
         _deleteRule:function(){
-            var sheet = this.constructor.style;
-            var id = this.__id;
-            if(sheet){
+            var self = this;
+            var sheet = self.constructor.sheet;
+            var selector = self._cssRuleSelector;
+            if(sheet && selector !== undefined){
                 try{
-                    if(sheet.deleteRule){
-                        sheet.deleteRule(id)
-                    }
-                    else if(sheet.removeRule){
-                        sheet.removeRule(id)
+                    var rules = sheet.cssRules;
+                    for(var i=0; i<rules.length; i++){
+                        if(rules[i].selectorText === selector){
+                            if(sheet.deleteRule){
+                                sheet.deleteRule(i)
+                            }
+                            else if(sheet.removeRule){
+                                sheet.removeRule(i)
+                            }
+                            delete self._cssRuleSelector;
+                            break;
+                        }
                     }
                 }
-                catch(e){}
+                catch(e){
+                    
+                }
             }
         },
         _reset:function(){

@@ -8,10 +8,6 @@
 __define('src/components/checkradio',function(){
     
 })
-
-__define('src/components/paging',function(require){
-    return require('plugins/paging')
-})
 /**
  * Nui&jQuery扩展
  */
@@ -1559,6 +1555,1540 @@ __define('src/core/component',function(require){
     })
 })
 
+/**
+ * @func 数字输入
+ */
+
+__define('src/components/number',function(require){
+    var component = require('src/core/component');
+    var util = require('src/core/util');
+
+    return this.extend(component, {
+        _options:{
+            /**
+             * @func 整数长度
+             */
+            integer:4,
+            /**
+             * @func 小数长度
+             */
+            decimal:2,
+            /**
+             * @func 设置正数最大值
+             */
+            max:0,
+            /**
+             * @func 设置负数最小值
+             */
+            min:0,
+            /**
+             * @func 补零位数
+             */
+            zeroize:0,
+            /**
+             * @func 是否允许值为0
+             */
+            zero:false,
+            /**
+             * @func 是否允许值为负数
+             */
+            minus:true,
+            /**
+             * @func 输入时，当值改变时回调
+             * @param {Object} self 当前实例对象
+             * @param {String} value 当前输入框内容
+             * @param {Object} elem 当前输入框元素jQuery对象
+             */
+            onChange:null,
+            /**
+             * @func 失焦时回调
+             * @param {Object} self 当前实例对象
+             * @param {String} value 当前输入框内容
+             * @param {Object} elem 当前输入框元素jQuery对象
+             */
+            onBlur:null
+        },
+        _event:function(){
+            var self = this, opts = self._options, count = 1;
+            self._on('focus', self.target, function(e, elem){
+                self._default = self._dom.value;
+                self._focus = true
+            })
+
+            self._on('blur', self.target, function(e, elem){
+                self._focus = false;
+                var val = self._filter(Nui.trim(elem.val()))
+                elem.val(val)
+                self._callback('Blur', [val, self.target])
+            })
+
+            self._on('keydown', self.target, function(e, elem){
+                var code = e.keyCode;
+                self._focus = true;
+                count = 1;
+                //输入拦截
+                if(
+                    (e.shiftKey && $.inArray(code, self._shfitCodes) !== -1) ||
+                    (!e.ctrlKey && !e.altKey && $.inArray(code, self._disCodes) !== -1)
+                ){
+                    return false
+                }
+            })
+
+            self._on('contextmenu', self.target, function(e, elem){
+                count = 1
+            })
+
+            var change = function(){
+                if(count === 1 && self._default !== Nui.trim(self._dom.value)){
+                    self._change(true)
+                }
+            }
+
+            //解决IE8-propertychange事件间歇性失效问题
+            self._on('keyup', self.target, function(e, elem){
+                change()
+            })
+            
+            //解决部分浏览器剪切或者粘帖时不触发input或者propertychange事件
+            //因为剪切粘帖事件会优先执行，因此加定时器延后执行
+            self._on('paste cut', self.target, function(e, elem){
+                setTimeout(function(){
+                    change()
+                })
+            })
+
+            self._on('propertychange', self.target, function(e, elem){
+                count++;    
+                //self._focus防止IE8-赋值时执行
+                //self._bsie解决IE8-赋值死循环问题（赋值时会触发propertychange事件）
+                if(self._focus && !self._bsie){
+                    self._bsie = true
+                    self._change()
+                    self._bsie = false
+                }
+            })
+
+            self._on('input', self.target, function(e, elem){
+                count++;
+                self._change()
+            })
+        },
+        _exec:function(){
+            if(this._getTarget()){
+                this._initData()
+                this._event()
+            }
+        },
+        _initData:function(){
+            var self = this, opts = self._options;
+            self._dom = self.target[0];
+            self._default = self._dom.value;
+            //禁用输入法（仅限IE）
+            self._dom.style.imeMode = 'disabled';
+            self._integer = opts.integer|0;
+            self._decimal = opts.decimal|0;
+            self._max = self._min = '';
+            if(self._integer < 0){
+                self._integer = 0
+            }
+            if(self._decimal < 0){
+                self._decimal = 0
+            }
+            var integer = self._integer;
+            var decimal = self._decimal;
+            while(integer--){
+                self._max += '9'
+            }
+            if(self._decimal && self._max){
+                self._max += '.'
+                while(decimal--){
+                    self._max += '9'
+                }
+            }
+            if(opts.max > 0){
+                self._max = opts.max.toString()
+            }
+            if(opts.minus && self._max){
+                self._min = '-' + self._max
+            }
+            if(opts.min < 0){
+                self._min = opts.min.toString()
+            }
+            self._diskey()
+        },
+        /**
+         * @func 设置禁止输入的按键
+         */
+        _diskey:function(){
+            var self = this, opts = self._options;
+            //组合shift按键code
+            var shfitCodes = [].concat(
+                //键盘上方数字
+                self._resolve(48, 57), 
+                //分号、引号等特殊符号
+                self._resolve(186, 222),
+                //其它特殊符号
+                [226]
+            )
+
+            var disCodes = [].concat(
+                //括号斜杠引号
+                self._resolve(219, 222),
+                //字母
+                self._resolve(65, 90),
+                //空格、乘除等一些可视负号
+                [32, 106, 111, 186, 187, 188, 191, 192, 226]
+            )
+
+            //加减
+            if(!opts.minus){
+                disCodes = disCodes.concat(107, 109, 189)
+            }
+
+            //小数点
+            if(!self._decimal){
+                disCodes = disCodes.concat(110, 190)
+            }
+
+            self._shfitCodes = shfitCodes;
+
+            self._disCodes = disCodes;
+        },
+        //设置临界值
+        _breakValue:function(val){
+            if(this._max > 0 && val > parseFloat(this._max)){
+                val = this._max
+            }
+            else if(this._min < 0 && val < parseFloat(this._min)){
+                val = this._min
+            }
+            return val
+        },
+        /**
+         * @func 分解按键代码
+         */
+        _resolve:function(start, end){
+            var codes = []
+            for(var i=start; i<=end; i++){
+                codes.push(i)
+            }
+            return codes
+        },
+        /**
+         * @func 输入时回调，会过滤掉特殊字符
+         */
+        _change:function(flag){
+            var self = this, len = arguments.length, opts = self._options, dom = self._dom, val = Nui.trim(dom.value);
+            //负数
+            var minus = '';
+            //整数部分
+            var integer = '';
+            //小数部分
+            var decimal = '';
+            //小数点位置
+            var dotIndex;
+            //字符数量
+            var length = val.length;
+            //焦点位置
+            var index = util.getFocusIndex(dom);
+            //转换半角符号以及过滤非数字减号加号小数点符号
+            val = self._convert(val).replace(/[^\+\-\d\.]+/g, '')
+            //存储负数符号
+            if(opts.minus && val.split('-').length % 2 === 0){
+                minus = '-'
+                if(val.indexOf('+') !== -1){
+                    minus = ''
+                }
+            }
+            val = val.replace(/[-+]/g, '');
+            var temp = val.split('.');
+            integer = temp[0] || '';
+            if(self._integer){
+                integer = integer.substr(0, self._integer)
+            }
+            if(self._decimal && temp[1] !== undefined){
+                decimal = '.' + (temp[1] || '').substr(0, self._decimal)
+            }
+            val = self._breakValue(minus + integer + decimal);
+            if(!flag){
+                dom.value = val
+            }
+            index += (val.length - length)
+            if(self._default !== val){
+                self._callback('Change', [self._filter(val), self.target])
+                self._default = val
+            }
+            else{
+                return
+            }
+            //重新给输入框填充过滤后的值后，焦点会在最后，因此要重新将焦点移到操作部位
+            try{
+                dom.setSelectionRange(index, index);
+            }
+            catch(e){
+                clearTimeout(self._timer);
+                self._timer = setTimeout(function(){
+                    try{
+                        if(self._focus){
+                            var range = dom.createTextRange();
+                            range.moveStart('character', index);
+                            range.moveEnd('character', -(val.length - index));
+                            range.select()
+                        }
+                    }
+                    catch(e){
+                        
+                    }
+                })
+            }
+        },
+        /**
+         * @func 过滤最终值，比如将.1转为0.1
+         */
+        _filter:function(value){
+            var self = this, opts = self._options;
+            if(!value){
+                return ''
+            }
+            value = value.replace(/^0+([^0]*)/, '$1')
+                        .replace(/^\./, '0.')
+                        .replace(/^\-\./, '-0.')
+                        .replace(/\.$/, '')
+            if(!value || (!opts.zero && !parseFloat(value))){
+                return ''
+            }
+            value = self._breakValue(value);
+            if(self._decimal && opts.zeroize){
+                var arr = value.split('.');
+                var integer = arr[0];
+                var decimal = (arr[1] || '').replace(/0+$/, '');
+                var count = opts.zeroize - decimal.length;
+                while(count > 0){
+                    decimal += '0';
+                    count--
+                }
+                value = integer + '.' + decimal
+            }
+            return value
+        },
+        /**
+         * @func 输入时半角数字转换为正确的数字
+         */
+        _convert:function(val){
+            var self = this;
+            var map1 = {
+                '０':'0',
+                '１':'1',
+                '２':'2',
+                '３':'3',
+                '４':'4',
+                '５':'5',
+                '６':'6',
+                '７':'7',
+                '８':'8',
+                '９':'9'
+            }
+            var map2 = {
+                '－':'-',
+                '．':'.',
+                '。':'.'
+            }
+            return val.replace(/([０１２３４５６７８９－．。])+/g, function(all, single){
+                var value1, value2;
+                if((value1 = map1[single]) !== undefined){
+                    var i = 1, length = all.length, temp = '';
+                    if(length > self._integer){
+                        length = self._integer
+                    }
+                    while(i <= length){
+                        temp += value1;
+                        i++;
+                    }
+                    return temp;
+                }
+                else if((value2 = map2[single]) !== undefined){
+                    return value2;
+                }
+                return all;
+            })
+        },
+        _delete:function(){
+            if(this.target){
+                this.target.css('ime-mode', 'normal')
+            }
+            delete this._focus;
+            delete this._bsie;
+            component.exports._delete.call(this);
+        },
+        value:function(val){
+            var self = this, dom = self._dom, obj, _val = parseFloat(val);
+            if(isNaN(_val)){
+                val = ''
+            }
+            else if(!_val){
+                val = 0
+            }
+            if(dom && dom.nui){
+                Nui.each(dom.nui, function(v, k){
+                    if(k !== name && typeof v.value === 'function' && v._setStyle && v._createRules){
+                        obj = v;
+                        return false
+                    }
+                })
+            }
+            if(obj || dom){
+                val = self._filter(val.toString())
+                if(obj){
+                    obj.value(val)
+                }
+                else if(dom){
+                    dom.value = val
+                }
+                self._default = val
+            }
+        }
+    })
+})
+/**
+ * @author Aniu[2016-11-10 22:39]
+ * @update Aniu[2016-11-10 22:39]
+ * @version 1.0.1
+ * @description layer弹出层
+ */
+
+__define('src/components/layer/layer',function(require){
+    this.imports('../../assets/components/layer/index');
+    
+    var component = require('src/core/component');
+    var util = require('src/core/util');
+    var template = require('src/core/template');
+
+    var statics = {
+        _maskzIndex:10000,
+        _zIndex:10000,
+        _init:function(){
+            var _class = this;
+            var timer = null;
+            Nui.win.on('resize', function(){
+                clearTimeout(timer);
+                timer = setTimeout(function(){
+                    Nui.each(_class.__instances, function(val){
+                        var opts = val._options;
+                        if(opts.position || opts.isCenter === true){
+                            val.resize()
+                        }
+                    })
+                })
+            })
+        },
+        _$fn:null,
+        _$ready:null,
+        init:null
+    }
+
+    var options = {
+        //内容
+        content:'',
+        //内容模版
+        template:'',
+        //模版数据
+        data:{},
+        //高度
+        width:320,
+        //宽度
+        height:'auto',
+        //弹出层层级
+        zIndex:null,
+        //最大宽度
+        maxWidth:0,
+        //最大高度
+        maxHeight:0,
+        //定时器，N毫秒后自动关闭
+        timer:0,
+        //弹窗四周距离窗口边缘距离
+        edge:0,
+        //弹窗容器
+        container:'body',
+        //弹窗标题
+        title:'温馨提示',
+        //是否可以拖动
+        isMove:false,
+        //是否有遮罩
+        isMask:true,
+        //是否只能在窗口内拖动
+        isInnerMove:false,
+        //点击遮罩是否关闭弹窗
+        isClickMask:false,
+        //是否使用遮罩拖动
+        isMoveMask:false,
+        //是否能用hide方法关闭遮罩
+        isHide:true,
+        //弹窗是否浏览器改变大小时显示在窗口中央
+        isCenter:true,
+        //是否全屏显示
+        isFull:false,
+        //是否在点击弹窗时将其置顶
+        isTop:false,
+        //是否以提示框展示，没有标题，按钮
+        isTips:false,
+        //是否拖动滚动条固定位置
+        isFixed:true,
+        //当内容超过弹出层容器，是否显示滚动条
+        scrollbar:true,
+        //是否点击弹窗或者点击遮罩层是否阻止事件冒泡
+        isStopProp:false,
+        //按钮对齐方式
+        align:'center',
+        //是否以气泡形式展示，弹出层边缘会多出箭头
+        bubble:{
+            enable:false,
+            dir:'top'
+        },
+        //弹出层内容展示iframe，不建议跨域使用
+        iframe:{
+            enable:false,
+            cache:false,
+            src:''
+        },
+        //关闭按钮
+        close:{
+            enable:true,
+            text:'×'
+        },
+        //确定按钮
+        confirm:{
+            enable:false,
+            name:'normal',
+            text:'确定',
+            callback:function(){
+                return true
+            }
+        },
+        //取消按钮
+        cancel:{
+            enable:true,
+            text:'取消'
+        },
+        /*弹出层定位 top/left/right/bottom
+        position:{
+            top:10,
+            left:10
+        }
+        */
+        position:null,
+        /*将弹出层置于遮罩层底部
+        under:[layer1, layer2]
+        */
+        under:null,
+        /*配置按钮，若id为confirm/cancel/close将会覆盖内置按钮参数
+        button:[{
+            id:'confirm',
+            text:'确定',
+            name:'normal',
+            callback:function(){
+
+            }
+        }]
+        */
+        button:null,
+        //onInit：弹出层显示时回调
+        //onDestroy：弹出层注销时回调
+        //当拖动弹出层移动后回调
+        onMove:null,
+        //窗口改变大小位置时回调
+        onResize:null,
+        //容器滚动时回调
+        onScroll:null,
+        //弹窗隐藏前回调，若返回false则不能隐藏
+        onHideBefore:null,
+        //弹窗销毁前回调，若返回false则不能销毁
+        onDestroyBefore:null,
+        //定时关闭弹窗回调
+        onTimer:null
+    }
+
+    return this.extend(component, {
+        _static:statics,
+        _options:options,
+        _template:{
+            layout:
+                '<div class="<% className %>" style="<% include \'style\' %>">'+
+                    '<div class="layer-box">'+
+                        '<%if close%>'+
+                            '<% var btn = close %>'+
+                            '<% include "button" %>'+
+                        '<%/if%>'+
+                        '<%if bubble%>'+
+                        '<span class="layer-bubble layer-bubble-<%bubble.dir||"top"%>"'+
+                        '<%if bubble.style%>'+
+                        ' style="<%each bubble.style v n%><%n%>:<%v%>;<%/each%>"'+
+                        '<%/if%>'+
+                        '><b></b><i></i></span>'+
+                        '<%/if%>'+
+                        '<%if title%>'+
+                        '<div class="layer-head">'+
+                            '<span class="layer-title"><%title%></span>'+
+                        '</div>'+
+                        '<%/if%>'+
+                        '<div class="layer-body">'+
+                            '<div class="layer-main">'+
+                            '<%content%>'+
+                            '</div>'+
+                        '</div>'+
+                        '<%if button && button.length%>'+
+                        '<div class="layer-foot" style="text-align:<%align%>">'+
+                        '<div class="layer-inner">'+
+                        '<%each button btn%>'+
+                            '<%include "button"%>'+
+                        '<%/each%>'+
+                        '</div>'+
+                        '</div>'+
+                        '<%/if%>'+
+                    '</div>'+
+                '</div>',
+            button:
+                '<button type="button" class="ui-button'+
+                    '<%if btn.name%>'+
+                    '<%each [].concat(btn.name) name%> ui-button-<%name%><%/each%>'+
+                    '<%/if%> layer-button-<%btn.id%>"'+
+                    '<%if btn.style%>'+
+                    ' style="<%each btn.style v n%><%n%>:<%v%>;<%/each%>"'+
+                    '<%/if%>><%btn.text || "按钮"%></button>',
+            iframe:
+                '<iframe<%each attr%> <%$index%>="<%$value%>"<%/each%>></iframe>',
+            mask:
+                '<div class="nui-layer-mask'+
+                    '<%if skin%> nui-layer-mask-<%skin%><%/if%>" style="<%include \'style\'%>">'+
+                    '<div class="layer-mask"></div>'+
+                '</div>',
+            movemask:
+                '<div class="nui-layer-movemask'+
+                    '<%if skin%> nui-layer-movemask-<%skin%><%/if%>" style="<%include \'style\'%>">'+
+                '</div>',
+            style:
+                '<%each style%><%$index%>:<%$value%>;<%/each%>'
+        },
+        /*
+        top:弹窗距离窗口顶部距离
+        left:弹窗距离窗口左边距离
+        width:弹窗宽度
+        height:弹窗高度
+        */
+        data:{},
+        _init:function(){
+            this._zIndex = ++this.constructor._zIndex;
+            this._exec()
+        },
+        _exec:function(){
+            var self = this, opts = self._options;
+            self._container = self._jquery(opts.container);
+            if(self._container){
+                self._containerDOM = self._container.get(0);
+                if(self._containerDOM.tagName !== 'BODY'){
+                    self._window = self._container;
+                    self._isWindow = false;
+                    var pos = self._container.css('position');
+                    if('absolute relative fixed'.indexOf(pos) === -1){
+                        self._container.css('position', 'relative')
+                    }
+                }
+                else{
+                    self._window = Nui.win;
+                    self._isWindow = true;
+                }
+                self._isFixed = opts.isFixed && !Nui.bsie6 && self._isWindow;
+                self._create();
+            }
+        },
+        _create:function(){
+            var self = this, opts = self._options;
+            var buttons = self._createButton(), isTitle = false;
+            if(opts.isTips !== true){
+                isTitle = typeof opts.title === 'string';
+            }
+            var data = self._tplData({
+                content:self._getContent(),
+                close:buttons.close,
+                button:buttons.button,
+                title:isTitle ? (opts.title||'温馨提示') : null,
+                bubble:opts.bubble.enable === true ? opts.bubble : null,
+                align:opts.align || 'center',
+                style:{
+                    'z-index':isNaN(parseInt(opts.zIndex)) ? self._zIndex : opts.zIndex,
+                    'position':'absolute',
+                    'display':'block'
+                }
+            });
+            if(self._isFixed){
+                data.style.position = 'fixed';
+            }
+            self._setTop();
+            self.element = self._bindComponentName($(self._tpl2html('layout', data)).appendTo(self._container));
+            self._box = self.element.children('.layer-box');
+			self.head = self._box.children('.layer-head');
+			self._body = self._box.children('.layer-body');
+			self.main = self._body.children('.layer-main');
+			self.foot = self._box.children('.layer-foot');
+            if(opts.isTips !== true){
+                if(opts.iframe.enable === true){
+                    self._iframe = self.main.children('iframe');
+                    self._iframeOnload()
+                }
+                if(opts.isMove === true && isTitle){
+                    self._bindMove();
+                }
+                if(opts.isStopProp === true){
+                    self._stopProp();
+                }
+                if(opts.isTop === true){
+                    self._bindTop();
+                }
+            }
+            if(self._button.length){
+                self._buttonEvent();
+            }
+            if(opts.isFixed === true && !self._isFixed === true){
+                self._bindScroll()
+            }
+            self._event();
+            self._show()
+        },
+        _getContent:function(){
+            var self = this, opts = self._options, content = '', tpl = opts.template;
+            if(opts.isTips !== true && opts.iframe.enable === true){
+                content = self._createIframe();
+            }
+            else{
+                if(tpl){
+                    var data = opts.data;
+                    if(typeof data === 'function'){
+                        data = opts.data.call(this)
+                    }
+                    if(typeof tpl === 'string'){
+                        content = template.render(tpl, data)
+                    }
+                    else if(Nui.type(opts.template, 'Object')){
+                        content = template.render.call(tpl, tpl.main, data)
+                    }
+                }
+                else if(typeof opts.content === 'string'){
+                    content = opts.content
+                }
+                else if(opts.content instanceof jQuery){
+                    content = opts.content.prop('outerHTML')
+                }
+            }
+            return content
+        },
+        _createIframe:function(){
+            var self = this, opts = self._options, name = 'layer-iframe'+self.__id, src = opts.iframe.src;
+            if(opts.iframe.cache === false){
+                src = util.setParam('_', new Date().getTime(), src)
+            }
+            return self._tpl2html('iframe', {
+                attr:{
+                    frameborder:'0',
+                    name:name,
+                    id:name,
+                    src:src,
+                    scroll:'hidden',
+                    style:'width:100%;'
+                }
+            })
+        },
+        _iframeOnload:function(){
+            var self = this;
+            self._iframe.load(function(){
+                self._iframeDocument = self._iframe.contents();
+                self._resize()
+            })
+        },
+        _createButton:function(){
+            var self = this, opts = self._options, defaults = {}, buttons = {}, caches = {}, isTips = opts.isTips === true;
+            var add = function(id, btn){
+                self._button[id === 'close' ? 'unshift' : 'push'](btn)
+            }
+            self._button = [];
+
+            Nui.each(['close', 'confirm', 'cancel'], function(id){
+                var btn = opts[id];
+                if(btn && btn.enable === true && (!isTips || id === 'close')){
+                    defaults[id] = {
+                        id:id,
+                        name:btn.name,
+                        style:btn.style,
+                        text:btn.text,
+                        callback:btn.callback
+                    }
+                }
+            });
+
+            if(!isTips && opts.button && opts.button.length){
+                Nui.each(opts.button, function(val){
+                    var id = val.id, btn = val, def;
+                    if(!caches[id]){
+                        caches[id] = true;
+                        if(def = defaults[id]){
+                            btn = $.extend(true, {}, def, val);
+                            delete defaults[id]
+                        }
+                        add(id, btn)
+                    }
+                })
+            }
+
+            Nui.each(defaults, function(val, id){
+                add(id, val)
+            });
+
+            if(self._button[0] && self._button[0].id === 'close'){
+                buttons.close = self._button[0],
+                buttons.button = self._button.slice(1);
+            }
+            else{
+                buttons.button = self._button
+            }
+
+            return buttons
+        },
+        _buttonEvent:function(){
+            var self = this, opts = self._options;
+            Nui.each(self._button, function(val){
+                self._on('click', self.element, '.layer-button-'+val.id, function(e, button){
+                    if(!button.hasClass('nui-button-disabled')){
+                        var id = val.id, callback = val.callback;
+                        var isCall = typeof callback === 'function' ? callback.call(opts, self, e, button) : null;
+                        if((id === 'confirm' && isCall === true) || (id !== 'confirm' && isCall !== false)){
+                            self.destroy()
+                        }
+                    }
+                })
+            })
+        },
+        _stopProp:function(){
+            this._on('click', this.element, function(e){
+                e.stopPropagation()
+            });
+        },
+        _bindTop:function(){
+            var self = this;
+            self._on('click', self.element, function(){
+                self._setzIndex();
+            });
+        },
+        _bindMove:function(){
+            var self = this, opts = self._options, element = self.element;
+            var _class = self.constructor, elem = element, isMove = false, x, y, _x, _y;
+            self._on('mousedown', self.head, function(e, ele){
+                isMove = true;
+                self._setzIndex();
+                if(opts.isMoveMask === true){
+                    elem = self._moveMask = $(self._tpl2html('movemask', {
+                        skin:opts.skin,
+                        style:{
+                            'z-index':self._zIndex+1,
+                            'cursor':'move',
+                            'position':self._isFixed ? 'fixed' : 'absolute'
+                        }
+                    })).appendTo(self._container);
+                    elem.css({
+                        width:self.data.outerWidth - _class._getSize(elem, 'lr', 'all'),
+                        height:self.data.outerHeight - _class._getSize(elem, 'tb', 'all'),
+                        top:self.data.top,
+                        left:self.data.left
+                    });
+                }
+                ele.css('cursor','move');
+                x = e.pageX - self.data.left;
+                y = e.pageY - self.data.top;
+                e.stopPropagation();
+            });
+            self._on('mousemove', Nui.doc, function(e){
+                var width = self._container.outerWidth(), height = self._container.outerHeight();
+                if(isMove){
+                    _x = e.pageX - x;
+                    _y = e.pageY - y;
+                    _x < 0 && (_x = 0);
+                    _y < 0 && (_y = 0);
+                    if(opts.isInnerMove === true){
+                        _x + self.data.outerWidth > width && (_x = width - self.data.outerWidth);
+                        _y + self.data.outerHeight > height && (_y = height - self.data.outerHeight);
+                    }
+                    self.data.top = _y;
+                    self.data.left = _x;
+                    elem.css({top:_y, left:_x});
+                    return !isMove;
+                }
+            });
+            self._on('mouseup', Nui.doc, function(e){
+                if(isMove){
+                    isMove = false;
+                    self.head.css('cursor','default');
+                    if(opts.isMoveMask === true){
+                        element.css(self.data);
+                        self._moveMask.remove();
+                        self._moveMask = null;
+                    }
+                    self._callback('Move');
+                    self.data.offsetTop = self.data.top - self._window.scrollTop();
+                    self.data.offsetLeft = self.data.left - self._window.scrollLeft();
+                }
+            });
+        },
+        _bindScroll:function(){
+            var self = this, opts = self._options;
+            self._on('scroll', self._window, function(e, elem){
+                var top = self.data.offsetTop + self._window.scrollTop();
+                var left = self.data.offsetLeft + self._window.scrollLeft();
+                self.data.top = top;
+                self.data.left = left;
+                self.element.css(self.data);
+                self._callback('Scroll', [e, elem, {top:top, left:left}]);
+            })
+        },
+        //鼠标点击弹出层将弹出层层级设置最大
+        _setzIndex:function(){
+            var self = this, _class = self.constructor;
+            if(self._isTop && self.element){
+                self._isTop = false;
+                self._zIndex = ++_class._zIndex;
+                self.element.css('zIndex', self._zIndex);
+                self._setTop();
+            }
+        },
+        _setLower:function(destroy){
+            var self = this, _class = self.constructor, opts = self._options, unders = [];
+            if(opts.under){
+                unders = unders.concat(opts.under);
+                if(unders.length){
+                    Nui.each(unders, function(obj, k){
+                        if(obj && obj.element){
+                            obj.element.css('z-index', destroy ? (isNaN(parseInt(obj._options.zIndex)) ? obj._zIndex : obj._options.zIndex) : _class._maskzIndex-1)
+                        }
+                    })
+                }
+            }
+        },
+        _setTop:function(){
+            var self = this, _class = self.constructor;
+            Nui.each(_class.__instances, function(val){
+                if(val && val !== self && val._options.isTop === true){
+                    val._isTop = true;
+                }
+            });
+        },
+        _position:function(){
+            var self = this, data = self.data, pos = self._options.position, _pos = {}, _v;
+
+            if(typeof pos === 'function'){
+                pos = pos.call(self._options, self)
+            }
+
+            Nui.each(pos, function(v, k){
+                if(Nui.type(v, ['String', 'Number'])){
+                    _v = v;
+                    if(typeof v === 'string' && v !== 'auto'){
+                        if(!v){
+                            _v = 0
+                        }
+                        else{
+                            if(k === 'top' || k === 'bottom'){
+                                if(v === 'self'){
+                                    _v = data.outerHeight
+                                }
+                                else if(/[\+\-\*\/]/.test(v)){
+                                    _v = (new Function('var self = '+data.outerHeight+'; return '+v))()
+                                }
+                            }
+                            else{
+                                if(v === 'self'){
+                                    _v = data.outerWidth
+                                }
+                                else if(/[\+\-\*\/]/.test(v)){
+                                    _v = (new Function('var self = '+data.outerWidth+'; return '+v))()
+                                }
+                            }
+                        }
+                    }
+                    _pos[k] = _v
+                }
+            })
+
+            return _pos
+        },
+        _resize:function(type){
+            var self = this, _class = self.constructor, opts = self._options, element = self.element;
+            var wWidth = self._window.outerWidth();
+            var wHeight = self._window.outerHeight();
+            var stop = 0;
+            var sleft = 0;
+            if(!self._isFixed){
+                sleft = self._window.scrollLeft();
+                stop = self._window.scrollTop();
+            }
+            self._setSize();
+            if(opts.position){
+                var pos = element.css(self._position()).position();
+                if(Nui.bsie6){
+                    sleft = 0;
+                    stop = 0;
+                }
+                self.data.left = pos.left + sleft;
+                self.data.top = pos.top + stop;
+            }
+            else{
+                if(type === 'init' || opts.isCenter === true){
+                    var left = (wWidth - self.data.outerWidth) / 2 + sleft;
+                    var top = (wHeight - self.data.outerHeight) / 2 + stop;
+                    var edge = opts.edge > 0 ? opts.edge : 0;
+                    self.data.left = left > 0 ? left : edge;
+                    self.data.top = top > 0 ? top : edge;
+                }
+            }
+            self.data.offsetTop = self.data.top - self._window.scrollTop();
+            self.data.offsetLeft = self.data.left - self._window.scrollLeft();
+            element.css(self.data);
+        },
+        _setSize:function(){
+            var self = this, _class = self.constructor, opts = self._options, element = self.element;
+            var edge = opts.edge > 0 ? opts.edge*2 : 0;
+            var wWidth = self._window.outerWidth() - edge;
+            var wHeight = self._window.outerHeight() - edge;
+            var scrollbar = opts.scrollbar;
+
+            self._body.css({height:'auto', overflow:'visible'});
+            element.css({top:'auto', left:'auto', width:'auto', height:'auto'});
+            
+            var edgeSize = _class._getSize(self._box, 'tb', 'all') +
+                self.head.outerHeight() + 
+                _class._getSize(self.head, 'tb', 'margin') + 
+                _class._getSize(self._body, 'tb', 'all') + 
+                self.foot.outerHeight() + 
+                _class._getSize(self.foot, 'tb', 'margin');
+
+            var width = element.outerWidth();
+            if(opts.isFull !== true){
+                if(opts.width > 0){
+                    width = opts.width
+                }
+                else if(opts.width === '100%' || (opts.scrollbar === true && width > wWidth)){
+                    width = wWidth;
+                }
+                if(opts.maxWidth > 0 && width >= opts.maxWidth){
+                    scrollbar = true;
+                    width = opts.maxWidth
+                }
+            }
+            else{
+                width = wWidth;
+            }
+
+            var ws = 'nowrap';
+            if(opts.width > 0 || width == opts.maxWidth || width == wWidth){
+                ws = 'normal';
+            }
+
+            self.data.width = width - _class._getSize(element, 'lr', 'all');
+            self.main.css('white-space', ws);
+            element.width(self.data.width);
+
+            var height = element.outerHeight();
+            if(self._iframeDocument){
+                self._iframeDocument[0].layer = self;
+                height = edgeSize + self._iframeDocument.find('body').outerHeight();
+            }
+
+            if(opts.isFull !== true){
+                if(opts.height > 0){
+                    height = opts.height
+                }
+                else if(opts.height === '100%' || ((opts.scrollbar === true || self._iframeDocument) && height > wHeight)){
+                    height = wHeight
+                }
+                if(opts.maxHeight > 0 && height >= opts.maxHeight){
+                    scrollbar = true;
+                    height = opts.maxHeight
+                }
+            }
+            else{
+                height = wHeight
+            }
+
+            self.data.outerWidth = width;
+            self.data.outerHeight = height;
+            self.data.height = height - _class._getSize(element, 'tb', 'all');
+            element.height(self.data.height);
+            var _height = self.data.height - edgeSize;
+
+            if(self.main.outerHeight() > _height && !self._iframe && scrollbar === true){
+                self._body.css('overflow', 'auto')
+            }
+            if(self._iframe){
+                self._iframe.height(_height);
+            }
+            self._body.height(self.data.contentHeight = _height)
+        },
+        _showMask:function(){
+            var self = this, _class = self.constructor, opts = self._options;
+            if(!self._containerDOM.__layermask__){
+                self._containerDOM.__layermask__ = $(self._tpl2html('mask', {
+                    skin:opts.skin,
+                    style:{
+                        'z-index':_class._maskzIndex,
+                        'position':self._isFixed ? 'fixed' : 'absolute',
+                        'top':'0px',
+                        'left':'0px',
+                        'width':'100%',
+                        'height':self._isFixed ? '100%' : self._container.outerHeight()+'px'
+                    }
+                })).appendTo(self._container);
+            }
+            if(opts.isStopProp === true){
+                self._on('click', self._containerDOM.__layermask__, function(e){
+                    e.stopPropagation()
+                })
+            }
+            if(opts.isClickMask === true){
+                self._on('click', self._containerDOM.__layermask__, function(){
+                    self.hide()
+                })
+            }
+        },
+        _show:function(){
+            var self = this, opts = self._options;
+            component.init(self.main);
+            self._resize('init');
+            self._setLower();
+            if(opts.isMask === true){
+                self._showMask()
+            }
+            if(opts.timer > 0){
+                self._time = opts.timer;
+                self._timer();
+            }
+            self._callback('Init');
+            return self
+        },
+        _timer:function(){
+            var self = this, opts = self._options;
+            if(self._time > 0){
+                self._callback('Timer', [self._time]);
+                self._timerid = setTimeout(function(){
+                    self._time -= 1000;
+                    self._timer();
+                }, self._time > 1000 ? 1000 : self._time)
+            }
+            else{
+                self.hide()
+            }
+        },
+        _reset:function(){
+            var self = this, _class = self.constructor, noMask = true;
+            if(this._iframe){
+                this._iframe.remove()
+            }
+            component.exports._reset.call(this);
+            component.destroy(self.main);
+            Nui.each(_class.__instances, function(val){
+                if(val && val._options.isMask === true && val !== self && val._containerDOM === self._containerDOM){
+                    return (noMask = false);
+                }
+            });
+            if(noMask && self._containerDOM.__layermask__){
+                self._containerDOM.__layermask__.remove();
+                self._containerDOM.__layermask__  = null;
+            }
+            if(self._options.timer > 0){
+                self.timer = 0;
+                clearTimeout(self._timerid);
+            }
+        },
+        resize:function(){
+            var self = this, opts = self._options, element = self.element;
+            self._resize();
+            self._callback('Resize');
+            return self
+        },
+        hide:function(){
+            if(this._options.isHide === true){
+                if(this._callback('HideBefore') === false){
+                    return
+                }
+                this.destroy()
+            }
+        },
+        destroy:function(){
+            var self = this, _class = self.constructor, opts = self._options;
+            if(self._callback('DestroyBefore') === false){
+                return
+            }
+            self._delete();
+            self._reset();
+            self._setLower(true);
+            if(!self._isdestroy){
+                _class._zIndex--;
+                self._isdestroy = true;
+            }
+            self._callback('Destroy');
+        }
+    })
+});
+__define('src/components/layer/loading',['src/components/layer/layer'], function(layer){
+    return function(content, width, height){
+        var opts;
+        if(typeof content === 'object'){
+            opts = content;
+            content = opts.content;
+            delete opts.content;
+        }
+        if(Nui.type(content, 'Number')){
+            height = width;
+            width = content;
+            content = '';
+        }
+        return layer(Nui.extend({
+            content:'<div>'+(content||'正在加载数据...')+'</div>',
+            width:width||'auto',
+            height:height||'auto'
+        }, opts || {}, {
+            id:'loading',
+            isTips:true,
+            close:{
+                enable:false
+            }
+        }))
+    }
+})
+__define('src/core/request',function(require){
+    var util = require('src/core/util');
+    var loading = require('src/components/layer/loading');
+    var ajax = $.ajax;
+
+    var defaults = {
+        //参数配置
+        data:{},        
+        //接口扩展名 .do .php
+        ext:'',
+        //响应成功字段名
+        name:'result',
+        //响应成功字段值
+        value:'success',
+        //拦截器
+        intercept:null
+    }
+
+    var request = function(options, text, under){
+        
+        if(typeof options === 'string'){
+            options = {
+                url:options,
+                type:'GET'
+            }
+        }
+
+        if(!options.url){
+            return
+        }
+
+        if(
+            options.contentType && 
+            options.contentType.indexOf('application/json') !== -1 && 
+            options.data && 
+            typeof options.data !== 'string'
+        ){
+            options.dataType = 'json';
+            options.data = JSON.stringify(options.data);
+        }
+
+        var _loading;
+        
+        if(text !== null){
+            var opts = {
+                content:text||'正在加载数据...'
+            }
+            if(under){
+                opts.under = under
+            }
+            _loading = loading(opts)
+        }
+
+        var success = options.success || $.ajaxSettings.success || $.noop;
+        var error = options.error || $.ajaxSettings.error || $.noop;
+
+        //登录拦截器
+        var intercept = function(){
+            var callback = defaults.intercept || defaults.success;
+            if(typeof callback === 'function'){
+                callback.apply(this, arguments)
+            }
+        }
+
+        options.success = function(res, status, xhr){
+            if(_loading){
+                _loading.destroy()
+            }
+
+            if(res && options.intercept !== false && intercept.call(this, res, status, xhr) === false){
+                return false
+            }
+
+            success.call(this, res, status, xhr)
+        }
+
+        options.error = function(){
+            if(_loading){
+                _loading.destroy()
+            }
+            if(typeof defaults.error === 'function' && defaults.error.apply(this, arguments) === false){
+                return false
+            }
+            error.apply(this, arguments)
+        }
+
+        var paramIndex = options.url.indexOf('?');
+        var params = '?';
+
+        if(paramIndex !== -1){
+            params = options.url.substr(paramIndex);
+            options.url = options.url.substr(0, paramIndex).replace(/\/+$/, '');
+        }
+
+        if(options.url && !/^https?:\/\//.test(options.url) && (defaults.preurl || Nui.domain)){
+            options.url = (defaults.preurl || Nui.domain) + options.url
+        }
+
+        if(options.ext !== false && defaults.ext && !/\.\w+$/.test(options.url)){
+            options.url += defaults.ext
+        }
+
+        if(options.cache !== true){
+            params = util.setParam('_', new Date().getTime(), params);
+            delete options.cache
+        }
+
+        if(options.data && (options.type === 'PUT' || options.type === 'DELETE')){
+            params = util.setParam(options.data, params);
+            delete options.data
+        }
+
+        if(params !== '?'){
+            options.url += params
+        }
+
+        return ajax($.extend(true, {}, {
+            dataType:'json',
+            data:(function(data){
+                if(typeof data === 'function'){
+                    return data()
+                }
+                return data
+            })(defaults.data)
+        }, options))
+    }
+
+    request.config = function(){
+        var args = arguments, len = args.length;
+        var defs = {};
+        if(len === 1){
+            if(typeof args[0] === 'object'){
+                defs = args[0]
+            }
+            else if(typeof args[0] === 'string'){
+                return defaults[args[0]]
+            }
+        }
+        else if(len > 1){
+            defs[args[0]] = defs[args[1]]
+        }
+        return $.extend(true, defaults, defs)
+    }
+
+    var method = function(options, msg){
+        return function(url, data, callback, text, under){
+
+            if(typeof data === 'function'){
+                under = text;
+                text = callback;
+                callback = data;
+                data = undefined;
+            }
+            else if(typeof data === 'string' || data === null){
+                under = callback;
+                text = data;
+                data = callback = undefined;
+            }
+
+            if(typeof callback === 'object'){
+                if(callback === null){
+                    under = text;
+                    text = callback;
+                    callback = undefined;
+                }
+                else{
+                    var object = callback;
+                    callback = function(res, status, xhr){
+                        if(!res){
+                            res = {}
+                        }
+                        Nui.each(object, function(_callback, key){
+                            if((key === 'other' && res[defaults.name] != defaults.value) || res[defaults.name] == key){
+                                _callback.call(object, res, status, xhr)
+                                return false
+                            }
+                        })
+                    }
+                }
+            }
+
+            if(text && typeof text === 'object'){
+                under = text;
+                text = undefined;
+            }
+
+            if(msg && !text && text !== null){
+                text = msg
+            }
+
+            return request($.extend({
+                url:url,
+                data:data,
+                success:callback
+            }, options), text, under)
+        }
+    }
+
+    request.get = method({
+        type:'GET'
+    });
+
+    request.sync = method({
+        type:'GET',
+        async:false
+    });
+
+    request.update = method({
+        type:'GET'
+    }, '正在保存数据...');
+
+    request.jsonp = method({
+        type:'GET',
+        dataType:'jsonp'
+    });
+
+    request.del = method({
+        type:'DELETE'
+    }, '正在删除数据...');
+
+    request.delSync = method({
+        type:'DELETE',
+        async:false
+    }, '正在删除数据...');
+
+    request.put = method({
+        type:'PUT'
+    }, '正在保存数据...');
+
+    request.putSync = method({
+        type:'PUT',
+        async:false
+    }, '正在保存数据...');
+
+    request.post = method({
+        type:'POST'
+    });
+
+    request.postSync = method({
+        type:'POST',
+        async:false
+    });
+
+    request.postUpdate = method({
+        type:'POST'
+    }, '正在保存数据...');
+
+    request.postJSON = method({
+        type:'POST',
+        contentType:'application/json;charset=utf-8'
+    }, '正在保存数据...');
+
+    return request
+})
+__define('src/components/paging',function(require){
+    this.imports('../assets/components/paging/index');
+    
+    var component = require('src/core/component');
+    var request = require('src/core/request');
+    var number = require('src/components/number');
+
+    return this.extend(component, {
+        _static:{
+
+        },
+        _options:{
+            /**
+             * @func 请求url
+             */
+            url:'',
+            /**
+             * @func 分页页码（当前显示第几页）
+             * @type {Number}
+             * @desc 值为负数则从末尾算起，-1就是显示最后一页
+             */
+            page:1,
+            /**
+             * @func 每页显示数量
+             */
+            amount:10,
+            /**
+             * @func 分页容器（页码填充容器）
+             */
+            target:null,
+            /**
+             * @func 滚动容器
+             */
+            container:Nui.win,
+            /**
+             * @func 是否滚动加载
+             */
+            iScroll:false,
+            /**
+             * @func 分页拓展按钮
+             */
+            button:{
+                prev:'«',
+                next:'»',
+                start:'首页',
+                end:'尾页'
+            },
+            /**
+             * @func 请求参数
+             * @type {Object} 
+             * @type {Function}
+             * @return {Object} 返回参数对象
+             */
+            query:null,
+            /**
+             * @func ajax配置（具体参考jQuery.ajax）
+             * @type {Object} 
+             * @type {Function}
+             * @return {Object} 返回ajax配置对象
+             */
+            ajax:null,
+            /**
+             * @func 请求完回调
+             */
+            onResponse:null,
+            /**
+             * @func 渲染分页内容回调
+             */
+            onRender:null
+        },
+        _exec:function(){
+
+        }
+    })
+})
 __define('src/components/datagrid',function(require){
     this.imports('../assets/components/datagrid/index');
     

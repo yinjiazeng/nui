@@ -52,19 +52,9 @@ Nui.define(function(require){
             onBlur:null
         },
         _event:function(){
-            var self = this, opts = self._options;
-            self._on('keydown', self.target, function(e, elem){
-                var code = e.keyCode;
-                //输入拦截
-                if(
-                    (e.shiftKey && $.inArray(code, self._shfitCodes) !== -1) ||
-                    (!e.ctrlKey && !e.altKey && $.inArray(code, self._disCodes) !== -1)
-                ){
-                    return false
-                }
-            })
-
+            var self = this, opts = self._options, count = 1;
             self._on('focus', self.target, function(e, elem){
+                self._default = self._dom.value;
                 self._focus = true
             })
 
@@ -75,13 +65,56 @@ Nui.define(function(require){
                 self._callback('Blur', [val, self.target])
             })
 
-            self._on('input propertychange', self.target, function(e, elem){
-                //防止IE8-赋值时执行
-                if(self._focus && !self._input){
-                    self._input = true
-                    self._change()
-                    self._input = false
+            self._on('keydown', self.target, function(e, elem){
+                var code = e.keyCode;
+                self._focus = true;
+                count = 1;
+                //输入拦截
+                if(
+                    (e.shiftKey && $.inArray(code, self._shfitCodes) !== -1) ||
+                    (!e.ctrlKey && !e.altKey && $.inArray(code, self._disCodes) !== -1)
+                ){
+                    return false
                 }
+            })
+
+            self._on('contextmenu', self.target, function(e, elem){
+                count = 1
+            })
+
+            var change = function(){
+                if(count === 1 && self._default !== Nui.trim(self._dom.value)){
+                    self._change(true)
+                }
+            }
+
+            //解决IE8-propertychange事件间歇性失效问题
+            self._on('keyup', self.target, function(e, elem){
+                change()
+            })
+            
+            //解决部分浏览器剪切或者粘帖时不触发input或者propertychange事件
+            //因为剪切粘帖事件会优先执行，因此加定时器延后执行
+            self._on('paste cut', self.target, function(e, elem){
+                setTimeout(function(){
+                    change()
+                })
+            })
+
+            self._on('propertychange', self.target, function(e, elem){
+                count++;    
+                //self._focus防止IE8-赋值时执行
+                //self._bsie解决IE8-赋值死循环问题（赋值时会触发propertychange事件）
+                if(self._focus && !self._bsie){
+                    self._bsie = true
+                    self._change()
+                    self._bsie = false
+                }
+            })
+
+            self._on('input', self.target, function(e, elem){
+                count++;
+                self._change()
             })
         },
         _exec:function(){
@@ -188,10 +221,8 @@ Nui.define(function(require){
         /**
          * @func 输入时回调，会过滤掉特殊字符
          */
-        _change:function(){
-            var self = this, opts = self._options, dom = self._dom, val = Nui.trim(dom.value);
-            //焦点位置
-            var index = util.getFocusIndex(dom);
+        _change:function(flag){
+            var self = this, len = arguments.length, opts = self._options, dom = self._dom, val = Nui.trim(dom.value);
             //负数
             var minus = '';
             //整数部分
@@ -202,6 +233,8 @@ Nui.define(function(require){
             var dotIndex;
             //字符数量
             var length = val.length;
+            //焦点位置
+            var index = util.getFocusIndex(dom);
             //转换半角符号以及过滤非数字减号加号小数点符号
             val = self._convert(val).replace(/[^\+\-\d\.]+/g, '')
             //存储负数符号
@@ -221,7 +254,9 @@ Nui.define(function(require){
                 decimal = '.' + (temp[1] || '').substr(0, self._decimal)
             }
             val = self._breakValue(minus + integer + decimal);
-            dom.value = val;
+            if(!flag){
+                dom.value = val
+            }
             index += (val.length - length)
             if(self._default !== val){
                 self._callback('Change', [self._filter(val), self.target])
@@ -235,7 +270,8 @@ Nui.define(function(require){
                 dom.setSelectionRange(index, index);
             }
             catch(e){
-                setTimeout(function(){
+                clearTimeout(self._timer);
+                self._timer = setTimeout(function(){
                     try{
                         if(self._focus){
                             var range = dom.createTextRange();
@@ -324,6 +360,8 @@ Nui.define(function(require){
             if(this.target){
                 this.target.css('ime-mode', 'normal')
             }
+            delete this._focus;
+            delete this._bsie;
             component.exports._delete.call(this);
         },
         value:function(val){
@@ -350,6 +388,7 @@ Nui.define(function(require){
                 else if(dom){
                     dom.value = val
                 }
+                self._default = val
             }
         }
     })

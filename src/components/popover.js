@@ -9,7 +9,7 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
             },
             _hide:function(obj){
                 Nui.each(this.__instances, function(v){
-                    if(v._isshow && obj !== v){
+                    if(v._isshow && !v._hover && obj !== v){
                         v.hide()
                     }
                 })
@@ -74,6 +74,14 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                     e.stopPropagation()
                 })
             }
+			
+			self._on('mouseover', self.target, function(e, elem){
+                self._hover = true
+            })
+
+            self._on('mouseout', self.target, function(e, elem){
+                self._hover = false
+            })
         },
         show:function(){
             var self = this, opts = self._options, target = self.target;
@@ -152,7 +160,8 @@ Nui.define(['../core/component', './layer/layer'], function(component, layer){
                 this.layer.destroy();
                 delete this.layer
             }
-            delete this._isshow
+            delete this._isshow;
+            delete this._hover;
             component.exports._reset.call(this);
         }
     })
