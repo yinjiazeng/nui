@@ -3853,11 +3853,11 @@ __define('src/components/datagrid',function(require){
                 }
             }
         },
-        _horzFocus:function(e, elem, type, isTab){
+        _horzFocus:function(e, elem, type){
             var td = elem.closest('td.table-cell');
             var _td = td[type]();
-            if(isTab){
-                e.preventDefault();
+            if(this._callback('HorizontalFocusBefore', [e, elem, type]) === false){
+                return false
             }
             if(_td.length){
                 var input = _td.find('.datagrid-input');
@@ -3868,7 +3868,7 @@ __define('src/components/datagrid',function(require){
                     })
                 }
                 else{
-                    this._horzFocus(e, _td.children(), type, isTab)
+                    this._horzFocus(e, _td.children(), type)
                 }
             }
             else{
@@ -3913,7 +3913,7 @@ __define('src/components/datagrid',function(require){
                         })
                     }
                     else if(type === 'prev' && flag){
-                        self._horzFocus(e, _td.children(), type, flag)
+                        self._horzFocus(e, _td.children(), type)
                     }
                     else{
                         self._verticalFocus(e, _td.children(), type, flag)
@@ -3942,7 +3942,8 @@ __define('src/components/datagrid',function(require){
                         self._verticalFocus(e, elem, 'next')
                         break;
                     default:
-                        self._horzFocus(e, elem, 'next', true)
+                        e.preventDefault();
+                        self._horzFocus(e, elem, 'next')
                 }
             }
         },

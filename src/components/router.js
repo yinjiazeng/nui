@@ -454,6 +454,18 @@ Nui.define(function(require){
             })
             return self
         },
+        _delete:function(){
+            var self = this, opts = self._options;
+            if(self._wrapper){
+                self._wrapper.off();
+                component.destroy(self._wrapper);
+                if(opts.wrapper === true){
+                    self._wrapper.remove()
+                }
+                delete self._wrapper
+            }
+            component.exports._delete.call(self)
+        },
         _reset:function(){
             var self = this, router = self.constructor;
             self._off();
@@ -510,6 +522,17 @@ Nui.define(function(require){
                     xhr.then(callback, callback);
                     return xhr
                 }
+            }
+        },
+        destroy:function(){
+            var self = this, _class = self.constructor;
+            component.exports.destroy.call(self);
+            if(_class._wrapper && $.isEmptyObject(_class._paths)){
+                _class._wrapper.off();
+                _class._options = {};
+                component.destroy(_class._wrapper);
+                _class._wrapper.remove()
+                delete _class._wrapper
             }
         }
     })

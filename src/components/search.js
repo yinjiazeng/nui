@@ -123,6 +123,14 @@ Nui.define(function(require){
              */
             prompt:'',
             /**
+             * @func 定义顶部模版
+             * @type <String>
+             * @type <Function>
+             * @param self <Object> 组件实例对象
+             * @return <String> 返回顶部模版
+             */
+            head:'',
+            /**
              * @func 定义底部模版
              * @type <String>
              * @type <Function>
@@ -147,6 +155,11 @@ Nui.define(function(require){
              * @type <Boolean> 
              */
             nullable:false,
+            /**
+             * @func 是否在选择后让输入框获得焦点
+             * @type <Boolean> 
+             */
+            selectFocus:true,
             /**
              * @func 是否允许单选时重复匹配
              * @type <Boolean> 
@@ -391,6 +404,7 @@ Nui.define(function(require){
         _template:{
             wrap:
                 '<div class="<% className %>"<%if style%> style="<%include \'style\'%>"<%/if%>>'+
+                    '<%include "head"%>'+
                     '<div class="con-search-body<%if tabs.length > 1%> con-search-body-tab<%/if%>">'+
                         '<%include "tabs"%>'+
                         '<div class="con-search-inner">'+
@@ -404,7 +418,7 @@ Nui.define(function(require){
             result:
                 '<%var count = 0%>'+
                 '<%if data && (count = data.length)%>'+
-                    '<%if prompt && value%>'+
+                    '<%if prompt%>'+
                         '<%include "prompt"%>'+
                     '<%/if%>'+
                     '<%include "list"%>'+
@@ -801,7 +815,7 @@ Nui.define(function(require){
                     self._callback('Blur', [].concat(args, e, elem))
                     self.hide()
                 }
-                else{
+                else if(opts.selectFocus){
                     show()
                 }
             })
@@ -1100,7 +1114,7 @@ Nui.define(function(require){
 
             self._initTag();
 
-            Nui.each(['item', 'empty', 'prompt', 'foot'], function(name){
+            Nui.each(['item', 'empty', 'head', 'foot'], function(name){
                 self._initTemplate(name);
             })
 
@@ -1216,11 +1230,21 @@ Nui.define(function(require){
             _class._active = self;
             //输入的时候才会显示
             if((self._isTab && self.val && punching) || !self._isTab){
+                var prompt = opts.prompt;
+                if(typeof prompt === 'function'){
+                    prompt = prompt.call(opts, self)
+                }
+                if(typeof prompt !== 'string'){
+                    prompt = ''
+                }
+                if(prompt){
+                    self._template.prompt = '<div class="con-search-prompt">'+ prompt +'</div>'
+                }
                 self.$result.html(self._tpl2html('result', {
                     data:self.queryData,
                     value:self.val,
                     selected:self._getSelected(),
-                    prompt:!!self._template.prompt
+                    prompt:!!prompt
                 }));
                 result.$elem.show();
                 if(self._defaultTab){

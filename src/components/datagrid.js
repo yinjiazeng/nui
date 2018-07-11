@@ -4,7 +4,6 @@ Nui.define(function(require){
     var component = require('../core/component');
     var util = require('../core/util');
     var paging = require('./paging');
-    var checkradio = require('./checkradio');
 
     //获取滚动条宽度
     var scrollBarWidth = (function(){
@@ -24,13 +23,13 @@ Nui.define(function(require){
                 Nui.doc.on('click', function(e){
                     var isRow = $(e.target).closest('tr').hasClass('table-row');
                     Nui.each(self.__instances, function(val){
-                        if(!isRow && val.element && val._activeElem){
-                            val._callback('CancelActive', [e, val._activeElem])
+                        if(!isRow && val.element && val.activeElem){
+                            val._callback('CancelActive', [val.activeElem])
                             Nui.each(val._rowElems, function(v){
-                                v[val._activeIndex] && v[val._activeIndex].removeClass('s-crt')
+                                v[val.activeIndex] && v[val.activeIndex].removeClass('s-crt')
                             })
-                            delete val._activeElem;
-                            delete val._activeIndex;
+                            delete val.activeElem;
+                            delete val.activeIndex;
                         }
                     })
                 });
@@ -228,6 +227,7 @@ Nui.define(function(require){
                     '<%if typeof val.filter === "function"%>'+
                     '<%var _value = val.filter(_value, val.field, $value, $index)%>'+
                     '<%/if%>'+
+                    '<%var _isObject = typeof _value === "object"%>'+
                     '<span class="cell-wrap<%if val.nowrap === true%> cell-nowrap<%/if%>"<%if val.width > 0 && (val.fixed === "left" || val.fixed === "right")%> style="width:<%val.width%>px"<%/if%>>'+
                     '<span class="cell-text'+
                         '<%if val.content === "checkbox"%> cell-text-checkbox<%/if%>'+
@@ -240,12 +240,12 @@ Nui.define(function(require){
                             '<%if val.showtitle !==true%>data-<%/if%>title="<%$value[val.field]??%>"'+
                             '<%/if%>'+
                         '<%/if%>>'+
-                    '<%if val.content === "checkbox" && typeof _value === "object"%>'+
+                    '<%if val.content === "checkbox" && _isObject%>'+
                     '<%if checked === true && !val.title && (_value["checked"]=checked)%><%/if%>'+
                     '<span class="ui-checkradio">'+
                     '<input type="checkbox"<%include "_attr"%>>'+
                     '</span>'+
-                    '<%elseif val.content === "input" && typeof _value === "object"%>'+
+                    '<%elseif val.content === "input" && _isObject%>'+
                     '<input type="text" autocomplete="off"<%include "_attr"%>>'+
                     '<%else%>'+
                     '<%include "content"%>'+
@@ -492,6 +492,8 @@ Nui.define(function(require){
                 var echoData = opts.paging.echoData;
                 opts.paging.echoData = function(data, type){
                     if(self.element){
+                        delete self.activeIndex;
+                        delete self.activeElem;
                         self.data = data;
                         self._render(type);
                         if(typeof echoData === 'function'){
@@ -620,16 +622,16 @@ Nui.define(function(require){
                     var checked = elem.prop('checked');
                     var index = elem.closest('.table-row').attr('row-index');
                     if(!elem.closest('.datagrid-table').hasClass('datagrid-table-all')){
-                        self._rowElems.all[elem.closest('.table-row').attr('row-index')].find('.'+className).checkradio('checked', checked)
+                        self._rowElems.all[elem.closest('.table-row').attr('row-index')].find('.'+className+':enabled').checkradio('checked', checked)
                     }
                     if(elem.attr('name') === 'datagrid-checkbox-all'){
                         self._checked = checked;
                         self._tableTbody.find('.'+ className +':enabled').checkradio('checked', checked)
                     }
                     else{
-                        var checked = self._tableTbody.find('.'+ className +':checked').length === self._tableTbody.find('.'+className).length;
+                        var checked = self._tableTbody.find('.'+ className +':enabled:checked').length === self._tableTbody.find('.'+className+':enabled').length;
                         self._checked = checked;
-                        self._body.find('.table-thead .'+className).checkradio('checked', checked)
+                        self._body.find('.table-thead .'+className+':enabled').checkradio('checked', checked)
                     }
                 }
                 self._callback('CheckboxChange', [e, elem]);
@@ -762,11 +764,11 @@ Nui.define(function(require){
                 }
             }
         },
-        _horzFocus:function(e, elem, type, isTab){
+        _horzFocus:function(e, elem, type){
             var td = elem.closest('td.table-cell');
             var _td = td[type]();
-            if(isTab){
-                e.preventDefault();
+            if(this._callback('HorizontalFocusBefore', [e, elem, type]) === false){
+                return false
             }
             if(_td.length){
                 var input = _td.find('.datagrid-input');
@@ -777,7 +779,7 @@ Nui.define(function(require){
                     })
                 }
                 else{
-                    this._horzFocus(e, _td.children(), type, isTab)
+                    this._horzFocus(e, _td.children(), type)
                 }
             }
             else{
@@ -822,7 +824,7 @@ Nui.define(function(require){
                         })
                     }
                     else if(type === 'prev' && flag){
-                        self._horzFocus(e, _td.children(), type, flag)
+                        self._horzFocus(e, _td.children(), type)
                     }
                     else{
                         self._verticalFocus(e, _td.children(), type, flag)
@@ -851,7 +853,8 @@ Nui.define(function(require){
                         self._verticalFocus(e, elem, 'next')
                         break;
                     default:
-                        self._horzFocus(e, elem, 'next', true)
+                        e.preventDefault();
+                        self._horzFocus(e, elem, 'next')
                 }
             }
         },
@@ -901,18 +904,23 @@ Nui.define(function(require){
                 return false
             }
         },
+        _cancelActive:function(elem){
+            if(this.activeElem && this.activeElem[0] !== elem[0]){
+                this.cancelActive()
+            }
+        },
         _active:function(e, elem, data){
             var self = this;
             if(self._callback('RowClick', [e, elem, data]) === false){
-                self.cancelActive();
+                self._cancelActive(elem);
                 return
             }
             if(self._options.isActive === true){
-                self.cancelActive();
-                self._activeIndex = elem.attr('row-index');
-                self._activeElem = elem;
+                self._cancelActive(elem);
+                self.activeIndex = elem.attr('row-index');
+                self.activeElem = elem;
                 Nui.each(self._rowElems, function(v){
-                    v[self._activeIndex] && v[self._activeIndex].addClass('s-crt')
+                    v[self.activeIndex] && v[self.activeIndex].addClass('s-crt')
                 })
                 self._callback('Active', [e, elem, data]);
             }
@@ -974,20 +982,21 @@ Nui.define(function(require){
         },
         cancelActive:function(){
             var self = this;
-            if(self._options.isActive === true && self._activeElem){
+            if(self._options.isActive === true && self.activeElem){
                 Nui.each(self._rowElems, function(v){
-                    if(v[self._activeIndex]){
-                        v[self._activeIndex].removeClass('s-crt')
+                    if(v[self.activeIndex]){
+                        v[self.activeIndex].removeClass('s-crt')
                     }
                 })
-                delete self._activeIndex;
-                delete self._activeElem;
+                self._callback('CancelActive', [self.activeElem])
+                delete self.activeIndex;
+                delete self.activeElem;
             }
         },
         checkedData:function(field){
             var self = this;
             var data = [];
-            self._tableAllBox.find('.datagrid-checkbox-choose:checked').each(function(){
+            self._tableAllBox.find('.datagrid-checkbox-choose:enabled:checked').each(function(){
                 var _data = $(this).closest('.table-row').data();
                 if(field){
                     data.push(_data[field]);
